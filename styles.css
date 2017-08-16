@@ -102,7 +102,21 @@ body {
 }
 
 @media(max-width:991px) {
-  .affix {
-      position: static;
+  .show-mobile{
+    display : initial;
+  }
+
+  .hide-mobile{
+    display:none;
+  }
+}
+
+@media(min-width:992px) {
+  .show-mobile{
+    display : none;
+  }
+
+  .hide-mobile{
+    display:initial;
   }
 }

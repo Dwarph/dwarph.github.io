@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pit CS32420 Assignment</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+
+        #instructions {
+
+            width: 100%;
+            height: 100%;
+
+            display: -webkit-box;
+            display: -moz-box;
+
+            -webkit-box-orient: horizontal;
+            -moz-box-orient: horizontal;
+            box-orient: horizontal;
+
+            -webkit-box-pack: center;
+            -moz-box-pack: center;
+            box-pack: center;
+
+            -webkit-box-align: center;
+            -moz-box-align: center;
+            box-align: center;
+
+            color: #ffffff;
+            text-align: center;
+
+            cursor: pointer;
+
+        }
+
+        #blocker {
+
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            background-color: rgba(0, 0, 0, 0.5);
+
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="blocker">
+    <div id="instructions">
+        <span style="font-size:60px">Instructions:</span><br/>
+        <span style="font-size:40px">Click to play!</span><br/>
+        W, A, S, D, Q, E = Move <br/>
+        MOUSE = Look around<br/>
+        Hold SPACE to stop time! <br/>
+        Navigate through the scene to reach the treasure!
+    </div>
+</div>
+
+
+<script src="js/three.min.js"></script>
+<script src="js/PointerLockControls.js"></script>
+
+<script src="myJs/controlUpdater.js"></script>
+<script src="myJs/textureHelper.js"></script>
+
+<script src="myJs/firstRoom.js"></script>
+<script src="myJs/particleSys.js"></script>
+<script src="myJs/procgenTree.js"></script>
+
+<script src="myJs/corridor.js"></script>
+<script src="myJs/secondRoom.js"></script>
+
+
+<script>
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 60);
+    var renderer = new THREE.WebGLRenderer();
+    var cameraSpeed = 0.3;
+    var controls = new THREE.PointerLockControls(camera);
+    var leftKeyDown = false,
+        rightKeyDown = false,
+        forwardKeyDown = false,
+        backwardKeyDown = false,
+        upKeyDown = false,
+        downKeyDown = false,
+        spaceKeyDown = false;
+
+    //set the initial position of the camera
+    controls.getObject().position.set(0, 6, 20);
+    scene.add(controls.getObject());
+
+    //add the canvas to the window, allow it to resize.
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    window.addEventListener('resize', onWindowResize, false);
+
+    setUpScene();
+
+    //set the fog to a leafy green
+    //setting the backgroud to the same colour as the fog means the clipping distance doesn't jarr
+    //so we do that..
+    scene.background = new THREE.Color(colours.greenFog);
+    scene.fog = new THREE.Fog(colours.greenFog, 30, 60);
+
+    renderScene();
+
+    function renderScene() {
+        requestAnimationFrame(renderScene);
+        //if the space key isn't down, we can update everything
+        if (!spaceKeyDown) {
+            //update particles
+            particleUpdate();
+            //update axe positions
+            rotateAxes();
+
+            //Move the camera around the world
+            if (leftKeyDown === true) {
+                controls.getObject().translateX(-cameraSpeed);
+            }
+            if (rightKeyDown === true) {
+                controls.getObject().translateX(+cameraSpeed);
+            }
+            if (forwardKeyDown === true) {
+                controls.getObject().translateZ(-cameraSpeed);
+            }
+            if (backwardKeyDown === true) {
+                controls.getObject().translateZ(+cameraSpeed);
+            }
+            if (upKeyDown === true) {
+                controls.getObject().translateY(+cameraSpeed);
+            }
+            if (downKeyDown === true) {
+                controls.getObject().translateY(-cameraSpeed);
+            }
+        }
+        //render the scene
+        renderer.render(scene, camera);
+    }
+
+    function setUpScene() {
+        //controls setup
+        pointerLock();
+        movementListener();
+
+        //first room setup
+        createFirstRoom();
+        generateTree(new THREE.Vector3(0, 30, 0));
+        treeParticlesSetup();
+
+        //first corridor setup
+        makeCorridor1();
+        makeCorridor1Torches();
+
+        //second corridor setup
+        makeCorridor2();
+        makeCorridor2Lights();
+
+        //second room setup
+        makeSecondRoomWalls();
+        makeSecondRoomWalkway();
+        makeTreasureBox();
+        makeRoom2Spikes();
+        makeSecondRoomLights();
+        drawAxes();
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+
+
+</script>
+
+</body>
+</html>

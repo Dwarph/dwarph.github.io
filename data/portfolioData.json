@@ -211,8 +211,8 @@
         "title": "The Search For A Good Book",
         "description": "A low poly animation made in Blender, for an Applied Graphics module.",
         "year": 2017,
-        "image": "SearchForAGoodBook.png",
-        "imageAlt": "Scene made with ThreeJS",
+        "image": "SearchForAGoodBook.gif",
+        "imageAlt": "A spaceship lands on a dark planet",
         "tags": [
             "Blender",
             "University"

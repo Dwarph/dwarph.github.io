@@ -1,3 +1,5 @@
+var yearsDict = {};
+
 function loadJSON(callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -10,7 +12,6 @@ function loadJSON(callback) {
     xobj.send(null);
 }
 
-var yearsDict = {};
 
 function loadPortfolioData() {
     // Load the portfolio items, sorted by year
@@ -37,6 +38,12 @@ function loadPortfolioData() {
             if (!years.includes(items[i].year)) {
                 years.push(items[i].year);
                 yearsDict[items[i].year] = "";
+
+                var yearSelector = document.getElementById("year-selector");
+                var option = document.createElement("option");
+                option.text = items[i].year;
+                option.value = items[i].year;
+                yearSelector.add(option);
             }
 
             var cardMeta = "";
@@ -92,6 +99,7 @@ function loadPortfolioData() {
             yearsDict[items[i].year] += portfolioCard;
                 yearsDict["all"] += portfolioCard;
         }
+        yearSelector.options[1].setAttribute('selected', 'selected');
         document.getElementById(`portfolio-items`).innerHTML = yearsDict[document.getElementById(`year-selector`).value];
     });
 }

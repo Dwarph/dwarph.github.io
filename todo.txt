@@ -1,1 +1,2 @@
-- fancy background - tree? nice three js animation
+- fancy background?
+    - ideas: tree/nice three js animation/css gradient

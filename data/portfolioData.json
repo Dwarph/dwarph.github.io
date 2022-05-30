@@ -1,5 +1,23 @@
 [
     {
+        "title": "Ultraleap Control Panel",
+        "description": "I helped build the Ultraleap Control Panel - an application which lets you view your hands, diagnose issues with your hand tracking and easily edit hand tracking settings.",
+        "year": 2022,
+        "image": "UltraleapControlPanel.png",
+        "imageAlt": "Two skeletal hands with spheres between each joint - one red, one purple. A 2D UI is above them, with camera settings.",
+        "tags": [
+            "Unity",
+            "C#",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Download Ultraleap Gemini Tracking, and its control panel, ",
+                "link": "https://developer.leapmotion.com/tracking-software-download"
+            }
+        ]
+    },
+    {
         "title": "GDC 2022",
         "description": "I spoke at GDC 2022 with <a href=\"https://twitter.com/CRWBurgess\">Chris Burgess</a> on \"Hand Tracking: How can lessons from LBE can help at home gaming?\". We then wrote the talk up into a blogpost post-event.",
         "year": 2022,

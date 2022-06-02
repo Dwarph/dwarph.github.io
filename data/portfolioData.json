@@ -40,7 +40,7 @@
         "description": "I messed around with generative art and p5.js. I mainly focused on exploiting flow fields and perlin noise.",
         "year": 2022,
         "image": "p5.gif",
-        "imageAlt": "Pinky red curves slowly are drawn on a screen.",
+        "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
         "tags": [
             "Javascript"
         ],

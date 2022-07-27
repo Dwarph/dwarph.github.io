@@ -32,6 +32,26 @@
                 "link": "https://github.com/Dwarph/Noise-P5"
             }
         ]
+    },
+    {
+        "title": "XR Controller and Hand Swapping",
+        "description": "I helped create an algorithm which allows for super quick swapping between xr controllers and hand tracking.",
+        "year": 2022,
+        "image": "ControllerSwapping.gif",
+        "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Clone the Ultraleap Unity Plugin Preview Package: XRControllerSupport,",
+                "link": "https://github.com/ultraleap/UnityPlugin"
+            }
+        ]
     },    
     {
         "title": "Amazeing Escape",

@@ -266,7 +266,7 @@
         "title": "QRTTNBPBYTROAYALID",
         "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), is an infinite runner created by myself and <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. Poppy worked on the art and platform design, whilst I worked on the code, Unity gubbins and game feel.",
         "year": 2017,
-        "image": "QRTTNBPBYTROAYALID.png",
+        "image": "QRTTNBPBYTROAYALID.gif",
         "imageAlt": "A pixel art infinite runner, set in a cave",
         "tags": [
             "Unity",
@@ -295,7 +295,7 @@
         "title": "Rare Cover Letter",
         "description": "Rare Cover Letter is an interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
         "year": 2016,
-        "image": "RareCoverLetter.png",
+        "image": "RareCoverLetter.gif",
         "imageAlt": "A pixel art image of a man walking through a city",
         "tags": [
             "Unity",
@@ -312,8 +312,8 @@
         "title": "Space Invaders",
         "description": "This was the first Unity project I finished! I made a Space Invaders clone (with a small twist) as a way to become more familiar with Unity and its features. Sound effects were provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
         "year": 2016,
-        "image": "SpaceInvaders.png",
-        "imageAlt": "A screenshot of a space invaders clone",
+        "image": "SpaceInvaders.gif",
+        "imageAlt": "A gif of a space invaders clone",
         "tags": [
             "Unity",
             "C#"

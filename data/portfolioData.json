@@ -1,5 +1,29 @@
 [
     {
+        "title": "Hand Rays",
+        "description": "I created a new way of generating a stable hand ray, which iterates on the standard shoulder through pinch position, taking into account wrist position to introduce more expressiveness to the ray, whilst keeping the stability.",
+        "year": 2022,
+        "image": "farfield.gif",
+        "imageAlt": "A hand with a ray directed from it, entering a scene with three floating gray squares. It aims at the middle square, then the right repeatedly. When the ray hits the squares they turn purple. The hand then leaves the scene. ",
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Clone the Ultraleap Unity Plugin Preview Package: Hand Rays,",
+                "link": "https://github.com/ultraleap/UnityPlugin"
+            },
+            {
+                "text": "Read about how it works,",
+                "link": "https://docs.ultraleap.com/ultralab/far-field-ray-blog.html"
+            }
+        ]
+    },
+    {
         "title": "Ultraleap Control Panel",
         "description": "I helped build the Ultraleap Control Panel - an application which lets you view your hands, diagnose issues with your hand tracking and easily edit hand tracking settings.",
         "year": 2022,

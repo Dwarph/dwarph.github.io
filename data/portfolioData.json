@@ -1,5 +1,23 @@
 [
     {
+        "title": "XR Design Guidelines",
+        "description": "I helped rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking.",
+        "year": 2023,
+        "image": "xrguidelines.png",
+        "imageAlt": "A picture of the first page in ultraleap's XR guidelines.",
+        "tags": [
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Learn how to best use hands in XR,",
+                "link": "https://docs.ultraleap.com/xr-guidelines/"
+            }
+        ]
+    },
+    {
         "title": "Hand Rays",
         "description": "I created a new way of generating a stable hand ray, which iterates on the standard shoulder through pinch position, taking into account wrist position to introduce more expressiveness to the ray, whilst keeping the stability.",
         "year": 2022,

@@ -18,6 +18,26 @@
         ]
     },
     {
+        "title": "MR Owltraleap",
+        "description": "Made for an internal hackathon, MR Owltraleap is a virtual owl who you can hatch, fly around your room, land on your finger and feed. I worked primarily on the flying mechanic, finding a good way to guide MR Owltraleap around your room.",
+        "year": 2023,
+        "image": "mrowltraleap.gif",
+        "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://twitter.com/dwarph/status/1636418511445671947"
+            }
+        ]
+    },
+    {
         "title": "Hand Rays",
         "description": "I created a new way of generating a stable hand ray, which iterates on the standard shoulder through pinch position, taking into account wrist position to introduce more expressiveness to the ray, whilst keeping the stability.",
         "year": 2022,

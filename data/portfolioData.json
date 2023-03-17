@@ -1,5 +1,29 @@
 [
     {
+        "title": "Black Hole Storage",
+        "description": "A study on spatial storage solutions, and conveying tension through visual feedback of FABRIK chains. Black holes are a virtual pocket, in which you can store Interaction Behaviours, and nest other Black Holes inside.",
+        "year": 2022,
+        "image": "BlackHoleStorage.gif",
+        "imageAlt": "A purple sphere is dragged into a black sphere by a pink hand made of capsules. The black sphere is then tapped, at which point 3 purple spheres appear from inside of it. Each purple sphere is connected to black sphere by a white tendril. A purple sphere is grabbed and pulled until its tendril becomes taut and eventually breaks. The black sphere is then tapped again, bringing all purple spheres back into it, aside from the one which was pulled off of it.",
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Source Code",
+                "link": "https://github.com/ultraleap/Black-Hole-Storage"
+            },
+            {
+                "text": "Twitter thread on its design",
+                "link": "https://twitter.com/dwarph"
+            }
+        ]
+    },
+    {
         "title": "Hand Rays",
         "description": "I created a new way of generating a stable hand ray, which iterates on the standard shoulder through pinch position, taking into account wrist position to introduce more expressiveness to the ray, whilst keeping the stability.",
         "year": 2022,

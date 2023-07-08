@@ -19,11 +19,11 @@ function loadPortfolioData() {
         items.sort(function (a, b) {
             return b.year - a.year;
         });
-        
+
         var years = [];
         var tags = [];
-        
-        yearsDict["all"] ="";
+
+        yearsDict["all"] = "";
         document.getElementById('portfolio').innerHTML += `
         <div class="container-fluid py-2 row">
             <div class="d-flex flex-col flex-wrap overflow-auto justify-content-center card-deck" id="portfolio-items">
@@ -79,12 +79,27 @@ function loadPortfolioData() {
                 }
             }
 
+            var re = /(?:\.([^.]+))?$/;
+            var ext = re.exec(items[i].image)[1];
+
+            var image = "";
+
+
+            if (ext == "mp4") {
+                image = `<video class="card-img-top" width="288" height="288" autoplay muted loop>
+                <source src="../images/${items[i].image}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+            } else {
+                image = `<img class="card-img-top" src="../images/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
+            }
+
             //Generate the card using the above info
 
             var portfolioCard = `
                 <div class="mt-5 card-portfolio-parent" data-tagList=${items[i].tags} data-year=${items[i].year}>
                     <div class="card card-portfolio">
-                        <img class="card-img-top" src="../images/${items[i].image}" alt="${items[i].imageAlt}">
+                        ${image}
                         <div class="card-body">
                             <p class="card-title">${items[i].title}</p>
                             <p class="card-year">${items[i].year},</p>
@@ -97,7 +112,7 @@ function loadPortfolioData() {
             `
 
             yearsDict[items[i].year] += portfolioCard;
-                yearsDict["all"] += portfolioCard;
+            yearsDict["all"] += portfolioCard;
         }
         yearSelector.options[1].setAttribute('selected', 'selected');
         document.getElementById(`portfolio-items`).innerHTML = yearsDict[document.getElementById(`year-selector`).value];

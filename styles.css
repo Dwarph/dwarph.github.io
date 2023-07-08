@@ -4,14 +4,14 @@
   --primary-color: #FFEB3B;
   --secondary-color: #FF8CA8;
   --tertiary-color: #000000;
-  --primary-color-dark: #958600;
+  --primary-color-dark: #ffce5d;
 }
 
 :root.white {
   --primary-color: #ffffff;
   --secondary-color: #FF8CA8;
   --tertiary-color: #000000;
-  --primary-color-dark: #424242;
+  --primary-color-dark: #ffd357;
 }
 
 body {
@@ -130,7 +130,7 @@ body {
   right: 0;
 }
 
-.card-portfolio {
+.card-portfolio-major {
   width: 18rem;
   background: var(--secondary-color);
   background: linear-gradient(0deg, var(--secondary-color) 0%,  var(--primary-color) 31%);
@@ -141,26 +141,66 @@ body {
   margin-bottom: 10px;
 }
 
-.card-year {
-  text-align: center;
-  font-size: 13px;
-  font-family: 'Nunito Sans', sans-serif;
-  margin-bottom: 2px;
-}
-
-.card-img-top {
+.card-img-top-major {
   width: 18rem;
   height: 18rem;
   object-fit: cover;
   transition: all 0.5s;
 }
 
-.card .card-img-top {
+.card-portfolio-minor {
+  padding-top: 64px;
+  width: 10rem;
+  background: var(--primary-color-dark);
+  background: linear-gradient(0deg, var(--primary-color-dark) 0%,  var(--primary-color) 21%);
+  border: #ffffff;
+  border-radius: 0rem 0rem 2rem 2rem;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+.card-img-top-minor {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  transition: all 0.5s;
+}
+
+.card .card-img-top-major{
   border-radius: 10rem 10rem 0px 0px;
 }
 
-.card:hover .card-img-top {
+.card:hover .card-img-top-major{
   border-radius: 5rem 5rem 0px 0px
+}
+
+.card .card-img-top-minor{
+  border-radius: 5rem 5rem 0px 0px;
+}
+
+.card:hover .card-img-top-minor{
+  border-radius: 2.5rem 2.5rem 0px 0px
+}
+
+.card-portfolio-secondary {
+  width: 18rem;
+  background: var(--secondary-color);
+  background: linear-gradient(0deg, var(--secondary-color) 0%,  var(--primary-color) 31%);
+  border: #ffffff;
+  border-radius: 0rem 0rem 2rem 2rem;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+
+
+.card-year {
+  text-align: center;
+  font-size: 13px;
+  font-family: 'Nunito Sans', sans-serif;
+  margin-bottom: 2px;
 }
 
 

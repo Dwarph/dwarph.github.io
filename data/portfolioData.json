@@ -5,6 +5,7 @@
         "year": 2023,
         "image": "Aurora.mp4",
         "imageAlt": "A run through of someone interacting with a robot, painting with their hands, playing with blocks and exploring an XR headset.",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -28,6 +29,7 @@
         "year": 2023,
         "image": "xrguidelines.png",
         "imageAlt": "A picture of the first page in ultraleap's XR guidelines.",
+        "importance": "major",
         "tags": [
             "XR",
             "Ultraleap",
@@ -46,6 +48,7 @@
         "year": 2023,
         "image": "mrowltraleap.mp4",
         "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",
@@ -66,6 +69,7 @@
         "year": 2022,
         "image": "farfield.mp4",
         "imageAlt": "A hand with a ray directed from it, entering a scene with three floating gray squares. It aims at the middle square, then the right repeatedly. When the ray hits the squares they turn purple. The hand then leaves the scene. ",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -90,6 +94,7 @@
         "year": 2022,
         "image": "UltraleapControlPanel.png",
         "imageAlt": "Two skeletal hands with spheres between each joint - one red, one purple. A 2D UI is above them, with camera settings.",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -108,6 +113,7 @@
         "year": 2022,
         "image": "GDC2022.jpg",
         "imageAlt": "Two men pointing at a talk title on a digital screen.",
+        "importance": "minor",
         "tags": [
             "Writing",
             "Speaking",
@@ -126,6 +132,7 @@
         "year": 2022,
         "image": "p5.mp4",
         "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
+        "importance": "minor",
         "tags": [
             "Javascript"
         ],
@@ -142,6 +149,7 @@
         "year": 2022,
         "image": "ControllerSwapping.mp4",
         "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",
@@ -162,6 +170,7 @@
         "year": 2021,
         "image": "AmazeingEscape.mp4",
         "imageAlt": "A right hand with a ray coming from it. The right hand pinches to place a marker in a maze, which a yellow sphere moves towards. Behind the sphere, a cube with a hat on it patrols the maze, its field of view visualised on the floor.",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",
@@ -182,6 +191,7 @@
         "year": 2021,
         "image": "XRLauncher.mp4",
         "imageAlt": "A left hand turns over to reveal a button on its palm. A right hand presses the button to make a UI panel appear.",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -201,6 +211,7 @@
         "year": 2021,
         "image": "Blocks.mp4",
         "imageAlt": "Hands knocking over a pile of cubes",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -220,6 +231,7 @@
         "year": 2021,
         "image": "XRKeyboard.mp4",
         "imageAlt": "Low poly hands in VR typing Hello World on a keyboard",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -245,6 +257,7 @@
         "year": 2020,
         "image": "Touchfree.mp4",
         "imageAlt": "A pointed hand moving towards a screen",
+        "importance": "major",
         "tags": [
             "Unity",
             "C#",
@@ -264,6 +277,7 @@
         "year": 2019,
         "image": "ALDDirect.png",
         "imageAlt": "A pointed hand moving towards a screen",
+        "importance": "major",
         "tags": [
             "Javascript",
             "C#",
@@ -282,6 +296,7 @@
         "year": 2018,
         "image": "Mountains.mp4",
         "imageAlt": "Procedurally generated mountain scene",
+        "importance": "major",
         "tags": [
             "C++",
             "OpenGL",
@@ -304,6 +319,7 @@
         "year": 2017,
         "image": "PipWritesStuff.png",
         "imageAlt": "A screenshot of a blog on medium",
+        "importance": "major",
         "tags": [
             "Writing"
         ],
@@ -324,6 +340,7 @@
         "year": 2017,
         "image": "3DScene.png",
         "imageAlt": "Scene made with ThreeJS",
+        "importance": "minor",
         "tags": [
             "Javascript",
             "ThreeJS",
@@ -336,6 +353,7 @@
         "year": 2017,
         "image": "SearchForAGoodBook.mp4",
         "imageAlt": "A spaceship lands on a dark planet",
+        "importance": "minor",
         "tags": [
             "Blender",
             "University"
@@ -353,6 +371,7 @@
         "year": 2017,
         "image": "QRTTNBPBYTROAYALID.mp4",
         "imageAlt": "A pixel art infinite runner, set in a cave",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",
@@ -371,6 +390,7 @@
         "year": 2017,
         "image": "Buccaneer.png",
         "imageAlt": "A pixel art pirate game",
+        "importance": "minor",
         "tags": [
             "Java",
             "University"
@@ -382,6 +402,7 @@
         "year": 2016,
         "image": "RareCoverLetter.mp4",
         "imageAlt": "A pixel art image of a man walking through a city",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#"
@@ -399,6 +420,7 @@
         "year": 2016,
         "image": "SpaceInvaders.mp4",
         "imageAlt": "A gif of a space invaders clone",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#"

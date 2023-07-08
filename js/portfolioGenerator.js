@@ -86,19 +86,19 @@ function loadPortfolioData() {
 
 
             if (ext == "mp4") {
-                image = `<video class="card-img-top" width="288" height="288" autoplay muted loop>
+                image = `<video class="card-img-top-${items[i].importance}" width="288" height="288" autoplay muted loop>
                 <source src="../images/${items[i].image}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>`;
             } else {
-                image = `<img class="card-img-top" src="../images/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
+                image = `<img class="card-img-top-${items[i].importance}" src="../images/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
             }
 
             //Generate the card using the above info
 
             var portfolioCard = `
                 <div class="mt-5 card-portfolio-parent" data-tagList=${items[i].tags} data-year=${items[i].year}>
-                    <div class="card card-portfolio">
+                    <div class="card card-portfolio-${items[i].importance}">
                         ${image}
                         <div class="card-body">
                             <p class="card-title">${items[i].title}</p>

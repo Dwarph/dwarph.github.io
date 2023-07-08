@@ -380,3 +380,7 @@ body {
   background: #ffffff;
   left: 20px;
 }
+
+video::-internal-media-controls-overlay-cast-button {
+  display: none;
+}

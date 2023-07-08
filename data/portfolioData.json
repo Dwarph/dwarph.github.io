@@ -44,7 +44,7 @@
     },
     {
         "title": "MR Owltraleap",
-        "description": "Made for an internal hackathon, MR Owltraleap is a virtual owl who you can hatch, fly around your room, land on your finger and feed. I worked primarily on the flying mechanic, finding a good way to guide MR Owltraleap around your room.",
+        "description": "An internal hackathon proj, MR Owltraleap is a Mixed Reality, virtual owl. I worked primarily on his flying mechanic.",
         "year": 2023,
         "image": "mrowltraleap.mp4",
         "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
@@ -159,7 +159,7 @@
         ],
         "links": [
             {
-                "text": "Clone the Ultraleap Unity Plugin Preview Package: XRControllerSupport,",
+                "text": "Clone,",
                 "link": "https://github.com/ultraleap/UnityPlugin"
             }
         ]
@@ -367,7 +367,7 @@
     },
     {
         "title": "QRTTNBPBYTROAYALID",
-        "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), is an infinite runner created by myself and <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. Poppy worked on the art and platform design, whilst I worked on the code, Unity gubbins and game feel.",
+        "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), an infinite runner created with <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. I worked on the code & game feel.",
         "year": 2017,
         "image": "QRTTNBPBYTROAYALID.mp4",
         "imageAlt": "A pixel art infinite runner, set in a cave",
@@ -386,7 +386,7 @@
     },
     {
         "title": "Buccaneer",
-        "description": "A remake of the board game Buccaneer in Java, made for a Group Project module. I acted as lead architect, and ensured that the backend of the project interacted nicely with the UI.",
+        "description": "A remake of the board game Buccaneer in Java, made for a Group Project module. I was lead architect, ensuring that the backend of the project interacted nicely with the UI.",
         "year": 2017,
         "image": "Buccaneer.png",
         "imageAlt": "A pixel art pirate game",
@@ -398,7 +398,7 @@
     },
     {
         "title": "Rare Cover Letter",
-        "description": "Rare Cover Letter is an interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
+        "description": "An interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
         "year": 2016,
         "image": "RareCoverLetter.mp4",
         "imageAlt": "A pixel art image of a man walking through a city",
@@ -416,7 +416,7 @@
     },
     {
         "title": "Space Invaders",
-        "description": "This was the first Unity project I finished! I made a Space Invaders clone (with a small twist) as a way to become more familiar with Unity and its features. Sound effects were provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
+        "description": "The first Unity project I ever finished! A Space Invaders clone (with a small twist), made as a way to become more familiar with Unity. SFX provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
         "year": 2016,
         "image": "SpaceInvaders.mp4",
         "imageAlt": "A gif of a space invaders clone",

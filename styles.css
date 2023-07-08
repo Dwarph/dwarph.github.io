@@ -4,14 +4,14 @@
   --primary-color: #FFEB3B;
   --secondary-color: #FF8CA8;
   --tertiary-color: #000000;
-  --primary-color-dark: #ffce5d;
+  --secondary-color-light: #ffce5d;
 }
 
 :root.white {
   --primary-color: #ffffff;
   --secondary-color: #FF8CA8;
   --tertiary-color: #000000;
-  --primary-color-dark: #ffd357;
+  --secondary-color-light: #ffdde5;
 }
 
 body {
@@ -151,8 +151,8 @@ body {
 .card-portfolio-minor {
   padding-top: 64px;
   width: 10rem;
-  background: var(--primary-color-dark);
-  background: linear-gradient(0deg, var(--primary-color-dark) 0%,  var(--primary-color) 21%);
+  background: var(--secondary-color-light);
+  background: linear-gradient(0deg, var(--secondary-color-light) 0%,  var(--primary-color) 21%);
   border: #ffffff;
   border-radius: 0rem 0rem 2rem 2rem;
   margin-left: 15px;
@@ -245,13 +245,13 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color-dark);
+  background: var(--secondary-color-light);
   border-radius: 5px 5px 5px 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color-dark);
+  background: var(--secondary-color-light);
 }
 
 .btn-outline-primary {

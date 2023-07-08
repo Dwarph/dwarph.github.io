@@ -1,5 +1,28 @@
 [
     {
+        "title": "Aurora",
+        "description": "I helped build Aurora - a demo showing off how powerful hand tracking can be in XR. Paint, play & explore, all with your hands.",
+        "year": 2023,
+        "image": "Aurora.mp4",
+        "imageAlt": "A run through of someone interacting with a robot, painting with their hands, playing with blocks and exploring an XR headset.",
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Download Aurora,",
+                "link": "https://gallery.leapmotion.com/aurora/"
+            },
+            {
+                "text": "See some of my favourite details,",
+                "link": "https://twitter.com/dwarph/status/1677302434312470535"
+            }
+        ]
+    },
+    {
         "title": "XR Design Guidelines",
         "description": "I helped rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
         "year": 2023,

@@ -148,8 +148,13 @@ body {
   transition: all 0.5s;
 }
 
+@media screen and (min-width: 580px) {
+  .card-portfolio-minor {
+    padding-top: 64px;
+  }
+}
+
 .card-portfolio-minor {
-  padding-top: 64px;
   width: 10rem;
   background: var(--secondary-color-light);
   background: linear-gradient(0deg, var(--secondary-color-light) 0%,  var(--primary-color) 21%);
@@ -193,8 +198,6 @@ body {
   margin-right: 15px;
   margin-bottom: 10px;
 }
-
-
 
 .card-year {
   text-align: center;

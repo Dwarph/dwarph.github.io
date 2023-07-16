@@ -2,15 +2,17 @@
 :root.yellow {
   --primary-color: #FFEB3B;
   --secondary-color: #FF8CA8;
-  --tertiary-color: #000000;
-  --secondary-color-light: #ffce5d;
+  --black: #000000;
+  --secondary-color-light: #FFB776;
+  --tertiary-color-light: #FFE245;
 }
 
 :root.white {
   --primary-color: #ffffff;
   --secondary-color: #FF8CA8;
-  --tertiary-color: #000000;
+  --black: #000000;
   --secondary-color-light: #ffdde5;
+  --tertiary-color-light: #FFF5F7;
 }
 
 body {
@@ -88,7 +90,7 @@ body {
   background-size: auto 200%;
   transition: all 0.5s;
   background-position: 0 0;
-  color: var(--tertiary-color);
+  color: var(--black);
   border: 2px solid #ffffff;
   border-radius: 5.5px;
   font-family: 'Nunito Sans', sans-serif;
@@ -106,7 +108,7 @@ body {
   width: 25px;
   margin-left: 10px;
   margin-right: 10px;
-  fill: var(--tertiary-color);
+  fill: var(--black);
 }
 
 .svg-link {
@@ -179,7 +181,7 @@ body {
   background-size: auto 200%;
   transition: all 0.5s;
   background-position: 0 0;
-  color: var(--tertiary-color);
+  color: var(--black);
   border: 1px solid #ffffff;
   border-radius: 5.5px;
   vertical-align: middle;

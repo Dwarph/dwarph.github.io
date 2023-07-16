@@ -1,12 +1,15 @@
 .card-portfolio-major {
     width: 18rem;
-    background: var(--secondary-color);
-    background: linear-gradient(0deg, var(--secondary-color) 0%,  var(--primary-color) 31%);
+    background: var(--primary-color);
     border: #ffffff;
-    border-radius: 0rem 0rem 2rem 2rem;
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 10px;
+  }
+
+  .card-portfolio-major .card-body {
+    background: linear-gradient(0deg, var(--secondary-color),  var(--primary-color) 60% );
+    border-radius: 0rem 0rem 2rem 2rem;
   }
   
   .card-img-top-major {
@@ -26,13 +29,17 @@
 
   .card-portfolio-neutral {
     width: 14rem;
-    background: var(--secondary-color-light);
-    background: linear-gradient(0deg, var(--secondary-color-light) 0%,  var(--primary-color) 21%);
+    background: var(--primary-color);
     border: #ffffff;
     border-radius: 0rem 0rem 2rem 2rem;
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 10px;
+  }
+
+  .card-portfolio-neutral .card-body {
+    background: linear-gradient(0deg, var(--secondary-color-light), var(--primary-color) 60%);
+    border-radius: 0rem 0rem 2rem 2rem;
   }
   
   .card-img-top-neutral {
@@ -58,13 +65,17 @@
   
   .card-portfolio-minor {
     width: 10rem;
-    background: var(--secondary-color-light);
-    background: linear-gradient(0deg, var(--secondary-color-light) 0%,  var(--primary-color) 21%);
+    background: var(--primary-color);
     border: #ffffff;
     border-radius: 0rem 0rem 2rem 2rem;
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 10px;
+  }
+
+  .card-portfolio-minor .card-body {
+    background: linear-gradient(0deg, var(--tertiary-color-light), var(--primary-color) 60%);
+    border-radius: 0rem 0rem 2rem 2rem;
   }
   
   .card-img-top-minor {

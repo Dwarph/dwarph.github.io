@@ -48,13 +48,14 @@
         "year": 2023,
         "image": "mrowltraleap.mp4",
         "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
-        "importance": "minor",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",
             "XR",
             "Ultraleap",
-            "R&D"
+            "R&D",
+            "Gamejam"
         ],
         "links": [
             {
@@ -94,7 +95,7 @@
         "year": 2022,
         "image": "UltraleapControlPanel.png",
         "imageAlt": "Two skeletal hands with spheres between each joint - one red, one purple. A 2D UI is above them, with camera settings.",
-        "importance": "major",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",
@@ -112,7 +113,7 @@
         "description": "I spoke at GDC 2022 with <a href=\"https://twitter.com/CRWBurgess\">Chris Burgess</a> on \"Hand Tracking: How can lessons from LBE can help at home gaming?\". We then wrote the talk up into a blogpost post-event.",
         "year": 2022,
         "image": "GDC2022.jpg",
-        "imageAlt": "Two men pointing at a talk title on a digital screen.",
+        "imageAlt": "Two men (Pip Turner & Chris Burgess) pointing at their talk title on a digital screen.",
         "importance": "minor",
         "tags": [
             "Writing",
@@ -149,7 +150,7 @@
         "year": 2022,
         "image": "ControllerSwapping.mp4",
         "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
-        "importance": "minor",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",
@@ -170,7 +171,7 @@
         "year": 2021,
         "image": "AmazeingEscape.mp4",
         "imageAlt": "A right hand with a ray coming from it. The right hand pinches to place a marker in a maze, which a yellow sphere moves towards. Behind the sphere, a cube with a hat on it patrols the maze, its field of view visualised on the floor.",
-        "importance": "minor",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",
@@ -211,7 +212,7 @@
         "year": 2021,
         "image": "Blocks.mp4",
         "imageAlt": "Hands knocking over a pile of cubes",
-        "importance": "major",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",
@@ -277,7 +278,7 @@
         "year": 2019,
         "image": "ALDDirect.png",
         "imageAlt": "A pointed hand moving towards a screen",
-        "importance": "major",
+        "importance": "neutral",
         "tags": [
             "Javascript",
             "C#",
@@ -319,7 +320,7 @@
         "year": 2017,
         "image": "PipWritesStuff.png",
         "imageAlt": "A screenshot of a blog on medium",
-        "importance": "major",
+        "importance": "neutral",
         "tags": [
             "Writing"
         ],
@@ -371,7 +372,7 @@
         "year": 2017,
         "image": "QRTTNBPBYTROAYALID.mp4",
         "imageAlt": "A pixel art infinite runner, set in a cave",
-        "importance": "minor",
+        "importance": "neutral",
         "tags": [
             "Unity",
             "C#",

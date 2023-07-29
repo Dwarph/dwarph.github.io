@@ -48,7 +48,7 @@
         "year": 2023,
         "image": "mrowltraleap.mp4",
         "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
-        "importance": "neutral",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",
@@ -171,7 +171,7 @@
         "year": 2021,
         "image": "AmazeingEscape.mp4",
         "imageAlt": "A right hand with a ray coming from it. The right hand pinches to place a marker in a maze, which a yellow sphere moves towards. Behind the sphere, a cube with a hat on it patrols the maze, its field of view visualised on the floor.",
-        "importance": "neutral",
+        "importance": "minor",
         "tags": [
             "Unity",
             "C#",

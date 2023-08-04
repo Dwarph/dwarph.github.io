@@ -1,5 +1,25 @@
 [
     {
+        "title": "Dog Racer",
+        "description": "Internal game jam @Ultraleap on Spatial Interactions for 2D screens - resulting in a silly dog racing game",
+        "year": 2023,
+        "image": "DogRacer.mp4",
+        "imageAlt": "",
+        "importance": "minor",
+        "tags": [
+            "Unity",
+            "C#",
+            "2D",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Read about it,",
+                "link": "https://docs.ultraleap.com/ultralab/spatial-design-for-2d.html"
+            }
+        ]
+    },    
+    {
         "title": "Aurora",
         "description": "I helped build Aurora - a demo showing off how powerful hand tracking can be in XR. Paint, play & explore, all with your hands.",
         "year": 2023,

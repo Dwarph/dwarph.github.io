@@ -6,6 +6,7 @@
         "image": "DogRacer.mp4",
         "imageAlt": "",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -27,6 +28,7 @@
         "image": "Aurora.mp4",
         "imageAlt": "A run through of someone interacting with a robot, painting with their hands, playing with blocks and exploring an XR headset.",
         "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -51,6 +53,7 @@
         "image": "xrguidelines.png",
         "imageAlt": "A picture of the first page in ultraleap's XR guidelines.",
         "importance": "major",
+        "featured": true,
         "tags": [
             "XR",
             "Ultraleap",
@@ -70,6 +73,7 @@
         "image": "mrowltraleap.mp4",
         "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -91,6 +95,7 @@
         "image": "farfield.mp4",
         "imageAlt": "A hand with a ray directed from it, entering a scene with three floating gray squares. It aims at the middle square, then the right repeatedly. When the ray hits the squares they turn purple. The hand then leaves the scene. ",
         "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -116,6 +121,7 @@
         "image": "UltraleapControlPanel.png",
         "imageAlt": "Two skeletal hands with spheres between each joint - one red, one purple. A 2D UI is above them, with camera settings.",
         "importance": "neutral",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -135,6 +141,7 @@
         "image": "GDC2022.jpg",
         "imageAlt": "Two men (Pip Turner & Chris Burgess) pointing at their talk title on a digital screen.",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Writing",
             "Speaking",
@@ -154,6 +161,7 @@
         "image": "p5.mp4",
         "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
         "importance": "minor",
+        "featured": true,
         "tags": [
             "Javascript"
         ],
@@ -171,6 +179,7 @@
         "image": "ControllerSwapping.mp4",
         "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
         "importance": "neutral",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -192,6 +201,7 @@
         "image": "AmazeingEscape.mp4",
         "imageAlt": "A right hand with a ray coming from it. The right hand pinches to place a marker in a maze, which a yellow sphere moves towards. Behind the sphere, a cube with a hat on it patrols the maze, its field of view visualised on the floor.",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -213,6 +223,7 @@
         "image": "XRLauncher.mp4",
         "imageAlt": "A left hand turns over to reveal a button on its palm. A right hand presses the button to make a UI panel appear.",
         "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -233,6 +244,7 @@
         "image": "Blocks.mp4",
         "imageAlt": "Hands knocking over a pile of cubes",
         "importance": "neutral",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -253,6 +265,7 @@
         "image": "XRKeyboard.mp4",
         "imageAlt": "Low poly hands in VR typing Hello World on a keyboard",
         "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -279,6 +292,7 @@
         "image": "Touchfree.mp4",
         "imageAlt": "A pointed hand moving towards a screen",
         "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -299,6 +313,7 @@
         "image": "ALDDirect.png",
         "imageAlt": "A pointed hand moving towards a screen",
         "importance": "neutral",
+        "featured": false,
         "tags": [
             "Javascript",
             "C#",
@@ -318,6 +333,7 @@
         "image": "Mountains.mp4",
         "imageAlt": "Procedurally generated mountain scene",
         "importance": "major",
+        "featured": true,
         "tags": [
             "C++",
             "OpenGL",
@@ -341,6 +357,7 @@
         "image": "PipWritesStuff.png",
         "imageAlt": "A screenshot of a blog on medium",
         "importance": "neutral",
+        "featured": false,
         "tags": [
             "Writing"
         ],
@@ -362,6 +379,7 @@
         "image": "3DScene.png",
         "imageAlt": "Scene made with ThreeJS",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Javascript",
             "ThreeJS",
@@ -375,6 +393,7 @@
         "image": "SearchForAGoodBook.mp4",
         "imageAlt": "A spaceship lands on a dark planet",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Blender",
             "University"
@@ -393,6 +412,7 @@
         "image": "QRTTNBPBYTROAYALID.mp4",
         "imageAlt": "A pixel art infinite runner, set in a cave",
         "importance": "neutral",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -412,6 +432,7 @@
         "image": "Buccaneer.png",
         "imageAlt": "A pixel art pirate game",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Java",
             "University"
@@ -424,6 +445,7 @@
         "image": "RareCoverLetter.mp4",
         "imageAlt": "A pixel art image of a man walking through a city",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#"
@@ -442,6 +464,7 @@
         "image": "SpaceInvaders.mp4",
         "imageAlt": "A gif of a space invaders clone",
         "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#"

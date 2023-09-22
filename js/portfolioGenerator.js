@@ -24,6 +24,19 @@ function loadPortfolioData() {
         var tags = [];
 
         yearsDict["all"] = "";
+        yearsDict["featured"] = "";
+
+        var yearSelector = document.getElementById("year-selector");
+        var featuredOption = document.createElement("option");
+        featuredOption.text = "🌟";
+        featuredOption.value = "featured";
+        yearSelector.add(featuredOption);
+
+        var allOption = document.createElement("option");
+        allOption.text = "All";
+        allOption.value = "all";
+        yearSelector.add(allOption);
+
         document.getElementById('portfolio').innerHTML += `
         <div class="container-fluid py-2 row">
             <div class="d-flex flex-col flex-wrap overflow-auto justify-content-center card-deck" id="portfolio-items">
@@ -39,7 +52,6 @@ function loadPortfolioData() {
                 years.push(items[i].year);
                 yearsDict[items[i].year] = "";
 
-                var yearSelector = document.getElementById("year-selector");
                 var option = document.createElement("option");
                 option.text = items[i].year;
                 option.value = items[i].year;
@@ -56,7 +68,7 @@ function loadPortfolioData() {
                 cardMeta += items[i].tags[j] + ", ";
                 tagList += "\"" + items[i].tags[j] + "\", ";
 
-                if (!tags.includes(items[i].tags[j])) {
+                if (!tags.includes(items[i].tags[j]) && items[i].tags[j] != "*") {
                     tags.push(items[i].tags[j]);
                 }
             }
@@ -113,8 +125,12 @@ function loadPortfolioData() {
 
             yearsDict[items[i].year] += portfolioCard;
             yearsDict["all"] += portfolioCard;
+
+            if(items[i].featured){
+                yearsDict["featured"] += portfolioCard;
+            }
         }
-        yearSelector.options[1].setAttribute('selected', 'selected');
+        yearSelector.options[0].setAttribute('selected', 'selected');
         document.getElementById(`portfolio-items`).innerHTML = yearsDict[document.getElementById(`year-selector`).value];
     });
 }

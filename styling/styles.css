@@ -216,8 +216,8 @@ body {
 
 .form-select {
   width: 90px;
-  color: var(--secondary-color);
-  background-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
   font-family: 'Nunito Sans', sans-serif;
   font-weight: bold;
   border-color: var(--secondary-color);

@@ -1,5 +1,24 @@
 [
     {
+        "title": "Pomodoro.",
+        "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow",
+        "year": 2023,
+        "image": "pomodoro.mp4",
+        "imageAlt": "",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Playdate",
+            "lua"
+        ],
+        "links": [
+            {
+                "text": "Download it,",
+                "link": "https://dwarph.itch.io/pomodoro"
+            }
+        ]
+    },      
+    {
         "title": "Dog Racer",
         "description": "Internal game jam @Ultraleap on Spatial Interactions for 2D screens - resulting in a silly dog racing game",
         "year": 2023,

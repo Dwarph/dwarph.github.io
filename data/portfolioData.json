@@ -1,5 +1,113 @@
 [
     {
+        "title": "Pomodoro.",
+        "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow",
+        "year": 2023,
+        "image": "pomodoro.mp4",
+        "imageAlt": "",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Playdate",
+            "lua"
+        ],
+        "links": [
+            {
+                "text": "Download it,",
+                "link": "https://dwarph.itch.io/pomodoro"
+            }
+        ]
+    },      
+    {
+        "title": "Dog Racer",
+        "description": "Internal game jam @Ultraleap on Spatial Interactions for 2D screens - resulting in a silly dog racing game",
+        "year": 2023,
+        "image": "DogRacer.mp4",
+        "imageAlt": "",
+        "importance": "minor",
+        "featured": false,
+        "tags": [
+            "Unity",
+            "C#",
+            "2D",
+            "Ultraleap",
+            "Gamejam"
+        ],
+        "links": [
+            {
+                "text": "Read about it,",
+                "link": "https://docs.ultraleap.com/ultralab/spatial-design-for-2d.html"
+            }
+        ]
+    },    
+    {
+        "title": "Aurora",
+        "description": "I helped build Aurora - a demo showing off how powerful hand tracking can be in XR. Paint, play & explore, all with your hands.",
+        "year": 2023,
+        "image": "Aurora.mp4",
+        "imageAlt": "A run through of someone interacting with a robot, painting with their hands, playing with blocks and exploring an XR headset.",
+        "importance": "major",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Download Aurora,",
+                "link": "https://gallery.leapmotion.com/aurora/"
+            },
+            {
+                "text": "See some of my favourite details,",
+                "link": "https://twitter.com/dwarph/status/1677302434312470535"
+            }
+        ]
+    },
+    {
+        "title": "XR Design Guidelines",
+        "description": "I helped rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
+        "year": 2023,
+        "image": "xrguidelines.png",
+        "imageAlt": "A picture of the first page in ultraleap's XR guidelines.",
+        "importance": "major",
+        "featured": true,
+        "tags": [
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Learn how to best use hands in XR,",
+                "link": "https://docs.ultraleap.com/xr-guidelines/"
+            }
+        ]
+    },
+    {
+        "title": "MR Owltraleap",
+        "description": "An internal hackathon proj, MR Owltraleap is a Mixed Reality, virtual owl. I worked primarily on the flying mechanic.",
+        "year": 2023,
+        "image": "mrowltraleap.mp4",
+        "imageAlt": "A first person perspective of a virtual cartoon owl hopping onto someones finger, and then flying around a room.",
+        "importance": "minor",
+        "featured": false,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "Gamejam"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://twitter.com/dwarph/status/1636418511445671947"
+            }
+        ]
+    },
+    {
         "title": "Black Hole Storage",
         "description": "A study on spatial storage solutions, and conveying tension through visual feedback of FABRIK chains. Black holes are a virtual pocket, in which you can store Interaction Behaviours, and nest other Black Holes inside.",
         "year": 2022,
@@ -27,8 +135,10 @@
         "title": "Hand Rays",
         "description": "I created a new way of generating a stable hand ray, which iterates on the standard shoulder through pinch position, taking into account wrist position to introduce more expressiveness to the ray, whilst keeping the stability.",
         "year": 2022,
-        "image": "farfield.gif",
+        "image": "farfield.mp4",
         "imageAlt": "A hand with a ray directed from it, entering a scene with three floating gray squares. It aims at the middle square, then the right repeatedly. When the ray hits the squares they turn purple. The hand then leaves the scene. ",
+        "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -53,6 +163,8 @@
         "year": 2022,
         "image": "UltraleapControlPanel.png",
         "imageAlt": "Two skeletal hands with spheres between each joint - one red, one purple. A 2D UI is above them, with camera settings.",
+        "importance": "neutral",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -70,7 +182,9 @@
         "description": "I spoke at GDC 2022 with <a href=\"https://twitter.com/CRWBurgess\">Chris Burgess</a> on \"Hand Tracking: How can lessons from LBE can help at home gaming?\". We then wrote the talk up into a blogpost post-event.",
         "year": 2022,
         "image": "GDC2022.jpg",
-        "imageAlt": "Two men pointing at a talk title on a digital screen.",
+        "imageAlt": "Two men (Pip Turner & Chris Burgess) pointing at their talk title on a digital screen.",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Writing",
             "Speaking",
@@ -87,8 +201,10 @@
         "title": "p5.js Explorations",
         "description": "I messed around with generative art and p5.js. I mainly focused on exploiting flow fields and perlin noise.",
         "year": 2022,
-        "image": "p5.gif",
+        "image": "p5.mp4",
         "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
+        "importance": "minor",
+        "featured": true,
         "tags": [
             "Javascript"
         ],
@@ -103,8 +219,10 @@
         "title": "XR Controller and Hand Swapping",
         "description": "I helped create an algorithm which allows for super quick swapping between xr controllers and hand tracking.",
         "year": 2022,
-        "image": "ControllerSwapping.gif",
+        "image": "ControllerSwapping.mp4",
         "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
+        "importance": "neutral",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -114,7 +232,7 @@
         ],
         "links": [
             {
-                "text": "Clone the Ultraleap Unity Plugin Preview Package: XRControllerSupport,",
+                "text": "Clone,",
                 "link": "https://github.com/ultraleap/UnityPlugin"
             }
         ]
@@ -123,8 +241,10 @@
         "title": "Amazeing Escape",
         "description": "Made during an internal game jam at ultraleap. A top down stealth puzzler, focused on showing off far field interactions.",
         "year": 2021,
-        "image": "AmazeingEscape.gif",
+        "image": "AmazeingEscape.mp4",
         "imageAlt": "A right hand with a ray coming from it. The right hand pinches to place a marker in a maze, which a yellow sphere moves towards. Behind the sphere, a cube with a hat on it patrols the maze, its field of view visualised on the floor.",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -143,8 +263,10 @@
         "title": "XR Launcher",
         "description": "I helped build an xr launcher (windows & xr2 headsets). This was built to prove that hand tracking is as viable as controllers for day to day tasks.",
         "year": 2021,
-        "image": "XRLauncher.gif",
+        "image": "XRLauncher.mp4",
         "imageAlt": "A left hand turns over to reveal a button on its palm. A right hand presses the button to make a UI panel appear.",
+        "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -162,8 +284,10 @@
         "title": "Blocks",
         "description": "I helped rebuild blocks - a hand tracking physics playground which shows off the power of simple interactions, combined with Ultraleap's interaction engine.",
         "year": 2021,
-        "image": "Blocks.gif",
+        "image": "Blocks.mp4",
         "imageAlt": "Hands knocking over a pile of cubes",
+        "importance": "neutral",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -181,8 +305,10 @@
         "title": "XR Keyboard",
         "description": "I built and wrote about an open source, reusable, physical xr keyboard made to be used with ultraleap hand tracking and easy for novice users to get started with.<br><br> It has been <a href=\"https://youtu.be/Opvc7HGN_4M?t=595\">described as</a> \"the best keyboard i've tried in vr with hand tracking\".",
         "year": 2021,
-        "image": "XRKeyboard.gif",
+        "image": "XRKeyboard.mp4",
         "imageAlt": "Low poly hands in VR typing Hello World on a keyboard",
+        "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -206,8 +332,10 @@
         "title": "Touchfree",
         "description": "I spent a year researching how to build great touch-less experiences for out of home kiosks. This research helped form the basis of ultraleap's touchfree application & tooling.",
         "year": 2020,
-        "image": "Touchfree.gif",
+        "image": "Touchfree.mp4",
         "imageAlt": "A pointed hand moving towards a screen",
+        "importance": "major",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -227,6 +355,8 @@
         "year": 2019,
         "image": "ALDDirect.png",
         "imageAlt": "A pointed hand moving towards a screen",
+        "importance": "neutral",
+        "featured": false,
         "tags": [
             "Javascript",
             "C#",
@@ -243,8 +373,10 @@
         "title": "3D Procedurally Generated Nature Scene",
         "description": "Made for my final year dissertation. A nature scene made with procedural generation algorithms (DiamondSquare, and L-Systems).",
         "year": 2018,
-        "image": "Mountains.gif",
+        "image": "Mountains.mp4",
         "imageAlt": "Procedurally generated mountain scene",
+        "importance": "major",
+        "featured": true,
         "tags": [
             "C++",
             "OpenGL",
@@ -267,6 +399,8 @@
         "year": 2017,
         "image": "PipWritesStuff.png",
         "imageAlt": "A screenshot of a blog on medium",
+        "importance": "neutral",
+        "featured": false,
         "tags": [
             "Writing"
         ],
@@ -287,6 +421,8 @@
         "year": 2017,
         "image": "3DScene.png",
         "imageAlt": "Scene made with ThreeJS",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Javascript",
             "ThreeJS",
@@ -297,8 +433,10 @@
         "title": "The Search For A Good Book",
         "description": "A low poly animation made in Blender, for an Applied Graphics module.",
         "year": 2017,
-        "image": "SearchForAGoodBook.gif",
+        "image": "SearchForAGoodBook.mp4",
         "imageAlt": "A spaceship lands on a dark planet",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Blender",
             "University"
@@ -312,10 +450,12 @@
     },
     {
         "title": "QRTTNBPBYTROAYALID",
-        "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), is an infinite runner created by myself and <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. Poppy worked on the art and platform design, whilst I worked on the code, Unity gubbins and game feel.",
+        "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), an infinite runner created with <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. I worked on the code & game feel.",
         "year": 2017,
-        "image": "QRTTNBPBYTROAYALID.gif",
+        "image": "QRTTNBPBYTROAYALID.mp4",
         "imageAlt": "A pixel art infinite runner, set in a cave",
+        "importance": "neutral",
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -330,10 +470,12 @@
     },
     {
         "title": "Buccaneer",
-        "description": "A remake of the board game Buccaneer in Java, made for a Group Project module. I acted as lead architect, and ensured that the backend of the project interacted nicely with the UI.",
+        "description": "A remake of the board game Buccaneer in Java, made for a Group Project module. I was lead architect, ensuring that the backend of the project interacted nicely with the UI.",
         "year": 2017,
         "image": "Buccaneer.png",
         "imageAlt": "A pixel art pirate game",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Java",
             "University"
@@ -341,10 +483,12 @@
     },
     {
         "title": "Rare Cover Letter",
-        "description": "Rare Cover Letter is an interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
+        "description": "An interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
         "year": 2016,
-        "image": "RareCoverLetter.gif",
+        "image": "RareCoverLetter.mp4",
         "imageAlt": "A pixel art image of a man walking through a city",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#"
@@ -358,10 +502,12 @@
     },
     {
         "title": "Space Invaders",
-        "description": "This was the first Unity project I finished! I made a Space Invaders clone (with a small twist) as a way to become more familiar with Unity and its features. Sound effects were provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
+        "description": "The first Unity project I ever finished! A Space Invaders clone (with a small twist), made as a way to become more familiar with Unity. SFX provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
         "year": 2016,
-        "image": "SpaceInvaders.gif",
+        "image": "SpaceInvaders.mp4",
         "imageAlt": "A gif of a space invaders clone",
+        "importance": "minor",
+        "featured": false,
         "tags": [
             "Unity",
             "C#"

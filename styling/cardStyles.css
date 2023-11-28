@@ -1,0 +1,126 @@
+.card-portfolio-major {
+    width: 18rem;
+    background: var(--primary-color);
+    border: #ffffff;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+
+  .card-portfolio-major .card-body {
+    background: linear-gradient(0deg, var(--secondary-color),  var(--primary-color) 60% );
+    border-radius: 0rem 0rem 2rem 2rem;
+  }
+  
+  .card-img-top-major {
+    width: 18rem;
+    height: 18rem;
+    object-fit: cover;
+    transition: all 0.5s;
+  }
+
+  .card .card-img-top-major{
+    border-radius: 10rem 10rem 0px 0px;
+  }
+  
+  .card:hover .card-img-top-major{
+    border-radius: 5rem 5rem 0px 0px
+  }
+
+  .card-portfolio-neutral {
+    width: 14rem;
+    background: var(--primary-color);
+    border: #ffffff;
+    border-radius: 0rem 0rem 2rem 2rem;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+
+  .card-portfolio-neutral .card-body {
+    background: linear-gradient(0deg, var(--secondary-color-light), var(--primary-color) 60%);
+    border-radius: 0rem 0rem 2rem 2rem;
+  }
+  
+  .card-img-top-neutral {
+    width: 14rem;
+    height: 14rem;
+    object-fit: cover;
+    transition: all 0.5s;
+  }
+  
+  @media screen and (min-width: 580px) {
+    .card-portfolio-neutral {
+      padding-top: 64px;
+    }
+  }
+
+  .card .card-img-top-neutral{
+    border-radius: 7.5rem 7.55rem 0px 0px;
+  }
+  
+  .card:hover .card-img-top-neutral{
+    border-radius: 3.75rem 3.75rem 0px 0px
+  } 
+  
+  .card-portfolio-minor {
+    width: 10rem;
+    background: var(--primary-color);
+    border: #ffffff;
+    border-radius: 0rem 0rem 2rem 2rem;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+
+  .card-portfolio-minor .card-body {
+    background: linear-gradient(0deg, var(--tertiary-color-light), var(--primary-color) 60%);
+    border-radius: 0rem 0rem 2rem 2rem;
+  }
+  
+  .card-img-top-minor {
+    width: 10rem;
+    height: 10rem;
+    object-fit: cover;
+    transition: all 0.5s;
+  }
+  
+  @media screen and (min-width: 580px) {
+    .card-portfolio-minor {
+      padding-top: 128px;
+    }
+  }
+
+  .card .card-img-top-minor{
+    border-radius: 5rem 5rem 0px 0px;
+  }
+  
+  .card:hover .card-img-top-minor{
+    border-radius: 2.5rem 2.5rem 0px 0px
+  }  
+  
+  .card-title {
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--secondary-color);
+  }
+
+  .card-year {
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Nunito Sans', sans-serif;
+    margin-bottom: 2px;
+  }
+  
+  .card-meta {
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Nunito Sans', sans-serif;
+  }
+  
+  .card-text {
+    text-align: center;
+    font-size: 15px;
+    font-family: 'Nunito Sans', sans-serif;
+  }

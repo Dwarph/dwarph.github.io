@@ -113,6 +113,8 @@
         "year": 2022,
         "image": "BlackHoleStorage.gif",
         "imageAlt": "A purple sphere is dragged into a black sphere by a pink hand made of capsules. The black sphere is then tapped, at which point 3 purple spheres appear from inside of it. Each purple sphere is connected to black sphere by a white tendril. A purple sphere is grabbed and pulled until its tendril becomes taut and eventually breaks. The black sphere is then tapped again, bringing all purple spheres back into it, aside from the one which was pulled off of it.",
+		"importance": "neutral",
+        "featured": true,
         "tags": [
             "Unity",
             "C#",
@@ -126,7 +128,7 @@
                 "link": "https://github.com/ultraleap/Unity-Hand-Interaction-Experiments/tree/black-hole-storage"
             },
             {
-                "text": "Twitter thread on its design",
+                "text": "Read about its design",
                 "link": "https://twitter.com/dwarph/status/1729542913296593270"
             }
         ]

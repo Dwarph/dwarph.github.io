@@ -11,6 +11,9 @@ footerTemplate.innerHTML = `
   <a class="svg-link" href="https://twitter.com/dwarph">
     <object type="image/svg+xml" data="icons/twitter.svg" class="footer-icon"></object>
   </a>
+  <a class="svg-link" href="https://www.linkedin.com/in/pip-turner97/">
+    <object type="image/svg+xml" data="icons/linkedin.svg" class="footer-icon"></object>
+  </a>
 </div>
 
 `;

@@ -1,5 +1,52 @@
 [
     {
+        "title": "Microgestures",
+        "description": "Microgestures is a small app made to show off the microgesture capabilities of Ultraleap' Hyperion release. I helped design and build the app, from design mockups to interaction research & user studies.",
+        "year": 2024,
+        "image": "Microgestures.mp4",
+        "imageAlt": "",
+        "importance": "major",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://www.ultraleap.com/company/news/press-release/hyperion/"
+            },
+            {
+                "text": "Watch a playthrough,",
+                "link": "https://www.youtube.com/watch?v=qjTN1CX2ClM"
+            }
+        ]
+    },
+    {
+        "title": "Tabs, Pads and Boards",
+        "description": "A prototype inspired by ubiquitous computing, reimagining how responsive UI works for XR - letting apps adapt to their spatial context.",
+        "year": 2024,
+        "image": "TPB.mp4",
+        "imageAlt": "",
+        "importance": "minor",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://www.linkedin.com/posts/pip-turner97_spatial-apps-should-adapt-to-their-context-activity-7185652180446519296-KIQl?utm_source=share&utm_medium=member_desktop"
+            }
+        ]
+    },
+    {
         "title": "Pomodoro.",
         "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow",
         "year": 2023,
@@ -206,7 +253,7 @@
         "image": "p5.mp4",
         "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
         "importance": "minor",
-        "featured": true,
+        "featured": false,
         "tags": [
             "Javascript"
         ],
@@ -224,7 +271,7 @@
         "image": "ControllerSwapping.mp4",
         "imageAlt": "Someone picking up and putting xr controllers down, and the onscreen hands swapping between controllers and hands",
         "importance": "neutral",
-        "featured": true,
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -289,7 +336,7 @@
         "image": "Blocks.mp4",
         "imageAlt": "Hands knocking over a pile of cubes",
         "importance": "neutral",
-        "featured": true,
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
@@ -378,7 +425,7 @@
         "image": "Mountains.mp4",
         "imageAlt": "Procedurally generated mountain scene",
         "importance": "major",
-        "featured": true,
+        "featured": false,
         "tags": [
             "C++",
             "OpenGL",

@@ -1,9 +1,9 @@
 var yearsDict = {};
 
-function loadJSON(callback) {
+function loadProjectsJSON(callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', '../data/portfolioData.json', true);
+    xobj.open('GET', '../data/projectsData.json', true);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             callback(JSON.parse(xobj.responseText));
@@ -13,9 +13,9 @@ function loadJSON(callback) {
 }
 
 
-function loadPortfolioData() {
+function loadProjectsData() {
     // Load the portfolio items, sorted by year
-    loadJSON(function (items) {
+    loadProjectsJSON(function (items) {
         items.sort(function (a, b) {
             return b.year - a.year;
         });
@@ -99,11 +99,11 @@ function loadPortfolioData() {
 
             if (ext == "mp4") {
                 image = `<video class="card-img-top-${items[i].importance}" width="288" height="288" autoplay muted loop>
-                <source src="../images/${items[i].image}" type="video/mp4">
+                <source src="../images/projects/${items[i].image}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>`;
             } else {
-                image = `<img class="card-img-top-${items[i].importance}" src="../images/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
+                image = `<img class="card-img-top-${items[i].importance}" src="../images/projects/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
             }
 
             //Generate the card using the above info
@@ -160,5 +160,5 @@ function toggleTheme(evt) {
     }, 500);
 }
 
-loadPortfolioData();
+loadProjectsData();
 //loadAllContent();

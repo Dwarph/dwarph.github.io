@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Hyperion Showcase",
+        "description": "Novel xr interaction research & app design",
+        "company": "Ultraleap",
+        "image": "prosho.png",
+        "imageAlt": "a black background, with 3D Liquorice-like curves. text in the centre reading ultraleap hyperion.",
+        "md": ""
+
+    },
+    {
+        "title": "Dog Racer",
+        "description": "Rapid spatial interaction prototyping and app dev",
+        "company": "Ultraleap",
+        "image": "dogracer.jpg",
+        "imageAlt": "",
+        "md": ""
+
+    },
+    {
+        "title": "Aurora",
+        "description": "Reworking / Refactoring / Reskinning old vr interactions into a new app.",
+        "company": "Ultraleap",
+        "image": "aurora.jpg",
+        "imageAlt": "",
+        "md": ""
+
+    }
+]

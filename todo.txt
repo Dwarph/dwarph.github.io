@@ -1,4 +1,2 @@
 TODO
-- increase vertical padding between case study cards
-- rework hello section to look nicer
 - add top bar to scroll to different sections, and switch theme?

@@ -36,88 +36,99 @@
 <body>
   <div style="padding-left: calc(100vw - 100%);">
 
-  <div class="container mt-5">
-    <img class="mx-auto profile-image" src="images/hello.jpg" title="Me and a good friend">
-  </div>
-  <div class="container mt-5">
-    <h1 class="display-3 main-title">Hello!</h1>
-    <div class="mx-auto d-flex justify-content-center">
-      👋
-    </div>
-    <div class="mx-auto d-flex justify-content-center">
 
-      <p class="main-para text-box">I'm Pip! <br> I'm a Senior XR Engineer at Ultraleap where I create,
-        design, and write about Hand Interactions.<br><br> I'm a christian, I play guitar semi-ok & enjoy reading,
-        watching studio ghibli films & eating cake.</p>
-    </div>
-  </div>
-
-  <div class="col-sm-12 d-flex justify-content-center main-para" style="margin-bottom: -20px;">
-    Toggle yellow theme 👇
-  </div>
-  <div class="col-sm-12 d-flex justify-content-center ">
-    <div class="material-switch pull-right main-para">
-      <input id="theme-checkbox" name="theme-checkbox" type="checkbox" onchange="toggleTheme(event)" checked />
-      <label for="theme-checkbox" class="label-primary"> </label>
-    </div>
-  </div>
-
-
-
-
-  <div class="main">
-
-    <div class="mt-5">
-      <h1 class="display-3 main-title">Portfolio</h1>
-    </div>
-    
-    <div class="mt-5">
-      <h1 class="display-4 sub-title">case studies</h1>
-    </div>
-    <div id="casestudy-container">
-      <div class="col-sm-12 m-0 d-flex justify-content-center" id="casestudies">
-
+    <div class="container mt-5">
+      <h1 class="display-3 main-title">PIP TURNER</h1>
+      <div class="mx-auto d-flex justify-content-center">
+        👋
       </div>
-    </div>
-  </div>
+      <div class="mx-auto d-flex justify-content-center">
 
-  <div class="main">
-    <div class="mt-5">
-      <h1 class="display-4 sub-title">all projects</h1>
-    </div>
-    <div id="portfolio-container">
-      <div class="col-sm-12 d-flex justify-content-center ">
-        <select class="form-select" id="year-selector" aria-label="Default select example" onchange="checkAlert(event)">
-        </select>
-      </div>
-
-
-      <div class="col-sm-12 m-0 d-flex justify-content-center" id="portfolio">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="modal fade" id="modal-boy" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title">Modal title</h5>
-          <div class="btn-right-padding">
-            <button type="button" class="btn-close" onclick="hideCaseStudy()" aria-label="Close">
+        <div class="card ccard-hello">
+          <img class="ccard-img-top-large" src="images/hello.jpg"
+            alt="a black background, with 3D Liquorice-like curves. text in the centre reading ultraleap hyperion.">
+          <div class="ccard-body">
+            <p class="ccard-title">Hello!</p>
+            <p class="ccard-text">I'm <b>Pip</b>! <br> I'm a Senior XR Engineer at Ultraleap where I create,
+              design, and write about Hand Interactions.<br><br> I'm a christian, play guitar semi-ok & enjoy reading,
+              watching studio ghibli films & eating cake.</p>
           </div>
-          </button>
         </div>
-        <div class="modal-body">
-          body
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="col-sm-12 d-flex justify-content-center main-para" style="margin-bottom: -20px;">
+      Toggle yellow theme 👇
+    </div>
+    <div class="col-sm-12 d-flex justify-content-center ">
+      <div class="material-switch pull-right main-para">
+        <input id="theme-checkbox" name="theme-checkbox" type="checkbox" onchange="toggleTheme(event)" checked />
+        <label for="theme-checkbox" class="label-primary"> </label>
+      </div>
+    </div>
+
+
+
+
+    <div class="main">
+
+      <div class="mt-5">
+        <h1 class="display-3 main-title">Portfolio</h1>
+      </div>
+
+      <div class="mt-5">
+        <h1 class="display-4 sub-title">case studies</h1>
+      </div>
+      <div id="casestudy-container">
+        <div class="col-sm-12 m-0 d-flex justify-content-center" id="casestudies">
+
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="hideCaseStudy()">Close</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="mt-5">
+        <h1 class="display-4 sub-title">all projects</h1>
+      </div>
+      <div id="portfolio-container">
+        <div class="col-sm-12 d-flex justify-content-center ">
+          <select class="form-select" id="year-selector" aria-label="Default select example"
+            onchange="checkAlert(event)">
+          </select>
+        </div>
+
+
+        <div class="col-sm-12 m-0 d-flex justify-content-center" id="portfolio">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal fade" id="modal-boy" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title">Modal title</h5>
+              <div class="btn-right-padding">
+                <button type="button" class="btn-close" onclick="hideCaseStudy()" aria-label="Close">
+              </div>
+              </button>
+          </div>
+          <div class="modal-body">
+            body
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="hideCaseStudy()">Close</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </body>
 
 </html>

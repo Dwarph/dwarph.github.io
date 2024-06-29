@@ -1,9 +1,13 @@
 var modalElement;
 var myModal;
+var caseStudies;
+
+loadCaseStudiesData();
+
 
 window.onload = window.onpageshow = function () {
     if (window.location.href.includes("#modal")) {
-        showCaseStudy(true);
+        showCaseStudyInURL(true);
     } else {
         hideCaseStudy(true);
     }
@@ -11,7 +15,7 @@ window.onload = window.onpageshow = function () {
 
 window.onpopstate = function () {
     if (window.location.href.includes("#modal")) {
-        showCaseStudy(true);
+        showCaseStudyInURL(true);
     } else {
         if(modalElement != null)
         hideCaseStudy(true);
@@ -20,11 +24,11 @@ window.onpopstate = function () {
 
 
 
-function showCaseStudy(quiet = false){
+function showCaseStudyInURL(quiet){
     showCaseStudy(window.location.href.split("#modal-")[1], quiet)
 }
 
-function showCaseStudy(casestudy, quiet = false) {
+function showCaseStudy(casestudy, quiet) {
     
     if (myModal == null) {
         modalElement = document.getElementById('modal-boy');
@@ -34,12 +38,30 @@ function showCaseStudy(casestudy, quiet = false) {
     modalElement.addEventListener('hidden.bs.modal', hideCaseStudyEvent)
     
     if (myModal._isShown) { return; }
+    var caseStudy = undefined;
+
+    for (var i = 0; i < caseStudies.length; i++) {
+        if(caseStudies[i].key == casestudy){
+            caseStudy = caseStudies[i];
+            break;
+        }
+    }
+
+    if(caseStudy == undefined) { 
+        console.log("attempted to show case study that was not loaded");
+        return;}
+
     
     if (!window.location.href.includes("#modal") && !quiet) {
         history.pushState(null, "", window.location.href + "#modal-" + casestudy);
     } 
     
-    document.title = "Pip Turner - Modal"
+    var converter = new showdown.Converter();
+    
+    document.getElementsByClassName("modal-body")[0].innerHTML= converter.makeHtml(caseStudy.md);
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = caseStudy.title;
+    document.title = `Pip Turner - ${caseStudy.title}`
     myModal.show();
 }
 
@@ -60,7 +82,6 @@ function hideCaseStudy(quiet = false) {
     myModal.hide();
 }
 
-
 function loadCaseStudiesJSON(callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -74,12 +95,8 @@ function loadCaseStudiesJSON(callback) {
 }
 
 function loadCaseStudiesData() {
-    console.log("load cs")
-
     // Load the portfolio items, sorted by year
     loadCaseStudiesJSON(function (items) {
-        
-        
         document.getElementById('casestudies').innerHTML += `
         <div class="container-fluid py-2 row">
             <div class="d-flex flex-col flex-wrap overflow-auto justify-content-center card-deck" id="casestudies-items">
@@ -87,10 +104,17 @@ function loadCaseStudiesData() {
             </div>
         </div>
         `;
-        
-        var caseStudies = ""
+        caseStudies = items;
+        var caseStudyCards = ""
         // Loop through all items
         for (var i = 0; i < items.length; i++) {
+
+            loadMarkdownFile(function(markdown){
+
+                var index = Number(markdown[0])
+                markdown = markdown.substring(1, markdown.length-1)
+                caseStudies[index].md = markdown;
+            }, i)
 
             var image = "";
             image = `<img class="ccard-img-top" src="../images/casestudies/${items[i].image}" alt="${items[i].imageAlt}"></img>`;
@@ -99,7 +123,7 @@ function loadCaseStudiesData() {
             //Generate the card using the above info
 
             var caseStudyCard = `
-                <div class="card ccard-casestudy" onclick="showCaseStudy(\'${items[i].title}\')">
+                <div class="card ccard-casestudy" onclick="showCaseStudy(\'${items[i].key}\', false)">
                         ${image}
                         <div class="ccard-body shadow ">
                             <p class="ccard-title">${items[i].title}</p>
@@ -109,10 +133,20 @@ function loadCaseStudiesData() {
                 </div>  
             `
 
-            caseStudies += caseStudyCard;
+            caseStudyCards += caseStudyCard;
         }
-        document.getElementById(`casestudies-items`).innerHTML = caseStudies;
+        document.getElementById(`casestudies-items`).innerHTML = caseStudyCards;
     });
 }
 
-loadCaseStudiesData();
+function loadMarkdownFile(callback, index) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', '../data/casestudies/' + caseStudies[index].md, true);
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            callback(("" + index) + xobj.responseText);
+        }
+    };
+    xobj.send(null);
+}

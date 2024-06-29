@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
   <script src="./js/footer.js" type="text/javascript" defer></script>
   <script src="./js/projectsGenerator.js" type="text/javascript" defer></script>
   <script src="./js/casestudyGenerator.js" type="text/javascript" defer></script>
@@ -17,6 +18,7 @@
   <link rel="stylesheet" href="styling/styles.css">
   <link rel="stylesheet" href="styling/cardStyles.css">
   <link rel="stylesheet" href="styling/clickableCards.css">
+  <link rel="stylesheet" href="styling/markdownStyling.css">
 
 
   <meta property="og:url" content="www.pipturner.co.uk" />
@@ -32,6 +34,7 @@
 </head>
 
 <body>
+  <div style="padding-left: calc(100vw - 100%);">
 
   <div class="container mt-5">
     <img class="mx-auto profile-image" src="images/hello.jpg" title="Me and a good friend">
@@ -95,26 +98,26 @@
 
   </div>
 
-  <div class="modal" id="modal-boy" tabindex="-1" role="dialog">
+  <div class="modal fade" id="modal-boy" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
-          <button type="button" class="close" onclick="hideCaseStudy()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+          <h1 class="modal-title">Modal title</h5>
+          <div class="btn-right-padding">
+            <button type="button" class="btn-close" onclick="hideCaseStudy()" aria-label="Close">
+          </div>
           </button>
         </div>
         <div class="modal-body">
-          <p>Modal body text goes here.</p>
+          body
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-secondary" onclick="hideCaseStudy()">Close</button>
+          <button type="button" class="btn btn-primary" onclick="hideCaseStudy()">Close</button>
         </div>
       </div>
     </div>
   </div>
-
+</div>
 </body>
 
 </html>

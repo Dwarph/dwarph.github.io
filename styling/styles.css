@@ -155,20 +155,15 @@ body {
   width: 10px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: var(--primary-color);
-}
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--secondary-color-light);
+  background: var(--secondary-color);
   border-radius: 5px 5px 5px 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color-light);
+  background: var(--secondary-color);
 }
 
 .btn-outline-primary {

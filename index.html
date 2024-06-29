@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js"></script>
   <script src="./js/footer.js" type="text/javascript" defer></script>
   <script src="./js/projectsGenerator.js" type="text/javascript" defer></script>
+  <script src="./js/themeManager.js" type="text/javascript" defer></script>
   <script src="./js/casestudyGenerator.js" type="text/javascript" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +53,25 @@
             <p class="ccard-text">I'm <b>Pip</b>! <br> I'm a Senior XR Engineer at Ultraleap where I create,
               design, and write about Hand Interactions.<br><br> I'm a christian, play guitar semi-ok & enjoy reading,
               watching studio ghibli films & eating cake.</p>
+
+              <div class="col-sm-12  justify-content-center ccard-text" style="margin-bottom: -20px;">
+
+                <b>
+                  Finding the yellow a bit too much?
+                </b>
+
+                <p>
+                  Toggle it off below:
+                </p>
+              </div>
+              <div class="col-sm-12 d-flex justify-content-center " style="margin-top: -50px;">
+                <div class="material-switch pull-right main-para">
+                  <input id="theme-checkbox" name="theme-checkbox" type="checkbox" onchange="toggleTheme(event)" checked />
+                  <label for="theme-checkbox" class="label-primary"> </label>
+                </div>
+                  <br>
+                  <br>
+              </div>
           </div>
         </div>
       </div>
@@ -62,15 +82,7 @@
 
 
 
-    <div class="col-sm-12 d-flex justify-content-center main-para" style="margin-bottom: -20px;">
-      Toggle yellow theme 👇
-    </div>
-    <div class="col-sm-12 d-flex justify-content-center ">
-      <div class="material-switch pull-right main-para">
-        <input id="theme-checkbox" name="theme-checkbox" type="checkbox" onchange="toggleTheme(event)" checked />
-        <label for="theme-checkbox" class="label-primary"> </label>
-      </div>
-    </div>
+   
 
 
 

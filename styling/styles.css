@@ -236,19 +236,9 @@ body {
   max-height: auto;
 }
 
-#portfolio-items.pre-animation {
-  opacity: 0;
-  transition: all 0.5s;
-}
-
 #portfolio-container {
   transition: all 0.5s;
   max-height: auto;
-}
-
-#portfolio-container.pre-animation {
-  opacity: 0;
-  transition: all 0.5s;
 }
 
 .material-switch>input[type="checkbox"] {

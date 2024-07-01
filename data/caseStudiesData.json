@@ -3,29 +3,10 @@
         "key": "prosho",
         "title": "Hyperion Showcase",
         "description": "Novel xr interaction research & app design",
-        "company": "Ultraleap",
+        "company": "Ultraleap // 2024",
         "image": "prosho.png",
         "imageAlt": "a black background, with 3D Liquorice-like curves. text in the centre reading ultraleap hyperion.",
         "md": "prosho.md"
 
-    },
-    {
-        "key": "dogracer",
-        "title": "Dog Racer",
-        "description": "Rapid spatial interaction prototyping and app dev.",
-        "company": "Ultraleap",
-        "image": "dogracer.jpg",
-        "imageAlt": "a front-lit, wooden-toy like dog. Each part of the dog is a different colour. He has googley eyes, and his tail is up.",
-        "md": "dogracer.md"
-
-    },
-    {
-        "key": "aurora",
-        "title": "Aurora",
-        "description": "Reworking / Refactoring / Reskinning old vr interactions into a new app.",
-        "company": "Ultraleap",
-        "image": "aurora.jpg",
-        "imageAlt": "A person with tron-like hands reaches towards floating neon-outlined primitive shapes. Directly in front of them is a desk, with 3 buttons on. In the distance is a floating platform with a table on it. In the background, is a blue sky & clouds.",
-        "md": "aurora.md"
     }
 ]

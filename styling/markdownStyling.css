@@ -23,6 +23,8 @@ div.modal-footer {
   font-family: 'Nunito Sans', sans-serif;
   font-size: large;
   margin-top: 1cm;
+  color: var(--text-color);
+  
 }
 
 .modal-content h1 {
@@ -62,12 +64,10 @@ div.modal-footer {
 
 .btn-primary {
   background-color: var(--secondary-color);
-  ;
 }
 
 .btn-primary:hover {
   background-color: var(--secondary-color);
-  ;
   filter: brightness(115%);
 }
 

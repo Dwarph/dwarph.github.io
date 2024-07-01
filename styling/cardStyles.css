@@ -115,18 +115,21 @@
     font-size: 13px;
     font-family: 'Nunito Sans', sans-serif;
     margin-bottom: 2px;
+    color: var(--text-color);
   }
   
   .card-meta {
     text-align: center;
     font-size: 13px;
     font-family: 'Nunito Sans', sans-serif;
+    color: var(--text-color);
   }
   
   .card-text {
     text-align: center;
     font-size: 15px;
     font-family: 'Nunito Sans', sans-serif;
+    color: var(--text-color);
   }
 
   .ccard-img-top-large {
@@ -143,8 +146,8 @@
     cursor:default;
     background: linear-gradient(0deg, var(--secondary-color-light), var(--primary-color) 60%);
     border-radius: 0rem 0rem 2rem 2rem;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
   .ccard-hello {
@@ -157,4 +160,8 @@
     margin-top: 15px;
     border-radius: 5rem 5rem 2rem 2rem;
     transition: all 0.5s;
+  }
+
+  .ccard-hello .ccard-title {
+    font-size: 25px;
   }

@@ -2,23 +2,41 @@
 :root.yellow {
   --primary-color: #FFEB3B;
   --secondary-color: #FF8CA8;
+  --text-color: #000000;
   --black: #000000;
   --secondary-color-light: #FFB776;
   --tertiary-color-light: #FFE245;
+  --svg-filter: invert(0%) sepia(0%) saturate(7466%) hue-rotate(321deg) brightness(107%) contrast(107%);
 }
 
 :root.white {
   --primary-color: #ffffff;
   --secondary-color: #FF8CA8;
+  --text-color: #000000;
   --black: #000000;
   --secondary-color-light: #ffdde5;
   --tertiary-color-light: #FFF5F7;
+  --svg-filter: invert(0%) sepia(0%) saturate(7466%) hue-rotate(321deg) brightness(107%) contrast(107%);
+}
+
+:root.dark {
+  --primary-color: #1b1b1b;
+  --secondary-color: #FF8CA8;
+  --text-color: #ffffff;
+  --black: #000000;
+  --secondary-color-light: #872f43;
+  --tertiary-color-light: #4d242c;
+  --svg-filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(209deg) brightness(104%) contrast(103%);
 }
 
 body {
   background-color: var(--primary-color);
   font-size: 28px;
   transition: 1s;
+}
+
+body.no-transition{
+  transition: none!important;
 }
 
 .main {
@@ -117,7 +135,7 @@ body {
 .svg-link {
   position: relative;
   display: inline-block;
-  filter: invert(0%) sepia(0%) saturate(7466%) hue-rotate(321deg) brightness(107%) contrast(107%);
+  filter: var(--svg-filter)
   transition: all 0.5s;
 
 }
@@ -225,6 +243,7 @@ body {
 
 #year-selector {
   margin-top: 25px;
+  color: var(--text-color);
 }
 
 #footer {
@@ -291,4 +310,52 @@ body {
 
 video::-internal-media-controls-overlay-cast-button {
   display: none;
+}
+
+
+.form-check-input#themeRadioDark {
+  background-color: #1b1b1b;
+}
+
+.form-check-input#themeRadioYellow {
+  background-color: #FFEB3B;
+}
+
+.form-check-input#themeRadioWhite {
+  background-color: #ffffff;
+}
+
+.form-check-input:checked[type=radio] {
+  background-image: url("../images/radio-circle.svg")
+}
+
+.form-check-input {
+  border: none;
+}
+
+.form-check-input:checked {
+  border: none;
+}
+
+.form-check-input:checked:hover {
+  border: none;
+  filter: none;
+}
+
+.form-check-input:hover {
+  background-image: url("../images/radio-circle.svg");;
+  filter: brightness(150%);
+}
+
+.theme-picker {
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+.no-transition * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }

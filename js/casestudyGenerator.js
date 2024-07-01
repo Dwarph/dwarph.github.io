@@ -6,7 +6,7 @@ loadCaseStudiesData();
 
 
 window.onload = window.onpageshow = function () {
-    if (window.location.href.includes("#modal")) {
+    if (window.location.href.includes("#casestudy")) {
         showCaseStudyInURL(true);
     } else {
         hideCaseStudy(true);
@@ -14,7 +14,7 @@ window.onload = window.onpageshow = function () {
 };
 
 window.onpopstate = function () {
-    if (window.location.href.includes("#modal")) {
+    if (window.location.href.includes("#casestudy")) {
         showCaseStudyInURL(true);
     } else {
         if(modalElement != null)
@@ -25,7 +25,7 @@ window.onpopstate = function () {
 
 
 function showCaseStudyInURL(quiet){
-    showCaseStudy(window.location.href.split("#modal-")[1], quiet)
+    showCaseStudy(window.location.href.split("#casestudy-")[1], quiet)
 }
 
 function showCaseStudy(casestudy, quiet) {
@@ -52,8 +52,8 @@ function showCaseStudy(casestudy, quiet) {
         return;}
 
     
-    if (!window.location.href.includes("#modal") && !quiet) {
-        history.pushState(null, "", window.location.href + "#modal-" + casestudy);
+    if (!window.location.href.includes("#casestudy") && !quiet) {
+        history.pushState(null, "", window.location.href + "#casestudy-" + casestudy);
     } 
     
     var converter = new showdown.Converter();
@@ -73,7 +73,7 @@ function hideCaseStudy(quiet = false) {
     if (myModal == null) { return; }
 
     if (!quiet) {
-        history.pushState(null, "", window.location.href.replace("#modal-" + window.location.href.split("#modal-")[1], ""));
+        history.pushState(null, "", window.location.href.replace("#casestudy-" + window.location.href.split("#casestudy-")[1], ""));
     }
 
     modalElement.removeEventListener('hidden.bs.modal', hideCaseStudyEvent)

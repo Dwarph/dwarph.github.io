@@ -8,5 +8,15 @@
         "imageAlt": "a black background, with 3D Liquorice-like curves. text in the centre reading ultraleap hyperion.",
         "md": "prosho.md"
 
+    },
+    {
+        "key": "dogracer",
+        "title": "Dog Racer",
+        "description": "Rapid spatial interaction prototyping and app dev.",
+        "company": "Ultraleap // 2023",
+        "image": "dogracer.jpg",
+        "imageAlt": "a front-lit, wooden-toy like dog. Each part of the dog is a different colour. He has googley eyes, and his tail is up.",
+        "md": "dogracer.md"
+
     }
 ]

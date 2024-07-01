@@ -125,4 +125,4 @@ Our early prototypes had all had a UI from which a user could launch into a diff
 
 ## Impact
 
-With these apps, we managed to excite customers at AWE, who wanted to immediately start developing with Hyperion. Microgestures helped sell hyperion to new OEMs, who specifically met with us based on the microgestures demo. 
+With these apps, we managed to excite customers at AWE, who wanted to immediately start developing with Hyperion. Microgestures helped sell hyperion to new OEMs, who specifically met with us based on the microgestures demo.

@@ -50,13 +50,9 @@ function setThemeButton(button) {
 function setTheme(theme) {
     localStorage.setItem("theme", theme);
 
-    document.getElementById(`portfolio-container`).classList.add('pre-animation');
 
     setTimeout(function () {
         document.documentElement.className = theme;
-        setTimeout(function () {
-            document.getElementById(`portfolio-container`).classList.remove('pre-animation');
-        }, 500);
     }, 500);
 }
 

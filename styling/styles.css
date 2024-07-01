@@ -21,7 +21,7 @@
 
 :root.dark {
   --primary-color: #1b1b1b;
-  --secondary-color: #FF8CA8;
+  --secondary-color: #dd6885;
   --text-color: #ffffff;
   --black: #000000;
   --secondary-color-light: #872f43;
@@ -135,7 +135,7 @@ body.no-transition{
 .svg-link {
   position: relative;
   display: inline-block;
-  filter: var(--svg-filter)
+  filter: var(--svg-filter);
   transition: all 0.5s;
 
 }
@@ -243,12 +243,26 @@ body.no-transition{
 
 #year-selector {
   margin-top: 25px;
-  color: var(--text-color);
+  color: #ffffff;
+  font-weight:900;
 }
 
 #footer {
   padding-bottom: 20px
 }
+
+
+#portfolio-items.pre-animation {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+
+#portfolio-container.pre-animation {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
 
 #portfolio-items {
   transition: all 0.5s;

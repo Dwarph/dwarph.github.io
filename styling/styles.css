@@ -368,8 +368,21 @@ video::-internal-media-controls-overlay-cast-button {
 
 .no-transition * {
   -webkit-transition: none !important;
-  -moz-transition: none !important;
+-moz-transition: none !important;
   -ms-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
+}
+
+.btn-download {
+  background-color: var(--secondary-color);
+  color: #FFF5F7;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-download:hover {
+  background-color: var(--secondary-color);
+  filter: brightness(115%);
+  color: #FFF5F7;
+  transition: all 0.3s ease-in-out;
 }

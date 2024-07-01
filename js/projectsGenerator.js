@@ -51,6 +51,9 @@ function loadProjectsData() {
         </div>
         `;
 
+        var isMobile = window.mobileCheck();
+
+
         // Loop through all items
         for (var i = 0; i < items.length; i++) {
             // If we haven't generated a year "card" for the item yet, generate that first
@@ -102,8 +105,7 @@ function loadProjectsData() {
 
             var image = "";
 
-
-            if (window.mobileCheck){
+            if (isMobile){
                 image = `<img class="card-img-top-${items[i].importance}" src="../images/projects/${items[i].imageMob}" alt="${items[i].imageAlt}"></img>`;
             }
             else{
@@ -119,7 +121,7 @@ function loadProjectsData() {
             
             var mobileTransition = "";
 
-            if (window.mobileCheck){
+            if (isMobile){
                 mobileTransition = "no-transition"
             }
 
@@ -149,6 +151,10 @@ function loadProjectsData() {
         }
         yearSelector.options[0].setAttribute('selected', 'selected');
         document.getElementById(`portfolio-items`).innerHTML = yearsDict[document.getElementById(`year-selector`).value];
+
+        if(isMobile){
+            document.getElementsByClassName("ccard-hello")[0].classList+= " no-transition";
+        }
     });
 }
 

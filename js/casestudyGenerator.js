@@ -121,9 +121,16 @@ function loadCaseStudiesData() {
             
 
             //Generate the card using the above info
+            
+            var isMobile = window.mobileCheck();
+            var mobileTransition = "";
+
+            if (isMobile){
+                mobileTransition = "no-transition"
+            }
 
             var caseStudyCard = `
-                <div class="card ccard-casestudy" onclick="showCaseStudy(\'${items[i].key}\', false)">
+                <div class="card ccard-casestudy ${mobileTransition}" onclick="showCaseStudy(\'${items[i].key}\', false)">
                         ${image}
                         <div class="ccard-body shadow ">
                             <p class="ccard-title">${items[i].title}</p>

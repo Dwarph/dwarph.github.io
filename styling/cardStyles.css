@@ -28,10 +28,6 @@
   .card .card-img-top-major{
     border-radius: 10rem 10rem 0px 0px;
   }
-  
-  .card:hover .card-img-top-major{
-    border-radius: 5rem 5rem 0px 0px
-  }
 
   .card-portfolio-neutral {
     width: 14rem;
@@ -65,10 +61,6 @@
     border-radius: 7.5rem 7.55rem 0px 0px;
   }
   
-  .card:hover .card-img-top-neutral{
-    border-radius: 3.75rem 3.75rem 0px 0px
-  } 
-  
   .card-portfolio-minor {
     width: 10rem;
     background: var(--primary-color);
@@ -100,10 +92,6 @@
   .card .card-img-top-minor{
     border-radius: 5rem 5rem 0px 0px;
   }
-  
-  .card:hover .card-img-top-minor{
-    border-radius: 2.5rem 2.5rem 0px 0px
-  }  
   
   .card-title {
     text-align: center;
@@ -138,11 +126,6 @@
     transition: all 0.5s;
     border-radius: 10rem 10rem 0px 0px;
   }
-
-  .card:hover .ccard-img-top-large{
-    border-radius: 2rem 2rem 0px 0px
-  }
-
 
   .ccard-hello .ccard-body{
     cursor:default;
@@ -188,4 +171,22 @@
     margin-top: 15px;
     transition: all 0.5s;
     border-radius: 2rem;
+  }
+
+  @media (hover: hover) {
+    .card:hover .card-img-top-major{
+      border-radius: 5rem 5rem 0px 0px
+    }
+
+    .card:hover .card-img-top-neutral{
+      border-radius: 3.75rem 3.75rem 0px 0px
+    } 
+
+    .card:hover .card-img-top-minor{
+      border-radius: 2.5rem 2.5rem 0px 0px
+    }  
+
+    .card:hover .ccard-img-top-large{
+      border-radius: 2rem 2rem 0px 0px
+    }
   }

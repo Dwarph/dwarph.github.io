@@ -69,10 +69,19 @@ ul {
   transition: all 0.5s;
 }
 
-.modal-body img:hover {
-  transition: all 0.5s;
-  border-radius: 1rem;
+@media (hover: hover) {
+  .modal-body img:hover {
+    transition: all 0.5s;
+    border-radius: 1rem;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--secondary-color);
+    filter: brightness(115%);
+  }
 }
+
+
 
 .modal.fade {
   transition: .5s linear all !important;
@@ -86,10 +95,7 @@ ul {
   background-color: var(--secondary-color);
 }
 
-.btn-primary:hover {
-  background-color: var(--secondary-color);
-  filter: brightness(115%);
-}
+
 
 
 .btn-right-padding {

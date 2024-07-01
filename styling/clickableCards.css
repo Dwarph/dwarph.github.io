@@ -10,10 +10,18 @@
     transition: all 0.5s;
   }
 
-  .ccard-casestudy:hover {
-    transition: all 0.5s;
-    border-radius: 2rem 2rem 2rem 2rem;
+  @media (hover: hover) {
+    .ccard-casestudy:hover {
+      transition: all 0.5s;
+      border-radius: 2rem 2rem 2rem 2rem;
+    }
+
+    .card:hover .ccard-img-top{
+      border-radius: 2rem 2rem 0px 0px
+    }
   }
+
+
 
   .ccard-casestudy .ccard-body {
     cursor: pointer;
@@ -34,9 +42,7 @@
     border-radius: 5rem 5rem 0px 0px;
   }
   
-  .card:hover .ccard-img-top{
-    border-radius: 2rem 2rem 0px 0px
-  }
+
   
   .ccard-title {
     text-align: center;

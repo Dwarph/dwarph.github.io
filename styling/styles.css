@@ -35,8 +35,8 @@ body {
   transition: 1s;
 }
 
-body.no-transition{
-  transition: none!important;
+body.no-transition {
+  transition: none !important;
 }
 
 .main {
@@ -119,10 +119,7 @@ body.no-transition{
   vertical-align: middle;
 }
 
-.nav-btn:hover {
-  border: 1px solid var(--secondary-color);
-  background-position: 0 70%;
-}
+
 
 .footer-icon {
   height: 25px;
@@ -140,9 +137,6 @@ body.no-transition{
 
 }
 
-.svg-link:hover {
-  filter: invert(70%) sepia(57%) saturate(2274%) hue-rotate(303deg) brightness(112%) contrast(119%);
-}
 
 .svg-link::after {
   content: "";
@@ -179,10 +173,7 @@ body.no-transition{
   border-radius: 5px 5px 5px 5px;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
-}
+
 
 .btn-outline-primary {
   height: 30px;
@@ -199,10 +190,7 @@ body.no-transition{
   vertical-align: middle;
 }
 
-.btn-outline-primary:hover,
-.btn-check:checked+.btn-outline-primary:hover {
-  border: 1px solid var(--secondary-color);
-background-color: none;}
+
 
 .btn-check:checked+.btn-outline-primary {
   border: 1px solid #ffffff;
@@ -239,7 +227,7 @@ background-color: none;}
 #year-selector {
   margin-top: 25px;
   color: #ffffff;
-  font-weight:900;
+  font-weight: 900;
 }
 
 #footer {
@@ -346,16 +334,6 @@ video::-internal-media-controls-overlay-cast-button {
   border: none;
 }
 
-.form-check-input:checked:hover {
-  border: none;
-  filter: none;
-}
-
-.form-check-input:hover {
-  background-image: url("../images/radio-circle.svg");;
-  filter: brightness(150%);
-}
-
 .theme-picker {
   padding-top: 30px;
   padding-bottom: 20px;
@@ -363,7 +341,7 @@ video::-internal-media-controls-overlay-cast-button {
 
 .no-transition * {
   -webkit-transition: none !important;
--moz-transition: none !important;
+  -moz-transition: none !important;
   -ms-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
@@ -378,9 +356,45 @@ video::-internal-media-controls-overlay-cast-button {
   border-radius: 1em
 }
 
-.btn-download:hover {
-  background-color: var(--secondary-color);
-  filter: brightness(120%);
-  color: #FFF5F7;
-  transition: all 0.3s ease-in-out;
+
+
+@media (hover: hover) {
+
+  .nav-btn:hover {
+    border: 1px solid var(--secondary-color);
+    background-position: 0 70%;
+  }
+
+  .svg-link:hover {
+    filter: invert(70%) sepia(57%) saturate(2274%) hue-rotate(303deg) brightness(112%) contrast(119%);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+  }
+
+  .btn-outline-primary:hover,
+  .btn-check:checked+.btn-outline-primary:hover {
+    border: 1px solid var(--secondary-color);
+    background-color: none;
+  }
+
+  .form-check-input:checked:hover {
+    border: none;
+    filter: none;
+  }
+
+  .form-check-input:hover {
+    background-image: url("../images/radio-circle.svg");
+    ;
+    filter: brightness(150%);
+  }
+
+  .btn-download:hover {
+    background-color: var(--secondary-color);
+    filter: brightness(120%);
+    color: #FFF5F7;
+    transition: all 0.3s ease-in-out;
+  }
 }

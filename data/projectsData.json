@@ -1,11 +1,33 @@
 [
     {
+        "title": "Barista: Marker Edition",
+        "description": "Barista is an app made to demonstrate the combination of ultraleap's hand on object model, and fiducial marker tracking. I designed the application, researched into fiducial marker interaction & tested it, all under a short deadline.",
+        "year": 2024,
+        "image": "barista.mp4",
+        "imageMob": "barista.gif",
+        "imageAlt": "A person interacting with a virtual coffee machine, using real world props, which have fiducial markers attached",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap"
+        ],
+        "links": [
+            {
+                "text": "Watch a playthrough,",
+                "link": "https://youtu.be/ajYloY6Uvdc"
+            }
+        ]
+    },
+    {
         "title": "Microgestures",
         "description": "Microgestures is a small app made to show off the microgesture capabilities of Ultraleap' Hyperion release. I helped design and build the app, from design mockups to interaction research & user studies.",
         "year": 2024,
         "image": "Microgestures.mp4",
         "imageMob": "Microgestures.gif",
-        "imageAlt": "",
+        "imageAlt": "A person interacting with generic uis, by swiping their thumb along their index finger.",
         "importance": "major",
         "featured": true,
         "tags": [
@@ -21,7 +43,7 @@
             },
             {
                 "text": "Watch a playthrough,",
-                "link": "https://www.youtube.com/watch?v=qjTN1CX2ClM"
+                "link": "https://youtu.be/kpzXk0ABDBY"
             }
         ]
     },
@@ -67,7 +89,7 @@
                 "link": "https://dwarph.itch.io/pomodoro"
             }
         ]
-    },      
+    },
     {
         "title": "Dog Racer",
         "description": "Internal game jam @Ultraleap on Spatial Interactions for 2D screens - resulting in a silly dog racing game",
@@ -90,7 +112,7 @@
                 "link": "https://docs.ultraleap.com/ultralab/spatial-design-for-2d.html"
             }
         ]
-    },    
+    },
     {
         "title": "Aurora",
         "description": "I helped build Aurora - a demo showing off how powerful hand tracking can be in XR. Paint, play & explore, all with your hands.",
@@ -168,7 +190,7 @@
         "image": "BlackHoleStorage.gif",
         "imageMob": "BlackHoleStorage.gif",
         "imageAlt": "A purple sphere is dragged into a black sphere by a pink hand made of capsules. The black sphere is then tapped, at which point 3 purple spheres appear from inside of it. Each purple sphere is connected to black sphere by a white tendril. A purple sphere is grabbed and pulled until its tendril becomes taut and eventually breaks. The black sphere is then tapped again, bringing all purple spheres back into it, aside from the one which was pulled off of it.",
-		"importance": "neutral",
+        "importance": "neutral",
         "featured": true,
         "tags": [
             "Unity",
@@ -298,7 +320,7 @@
                 "link": "https://github.com/ultraleap/UnityPlugin"
             }
         ]
-    },    
+    },
     {
         "title": "Amazeing Escape",
         "description": "Made during an internal game jam at ultraleap. A top down stealth puzzler, focused on showing off far field interactions.",

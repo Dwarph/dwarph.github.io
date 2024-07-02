@@ -7,9 +7,9 @@ Senior XR Engineer, leading design & interaction research on the project.
 ---
 
 ## About the project
-Hyperion is Ultraleap's sixth generation of hand tracking. Its focus was on providing developers with different hand tracking models, each targetted at excelling in specific use cases.
+Hyperion is Ultraleap's sixth generation of hand tracking. Its focus was on providing developers with different hand tracking models, each targeted at excelling in specific use cases.
 
-Ultraleap needed to show off the power of the new tracking models, and understand how to best design for any new contexts these hand tracking models afforded. Based off of needs identified through stakeholder interviews, we built three different applications, each targetted at a model's specific use case.
+Ultraleap needed a way to demonstrate the power of the new tracking models, and understand how to best design for any new contexts these hand tracking models afforded. Based off of needs identified through stakeholder interviews, we built three different applications, each targeted at a model's specific use case.
 
 ---
 
@@ -17,9 +17,9 @@ Ultraleap needed to show off the power of the new tracking models, and understan
 
 Product provided us with a simple challenge: **create a way to enable BD to show off Hyperion's different models in conferences and sales scenarios**.
 
-After interviewing key stakeholders and more deeply understanding the requirements around hyperion, I then split this into 3 distinct challenges:
+After interviewing key stakeholders and more deeply understanding the requirements around Hyperion, I then split this into three distinct challenges:
 
-**1. Create an xr application which detects, and shows off microgestures, using the microgesture model, through UI interactions that could be broadly applicable elsewhere**
+**1. Create an XR application which detects, and shows off microgestures, using the microgesture model, through UI interactions that could be broadly applicable elsewhere**
 
 After some promising research & good customer reactions, microgestures were one of our key interactions we need to hit - building an application which showed off how well we could track them, and that shows how they could be applied to control UI.
 
@@ -42,9 +42,9 @@ We wanted users to be able to navigate between these apps in a seamless manner, 
 ![alt text](./data/casestudies/images/prosho/interviews.png)
 *Internal research & interview results*
 
-The initial project brief we were provided from product was too vague to dive straight into designing or building something - we needed to understand the business and user needs first. In order to do so, I:
+The initial project brief we were provided from Product was too vague to dive straight into designing or building something - we needed to understand the business and user needs first. In order to do so, I:
 
-- Researched and read through all internal documentation from the past year around custom hyperion models
+- Researched and read through all internal documentation from the past year around custom Hyperion models
 - Interviewed product owners to understand their requirements for the app, and understand the purpose of each custom model more deeply
 - Organised an ideation workshop where we ideated based on the initial identified requirements
 - Produced 2d storyboards based on the outcomes
@@ -56,7 +56,7 @@ The initial project brief we were provided from product was too vague to dive st
 *A rough storyboard based on initial ideation*
 
 <p align="center">
-<iframe width="315" height="315" src="https://www.youtube.com/embed/Rk_nrqGt_To" title="hyperion showcase - shapesxr - early storyboard" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/Rk_nrqGt_To" title="Hyperion showcase - shapesXR - early storyboard" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </p>
 *A ShapesXR prototype based on the storyboard*
 
@@ -94,7 +94,7 @@ I kicked this project off with a design sprint focused on building marketing con
 
 I worked with key stakeholders to understand the customers we wanted to target, and produced a design document for each application we initially had planned on prototyping.
 
-The hand on object demo had been delayed as we waited for fiducial marker tracking improvements to be implemented, but unfortunately the work hadn't been done by the time we started prototyping, meaning that project progress was slow. In order to get things moving quicker, I began to cross-coordinate teams, relaying priorities between multiple teams.
+The hand on object demo had been delayed as we waited for fiducial marker tracking improvements to be implemented, but unfortunately the work hadn't been done by the time we started prototyping, meaning that project progress was slow. In order to get things moving more quickly, I began to cross-coordinate teams, relaying priorities between multiple teams.
 
 ![alt text](./data/casestudies/images/prosho/markervalidation.png)
 *An excerpt from a research writeup around marker performance validation*
@@ -117,12 +117,12 @@ As the deadline was tight, I was unable to run a formal user test, and instead r
 *ui design / figma*
 
 ![alt text](./data/casestudies/images/prosho/folders.png)
-*As part of the launcher updates, I designed a folder system for it, to neatly group together related apps*
+*As part of the launcher updates, I designed a folder system, to neatly group together related apps*
 
-Our early prototypes had all had a UI from which a user could launch into a different hyperion experience. Instead of building this, we decided to reskin our existing XR Launcher, working with marketing based on the latest brand guidelines. I used figma to design this, before implementing it in Unity.
+Our early prototypes had all had a UI from which a user could launch into a different Hyperion experience. Instead of building this, we decided to reskin our existing XR Launcher, working with marketing based on the latest brand guidelines. I used figma to design this, before implementing it in Unity.
 
 ---
 
 ## Impact
 
-With these apps, we managed to excite customers at AWE, who wanted to immediately start developing with Hyperion. Microgestures helped sell hyperion to new OEMs, who specifically met with us based on the microgestures demo.
+With these apps, we managed to excite customers at AWE, who wanted to immediately start developing with Hyperion. Microgestures helped sell Hyperion to new OEMs, who specifically met with us based on the microgestures demo.

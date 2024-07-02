@@ -1,4 +1,4 @@
-![alt text](./images/casestudies/dogracer.jpg)
+[![alt text](./images/casestudies/dogracer.jpg)](./images/casestudies/dogracer.jpg)
 
 ## My Role
 
@@ -34,7 +34,7 @@ I put forward a plan of:
 - 1x week of application prototyping
 - 2x weeks of productionising the application
 
-![alt text](./data/casestudies/images/dogracer/grandplan.png)
+[![alt text](./data/casestudies/images/dogracer/grandplan.png)](./data/casestudies/images/dogracer/grandplan.png)
 *The initial plan for the scouting week*
 
 ### Quickly gain an understanding of our user needs

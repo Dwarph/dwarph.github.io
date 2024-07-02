@@ -80,7 +80,7 @@ Throughout the project, I split my time between **designing UI** for Matt to imp
 
 Watch a full playthrough of the app, below:
 
-<iframe width="100%" height="316px" src="https://www.youtube.com/embed/qjTN1CX2ClM?si=l0STduPyA_jnLKBD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="100%" height="316px" src="https://www.youtube.com/embed/kpzXk0ABDBY?si=3LNjOnfu4IVaDN68" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### Hand On Object + Fiducial Marker Tracking
 
@@ -109,7 +109,9 @@ I worked with a team in America to build one of the demos, which I designed for 
 
 We quickly iterated on the concepts we'd built for each use case, in order to reach a decision point, where we decided to merge them all into one demo - a procedural-training-lite demo rooted in a coffee barista context.
 
-As the deadline was tight, I was unable to run a formal user test, and instead ran a formal test on colleagues unfamiliar with the technology.
+As the deadline was tight, I was unable to run a formal user test, and instead ran an **informal user test** on colleagues unfamiliar with the technology.
+
+<iframe width="100%" height="316px" src="https://www.youtube.com/embed/ajYloY6Uvdc?si=Gc7jNPQPzR3qMLVM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### XR Launcher Updates
 
@@ -119,6 +121,10 @@ As the deadline was tight, I was unable to run a formal user test, and instead r
 *As part of the launcher updates, I designed a folder system, to neatly group together related apps*
 
 Our early prototypes had all had a UI from which a user could launch into a different Hyperion experience. Instead of building this, we decided to reskin our existing XR Launcher, working with marketing based on the latest brand guidelines. I used **figma** to design this, before implementing it in Unity.
+
+Watch a full playthrough of the launcher, below:
+
+<iframe width="100%" height="316px" src="https://www.youtube.com/embed/upeqkvJpXFA?si=whHURl3QCMHFR6rR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 

@@ -472,7 +472,7 @@
         "imageMob": "Touchfree.gif",
         "imageAlt": "A pointed hand moving towards a screen",
         "importance": "major",
-        "featured": true,
+        "featured": false,
         "tags": [
             "Unity",
             "C#",

@@ -1,5 +1,51 @@
 [
     {
+        "title": "Squish Summon",
+        "description": "What if you could summon far away objects to you by squishing them? A short interaction exploration, that feels like magic.",
+        "year": 2024,
+        "image": "squishsummon.mp4",
+        "imageMob": "squishsummon.gif",
+        "imageAlt": "A person playing with 3D shapes on a pedestal. When they aim their hand towards a shape and make a fist, the shape disappears, and as they uncurl their fist, it appears above their hand, allowing them to catch it.",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://www.linkedin.com/in/pip-turner97/"
+            }
+        ]
+    },        
+    {
+        "title": "Single Handed Menu",
+        "description": "An exploration into making hand menus more accessible - allowing you to pull menus off your hand, and reattach them back in one smooth motion",
+        "year": 2024,
+        "image": "singlehandedmenu.mp4",
+        "imageMob": "singlehandedmenu.gif",
+        "imageAlt": "A person with a music player ui attached to their hand. They make a fist and pull it away from the UI to detach it from their hand. They make a fist and bring their hand near the UI to reattach it back.",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Ultraleap",
+            "R&D"
+        ],
+        "links": [
+            {
+                "text": "Read more,",
+                "link": "https://www.linkedin.com/in/pip-turner97/"
+            }
+        ]
+    },    
+    {
         "title": "Barista: Marker Edition",
         "description": "Barista is an app made to demonstrate the combination of ultraleap's hand on object model, and fiducial marker tracking. I designed the application, researched into fiducial marker interaction & tested it, all under a short deadline.",
         "year": 2024,
@@ -7,12 +53,13 @@
         "imageMob": "barista.gif",
         "imageAlt": "A person interacting with a virtual coffee machine, using real world props, which have fiducial markers attached",
         "importance": "neutral",
-        "featured": true,
+        "featured": false,
         "tags": [
             "Unity",
             "C#",
             "XR",
-            "Ultraleap"
+            "Ultraleap",
+            "R&D"
         ],
         "links": [
             {
@@ -34,7 +81,8 @@
             "Unity",
             "C#",
             "XR",
-            "Ultraleap"
+            "Ultraleap",
+            "R&D"
         ],
         "links": [
             {

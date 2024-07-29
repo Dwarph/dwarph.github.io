@@ -86,13 +86,22 @@
         ],
         "links": [
             {
-                "text": "Read more,",
-                "link": "https://www.ultraleap.com/company/news/press-release/hyperion/"
-            },
-            {
                 "text": "Watch a playthrough,",
                 "link": "https://youtu.be/kpzXk0ABDBY"
+            },
+            {
+                "text": "Clone the experiments,",
+                "link": "https://github.com/ultraleap/Unity-Hand-Interaction-Experiments/tree/microgestures"
+            },
+            {
+                "text": "Read the guidelines,",
+                "link": "https://docs.ultraleap.com/xr-guidelines/Interactions/microgestures.html"
+            },
+            {
+                "text": "Watch my talk,",
+                "link": "https://www.youtube.com/watch?v=FLw_LqDF59I"
             }
+
         ]
     },
     {
@@ -205,6 +214,10 @@
             {
                 "text": "Learn how to best use hands in XR,",
                 "link": "https://docs.ultraleap.com/xr-guidelines/"
+            },
+            {
+                "text": "Watch an overview talk,",
+                "link": "https://youtu.be/8Z9EKzvM8JA?si=aTXPSKXAsShYudpJ"
             }
         ]
     },

@@ -39,7 +39,7 @@ To turn things around, I began to take control of the situation - renaming the c
 
 ### Quickly gain an understanding of our user needs
 
-With limited time, I worked with people across the company to help understand what we needed to build - product presented their hypothesis of the type of users we were targetting, and their needs, and I researched into previous 2D, spatial hand tracking applications, presenting my findings to the group. As this app was for the Leap2, we also **focused heavily on the user flow **for how we could help convert potential Leap2 buyers. 
+With limited time, I worked with people across the company to help understand what we needed to build - product presented their hypothesis of the type of users we were targetting, and their needs, and I researched into previous 2D, spatial hand tracking applications, presenting my findings to the group. As this app was for the Leap2, we also **focused heavily on the user flow** for how we could help convert potential Leap2 buyers. 
 
 ### Building the app
 

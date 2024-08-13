@@ -17,6 +17,10 @@
         ],
         "links": [
             {
+                "text": "Watch the vid,",
+                "link": "https://www.linkedin.com/posts/pip-turner97_what-if-you-could-summon-things-by-squishing-activity-7217112906495078400-1ebl/"
+            },
+            {
                 "text": "Source code,",
                 "link": "https://github.com/ultraleap/Unity-Hand-Interaction-Experiments/tree/squish-summon"
             }
@@ -39,6 +43,10 @@
             "R&D"
         ],
         "links": [
+            {
+                "text": "Read more,",
+                "link": "https://www.linkedin.com/posts/pip-turner97_hand-menus-are-becoming-an-awesome-and-common-activity-7214576178064433152-e6w3?utm_source=share&utm_medium=member_desktop"
+            },
             {
                 "text": "Source code,",
                 "link": "https://github.com/ultraleap/Unity-Hand-Interaction-Experiments/tree/single-handed-menu"

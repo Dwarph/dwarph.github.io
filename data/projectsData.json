@@ -1,5 +1,31 @@
 [
     {
+        "title": "Dino Dig",
+        "description": "An XRHACK24 submission made with Julia Ronneberger & Rory Clark. Extract fossils from your wall, build a personal museum, and learn about the prehistoric era in this mixed reality prototype for the quest.",
+        "year": 2024,
+        "image": "DinoDig.mp4",
+        "imageMob": "DinoDig.webp",
+        "imageAlt": "A person digging out a fossil from their wall, using a lump hammer, rubbing mud off the wall with their hands, and using a fossil and chisel to hammer it out. They pick up the fossil and place it on a podium on their table.",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR",
+            "Meta Presence Platform"
+        ],
+        "links": [
+            {
+                "text": "Watch a runthrough",
+                "link": "https://youtu.be/u-T4H_T__Ww"
+            },
+            {
+                "text": "Watch the trailer,",
+                "link": "https://youtu.be/bM_N6Yhr1SE"
+            }
+        ]
+    },
+    {
         "title": "Squish Summon",
         "description": "What if you could summon far away objects to you by squishing them? A short interaction exploration, that feels like magic.",
         "year": 2024,

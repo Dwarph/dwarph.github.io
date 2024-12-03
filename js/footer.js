@@ -8,8 +8,8 @@ footerTemplate.innerHTML = `
   <a class="svg-link" href="https://github.com/dwarph">
     <object type="image/svg+xml" data="icons/github.svg" class="footer-icon"></object>
   </a>
-  <a class="svg-link" href="https://twitter.com/dwarph">
-    <object type="image/svg+xml" data="icons/twitter.svg" class="footer-icon"></object>
+  <a class="svg-link" href="https://bsky.app/profile/pipturner.co.uk">
+    <object type="image/svg+xml" data="icons/bluesky.svg" class="footer-icon"></object>
   </a>
   <a class="svg-link" href="https://www.linkedin.com/in/pip-turner97/">
     <object type="image/svg+xml" data="icons/linkedin.svg" class="footer-icon"></object>

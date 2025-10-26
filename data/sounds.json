@@ -1,0 +1,409 @@
+{
+  "sections": [
+    {
+      "title": "Names",
+      "sounds": [
+        {
+          "sfx": "audio/names/con.mp3",
+          "emoji": "😈",
+          "text": "con"
+        },
+        {
+          "sfx": "audio/names/cthulhu.mp3",
+          "emoji": "🐙",
+          "text": "cthulhu"
+        },
+        {
+          "sfx": "audio/names/I.mp3",
+          "emoji": "👁️",
+          "text": "I"
+        },
+        {
+          "sfx": "audio/names/james.mp3",
+          "emoji": "🐻",
+          "text": "james"
+        },
+        {
+          "sfx": "audio/names/pip.mp3",
+          "emoji": "🐧",
+          "text": "pip"
+        },
+        {
+          "sfx": "audio/names/They.mp3",
+          "emoji": "🦊",
+          "text": "They"
+        },
+        {
+          "sfx": "audio/names/We.mp3",
+          "emoji": "🐺",
+          "text": "We"
+        },
+        {
+          "sfx": "audio/names/wids.mp3",
+          "emoji": "🐕",
+          "text": "wids"
+        },
+        {
+          "sfx": "audio/names/will.mp3",
+          "emoji": "🐯",
+          "text": "will"
+        },
+        {
+          "sfx": "audio/names/You.mp3",
+          "emoji": "🐉",
+          "text": "You"
+        }
+      ]
+    },
+    {
+      "title": "Phrases",
+      "sounds": [
+        {
+          "sfx": "audio/phrases/does anyone want a snack.mp3",
+          "emoji": "🍿",
+          "text": "does anyone want a snack"
+        },
+        {
+          "sfx": "audio/phrases/eat my shorts.mp3",
+          "emoji": "👖",
+          "text": "eat my shorts"
+        },
+        {
+          "sfx": "audio/phrases/it was the best of times it was the worst of times.mp3",
+          "emoji": "📖",
+          "text": "it was the best of times it was the worst of times"
+        },
+        {
+          "sfx": "audio/phrases/ive got a bad feeling about this.mp3",
+          "emoji": "😰",
+          "text": "ive got a bad feeling about this"
+        },
+        {
+          "sfx": "audio/phrases/life uh finds a way.mp3",
+          "emoji": "🦕",
+          "text": "life uh finds a way"
+        },
+        {
+          "sfx": "audio/phrases/to be or not to be.mp3",
+          "emoji": "💀",
+          "text": "to be or not to be"
+        },
+        {
+          "sfx": "audio/phrases/we're gonna need a bigger boat (scottish).mp3",
+          "emoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+          "text": "we're gonna need a bigger boat (scottish)"
+        },
+        {
+          "sfx": "audio/phrases/we're gonna need a bigger boat.mp3",
+          "emoji": "🦈",
+          "text": "we're gonna need a bigger boat"
+        },
+        {
+          "sfx": "audio/phrases/what would pip do.mp3",
+          "emoji": "🤔",
+          "text": "what would pip do"
+        },
+        {
+          "sfx": "audio/phrases/why did you move there.mp3",
+          "emoji": "❓",
+          "text": "why did you move there"
+        }
+      ]
+    },
+    {
+      "title": "Starts",
+      "sounds": [
+        {
+          "sfx": "audio/starts/give up.mp3",
+          "emoji": "🏳️",
+          "text": "give up"
+        },
+        {
+          "sfx": "audio/starts/i dont want to play.mp3",
+          "emoji": "🚫",
+          "text": "i dont want to play"
+        },
+        {
+          "sfx": "audio/starts/theres no way.mp3",
+          "emoji": "😱",
+          "text": "theres no way"
+        },
+        {
+          "sfx": "audio/starts/we should form an alliance.mp3",
+          "emoji": "🤝",
+          "text": "we should form an alliance"
+        },
+        {
+          "sfx": "audio/starts/we should play.mp3",
+          "emoji": "🎮",
+          "text": "we should play"
+        }
+      ]
+    },
+    {
+      "title": "Endings",
+      "sounds": [
+        {
+          "sfx": "audio/endings/dont do that.mp3",
+          "emoji": "⛔",
+          "text": "dont do that"
+        },
+        {
+          "sfx": "audio/endings/gonna win.mp3",
+          "emoji": "🏆",
+          "text": "gonna win"
+        },
+        {
+          "sfx": "audio/endings/got the rules wrong.mp3",
+          "emoji": "❌",
+          "text": "got the rules wrong"
+        },
+        {
+          "sfx": "audio/endings/if im honest.mp3",
+          "emoji": "💭",
+          "text": "if im honest"
+        },
+        {
+          "sfx": "audio/endings/is a bad game.mp3",
+          "emoji": "👎",
+          "text": "is a bad game"
+        },
+        {
+          "sfx": "audio/endings/is a cheat.mp3",
+          "emoji": "😠",
+          "text": "is a cheat"
+        },
+        {
+          "sfx": "audio/endings/shall not pass.mp3",
+          "emoji": "🧙",
+          "text": "shall not pass"
+        }
+      ]
+    },
+    {
+      "title": "Connectors",
+      "sounds": [
+        {
+          "sfx": "audio/connectors/a.mp3",
+          "emoji": "🔤",
+          "text": "a"
+        },
+        {
+          "sfx": "audio/connectors/and.mp3",
+          "emoji": "➕",
+          "text": "and"
+        },
+        {
+          "sfx": "audio/connectors/because.mp3",
+          "emoji": "❓",
+          "text": "because"
+        },
+        {
+          "sfx": "audio/connectors/but.mp3",
+          "emoji": "🔄",
+          "text": "but"
+        },
+        {
+          "sfx": "audio/connectors/cant believe.mp3",
+          "emoji": "😲",
+          "text": "cant believe"
+        },
+        {
+          "sfx": "audio/connectors/is.mp3",
+          "emoji": "🔤",
+          "text": "is"
+        },
+        {
+          "sfx": "audio/connectors/should ally with.mp3",
+          "emoji": "🤝",
+          "text": "should ally with"
+        },
+        {
+          "sfx": "audio/connectors/should attack.mp3",
+          "emoji": "⚔️",
+          "text": "should attack"
+        },
+        {
+          "sfx": "audio/connectors/with.mp3",
+          "emoji": "🤝",
+          "text": "with"
+        }
+      ]
+    },
+    {
+      "title": "Descriptors",
+      "sounds": [
+        {
+          "sfx": "audio/descriptors/butt breath.mp3",
+          "emoji": "💨",
+          "text": "butt breath"
+        },
+        {
+          "sfx": "audio/descriptors/clever.mp3",
+          "emoji": "🧠",
+          "text": "clever"
+        },
+        {
+          "sfx": "audio/descriptors/dumb face.mp3",
+          "emoji": "🤪",
+          "text": "dumb face"
+        },
+        {
+          "sfx": "audio/descriptors/genius.mp3",
+          "emoji": "💡",
+          "text": "genius"
+        },
+        {
+          "sfx": "audio/descriptors/idiot.mp3",
+          "emoji": "🙄",
+          "text": "idiot"
+        },
+        {
+          "sfx": "audio/descriptors/incredible.mp3",
+          "emoji": "✨",
+          "text": "incredible"
+        },
+        {
+          "sfx": "audio/descriptors/mean.mp3",
+          "emoji": "😤",
+          "text": "mean"
+        },
+        {
+          "sfx": "audio/descriptors/smelly.mp3",
+          "emoji": "🤢",
+          "text": "smelly"
+        },
+        {
+          "sfx": "audio/descriptors/stinks.mp3",
+          "emoji": "🦨",
+          "text": "stinks"
+        },
+        {
+          "sfx": "audio/descriptors/stupid.mp3",
+          "emoji": "😵",
+          "text": "stupid"
+        }
+      ]
+    },
+    {
+      "title": "Food",
+      "sounds": [
+        {
+          "sfx": "audio/food/crisps.mp3",
+          "emoji": "🍟",
+          "text": "crisps"
+        },
+        {
+          "sfx": "audio/food/custard.mp3",
+          "emoji": "🍮",
+          "text": "custard"
+        },
+        {
+          "sfx": "audio/food/donut.mp3",
+          "emoji": "🍩",
+          "text": "donut"
+        },
+        {
+          "sfx": "audio/food/drink.mp3",
+          "emoji": "🥤",
+          "text": "drink"
+        },
+        {
+          "sfx": "audio/food/ideal milk.mp3",
+          "emoji": "🥛",
+          "text": "ideal milk"
+        },
+        {
+          "sfx": "audio/food/jam.mp3",
+          "emoji": "🍓",
+          "text": "jam"
+        },
+        {
+          "sfx": "audio/food/pizza.mp3",
+          "emoji": "🍕",
+          "text": "pizza"
+        },
+        {
+          "sfx": "audio/food/weird tea.mp3",
+          "emoji": "🍵",
+          "text": "weird tea"
+        }
+      ]
+    },
+    {
+      "title": "SFX",
+      "sounds": [
+        {
+          "sfx": "audio/sfx/ba dum tish.mp3",
+          "emoji": "🥁",
+          "text": "ba dum tish"
+        },
+        {
+          "sfx": "audio/sfx/crickets.mp3",
+          "emoji": "🦗",
+          "text": "crickets"
+        },
+        {
+          "sfx": "audio/sfx/drumroll.mp3",
+          "emoji": "🥁",
+          "text": "drumroll"
+        },
+        {
+          "sfx": "audio/sfx/fart.mp3",
+          "emoji": "💨",
+          "text": "fart"
+        },
+        {
+          "sfx": "audio/sfx/Two Hours Later.mp3",
+          "emoji": "⏰",
+          "text": "Two Hours Later"
+        }
+      ]
+    },
+    {
+      "title": "Board Games",
+      "sounds": [
+        {
+          "sfx": "audio/boardgames/eclipse.mp3",
+          "emoji": "🌑",
+          "text": "eclipse"
+        },
+        {
+          "sfx": "audio/boardgames/heat.mp3",
+          "emoji": "🏎️",
+          "text": "heat"
+        },
+        {
+          "sfx": "audio/boardgames/port royal.mp3",
+          "emoji": "🏴‍☠️",
+          "text": "port royal"
+        },
+        {
+          "sfx": "audio/boardgames/root.mp3",
+          "emoji": "🌲",
+          "text": "root"
+        },
+        {
+          "sfx": "audio/boardgames/star realms.mp3",
+          "emoji": "🚀",
+          "text": "star realms"
+        },
+        {
+          "sfx": "audio/boardgames/ticket to ride.mp3",
+          "emoji": "🚂",
+          "text": "ticket to ride"
+        },
+        {
+          "sfx": "audio/boardgames/undaunted.mp3",
+          "emoji": "⚔️",
+          "text": "undaunted"
+        },
+        {
+          "sfx": "audio/boardgames/war of whispers.mp3",
+          "emoji": "👀",
+          "text": "war of whispers"
+        }
+      ]
+    }
+  ]
+}

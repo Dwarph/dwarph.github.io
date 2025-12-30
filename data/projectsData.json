@@ -1,35 +1,5 @@
 [
     {
-        "title": "Dino Dig",
-        "description": "An XRHACK24 submission made with Julia Ronneberger & Rory Clark. Extract fossils from your wall, build a personal museum, and learn about the prehistoric era in this mixed reality prototype for the quest.",
-        "year": 2024,
-        "image": "DinoDig.mp4",
-        "imageMob": "DinoDig.webp",
-        "imageAlt": "A person digging out a fossil from their wall, using a lump hammer, rubbing mud off the wall with their hands, and using a fossil and chisel to hammer it out. They pick up the fossil and place it on a podium on their table.",
-        "importance": "neutral",
-        "featured": true,
-        "tags": [
-            "Unity",
-            "C#",
-            "XR",
-            "Meta Presence Platform"
-        ],
-        "links": [
-            {
-                "text": "Watch a runthrough",
-                "link": "https://youtu.be/u-T4H_T__Ww"
-            },
-            {
-                "text": "Watch the trailer,",
-                "link": "https://youtu.be/bM_N6Yhr1SE"
-            },
-            {
-                "text": "Download the APK,",
-                "link": "https://sidequestvr.com/app/37155/dino-dig"
-            }
-        ]
-    },
-    {
         "title": "Squish Summon",
         "description": "What if you could summon far away objects to you by squishing them? A short interaction exploration, that feels like magic.",
         "year": 2024,
@@ -166,26 +136,6 @@
         ]
     },
     {
-        "title": "Pomodoro.",
-        "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow",
-        "year": 2023,
-        "image": "pomodoro.mp4",
-        "imageMob": "pomodoro.webp",
-        "imageAlt": "",
-        "importance": "neutral",
-        "featured": true,
-        "tags": [
-            "Playdate",
-            "lua"
-        ],
-        "links": [
-            {
-                "text": "Download it,",
-                "link": "https://dwarph.itch.io/pomodoro"
-            }
-        ]
-    },
-    {
         "title": "Dog Racer",
         "description": "Internal game jam @Ultraleap on Spatial Interactions for 2D screens - resulting in a silly dog racing game",
         "year": 2023,
@@ -231,31 +181,6 @@
             {
                 "text": "See some of my favourite details,",
                 "link": "https://pipturner.co.uk/twitter/1677302434312470535"
-            }
-        ]
-    },
-    {
-        "title": "XR Design Guidelines",
-        "description": "I helped rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
-        "year": 2023,
-        "image": "xrguidelines.png",
-        "imageMob": "xrguidelines.png",
-        "imageAlt": "A picture of the first page in ultraleap's XR guidelines.",
-        "importance": "major",
-        "featured": true,
-        "tags": [
-            "XR",
-            "Ultraleap",
-            "R&D"
-        ],
-        "links": [
-            {
-                "text": "Learn how to best use hands in XR,",
-                "link": "https://docs.ultraleap.com/xr-guidelines/"
-            },
-            {
-                "text": "Watch an overview talk,",
-                "link": "https://youtu.be/8Z9EKzvM8JA?si=aTXPSKXAsShYudpJ"
             }
         ]
     },
@@ -354,46 +279,6 @@
             {
                 "text": "Download Ultraleap Gemini Tracking, and its control panel, ",
                 "link": "https://developer.leapmotion.com/tracking-software-download"
-            }
-        ]
-    },
-    {
-        "title": "GDC 2022",
-        "description": "I spoke at GDC 2022 with <a href=\"https://twitter.com/CRWBurgess\">Chris Burgess</a> on \"Hand Tracking: How can lessons from LBE can help at home gaming?\". We then wrote the talk up into a blogpost post-event.",
-        "year": 2022,
-        "image": "GDC2022.jpg",
-        "imageMob": "GDC2022.jpg",
-        "imageAlt": "Two men (Pip Turner & Chris Burgess) pointing at their talk title on a digital screen.",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Writing",
-            "Speaking",
-            "Ultraleap"
-        ],
-        "links": [
-            {
-                "text": "Blogpost, ",
-                "link": "https://www.ultraleap.com/company/news/blog/hand-tracking-vr-game-design-tips/"
-            }
-        ]
-    },
-    {
-        "title": "p5.js Explorations",
-        "description": "I messed around with generative art and p5.js. I mainly focused on exploiting flow fields and perlin noise.",
-        "year": 2022,
-        "image": "p5.mp4",
-        "imageMob": "p5.webp",
-        "imageAlt": "Colourful curves are drawn on an orange background, generated with a flow field.",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Javascript"
-        ],
-        "links": [
-            {
-                "text": "Source Code and webps, ",
-                "link": "https://github.com/Dwarph/Noise-P5"
             }
         ]
     },
@@ -534,185 +419,6 @@
             {
                 "text": "See more",
                 "link": "https://www.youtube.com/watch?v=EY6FKCfoaQk"
-            }
-        ]
-    },
-    {
-        "title": "ALD Direct",
-        "description": "I spent a year working at ALD Automotive on ALD Direct - a series of car leasing websites.  I maintained and iterated upon car leasing websites for a number of household names, utilising .NET & Angular technologies. I also helped design, maintain and iterate upon their selenium automated testing.",
-        "year": 2019,
-        "image": "ALDDirect.png",
-        "imageMob": "ALDDirect.png",
-        "imageAlt": "A pointed hand moving towards a screen",
-        "importance": "neutral",
-        "featured": false,
-        "tags": [
-            "Javascript",
-            "C#",
-            ".NET"
-        ],
-        "links": [
-            {
-                "text": "Browse an ALD Direct site",
-                "link": "https://www.lombardvehiclesolutions.co.uk/"
-            }
-        ]
-    },
-    {
-        "title": "3D Procedurally Generated Nature Scene",
-        "description": "Made for my final year dissertation. A nature scene made with procedural generation algorithms (DiamondSquare, and L-Systems).",
-        "year": 2018,
-        "image": "Mountains.mp4",
-        "imageMob": "Mountains.webp",
-        "imageAlt": "Procedurally generated mountain scene",
-        "importance": "major",
-        "featured": false,
-        "tags": [
-            "C++",
-            "OpenGL",
-            "University"
-        ],
-        "links": [
-            {
-                "text": "Source code",
-                "link": "https://github.com/Dwarph/3DPGNS"
-            },
-            {
-                "text": "Devlog",
-                "link": "https://pipturner.co.uk/twitter/968892031220232192"
-            }
-        ]
-    },
-    {
-        "title": "Pip Writes Stuff/ Itching For More",
-        "description": "I ran an alt-games & poetry blog from 2014 to 2017, posting twice weekly. I featured small, relatively unknown games found on itch.io, as well as interviewing their creators. My writing was featured twice in Rock Paper Shotgun's \"Sunday Papers\", and contributed to TRASHZINE",
-        "year": 2017,
-        "image": "PipWritesStuff.png",
-        "imageMob": "PipWritesStuff.png",
-        "imageAlt": "A screenshot of a blog on medium",
-        "importance": "neutral",
-        "featured": false,
-        "tags": [
-            "Writing"
-        ],
-        "links": [
-            {
-                "text": "Pip Writes Stuff,",
-                "link": "https://medium.com/pip-writes-stuff"
-            },
-            {
-                "text": "TRASHZINE,",
-                "link": "https://trashzine.itch.io/trashzine-vol-1"
-            }
-        ]
-    },
-    {
-        "title": "Three JS Adventure Scene",
-        "description": " 3D Scene made in ThreeJS for a Computer Graphics And Games module. Features a tree made with a space colonisation algorithm.",
-        "year": 2017,
-        "image": "3DScene.png",
-        "imageMob": "3DScene.png",
-        "imageAlt": "Scene made with ThreeJS",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Javascript",
-            "ThreeJS",
-            "University"
-        ]
-    },
-    {
-        "title": "The Search For A Good Book",
-        "description": "A low poly animation made in Blender, for an Applied Graphics module.",
-        "year": 2017,
-        "image": "SearchForAGoodBook.mp4",
-        "imageMob": "SearchForAGoodBook.webp",
-        "imageAlt": "A spaceship lands on a dark planet",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Blender",
-            "University"
-        ],
-        "links": [
-            {
-                "text": "Watch",
-                "link": "https://www.youtube.com/watch?v=VLY-zjLFJ3g"
-            }
-        ]
-    },
-    {
-        "title": "QRTTNBPBYTROAYALID",
-        "description": "Quick, Run to The Next Battery Pack Before Your Torch Runs Out and You Are Left In Darkness!, (or QRTTNBPBYTROAYALID), an infinite runner created with <a href=\"https://twitter.com/spacebabedev\"> Poppy Lomax</a> for Ludum Dare #39. I worked on the code & game feel.",
-        "year": 2017,
-        "image": "QRTTNBPBYTROAYALID.mp4",
-        "imageMob": "QRTTNBPBYTROAYALID.webp",
-        "imageAlt": "A pixel art infinite runner, set in a cave",
-        "importance": "neutral",
-        "featured": false,
-        "tags": [
-            "Unity",
-            "C#",
-            "Gamejam"
-        ],
-        "links": [
-            {
-                "text": "Play",
-                "link": "https://hozomeen.itch.io/quick-run-to-the-next-battery-pack-before-your-torch-runs-out-and-you-are-left-in-darkness"
-            }
-        ]
-    },
-    {
-        "title": "Buccaneer",
-        "description": "A remake of the board game Buccaneer in Java, made for a Group Project module. I was lead architect, ensuring that the backend of the project interacted nicely with the UI.",
-        "year": 2017,
-        "image": "Buccaneer.png",
-        "imageMob": "Buccaneer.png",
-        "imageAlt": "A pixel art pirate game",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Java",
-            "University"
-        ]
-    },
-    {
-        "title": "Rare Cover Letter",
-        "description": "An interactive cover letter I made in a few days in order to apply to Rare's Industrial Placement. They specified that they wanted something creative, instead of a normal cover letter - so I made this.",
-        "year": 2016,
-        "image": "RareCoverLetter.mp4",
-        "imageMob": "RareCoverLetter.webp",
-        "imageAlt": "A pixel art image of a man walking through a city",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Unity",
-            "C#"
-        ],
-        "links": [
-            {
-                "text": "Play",
-                "link": "https://dwarph.itch.io/rare-cover-letter"
-            }
-        ]
-    },
-    {
-        "title": "Space Invaders",
-        "description": "The first Unity project I ever finished! A Space Invaders clone (with a small twist), made as a way to become more familiar with Unity. SFX provided by <a href=\"https://soundcloud.com/xeno_uk\">xeno_</a>",
-        "year": 2016,
-        "image": "SpaceInvaders.mp4",
-        "imageMob": "SpaceInvaders.webp",
-        "imageAlt": "A webp of a space invaders clone",
-        "importance": "minor",
-        "featured": false,
-        "tags": [
-            "Unity",
-            "C#"
-        ],
-        "links": [
-            {
-                "text": "Play",
-                "link": "https://dwarph.itch.io/space-invaders"
             }
         ]
     }

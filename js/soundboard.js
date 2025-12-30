@@ -260,9 +260,8 @@ class Soundboard {
     const queueCount = document.getElementById('queue-count');
     if (queueCount) {
       queueCount.textContent = this.queue.length;
-    } else {
-      console.warn('Queue count element not found');
     }
+    // Element may not exist during certain states - this is expected
   }
 
   async playQueue() {

@@ -1,0 +1,183 @@
+{
+  "header": {
+    "name": "Pip Turner",
+    "role": "Product Designer",
+    "profileImage": "images/profile-picture.jpg",
+    "backgroundImage": "images/header-background.png"
+  },
+  "about": {
+    "bio": "Hi! I'm Pip - a product designer. I've worked in the XR industry since 2019.\n\nI started off at Ultraleap where I led an interaction r&d team, proving the value of high fidelity hand tracking. We focused on rapid prototyping in Unity, and novel spatial interaction design.\n\nI'm now at FitXR, designing the future of fitness - building xr experiences that work at scale, aiming to actively improve people's lives.\n\nI try to combine simplicity and fun to create designs that feel joyful and inevitable.",
+    "cvLink": "Pip Turner-CV.pdf"
+  },
+  "work": [
+    {
+      "company": "FitXR",
+      "gradientColor": "fitxr",
+      "dates": "2024 - Now",
+      "role": "Senior Product Designer",
+      "logo": "images/fitxr-logo.png",
+      "description": "FitXR is a leading VR fitness app that transforms home workouts through immersive, gamified training.",
+      "caseStudies": [
+        {
+          "title": "Early User Experience",
+          "image": "images/casestudies/eux.png",
+          "imageAlt": "Early user experience case study image",
+          "tags": "2D UX, Figma, Growth",
+          "description": "Hitting key metrics through user centred design. +10% paywall conversion rate, +30% users playing one or more classes - through caring + addressing user needs.",
+          "key": "early-user-experience",
+          "comingSoon": true
+        },
+        {
+          "title": "Sidestep, Jump & Crouch",
+          "image": "images/casestudies/sjc.png",
+          "imageAlt": "Sidestep jump crouch case study image",
+          "tags": "Rapid Prototyping + Spatial Design",
+          "description": "Spatial interaction design for a mass market VR fitness application. Prototyped, tested & shipped 3 new moves for FitXR in 3 months.",
+          "key": "sidestep-jump-crouch",
+          "comingSoon": true
+        }
+      ],
+      "otherWork": []
+    },
+    {
+      "company": "Ultraleap",
+      "gradientColor": "ultraleap",
+      "dates": "2019 - 2024",
+      "role": "Senior XR Engineer",
+      "logo": "images/ultraleap-logo.png",
+      "description": "Ultraleap was a spatial interaction company that enabled natural interaction through world-leading hand tracking and mid-air, ultrasonic haptics.",
+      "caseStudies": [
+        {
+          "title": "Hyperion Showcase",
+          "image": "images/casestudies/prosho.png",
+          "imageAlt": "Hyperion showcase case study image",
+          "tags": "Flagship demos which led to OEM opportunities",
+          "description": "Novel XR interaction research + design to create flagship demos, opening up new business opportunities for Ultraleap.",
+          "key": "prosho"
+        },
+        {
+          "title": "Dog Racer",
+          "image": "images/casestudies/dogracer.jpg",
+          "imageAlt": "Dog racer case study image",
+          "tags": "Rapid Prototyping + Spatial Design",
+          "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
+          "key": "dogracer"
+        }
+      ],
+      "otherWork": [
+        {
+          "title": "Interaction Archive",
+          "image": "images/casestudies/design-archive.png",
+          "imageAlt": "Interaction archive image",
+          "description": "At Ultraleap, I designed and contributed to a lot of different interactions and apps! I've archived all of them here.",
+          "link": "interaction-archive.html"
+        },
+        {
+          "title": "XR Design Guidelines",
+          "image": "images/projects/xrguidelines.png",
+          "imageAlt": "XR design guidelines image",
+          "description": "I helped write & rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
+          "link": "https://docs.ultraleap.com/xr-guidelines/index.html",
+          "key": "xr-guidelines"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Morandi",
+      "year": 2025,
+      "tags": "AI, Vibe Coding",
+      "description": "A concept + prototype for a daily art app, that generated prompts, inspiration, and critiques of your art.",
+      "image": "images/projects/morandi.png",
+      "imageAlt": "Morandi project image",
+      "link": "https://youtu.be/nL7ncOmOpdg?si=wARiMHqXS1jNXIR0"
+    },
+    {
+      "title": "Dino Dig",
+      "year": 2024,
+      "tags": "XR, Unity, Meta Quest",
+      "description": "An XRHACK24 submission. Extract fossils from your wall, build a personal museum, and learn about the prehistoric era in this mixed reality prototype for the quest. Made with Julia Ronneberger & Rory Clark",
+      "image": "images/projects/DinoDig.webp",
+      "imageAlt": "Dino Dig project image",
+      "link": "https://youtu.be/u-T4H_T__Ww?si=_7fS0uYFP2NDQgtx"
+    },
+    {
+      "title": "Pomodoro",
+      "year": 2023,
+      "tags": "Playdate, Lua",
+      "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow.",
+      "image": "images/projects/pomodoro.webp",
+      "imageAlt": "Pomodoro project image",
+      "link": "https://youtu.be/Su6LcItc0CY?si=9LizB3P5GsdHwVEH"
+    },
+    {
+      "title": "P5 Generative Art",
+      "year": 2022,
+      "tags": "P5, Javascript",
+      "description": "Generative art made with p5, using flow fields & perlin noise.",
+      "image": "images/projects/p5.webp",
+      "imageAlt": "P5 generative art project image",
+      "link": "https://github.com/Dwarph/Noise-P5"
+    }
+  ],
+  "talks": [
+    {
+      "title": "Design, Discard, Deliver",
+      "locations": [
+        "UX Wales, 2026",
+        "Guest Lecture @ Glasgow University, 2025",
+        "XRCC Online, 2025"
+      ],
+      "link": ""
+    },
+    {
+      "title": "Hand Tracking Design for XR: 101",
+      "locations": [
+        "XRCC Online, 2024"
+      ],
+      "link": "https://youtu.be/jlsRgcgS2UM?si=OXVsxzNn3NeBsXsx"
+    },
+    {
+      "title": "Designing For Microgestures",
+      "locations": [
+        "GEMINI ERC Workshop, 2024"
+      ],
+      "link": "https://youtu.be/FLw_LqDF59I?si=B5e8vsXA9I57FAW5"
+    },
+    {
+      "title": "Hands First Teleportation",
+      "locations": [
+        "CGVC, 2023"
+      ],
+      "link": "https://youtu.be/oYOG2ufOpCU?si=PsRc5CUntYSZPhzo"
+    },
+    {
+      "title": "Hand Tracking: How can lessons in LBE help gaming?",
+      "locations": [
+        "GDC (Sponsored Talk), 2022"
+      ],
+      "link": ""
+    }
+  ],
+  "contact": {
+    "email": "pipturner.work@gmail.com",
+    "socialLinks": [
+      {
+        "name": "Linkedin",
+        "link": "https://www.linkedin.com/in/pip-turner97/",
+        "icon": "icons/linkedin.svg"
+      },
+      {
+        "name": "Github",
+        "link": "https://github.com/dwarph",
+        "icon": "icons/github.svg"
+      },
+      {
+        "name": "Bluesky",
+        "link": "https://bsky.app/profile/pipturner.co.uk",
+        "icon": "icons/bluesky.svg"
+      }
+    ]
+  }
+}

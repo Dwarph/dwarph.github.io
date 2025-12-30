@@ -74,7 +74,7 @@
           "title": "Dog Racer",
           "image": "images/casestudies/dogracer.jpg",
           "imageAlt": "Dog racer case study image",
-          "tags": "Rapid Prototyping + Spatial Design",
+          "tags": "Leading a team through a tough project",
           "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
           "key": "dogracer"
         }
@@ -124,7 +124,6 @@
     {
       "title": "Design, Discard, Deliver",
       "locations": [
-        "UX Wales, 2026",
         "Guest Lecture @ Glasgow University, 2025",
         "XRCC Online, 2025"
       ],

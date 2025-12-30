@@ -48,11 +48,7 @@ body {
 #archive-container {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    overflow: visible !important;
     box-sizing: border-box;
-    position: relative;
 }
 
 /* Desktop Typography */
@@ -144,6 +140,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 60%;
     max-width: 100%;
 }
 
@@ -219,11 +216,10 @@ body {
     padding: 0 25px;
     margin-bottom: 51px;
     box-sizing: border-box;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
+}
+
+.homepage-nav + .homepage-section {
+    margin-top: -30px;
 }
 
 .section-title {
@@ -636,7 +632,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
+    padding: 4px 15px;
     background-color: var(--text-color);
     color: var(--bg-color);
     border-radius: 16px;
@@ -646,6 +642,8 @@ body {
     line-height: 1;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     margin-left: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .coming-soon-badge .material-icons {
@@ -874,6 +872,17 @@ body {
     color: var(--text-color);
 }
 
+.contact-label:is(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.contact-label:is(a):hover {
+    opacity: 0.7;
+}
+
 .contact-email {
     font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
@@ -922,25 +931,6 @@ body {
         position: relative;
     }
 
-    body:has(#archive-container) {
-        overflow-y: auto !important;
-    }
-
-    #archive-container .homepage-header {
-        overflow: visible !important;
-        overflow-y: visible !important;
-    }
-
-    #archive-container .homepage-section,
-    #archive-container .archive-section,
-    #archive-container .archive-projects-grid,
-    #archive-container .archive-project-card,
-    #archive-container .archive-project-content {
-        overflow-y: visible !important;
-        overflow: visible !important;
-        max-height: none !important;
-        height: auto !important;
-    }
     
     .homepage-header {
         height: 371px;
@@ -1002,11 +992,6 @@ body {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden !important;
-        overflow-y: visible !important;
-        overflow: visible !important;
-        max-height: none !important;
-        height: auto !important;
     }
 
     .section-title {
@@ -1014,21 +999,6 @@ body {
         margin-bottom: 25px;
     }
 
-    .about-section {
-        overflow: visible !important;
-        overflow-y: visible !important;
-        overflow-x: hidden;
-    }
-
-    .about-content {
-        overflow: visible !important;
-        overflow-y: visible !important;
-    }
-
-    .about-bio {
-        overflow: visible !important;
-        overflow-y: visible !important;
-    }
 
     .about-bio-paragraph {
         font-size: 16px;
@@ -1184,9 +1154,6 @@ body {
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
-        overflow: visible !important;
-        overflow-y: visible !important;
-        overflow-x: hidden;
     }
 
     .project-year {
@@ -1244,6 +1211,23 @@ body {
     .contact-email {
         font-size: 16px;
     }
+
+    /* Colored bar at bottom of work sections (mobile only) */
+    .job-bottom-bar {
+        display: block;
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        margin-top: 25px;
+    }
+
+    .job-bottom-bar.fitxr {
+        background: linear-gradient(to right, var(--fitxr-start), var(--fitxr-end));
+    }
+
+    .job-bottom-bar.ultraleap {
+        background: linear-gradient(to right, var(--ultraleap-start), var(--ultraleap-end));
+    }
 }
 
 /* Desktop specific adjustments */
@@ -1253,6 +1237,11 @@ body {
         max-width: 730px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    /* Hide colored bar on desktop */
+    .job-bottom-bar {
+        display: none;
     }
 }
 
@@ -1460,21 +1449,16 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 25px;
+    padding: 15px;
     max-width: 730px;
     margin: 0 auto;
     flex-wrap: wrap;
     box-sizing: border-box;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
 }
 
 .breadcrumb-link {
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 400;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
     font-size: 24px;
     line-height: 100%;
     color: var(--text-color);
@@ -1486,25 +1470,29 @@ body {
 }
 
 .breadcrumb-separator {
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 400;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
     font-size: 24px;
     line-height: 100%;
     color: var(--text-color);
 }
 
 .breadcrumb-current {
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: 400;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
     font-size: 24px;
     line-height: 100%;
     color: var(--text-color);
     opacity: 0.7;
 }
 
+.breadcrumb-nav + .homepage-section {
+    margin-top: -30px;
+}
+
 @media (max-width: 768px) {
     .breadcrumb-nav {
-        padding: 25px;
+        padding: 15px;
         gap: 8px;
         width: 100%;
         max-width: 100%;
@@ -1573,11 +1561,6 @@ body {
 /* Archive Page Styles */
 .archive-section {
     padding-top: 25px;
-    overflow: visible !important;
-    overflow-y: visible !important;
-    overflow-x: hidden !important;
-    max-height: none !important;
-    height: auto !important;
 }
 
 .archive-section .section-title {
@@ -1631,11 +1614,6 @@ body {
     gap: 70px;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
     box-sizing: border-box;
 }
 
@@ -1646,11 +1624,6 @@ body {
     align-items: flex-start;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
     box-sizing: border-box;
 }
 
@@ -1661,8 +1634,7 @@ body {
     flex-shrink: 0;
     background-color: rgba(55, 44, 9, 0.05);
     border-radius: 15px;
-    overflow: hidden;
-    overflow-y: visible;
+    overflow: hidden !important;
 }
 
 .archive-media-container.archive-video-loading {
@@ -1725,8 +1697,6 @@ body {
     flex: 1;
     min-width: 0;
     max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: visible;
     box-sizing: border-box;
 }
 
@@ -1767,9 +1737,6 @@ body {
     margin: 0;
     letter-spacing: 0;
     font-variation-settings: 'YTLC' 500, 'wdth' 100;
-    overflow: visible;
-    overflow-y: visible;
-    overflow-x: hidden;
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
@@ -1819,30 +1786,6 @@ body {
 }
 
 @media (max-width: 768px) {
-    #archive-container {
-        overflow-x: hidden !important;
-        overflow-y: visible !important;
-        overflow: visible !important;
-        max-height: none !important;
-        height: auto !important;
-        position: relative;
-    }
-
-    .archive-section {
-        overflow: visible !important;
-        overflow-y: visible !important;
-        overflow-x: hidden !important;
-        max-height: none !important;
-        height: auto !important;
-    }
-
-    .homepage-section.archive-section {
-        overflow: visible !important;
-        overflow-y: visible !important;
-        overflow-x: hidden !important;
-        max-height: none !important;
-        height: auto !important;
-    }
 
     .archive-filters {
         flex-direction: column;
@@ -1866,14 +1809,12 @@ body {
         gap: 50px;
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden;
     }
 
     .archive-project-card {
         flex-direction: column;
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden;
     }
 
     .archive-media-container {
@@ -1885,9 +1826,6 @@ body {
     .archive-project-content {
         width: 100%;
         max-width: 100%;
-        overflow-x: hidden !important;
-        overflow-y: visible !important;
-        overflow: visible !important;
     }
 
     .archive-project-title {
@@ -1907,27 +1845,6 @@ body {
         max-width: 100%;
     }
 
-    .archive-project-description {
-        overflow: visible !important;
-        overflow-y: visible !important;
-        overflow-x: hidden !important;
-    }
-
-    .archive-project-title,
-    .archive-project-year,
-    .archive-project-tags {
-        overflow: visible !important;
-        overflow-y: visible !important;
-    }
-
-    .archive-project-links {
-        overflow: visible !important;
-        overflow-y: visible !important;
-    }
-
-    .archive-media-container {
-        overflow-y: visible !important;
-    }
 
     .archive-empty-message {
         font-size: 16px;

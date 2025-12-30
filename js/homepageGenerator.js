@@ -103,17 +103,21 @@ function renderCaseStudy(caseStudy, isMobile) {
     // Check if this is a coming soon case study
     var isComingSoon = caseStudy.comingSoon === true;
     
-    var linkIcon = caseStudyLink ? 
-        '<span class="material-icons link-icon external">north_east</span>' :
-        '<span class="material-icons link-icon chevron">chevron_right</span>';
+    var linkIcon = '';
+    if (caseStudyLink) {
+        linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+    } else if (!isComingSoon) {
+        // Only show chevron if not coming soon
+        linkIcon = '<span class="material-icons link-icon chevron">chevron_right</span>';
+    }
 
     var comingSoonClass = isComingSoon ? ' coming-soon' : '';
     var comingSoonDataAttr = isComingSoon ? ' data-coming-soon="true"' : '';
     var comingSoonBadge = isComingSoon ? '<span class="coming-soon-badge"><span class="material-icons">lock</span><span class="coming-soon-text">Coming Soon!</span></span>' : '';
     
     var titleContainer = isMobile ? 
-        `<div class="case-study-title-container">` :
-        `<div class="case-study-title-container desktop-align-right">`;
+        `<div class="case-study-title-container${comingSoonClass}"${comingSoonDataAttr}>` :
+        `<div class="case-study-title-container desktop-align-right${comingSoonClass}"${comingSoonDataAttr}>`;
 
     // If there's a link, title is just styled text (card will be the link)
     // If no link, title is a span
@@ -164,7 +168,8 @@ function renderWork(work) {
         // Build case studies HTML
         var caseStudiesHtml = '';
         if (job.caseStudies && job.caseStudies.length > 0) {
-            caseStudiesHtml += '<div class="job-case-studies ' + job.gradientColor + '"><h4 class="case-studies-title">Case Studies</h4>';
+            var caseStudiesTitle = job.company === 'Ultraleap' ? 'Case Studies & Other Work' : 'Case Studies';
+            caseStudiesHtml += '<div class="job-case-studies ' + job.gradientColor + '"><h4 class="case-studies-title">' + caseStudiesTitle + '</h4>';
             for (var j = 0; j < job.caseStudies.length; j++) {
                 caseStudiesHtml += renderCaseStudy(job.caseStudies[j], isMobile);
             }
@@ -209,6 +214,7 @@ function renderWork(work) {
                         ${otherWorkHtml}
                     </div>
                 </div>
+                <div class="job-bottom-bar ${job.gradientColor}"></div>
             </div>
         `;
     }
@@ -310,13 +316,15 @@ function renderContact(contact) {
         `;
     }
 
+    var emailLinkIcon = '<span class="material-icons link-icon external">north_east</span>';
+    
     return `
         <section id="contact" class="homepage-section contact-section">
             <h2 class="section-title">Contact</h2>
             <div class="contact-content">
                 ${socialLinksHtml}
                 <div class="contact-item">
-                    <span class="contact-label">Email</span>
+                    <a href="mailto:${contact.email}" class="contact-label">Email${emailLinkIcon}</a>
                     <p class="contact-email">${contact.email}</p>
                 </div>
             </div>
@@ -340,17 +348,54 @@ function loadHomepageData() {
         container.innerHTML = html;
 
         // Position timeline dividers to start at case studies section
-        setTimeout(function() {
+        function updateTimelinePositions() {
             var caseStudiesSections = container.querySelectorAll('.job-case-studies');
             for (var i = 0; i < caseStudiesSections.length; i++) {
                 var caseStudiesSection = caseStudiesSections[i];
                 var rightColumn = caseStudiesSection.closest('.job-right-column');
                 if (rightColumn) {
-                    var caseStudiesOffset = caseStudiesSection.offsetTop - rightColumn.offsetTop;
+                    var caseStudiesRect = caseStudiesSection.getBoundingClientRect();
+                    var rightColumnRect = rightColumn.getBoundingClientRect();
+                    var caseStudiesOffset = caseStudiesRect.top - rightColumnRect.top;
                     rightColumn.style.setProperty('--timeline-top', caseStudiesOffset + 'px');
                 }
             }
-        }, 0);
+        }
+
+        // Wait for layout to settle using requestAnimationFrame
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                updateTimelinePositions();
+                
+                // Also update after images load in case they affect layout
+                var images = container.querySelectorAll('img');
+                var imagesLoaded = 0;
+                if (images.length === 0) {
+                    return;
+                }
+                for (var i = 0; i < images.length; i++) {
+                    if (images[i].complete) {
+                        imagesLoaded++;
+                    } else {
+                        images[i].addEventListener('load', function() {
+                            imagesLoaded++;
+                            if (imagesLoaded === images.length) {
+                                requestAnimationFrame(updateTimelinePositions);
+                            }
+                        });
+                        images[i].addEventListener('error', function() {
+                            imagesLoaded++;
+                            if (imagesLoaded === images.length) {
+                                requestAnimationFrame(updateTimelinePositions);
+                            }
+                        });
+                    }
+                }
+                if (imagesLoaded === images.length) {
+                    requestAnimationFrame(updateTimelinePositions);
+                }
+            });
+        });
 
         // Constrain project images to match content height
         setTimeout(function() {
@@ -392,8 +437,8 @@ function loadHomepageData() {
 }
 
 function setupComingSoonTooltips() {
-    var comingSoonCards = document.querySelectorAll('.case-study-card.coming-soon');
-    if (comingSoonCards.length === 0) {
+    var comingSoonElements = document.querySelectorAll('.case-study-card.coming-soon');
+    if (comingSoonElements.length === 0) {
         return;
     }
     
@@ -412,9 +457,9 @@ function setupComingSoonTooltips() {
     // Initialize tooltip
     createTooltip();
     
-    for (var i = 0; i < comingSoonCards.length; i++) {
-        (function(card) {
-            card.addEventListener('mouseenter', function(e) {
+    for (var i = 0; i < comingSoonElements.length; i++) {
+        (function(element) {
+            element.addEventListener('mouseenter', function(e) {
                 if (tooltip) {
                     tooltip.classList.add('show');
                     // Position tooltip immediately on enter - use clientX/clientY for viewport-relative positioning
@@ -425,7 +470,7 @@ function setupComingSoonTooltips() {
                 }
             });
             
-            card.addEventListener('mousemove', function(e) {
+            element.addEventListener('mousemove', function(e) {
                 if (!tooltip) return;
                 // Position tooltip near cursor with offset - use clientX/clientY for viewport-relative positioning
                 var offsetX = 20;
@@ -434,12 +479,12 @@ function setupComingSoonTooltips() {
                 tooltip.style.top = (e.clientY + offsetY) + 'px';
             });
             
-            card.addEventListener('mouseleave', function() {
+            element.addEventListener('mouseleave', function() {
                 if (tooltip) {
                     tooltip.classList.remove('show');
                 }
             });
-        })(comingSoonCards[i]);
+        })(comingSoonElements[i]);
     }
 }
 

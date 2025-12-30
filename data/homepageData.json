@@ -56,16 +56,6 @@
           "key": "prosho"
         },
         {
-          "title": "Dog Racer",
-          "image": "images/casestudies/dogracer.jpg",
-          "imageAlt": "Dog racer case study image",
-          "tags": "Rapid Prototyping + Spatial Design",
-          "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
-          "key": "dogracer"
-        }
-      ],
-      "otherWork": [
-        {
           "title": "Interaction Archive",
           "image": "images/casestudies/design-archive.png",
           "imageAlt": "Interaction archive image",
@@ -79,8 +69,17 @@
           "description": "I helped write & rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
           "link": "https://docs.ultraleap.com/xr-guidelines/index.html",
           "key": "xr-guidelines"
+        },
+        {
+          "title": "Dog Racer",
+          "image": "images/casestudies/dogracer.jpg",
+          "imageAlt": "Dog racer case study image",
+          "tags": "Rapid Prototyping + Spatial Design",
+          "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
+          "key": "dogracer"
         }
-      ]
+      ],
+      "otherWork": []
     }
   ],
   "projects": [
@@ -153,7 +152,7 @@
       "link": "https://youtu.be/oYOG2ufOpCU?si=PsRc5CUntYSZPhzo"
     },
     {
-      "title": "Hand Tracking: How can lessons in LBE help gaming?",
+      "title": "Hand Tracking: How can lessons in LBE help at home gaming?",
       "locations": [
         "GDC (Sponsored Talk), 2022"
       ],

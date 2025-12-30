@@ -66,12 +66,11 @@ function renderProjectCard(project, isMobile, videoCache) {
     // Render image or video
     var mediaHtml = '';
     if (isVideo) {
-        var isCached = videoCache && videoCache.has(imageSrc);
-        var loadingClass = isCached ? '' : 'archive-video-loading';
+        // Always start with loading state - videos will be loaded sequentially
         mediaHtml = `
-            <div class="archive-media-container ${loadingClass}">
+            <div class="archive-media-container archive-video-loading">
                 <div class="archive-video-loading-spinner"></div>
-                <video class="archive-project-image" id="${videoId}" autoplay muted loop playsinline preload="auto">
+                <video class="archive-project-image" id="${videoId}" autoplay muted loop playsinline preload="none">
                     <source src="${imageSrc}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -119,47 +118,75 @@ function renderProjectCard(project, isMobile, videoCache) {
     `;
 }
 
-function preloadVideos(projects, isMobile, callback) {
+function loadVideosSequentially(projects, isMobile, onVideoLoaded) {
     var videoUrls = [];
-    var videoCache = new Set();
+    var videoToProjectMap = new Map();
     
-    // Collect all video URLs
+    // Collect all video URLs and map them to their video elements
     for (var i = 0; i < projects.length; i++) {
         var project = projects[i];
         var imageExt = project.image.split('.').pop().toLowerCase();
         if (imageExt === 'mp4' && !isMobile) {
             var imageSrc = `images/projects/${project.image}`;
-            if (!videoCache.has(imageSrc)) {
-                videoCache.add(imageSrc);
+            var videoId = 'video-' + project.title.replace(/\s+/g, '-').toLowerCase();
+            if (!videoToProjectMap.has(imageSrc)) {
                 videoUrls.push(imageSrc);
+                videoToProjectMap.set(imageSrc, videoId);
             }
         }
     }
     
     if (videoUrls.length === 0) {
-        callback(videoCache);
         return;
     }
     
-    var loadedCount = 0;
-    var totalVideos = videoUrls.length;
+    var currentIndex = 0;
     
-    function onVideoLoaded() {
-        loadedCount++;
-        if (loadedCount === totalVideos) {
-            callback(videoCache);
+    function loadNextVideo() {
+        if (currentIndex >= videoUrls.length) {
+            return; // All videos loaded
+        }
+        
+        var videoSrc = videoUrls[currentIndex];
+        var videoId = videoToProjectMap.get(videoSrc);
+        var videoElement = document.getElementById(videoId);
+        
+        if (videoElement) {
+            // Set up loading handlers
+            function onVideoReady() {
+                var container = videoElement.closest('.archive-media-container');
+                if (container) {
+                    container.classList.remove('archive-video-loading');
+                }
+                currentIndex++;
+                // Load next video after a short delay to avoid overwhelming the network
+                setTimeout(loadNextVideo, 100);
+            }
+            
+            // Check if video is already loaded
+            if (videoElement.readyState >= 3) {
+                // Video already loaded
+                onVideoReady();
+                return;
+            }
+            
+            // Start loading the video
+            videoElement.preload = 'auto';
+            videoElement.addEventListener('canplaythrough', onVideoReady, { once: true });
+            videoElement.addEventListener('loadeddata', onVideoReady, { once: true });
+            videoElement.addEventListener('error', onVideoReady, { once: true });
+            
+            // Trigger loading
+            videoElement.load();
+        } else {
+            // Video element not found, skip to next
+            currentIndex++;
+            setTimeout(loadNextVideo, 100);
         }
     }
     
-    // Preload all videos
-    for (var j = 0; j < videoUrls.length; j++) {
-        var video = document.createElement('video');
-        video.preload = 'auto';
-        video.muted = true;
-        video.oncanplaythrough = onVideoLoaded;
-        video.onerror = onVideoLoaded; // Continue even if video fails to load
-        video.src = videoUrls[j];
-    }
+    // Start loading the first video
+    setTimeout(loadNextVideo, 100);
 }
 
 function loadArchiveData() {
@@ -189,64 +216,42 @@ function loadArchiveData() {
 
             container.innerHTML = html;
 
-        // Preload all videos on page load
-        preloadVideos(projects, isMobile, function(cache) {
-            videoCache = cache;
-            // Initial render after videos are cached
+            // Render all projects immediately
             renderProjects();
-        });
 
-        // Render all projects
-        function renderProjects() {
-            var grid = document.getElementById('archive-projects-grid');
-            if (!grid) return;
+            // Render all projects
+            function renderProjects() {
+                var grid = document.getElementById('archive-projects-grid');
+                if (!grid) return;
 
-            grid.innerHTML = '';
+                grid.innerHTML = '';
 
-            // Sort by year descending, then by featured status
-            var sortedProjects = projects.slice().sort(function(a, b) {
-                if (b.year !== a.year) {
-                    return b.year - a.year;
-                }
-                if (b.featured !== a.featured) {
-                    return b.featured ? 1 : -1;
-                }
-                return 0;
-            });
-
-            if (sortedProjects.length === 0) {
-                grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
-                return;
-            }
-
-            for (var i = 0; i < sortedProjects.length; i++) {
-                grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, videoCache);
-            }
-
-            // Set up video loading handlers after rendering
-            setTimeout(function() {
-                var videos = grid.querySelectorAll('video.archive-project-image');
-                for (var j = 0; j < videos.length; j++) {
-                    var video = videos[j];
-                    var container = video.closest('.archive-media-container');
-                    
-                    function hideLoading() {
-                        if (container) {
-                            container.classList.remove('archive-video-loading');
-                        }
+                // Sort by year descending, then by featured status
+                var sortedProjects = projects.slice().sort(function(a, b) {
+                    if (b.year !== a.year) {
+                        return b.year - a.year;
                     }
-                    
-                    if (video.readyState >= 3) {
-                        // Video already loaded
-                        hideLoading();
-                    } else {
-                        video.addEventListener('canplaythrough', hideLoading, { once: true });
-                        video.addEventListener('loadeddata', hideLoading, { once: true });
-                        video.addEventListener('error', hideLoading, { once: true });
+                    if (b.featured !== a.featured) {
+                        return b.featured ? 1 : -1;
                     }
+                    return 0;
+                });
+
+                if (sortedProjects.length === 0) {
+                    grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
+                    return;
                 }
-            }, 0);
-        }
+
+                // Render all projects with videos in loading state
+                for (var i = 0; i < sortedProjects.length; i++) {
+                    grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, null);
+                }
+
+                // Start loading videos sequentially after rendering
+                setTimeout(function() {
+                    loadVideosSequentially(sortedProjects, isMobile);
+                }, 0);
+            }
         });
     });
 }

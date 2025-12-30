@@ -112,25 +112,45 @@ function renderCaseStudy(caseStudy, isMobile) {
     var comingSoonBadge = isComingSoon ? '<span class="coming-soon-badge"><span class="material-icons">lock</span><span class="coming-soon-text">Coming Soon!</span></span>' : '';
     
     var titleContainer = isMobile ? 
-        `<div class="case-study-title-container${comingSoonClass}"${comingSoonDataAttr}>` :
-        `<div class="case-study-title-container desktop-align-right${comingSoonClass}"${comingSoonDataAttr}>`;
+        `<div class="case-study-title-container">` :
+        `<div class="case-study-title-container desktop-align-right">`;
 
+    // If there's a link, title is just styled text (card will be the link)
+    // If no link, title is a span
     var titleHtml = caseStudyLink ? 
-        `${titleContainer}<a href="${caseStudyLink}" class="case-study-title-link">${caseStudy.title}</a>${linkIcon}</div>` :
+        `${titleContainer}<span class="case-study-title-link">${caseStudy.title}</span>${linkIcon}</div>` :
         `${titleContainer}<span class="case-study-title">${caseStudy.title}</span>${linkIcon}${comingSoonBadge}</div>`;
 
     var tagsHtml = caseStudy.tags ? `<p class="case-study-tags">${caseStudy.tags}</p>` : '';
     
-    return `
-        <div class="case-study-card">
-            <img class="case-study-image" src="${caseStudy.image}" alt="${caseStudy.imageAlt || ''}" />
-            <div class="case-study-content">
-                ${titleHtml}
-                ${tagsHtml}
-                <p class="case-study-description">${caseStudy.description}</p>
-            </div>
+    // Image is just an image (card will be the link if there's a link)
+    var imageHtml = `<img class="case-study-image" src="${caseStudy.image}" alt="${caseStudy.imageAlt || ''}" />`;
+    
+    // Wrap entire card in link if there's a link, otherwise just a div
+    var cardContent = `
+        ${imageHtml}
+        <div class="case-study-content">
+            ${titleHtml}
+            ${tagsHtml}
+            <p class="case-study-description">${caseStudy.description}</p>
         </div>
     `;
+    
+    if (caseStudyLink) {
+        return `
+            <a href="${caseStudyLink}" class="case-study-card-link">
+                <div class="case-study-card${comingSoonClass}"${comingSoonDataAttr}>
+                    ${cardContent}
+                </div>
+            </a>
+        `;
+    } else {
+        return `
+            <div class="case-study-card${comingSoonClass}"${comingSoonDataAttr}>
+                ${cardContent}
+            </div>
+        `;
+    }
 }
 
 function renderWork(work) {
@@ -206,23 +226,42 @@ function renderProjects(projects) {
         var linkIcon = project.link ? 
             '<span class="material-icons link-icon external">north_east</span>' : '';
 
+        // If there's a link, title is just styled text (card will be the link)
+        // If no link, title is a span
         var titleHtml = project.link ? 
-            `<a href="${project.link}" class="project-title-link">${project.title}${linkIcon}</a>` :
+            `<span class="project-title-link">${project.title}${linkIcon}</span>` :
             `<span class="project-title">${project.title}${linkIcon}</span>`;
 
         var tagsHtml = project.tags ? `<p class="project-tags">${project.tags}</p>` : '';
         
-        projectsHtml += `
-            <div class="project-card">
-                <img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" />
-                <div class="project-content">
-                    ${titleHtml}
-                    <p class="project-year">${project.year}</p>
-                    ${tagsHtml}
-                    <p class="project-description">${project.description}</p>
-                </div>
+        // Image is just an image (card will be the link if there's a link)
+        var imageHtml = `<img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" />`;
+        
+        var cardContent = `
+            ${imageHtml}
+            <div class="project-content">
+                ${titleHtml}
+                <p class="project-year">${project.year}</p>
+                ${tagsHtml}
+                <p class="project-description">${project.description}</p>
             </div>
         `;
+        
+        if (project.link) {
+            projectsHtml += `
+                <a href="${project.link}" class="project-card-link">
+                    <div class="project-card">
+                        ${cardContent}
+                    </div>
+                </a>
+            `;
+        } else {
+            projectsHtml += `
+                <div class="project-card">
+                    ${cardContent}
+                </div>
+            `;
+        }
     }
 
     projectsHtml += '</div></section>';
@@ -353,14 +392,8 @@ function loadHomepageData() {
 }
 
 function setupComingSoonTooltips() {
-    console.log('setupComingSoonTooltips called');
-    var comingSoonElements = document.querySelectorAll('.case-study-title-container.coming-soon');
-    console.log('Found coming soon elements:', comingSoonElements.length);
-    if (comingSoonElements.length === 0) {
-        console.log('No coming soon elements found');
-        // Let's also check if ANY case study containers exist
-        var allContainers = document.querySelectorAll('.case-study-title-container');
-        console.log('Total case study containers found:', allContainers.length);
+    var comingSoonCards = document.querySelectorAll('.case-study-card.coming-soon');
+    if (comingSoonCards.length === 0) {
         return;
     }
     
@@ -378,14 +411,10 @@ function setupComingSoonTooltips() {
     
     // Initialize tooltip
     createTooltip();
-    console.log('Tooltip created, element:', tooltip);
-    console.log('Tooltip in DOM:', document.body.contains(tooltip));
-    console.log('Tooltip classes:', tooltip.className);
     
-    for (var i = 0; i < comingSoonElements.length; i++) {
-        (function(element) {
-            console.log('Adding event listeners to element:', element);
-            element.addEventListener('mouseenter', function(e) {
+    for (var i = 0; i < comingSoonCards.length; i++) {
+        (function(card) {
+            card.addEventListener('mouseenter', function(e) {
                 if (tooltip) {
                     tooltip.classList.add('show');
                     // Position tooltip immediately on enter - use clientX/clientY for viewport-relative positioning
@@ -396,7 +425,7 @@ function setupComingSoonTooltips() {
                 }
             });
             
-            element.addEventListener('mousemove', function(e) {
+            card.addEventListener('mousemove', function(e) {
                 if (!tooltip) return;
                 // Position tooltip near cursor with offset - use clientX/clientY for viewport-relative positioning
                 var offsetX = 20;
@@ -405,16 +434,13 @@ function setupComingSoonTooltips() {
                 tooltip.style.top = (e.clientY + offsetY) + 'px';
             });
             
-            element.addEventListener('mouseleave', function() {
-                console.log('mouseleave fired!');
+            card.addEventListener('mouseleave', function() {
                 if (tooltip) {
                     tooltip.classList.remove('show');
                 }
             });
-        })(comingSoonElements[i]);
+        })(comingSoonCards[i]);
     }
-    
-    console.log('Event listeners attached. Tooltip element:', tooltip);
 }
 
 // Load on page load

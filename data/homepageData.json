@@ -23,7 +23,7 @@
           "image": "images/casestudies/eux.png",
           "imageAlt": "Early user experience case study image",
           "tags": "2D UX, Figma, Growth",
-          "description": "Hitting key metrics through user centred design. +10% paywall conversion rate, +30% users playing one or more classes - through caring + addressing user needs.",
+          "description": "Hitting key metrics through user centred design. +16% new user conversion, +10% paywall conversion, +30% users playing one or more classes - all by caring + addressing user needs.",
           "key": "early-user-experience",
           "comingSoon": true
         },
@@ -32,7 +32,7 @@
           "image": "images/casestudies/sjc.png",
           "imageAlt": "Sidestep jump crouch case study image",
           "tags": "Rapid Prototyping + Spatial Design",
-          "description": "Spatial interaction design for a mass market VR fitness application. Prototyped, tested & shipped 3 new moves for FitXR in 3 months.",
+          "description": "Spatial interaction design for a mass market VR fitness application. Prototyped, tested & shipped 3 new moves for FitXR in 3 months. Elicited user responses like \"FINALLY, my pulse was RACING. LOVE IT.",
           "key": "sidestep-jump-crouch",
           "comingSoon": true
         }
@@ -87,7 +87,7 @@
       "title": "Morandi",
       "year": 2025,
       "tags": "AI, Vibe Coding",
-      "description": "A concept + prototype for a daily art app, that generated prompts, inspiration, and critiques of your art.",
+      "description": "A concept + prototype for a daily art app, that generates prompts, inspiration, and critiques of your art.",
       "image": "images/projects/morandi.png",
       "imageAlt": "Morandi project image",
       "link": "https://youtu.be/nL7ncOmOpdg?si=wARiMHqXS1jNXIR0"

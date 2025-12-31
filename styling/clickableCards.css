@@ -6,14 +6,14 @@
     margin-right: 15px;
     margin-bottom: 10px;
     margin-top: 15px;
-    border-radius: 5rem 5rem 2rem 2rem;
+    border-radius: 5rem 5rem 0rem 0rem;
     transition: all 0.5s;
   }
 
   @media (hover: hover) {
     .ccard-casestudy:hover {
       transition: all 0.5s;
-      border-radius: 2rem 2rem 2rem 2rem;
+      border-radius: 2rem 2rem 0rem 0rem;
     }
 
     .card:hover .ccard-img-top{
@@ -26,7 +26,7 @@
   .ccard-casestudy .ccard-body {
     cursor: pointer;
     background: linear-gradient(0deg, var(--secondary-color-light), var(--primary-color) 60%);
-    border-radius: 0rem 0rem 2rem 2rem;
+    border-radius: 0rem 0rem 0rem 0rem;
     padding-right: 10px;
     padding-left: 10px;
   }

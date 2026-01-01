@@ -25,6 +25,13 @@ function getGradientClass(company) {
     return "";
 }
 
+function isExternalLink(url) {
+    if (!url) return false;
+    return url.startsWith('http://') || 
+           url.startsWith('https://') || 
+           url.startsWith('mailto:');
+}
+
 function renderHeader(header) {
     var isMobile = window.mobileCheck();
     return `
@@ -103,9 +110,16 @@ function renderCaseStudy(caseStudy, isMobile) {
     // Check if this is a coming soon case study
     var isComingSoon = caseStudy.comingSoon === true;
     
+    // Determine if link is external or internal
+    var isExternal = caseStudyLink ? isExternalLink(caseStudyLink) : false;
+    
     var linkIcon = '';
     if (caseStudyLink) {
-        linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+        if (isExternal) {
+            linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+        } else {
+            linkIcon = '<span class="material-icons link-icon chevron">chevron_right</span>';
+        }
     } else if (!isComingSoon) {
         // Only show chevron if not coming soon
         linkIcon = '<span class="material-icons link-icon chevron">chevron_right</span>';
@@ -141,8 +155,9 @@ function renderCaseStudy(caseStudy, isMobile) {
     `;
     
     if (caseStudyLink) {
+        var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         return `
-            <a href="${caseStudyLink}" class="case-study-card-link">
+            <a href="${caseStudyLink}" class="case-study-card-link"${targetAttr}>
                 <div class="case-study-card${comingSoonClass}"${comingSoonDataAttr}>
                     ${cardContent}
                 </div>
@@ -229,8 +244,15 @@ function renderProjects(projects) {
 
     for (var i = 0; i < projects.length; i++) {
         var project = projects[i];
-        var linkIcon = project.link ? 
-            '<span class="material-icons link-icon external">north_east</span>' : '';
+        var isExternal = project.link ? isExternalLink(project.link) : false;
+        var linkIcon = '';
+        if (project.link) {
+            if (isExternal) {
+                linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+            } else {
+                linkIcon = '<span class="material-icons link-icon chevron">chevron_right</span>';
+            }
+        }
 
         // If there's a link, title is just styled text (card will be the link)
         // If no link, title is a span
@@ -254,8 +276,9 @@ function renderProjects(projects) {
         `;
         
         if (project.link) {
+            var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
             projectsHtml += `
-                <a href="${project.link}" class="project-card-link">
+                <a href="${project.link}" class="project-card-link"${targetAttr}>
                     <div class="project-card">
                         ${cardContent}
                     </div>
@@ -284,11 +307,19 @@ function renderTalks(talks) {
             locationsHtml += `<p class="talk-location">${talk.locations[j]}</p>`;
         }
 
-        var linkIcon = talk.link ? 
-            '<span class="material-icons link-icon external">north_east</span>' : '';
+        var isExternal = talk.link ? isExternalLink(talk.link) : false;
+        var linkIcon = '';
+        if (talk.link) {
+            if (isExternal) {
+                linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+            } else {
+                linkIcon = '<span class="material-icons link-icon chevron">chevron_right</span>';
+            }
+        }
 
+        var targetAttr = talk.link && isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         var titleHtml = talk.link ? 
-            `<a href="${talk.link}" class="talk-title-link">${talk.title}${linkIcon}</a>` :
+            `<a href="${talk.link}" class="talk-title-link"${targetAttr}>${talk.title}${linkIcon}</a>` :
             `<span class="talk-title">${talk.title}${linkIcon}</span>`;
 
         talksHtml += `
@@ -311,7 +342,7 @@ function renderContact(contact) {
         
         socialLinksHtml += `
             <div class="contact-item">
-                ${link.link ? `<a href="${link.link}" class="contact-link">${link.name}${linkIcon}</a>` : `<span class="contact-link">${link.name}${linkIcon}</span>`}
+                ${link.link ? `<a href="${link.link}" class="contact-link" target="_blank" rel="noopener noreferrer">${link.name}${linkIcon}</a>` : `<span class="contact-link">${link.name}${linkIcon}</span>`}
             </div>
         `;
     }
@@ -324,7 +355,7 @@ function renderContact(contact) {
             <div class="contact-content">
                 ${socialLinksHtml}
                 <div class="contact-item">
-                    <a href="mailto:${contact.email}" class="contact-label">Email${emailLinkIcon}</a>
+                    <a href="mailto:${contact.email}" class="contact-label" target="_blank" rel="noopener noreferrer">Email${emailLinkIcon}</a>
                     <p class="contact-email">${contact.email}</p>
                 </div>
             </div>

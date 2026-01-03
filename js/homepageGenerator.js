@@ -32,30 +32,7 @@ function isExternalLink(url) {
            url.startsWith('mailto:');
 }
 
-function renderHeader(header) {
-    var isMobile = window.mobileCheck();
-    return `
-        <header class="homepage-header">
-            <div class="header-background">
-                <img src="${header.backgroundImage}" alt="Header background" />
-            </div>
-            <div class="header-content">
-                <img class="profile-image" src="${header.profileImage}" alt="Profile picture" />
-                <div class="header-name-role">
-                    <h1 class="header-name">${header.name}</h1>
-                    <p class="header-role">${header.role}</p>
-                </div>
-            </div>
-        </header>
-        <nav class="homepage-nav">
-            <a href="#about" class="nav-link">About</a>
-            <a href="#work" class="nav-link">Work</a>
-            <a href="#projects" class="nav-link">Projects</a>
-            <a href="#talks" class="nav-link">Talks</a>
-            <a href="#contact" class="nav-link">Contact</a>
-        </nav>
-    `;
-}
+// Header is now rendered using window.renderHeader from header.js
 
 function renderAbout(about) {
     // Split bio text to handle styling for "Pip", "Ultraleap", "FitXR", and "joyful and inevitable"
@@ -418,7 +395,17 @@ function loadHomepageData() {
         if (!container) return;
 
         var html = '';
-        html += renderHeader(data.header);
+        // Use shared header function with homepage option, then add navigation
+        html += window.renderHeader(data.header, { isHomepage: true });
+        html += `
+            <nav class="homepage-nav">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#work" class="nav-link">Work</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#talks" class="nav-link">Talks</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        `;
         html += renderAbout(data.about);
         html += renderWork(data.work);
         html += renderProjects(data.projects);

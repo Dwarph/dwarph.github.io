@@ -28,26 +28,7 @@ function loadHomepageJSON(callback) {
     xobj.send(null);
 }
 
-function renderHeader(header) {
-    return `
-        <header class="homepage-header">
-            <div class="header-background">
-                <img src="${header.backgroundImage}" alt="Header background" />
-            </div>
-            <div class="header-content">
-                <a href="index.html">
-                    <img class="profile-image" src="${header.profileImage}" alt="Profile picture" />
-                </a>
-                <div class="header-name-role">
-                    <a href="index.html" class="header-link">
-                        <h1 class="header-name">${header.name}</h1>
-                        <p class="header-role">${header.role}</p>
-                    </a>
-                </div>
-            </div>
-        </header>
-    `;
-}
+// Header is now rendered using window.renderHeader from header.js
 
 function renderProjectCard(project, isMobile, videoCache) {
     if (isMobile === undefined) {
@@ -201,7 +182,7 @@ function loadArchiveData() {
             var videoCache = null;
             
             // Build HTML with header
-            var html = renderHeader(homepageData.header);
+            var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
             html += `
                 <nav class="breadcrumb-nav">
                     <a href="index.html" class="breadcrumb-link">Home</a>

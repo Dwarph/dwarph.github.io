@@ -182,6 +182,8 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
+    /* Ensure consistent spacing regardless of whether children are direct or wrapped in link */
+    line-height: 1;
 }
 
 .header-name {
@@ -1565,10 +1567,51 @@ body {
 .header-link {
     text-decoration: none;
     color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    /* Ensure no extra spacing from link - match header-name-role exactly */
+    width: 100%;
+    /* Remove any default browser spacing on anchor tags */
+    vertical-align: baseline;
 }
 
 .header-link:hover {
     opacity: 0.9;
+}
+
+/* On homepage, the link points to # so make it less obvious it's clickable */
+.header-link[href="#"] {
+    cursor: default;
+}
+
+.header-link[href="#"]:hover {
+    opacity: 1;
+}
+
+/* Ensure header links don't affect layout */
+.header-content a {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.header-content a img {
+    display: block;
+}
+
+/* Ensure h1 and p inside header-link have EXACTLY the same spacing as direct children */
+.header-link .header-name,
+.header-link .header-role {
+    margin: 0;
+    line-height: 100%;
+    /* Ensure no extra spacing */
+    display: block;
 }
 
 /* Breadcrumb Navigation */

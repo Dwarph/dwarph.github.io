@@ -39,27 +39,7 @@ function loadMarkdownFile(key, callback) {
     xobj.send(null);
 }
 
-function renderHeader(header) {
-    var isMobile = window.mobileCheck();
-    return `
-        <header class="homepage-header">
-            <div class="header-background">
-                <img src="${header.backgroundImage}" alt="Header background" />
-            </div>
-            <div class="header-content">
-                <a href="index.html">
-                    <img class="profile-image" src="${header.profileImage}" alt="Profile picture" />
-                </a>
-                <div class="header-name-role">
-                    <a href="index.html" class="header-link">
-                        <h1 class="header-name">${header.name}</h1>
-                        <p class="header-role">${header.role}</p>
-                    </a>
-                </div>
-            </div>
-        </header>
-    `;
-}
+// Header is now rendered using window.renderHeader from header.js
 
 function renderBreadcrumb(caseStudyTitle) {
     return `
@@ -107,7 +87,7 @@ function loadCaseStudyPage() {
         if (!container) return;
         
         var html = '';
-        html += renderHeader(homepageData.header);
+        html += window.renderHeader(homepageData.header, { homeLink: 'index.html' });
         
         // Load case studies data to find the matching case study
         loadCaseStudiesJSON(function (caseStudies) {

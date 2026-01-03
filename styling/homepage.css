@@ -1023,10 +1023,9 @@ body {
         gap: 14px;
     }
 
+    /* Hide desktop logo column on mobile */
     .job-left-column {
-        width: 100%;
-        flex-direction: row;
-        align-items: flex-start;
+        display: none;
     }
 
     .job-logo-container {
@@ -1047,8 +1046,33 @@ body {
         gap: 0;
     }
 
-    .job-info {
+    /* Hide desktop layout on mobile */
+    .job-info-desktop {
+        display: none;
+    }
+
+    /* Work Info Container - Mobile */
+    .job-work-info {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .job-logo-container-mobile {
+        width: 84px;
+        height: 84px;
+        flex-shrink: 0;
+    }
+
+    .job-logo-container-mobile .job-logo {
+        width: 84px;
+        height: 84px;
+    }
+
+    .job-info-mobile {
         margin-bottom: 0;
+        flex: 1;
     }
 
     .job-company {
@@ -1063,18 +1087,77 @@ body {
         font-size: 16px;
     }
 
-    .job-description {
+    /* Work Description Container - Mobile */
+    .job-work-description {
+        margin-top: 14px;
+    }
+
+    .job-description-mobile {
+        font-family: 'Nunito Sans', sans-serif;
+        font-weight: 400;
         font-size: 16px;
         line-height: 1.4;
         letter-spacing: 0;
-        padding-top: 14px;
+        padding-top: 0;
         margin-top: 0;
+        font-variation-settings: 'YTLC' 500, 'wdth' 100;
     }
 
-    .job-case-studies,
-    .job-other-work {
+    /* Case Studies Container - Mobile */
+    .job-case-studies-container {
+        display: flex;
+        flex-direction: row;
+        gap: 14px;
+        margin-top: 14px;
+    }
+
+    .job-timeline-column {
+        width: 10px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: stretch;
+        align-self: stretch;
+    }
+
+    .job-timeline-gradient {
+        width: 10px;
+        height: 100%;
+        min-height: 100%;
+        border-radius: 999px;
+        flex-shrink: 0;
+        align-self: stretch;
+    }
+
+    .job-timeline-gradient.fitxr {
+        background: linear-gradient(to bottom, var(--fitxr-start), var(--fitxr-end));
+    }
+
+    .job-timeline-gradient.ultraleap {
+        background: linear-gradient(to bottom, var(--ultraleap-start), var(--ultraleap-end));
+    }
+
+    .job-case-studies-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* Hide desktop case studies on mobile */
+    .job-right-column > .job-case-studies,
+    .job-right-column > .job-other-work {
+        display: none;
+    }
+
+    .job-case-studies-content > .job-case-studies,
+    .job-case-studies-content > .job-other-work {
         gap: 25px;
-        margin-top: 25px;
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .job-case-studies-content > .job-case-studies:first-child,
+    .job-case-studies-content > .job-other-work:first-child {
+        margin-top: 0;
     }
 
     .case-studies-title {
@@ -1095,12 +1178,14 @@ body {
     .case-study-image {
         width: 100%;
         height: 194px;
+        border-radius: 15px;
     }
 
     .project-image {
         width: 100%;
         max-width: 100%;
         height: 194px;
+        border-radius: 15px;
     }
     
     .project-content {
@@ -1212,21 +1297,9 @@ body {
         font-size: 16px;
     }
 
-    /* Colored bar at bottom of work sections (mobile only) */
+    /* Hide colored bar at bottom of work sections on mobile */
     .job-bottom-bar {
-        display: block;
-        width: 100%;
-        height: 8px;
-        border-radius: 999px;
-        margin-top: 25px;
-    }
-
-    .job-bottom-bar.fitxr {
-        background: linear-gradient(to right, var(--fitxr-start), var(--fitxr-end));
-    }
-
-    .job-bottom-bar.ultraleap {
-        background: linear-gradient(to right, var(--ultraleap-start), var(--ultraleap-end));
+        display: none;
     }
 }
 
@@ -1241,6 +1314,34 @@ body {
 
     /* Hide colored bar on desktop */
     .job-bottom-bar {
+        display: none;
+    }
+
+    /* Show desktop layout */
+    .job-info-desktop {
+        display: block;
+    }
+
+    /* Show desktop case studies */
+    .job-right-column > .job-case-studies,
+    .job-right-column > .job-other-work {
+        display: flex;
+    }
+
+    /* Hide mobile-specific containers on desktop */
+    .job-work-info {
+        display: none;
+    }
+
+    .job-work-description {
+        display: none;
+    }
+
+    .job-case-studies-container {
+        display: none;
+    }
+
+    .job-logo-container-mobile {
         display: none;
     }
 }

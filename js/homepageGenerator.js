@@ -210,6 +210,32 @@ function renderWork(work) {
             .replace(/Ultraleap/g, '<span class="bio-gradient-ultraleap">Ultraleap</span>')
             .replace(/FitXR/g, '<span class="bio-gradient-fitxr">FitXR</span>');
 
+        // Build case studies container with timeline if needed
+        var caseStudiesContainerHtml = '';
+        if (needsTimeline) {
+            caseStudiesContainerHtml = `
+                <div class="job-case-studies-container ${job.gradientColor}">
+                    <div class="job-timeline-column">
+                        <div class="job-timeline-gradient ${job.gradientColor}"></div>
+                    </div>
+                    <div class="job-case-studies-content">
+                        ${caseStudiesHtml}
+                        ${otherWorkHtml}
+                    </div>
+                </div>
+            `;
+        } else {
+            // If no case studies, still wrap in container but without timeline
+            caseStudiesContainerHtml = `
+                <div class="job-case-studies-container">
+                    <div class="job-case-studies-content">
+                        ${caseStudiesHtml}
+                        ${otherWorkHtml}
+                    </div>
+                </div>
+            `;
+        }
+
         workHtml += `
             <div class="work-job">
                 <div class="job-layout">
@@ -219,14 +245,37 @@ function renderWork(work) {
                         </div>
                     </div>
                     <div class="job-right-column ${needsTimeline ? 'has-case-studies ' + job.gradientColor : ''}">
-                        <div class="job-info">
-                            <h3 class="job-company ${gradientClass}">${job.company}</h3>
-                            <p class="job-dates">${job.dates}</p>
-                            <p class="job-role">${job.role}</p>
+                        <!-- Desktop: job info and description -->
+                        <div class="job-info-desktop">
+                            <div class="job-info">
+                                <h3 class="job-company ${gradientClass}">${job.company}</h3>
+                                <p class="job-dates">${job.dates}</p>
+                                <p class="job-role">${job.role}</p>
+                            </div>
+                            <p class="job-description">${descriptionText}</p>
                         </div>
-                        <p class="job-description">${descriptionText}</p>
                         ${caseStudiesHtml}
                         ${otherWorkHtml}
+                        
+                        <!-- Mobile: work info container -->
+                        <div class="job-work-info">
+                            <div class="job-logo-container-mobile">
+                                <img class="job-logo" src="${job.logo}" alt="${job.company} logo" />
+                            </div>
+                            <div class="job-info-mobile">
+                                <h3 class="job-company ${gradientClass}">${job.company}</h3>
+                                <p class="job-dates">${job.dates}</p>
+                                <p class="job-role">${job.role}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile: work description container -->
+                        <div class="job-work-description">
+                            <p class="job-description-mobile">${descriptionText}</p>
+                        </div>
+                        
+                        <!-- Mobile: case studies container -->
+                        ${caseStudiesContainerHtml}
                     </div>
                 </div>
                 <div class="job-bottom-bar ${job.gradientColor}"></div>
@@ -380,11 +429,13 @@ function loadHomepageData() {
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {
-            var caseStudiesSections = container.querySelectorAll('.job-case-studies');
-            for (var i = 0; i < caseStudiesSections.length; i++) {
-                var caseStudiesSection = caseStudiesSections[i];
-                var rightColumn = caseStudiesSection.closest('.job-right-column');
-                if (rightColumn) {
+            // Only find desktop case studies (direct children of .job-right-column, not in mobile containers)
+            var rightColumns = container.querySelectorAll('.job-right-column.has-case-studies');
+            for (var i = 0; i < rightColumns.length; i++) {
+                var rightColumn = rightColumns[i];
+                // Find the first case studies section that's a direct child (desktop layout)
+                var caseStudiesSection = rightColumn.querySelector(':scope > .job-case-studies');
+                if (caseStudiesSection) {
                     var caseStudiesRect = caseStudiesSection.getBoundingClientRect();
                     var rightColumnRect = rightColumn.getBoundingClientRect();
                     var caseStudiesOffset = caseStudiesRect.top - rightColumnRect.top;

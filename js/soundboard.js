@@ -50,9 +50,19 @@ class Soundboard {
 
     // Queue play button
     const playQueueBtn = document.getElementById('play-queue-btn');
-    playQueueBtn.addEventListener('click', () => {
-      this.playQueue();
-    });
+    if (playQueueBtn) {
+      playQueueBtn.setAttribute('aria-label', 'Play queued sounds');
+      playQueueBtn.addEventListener('click', () => {
+        this.playQueue();
+      });
+      // Keyboard support
+      playQueueBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.playQueue();
+        }
+      });
+    }
   }
 
   updateModeDisplay() {
@@ -104,10 +114,13 @@ class Soundboard {
     button.className = 'sound-button';
     button.dataset.sfx = sound.sfx;
     button.dataset.index = index;
+    button.setAttribute('aria-label', `Play sound: ${sound.text}`);
+    button.setAttribute('type', 'button');
 
     const emoji = document.createElement('div');
     emoji.className = 'sound-emoji';
     emoji.textContent = sound.emoji;
+    emoji.setAttribute('aria-hidden', 'true');
 
     const text = document.createElement('div');
     text.className = 'sound-text';
@@ -127,6 +140,14 @@ class Soundboard {
 
     button.addEventListener('click', () => {
       this.handleSoundClick(sound, button);
+    });
+    
+    // Keyboard support
+    button.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.handleSoundClick(sound, button);
+      }
     });
 
     return button;

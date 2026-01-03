@@ -817,7 +817,7 @@ body {
     font-size: 24px;
     line-height: normal;
     color: var(--text-color);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 5px;
     text-decoration: none;
@@ -873,7 +873,7 @@ body {
     font-size: 24px;
     line-height: 100%;
     color: var(--text-color);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 5px;
     text-decoration: none;
@@ -998,7 +998,8 @@ body {
 
     .homepage-nav {
         gap: 15px 34px;
-        padding: var(--spacing-md);
+        padding: var(--spacing-md) var(--mobile-padding-horizontal);
+        box-sizing: border-box;
     }
 
     .nav-link {

@@ -17,6 +17,23 @@
     /* Ultraleap Gradient */
     --ultraleap-start: #00eb86;
     --ultraleap-end: #00ceca;
+    
+    /* Spacing Scale - Mobile First */
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 25px;
+    --spacing-2xl: 35px;
+    --spacing-3xl: 50px;
+    
+    /* Mobile-specific spacing - Hierarchy-based */
+    --mobile-padding-horizontal: 20px;  /* Consistent horizontal padding */
+    --mobile-section-gap: 45px;         /* Space between major sections (highest hierarchy) */
+    --mobile-job-gap: 40px;             /* Space between work jobs (high hierarchy) */
+    --mobile-card-gap: 25px;            /* Space between case studies/projects (medium hierarchy) */
+    --mobile-element-gap: 15px;         /* Space between related elements (low hierarchy) */
+    --mobile-tight-gap: 10px;           /* Space within cards (very low hierarchy) */
 }
 
 /* Base Styles */
@@ -497,7 +514,7 @@ body {
 .case-study-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--mobile-tight-gap);
     padding: 0;
 }
 
@@ -543,7 +560,7 @@ body {
 .project-content {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: var(--mobile-tight-gap);
     flex: 1;
     min-width: 0;
     max-width: 100%;
@@ -774,7 +791,7 @@ body {
 .talks-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: var(--mobile-element-gap);
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -839,7 +856,7 @@ body {
 .contact-content {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: var(--mobile-element-gap);
 }
 
 .contact-item {
@@ -941,17 +958,17 @@ body {
 
     .header-content {
         flex-direction: column;
-        gap: 10px;
+        gap: var(--spacing-sm);
         width: 100%;
         max-width: 100%;
-        padding: 0 15px;
+        padding: 0 var(--mobile-padding-horizontal);
         box-sizing: border-box;
     }
     
     .header-name-role {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: var(--spacing-xs);
         align-items: center;
         width: 100%;
         max-width: 100%;
@@ -979,16 +996,21 @@ body {
 
     .homepage-nav {
         gap: 15px 34px;
-        padding: 15px;
+        padding: var(--spacing-md);
     }
 
     .nav-link {
         font-size: 24px;
     }
 
+    /* Override negative margin on mobile - reduce gap to account for nav padding */
+    .homepage-nav + .homepage-section {
+        margin-top: var(--spacing-2xl);
+    }
+
     .homepage-section {
-        padding: 0 25px;
-        margin-bottom: 27px;
+        padding: 0 var(--mobile-padding-horizontal);
+        margin-bottom: var(--mobile-section-gap);
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
@@ -996,7 +1018,7 @@ body {
 
     .section-title {
         font-size: 40px;
-        margin-bottom: 25px;
+        margin-bottom: var(--spacing-xl);
     }
 
 
@@ -1006,12 +1028,16 @@ body {
         letter-spacing: 0;
     }
 
+    .about-bio {
+        margin-bottom: var(--spacing-md);
+    }
+
     .cv-download-link {
         font-size: 16px;
     }
 
     .work-jobs {
-        gap: 50px;
+        gap: var(--mobile-job-gap);
     }
 
     .work-job {
@@ -1020,7 +1046,7 @@ body {
 
     .job-layout {
         flex-direction: column;
-        gap: 14px;
+        gap: var(--spacing-md);
     }
 
     /* Hide desktop logo column on mobile */
@@ -1056,7 +1082,7 @@ body {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        gap: 14px;
+        gap: var(--spacing-md);
     }
 
     .job-logo-container-mobile {
@@ -1089,7 +1115,7 @@ body {
 
     /* Work Description Container - Mobile */
     .job-work-description {
-        margin-top: 14px;
+        margin-top: var(--spacing-md);
     }
 
     .job-description-mobile {
@@ -1107,8 +1133,8 @@ body {
     .job-case-studies-container {
         display: flex;
         flex-direction: row;
-        gap: 14px;
-        margin-top: 14px;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
     }
 
     .job-timeline-column {
@@ -1149,7 +1175,7 @@ body {
 
     .job-case-studies-content > .job-case-studies,
     .job-case-studies-content > .job-other-work {
-        gap: 25px;
+        gap: var(--mobile-card-gap);
         margin-top: 0;
         display: flex;
         flex-direction: column;
@@ -1196,7 +1222,7 @@ body {
 
     .case-study-title-container {
         justify-content: flex-start;
-        gap: 6px;
+        gap: var(--spacing-xs);
     }
 
     .case-study-title-container.desktop-align-right {
@@ -1216,7 +1242,7 @@ body {
     .project-title,
     .project-title-link {
         font-size: 20px;
-        gap: 5px;
+        gap: var(--spacing-xs);
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
@@ -1249,7 +1275,7 @@ body {
     }
 
     .projects-list {
-        gap: 25px;
+        gap: var(--mobile-card-gap);
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
@@ -1593,8 +1619,8 @@ body {
 
 @media (max-width: 768px) {
     .breadcrumb-nav {
-        padding: 15px;
-        gap: 8px;
+        padding: var(--mobile-padding-horizontal);
+        gap: var(--spacing-sm);
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
@@ -1629,21 +1655,21 @@ body {
     
     .case-study-section .case-study-content h2 {
         font-size: 32px;
-        margin: 25px 0 10px 0;
+        margin: var(--spacing-xl) 0 var(--spacing-sm) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-section .case-study-content h3 {
         font-size: 24px;
-        margin: 20px 0 10px 0;
+        margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-section .case-study-content h4 {
         font-size: 20px;
-        margin: 15px 0 8px 0;
+        margin: var(--spacing-md) 0 var(--spacing-sm) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
@@ -1804,7 +1830,7 @@ body {
 .archive-project-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--mobile-tight-gap);
     flex: 1;
     min-width: 0;
     max-width: 100%;
@@ -1865,7 +1891,7 @@ body {
 .archive-project-links {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--mobile-tight-gap);
     margin-top: 5px;
 }
 
@@ -1901,7 +1927,7 @@ body {
     .archive-filters {
         flex-direction: column;
         align-items: flex-start;
-        gap: 20px;
+        gap: var(--spacing-lg);
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
@@ -1913,11 +1939,11 @@ body {
     }
 
     .archive-section .section-title {
-        margin-bottom: 35px;
+        margin-bottom: var(--spacing-2xl);
     }
 
     .archive-projects-grid {
-        gap: 50px;
+        gap: var(--mobile-card-gap);
         width: 100%;
         max-width: 100%;
     }

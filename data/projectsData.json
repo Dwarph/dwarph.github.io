@@ -44,7 +44,7 @@
         ],
         "links": [
             {
-                "text": "Read more,",
+                "text": "Watch the vid,",
                 "link": "https://www.linkedin.com/posts/pip-turner97_hand-menus-are-becoming-an-awesome-and-common-activity-7214576178064433152-e6w3?utm_source=share&utm_medium=member_desktop"
             },
             {
@@ -71,7 +71,7 @@
         ],
         "links": [
             {
-                "text": "Watch a playthrough,",
+                "text": "Watch the vid,",
                 "link": "https://youtu.be/ajYloY6Uvdc"
             }
         ]
@@ -94,7 +94,7 @@
         ],
         "links": [
             {
-                "text": "Watch a playthrough,",
+                "text": "Watch the vid,",
                 "link": "https://youtu.be/kpzXk0ABDBY"
             },
             {
@@ -130,7 +130,7 @@
         ],
         "links": [
             {
-                "text": "Read more,",
+                "text": "Watch the vid,",
                 "link": "https://www.linkedin.com/posts/pip-turner97_spatial-apps-should-adapt-to-their-context-activity-7185652180446519296-KIQl?utm_source=share&utm_medium=member_desktop"
             }
         ]
@@ -175,6 +175,9 @@
         ],
         "links": [
             {
+                "text": "Watch the vid,",
+                "link": "https://youtu.be/7SEScSsG2Hg?si=ntNupbfhni1M7aT3"
+            },            {
                 "text": "Download Aurora,",
                 "link": "https://gallery.leapmotion.com/aurora/"
             },
@@ -202,7 +205,7 @@
         ],
         "links": [
             {
-                "text": "Read more,",
+                "text": "Watch the vid,",
                 "link": "https://pipturner.co.uk/twitter/1636418511445671947"
             }
         ]
@@ -225,6 +228,9 @@
         ],
         "links": [
             {
+                "text": "Watch the vid",
+                "link": "https://www.linkedin.com/posts/pip-turner97_i-recently-refound-this-video-of-black-hole-activity-7255156086276608001-olZ-"
+            },            {
                 "text": "Source Code",
                 "link": "https://github.com/ultraleap/Unity-Hand-Interaction-Experiments/tree/black-hole-storage"
             },
@@ -345,6 +351,10 @@
         ],
         "links": [
             {
+                "text": "Watch the vid,",
+                "link": "https://youtu.be/upeqkvJpXFA?si=el-iePjEXZkgTFA4"
+            },
+            {
                 "text": "Press release",
                 "link": "https://www.ultraleap.com/company/news/press-release/gemini-v5-hand-tracking/"
             }
@@ -366,6 +376,10 @@
             "Ultraleap"
         ],
         "links": [
+            {
+                "text": "Watch the vid,",
+                "link": "https://youtu.be/Llvh4GBpnVA?si=TaEzJNxbkaa8AE5C&t=38"
+            },
             {
                 "text": "Download",
                 "link": "https://gallery.leapmotion.com/blocks/"

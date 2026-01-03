@@ -1837,6 +1837,22 @@ body {
     box-sizing: border-box;
 }
 
+.archive-media-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.archive-media-link:hover .archive-project-image {
+    opacity: 0.8;
+}
+
+.archive-media-link:hover ~ .archive-project-content .archive-project-links .archive-project-link:first-child {
+    opacity: 0.7;
+}
+
 .archive-media-container {
     position: relative;
     width: 194px;
@@ -2042,6 +2058,11 @@ body {
 
     .archive-project-card {
         flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .archive-media-link {
         width: 100%;
         max-width: 100%;
     }

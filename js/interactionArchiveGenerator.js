@@ -71,7 +71,9 @@ function renderProjectCard(project, isMobile, videoCache) {
 
     // Render links
     var linksHtml = '';
+    var firstLink = null;
     if (project.links && project.links.length > 0) {
+        firstLink = project.links[0];
         linksHtml = '<div class="archive-project-links">';
         for (var i = 0; i < project.links.length; i++) {
             var link = project.links[i];
@@ -85,9 +87,15 @@ function renderProjectCard(project, isMobile, videoCache) {
         linksHtml += '</div>';
     }
 
+    // Wrap media in link if first link exists
+    var wrappedMediaHtml = mediaHtml;
+    if (firstLink) {
+        wrappedMediaHtml = `<a href="${firstLink.link}" class="archive-media-link" target="_blank" rel="noopener noreferrer">${mediaHtml}</a>`;
+    }
+
     return `
         <div class="archive-project-card" data-year="${project.year}" data-featured="${project.featured}">
-            ${mediaHtml}
+            ${wrappedMediaHtml}
             <div class="archive-project-content">
                 <h3 class="archive-project-title">${project.title}</h3>
                 <p class="archive-project-year">${project.year}</p>

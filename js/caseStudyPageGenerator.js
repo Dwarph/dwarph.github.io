@@ -64,10 +64,17 @@ function renderCaseStudyContent(caseStudy, markdown) {
     htmlContent = htmlContent.replace(/href="\.\/images\/casestudies\//g, 'href="images/casestudies/');
     htmlContent = htmlContent.replace(/href="\.\/data\/casestudies\/images\//g, 'href="data/casestudies/images/');
     
+    // Add intro paragraph for Hyperion Showcase case study
+    var introParagraph = '';
+    if (caseStudy.key === 'prosho') {
+        introParagraph = '<p class="archive-intro">I led the design and interaction research for a suite of apps showcasing Hyperion—<span class="bio-gradient-ultraleap">Ultraleap</span>\'s sixth-generation hand tracking. By moving from stakeholder interviews and ShapesXR prototypes to iterative user testing, we demonstrated the power of microgestures and "hand-on-object" tracking in real-world scenarios. These demos ultimately drove new OEM interest and excited customers at major events like AWE.</p>';
+    }
+    
     return `
         <section class="homepage-section case-study-section">
             <h1 class="case-study-page-title">${caseStudy.title}</h1>
             <p class="case-study-page-company">${caseStudy.company}</p>
+            ${introParagraph}
             <div class="case-study-content">
                 ${htmlContent}
             </div>

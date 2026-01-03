@@ -1757,7 +1757,24 @@ body {
 }
 
 .archive-section .section-title {
-    margin-bottom: 50px;
+    margin-bottom: 25px;
+}
+
+.archive-intro {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--text-color);
+    margin: 0 0 24px 0;
+    letter-spacing: 0;
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
+}
+
+.archive-divider {
+    border: none;
+    border-top: 1px solid rgba(55, 44, 9, 0.2);
+    margin: 0 0 35px 0;
 }
 
 .archive-filters {
@@ -2005,6 +2022,15 @@ body {
     }
 
     .archive-section .section-title {
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .archive-intro {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .archive-divider {
         margin-bottom: var(--spacing-2xl);
     }
 

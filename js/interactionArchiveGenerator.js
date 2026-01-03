@@ -191,6 +191,8 @@ function loadArchiveData() {
                 </nav>
                 <section class="homepage-section archive-section">
                     <h1 class="section-title">Interaction Archive</h1>
+                    <p class="archive-intro">These are interactions and applications I worked on over the five years I was at <span class="bio-gradient-ultraleap">Ultraleap</span>. We focused on novel spatial interactions that tried to prove the need and viability of high fidelity hand tracking as a primary input for XR devices.</p>
+                    <hr class="archive-divider">
                     <div id="archive-projects-grid" class="archive-projects-grid"></div>
                 </section>
             `;

@@ -132,41 +132,79 @@ function loadVideosSequentially(projects, isMobile, onVideoLoaded) {
         var videoId = videoToProjectMap.get(videoSrc);
         var videoElement = document.getElementById(videoId);
         
-        if (videoElement) {
-            // Set up loading handlers
-            function onVideoReady() {
-                var container = videoElement.closest('.archive-media-container');
-                if (container) {
-                    container.classList.remove('archive-video-loading');
-                }
-                currentIndex++;
-                // Load next video after a short delay to avoid overwhelming the network
-                setTimeout(loadNextVideo, 100);
-            }
-            
-            // Check if video is already loaded
-            if (videoElement.readyState >= 3) {
-                // Video already loaded
-                onVideoReady();
-                return;
-            }
-            
-            // Start loading the video
-            videoElement.preload = 'auto';
-            videoElement.addEventListener('canplaythrough', onVideoReady, { once: true });
-            videoElement.addEventListener('loadeddata', onVideoReady, { once: true });
-            videoElement.addEventListener('error', onVideoReady, { once: true });
-            
-            // Trigger loading
-            videoElement.load();
-        } else {
-            // Video element not found, skip to next
+        if (!videoElement) {
+            // Video element not found - log and skip to next
+            console.warn('Video element not found for ID:', videoId, 'src:', videoSrc);
             currentIndex++;
             setTimeout(loadNextVideo, 100);
+            return;
+        }
+        
+        var container = videoElement.closest('.archive-media-container');
+        var handlersAttached = false;
+        
+        // Set up loading handlers
+        function onVideoReady() {
+            if (container) {
+                container.classList.remove('archive-video-loading');
+            }
+            // Remove event listeners if they were attached
+            if (handlersAttached) {
+                videoElement.removeEventListener('canplaythrough', onVideoReady);
+                videoElement.removeEventListener('loadeddata', onVideoReady);
+                videoElement.removeEventListener('canplay', onVideoReady);
+                videoElement.removeEventListener('error', onVideoError);
+            }
+            currentIndex++;
+            // Load next video after a short delay to avoid overwhelming the network
+            setTimeout(loadNextVideo, 100);
+        }
+        
+        function onVideoError() {
+            console.warn('Failed to load video:', videoSrc);
+            // Still remove loading state even on error, but don't retry
+            onVideoReady();
+        }
+        
+        // Check if video is already loaded
+        if (videoElement.readyState >= 3) {
+            // Video already loaded
+            onVideoReady();
+            return;
+        }
+        
+        // Ensure source is set correctly
+        var sourceElement = videoElement.querySelector('source');
+        if (sourceElement && sourceElement.src !== videoSrc) {
+            sourceElement.src = videoSrc;
+        } else if (!sourceElement) {
+            // Create source element if it doesn't exist
+            var newSource = document.createElement('source');
+            newSource.src = videoSrc;
+            newSource.type = 'video/mp4';
+            videoElement.appendChild(newSource);
+        }
+        
+        // Start loading the video
+        videoElement.preload = 'auto';
+        handlersAttached = true;
+        videoElement.addEventListener('canplaythrough', onVideoReady, { once: true });
+        videoElement.addEventListener('canplay', onVideoReady, { once: true });
+        videoElement.addEventListener('loadeddata', onVideoReady, { once: true });
+        videoElement.addEventListener('error', onVideoError, { once: true });
+        
+        // Trigger loading
+        try {
+            // Clear any previous errors
+            videoElement.removeAttribute('error');
+            videoElement.load();
+        } catch (e) {
+            console.error('Error loading video:', videoSrc, e);
+            onVideoError();
         }
     }
     
-    // Start loading the first video
+    // Start loading the first video after a short delay to ensure DOM is ready
     setTimeout(loadNextVideo, 100);
 }
 
@@ -231,9 +269,12 @@ function loadArchiveData() {
                 }
 
                 // Start loading videos sequentially after rendering
-                setTimeout(function() {
-                    loadVideosSequentially(sortedProjects, isMobile);
-                }, 0);
+                // Use requestAnimationFrame to ensure DOM is ready
+                requestAnimationFrame(function() {
+                    setTimeout(function() {
+                        loadVideosSequentially(sortedProjects, isMobile);
+                    }, 100);
+                });
             }
         });
     });

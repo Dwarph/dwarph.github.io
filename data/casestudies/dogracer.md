@@ -45,12 +45,14 @@ With limited time, I worked with people across the company to help understand wh
 
 I focused the team's initial interaction scouting week on the following:
 
-Themes:
+#### Themes:
+
 - Interactions which enhance, and improve mesh sculpting
 - Hand representations which afford sculpting, communicate the active interaction and feel good
 - Application objectives, giving our users a sense of purpose and joy
 
-Evaluation Lenses:
+#### Evaluation Lenses:
+
 - Easy to learn, simple to teach
 - Sharable / Gifable
 - Simplicity

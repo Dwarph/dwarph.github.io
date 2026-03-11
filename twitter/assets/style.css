@@ -1,3 +1,37 @@
+:root {
+	/* Base theme – approximates classic Twitter light */
+	--bg-body: #e6ecf0;
+	--bg-timeline: #ffffff;
+	--bg-tweet: #ffffff;
+	--border-subtle: #e1e8ed;
+	--border-strong: #cfd9de;
+	--text-primary: #0f1419;
+	--text-muted: #536471;
+	--link-color: #1d9bf0;
+	--link-visited-color: #1d9bf0;
+	--accent-color: #1d9bf0;
+	--accent-soft: rgba(29, 155, 240, 0.12);
+	--favorite-color: #f91880;
+	--retweet-color: #00ba7c;
+}
+
+body.theme-portfolio {
+	/* Portfolio-aligned variant (borrows from site palette) */
+	--bg-body: #fff7fb;
+	--bg-timeline: #ffffff;
+	--bg-tweet: #ffffff;
+	--border-subtle: #ffe0f0;
+	--border-strong: #ffb6d4;
+	--text-primary: #19121b;
+	--text-muted: #6b4b63;
+	--link-color: #e91e63;
+	--link-visited-color: #ad1457;
+	--accent-color: #ff8ca8;
+	--accent-soft: rgba(255, 140, 168, 0.16);
+	--favorite-color: #e91e63;
+	--retweet-color: #00ba7c;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -5,23 +39,84 @@ html {
 	height: 100%;
 }
 body {
-	max-width: 60em;
 	min-height: 100%;
-	font-family: system-ui, sans-serif;
-	margin: 0 auto;
-	padding: .5em;
+	margin: 0;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	background-color: var(--bg-body);
+	color: var(--text-primary);
 }
+
+/* Shell */
+.timeline-shell {
+	max-width: 700px;
+	margin: 0 auto;
+	min-height: 100vh;
+	background-color: var(--bg-timeline);
+	border-left: 1px solid var(--border-subtle);
+	border-right: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 600px) {
+	.timeline-shell {
+		max-width: 100%;
+		border-left: none;
+		border-right: none;
+		min-height: 100vh;
+	}
+
+	header {
+		padding: 8px 12px;
+	}
+
+	main {
+		padding: 8px 12px 24px;
+	}
+
+	.tweets {
+		padding-top: 8px;
+	}
+
+	.tweet {
+		padding: 12px 0;
+	}
+
+	.tweet-medias {
+		flex-direction: column;
+		max-height: none;
+	}
+
+	.tweet-medias > a {
+		flex-basis: auto;
+	}
+}
+
+main {
+	padding: 0 16px 24px;
+}
+
+header {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background-color: var(--bg-timeline);
+	border-bottom: 1px solid var(--border-subtle);
+	padding: 8px 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 footer {
 	font-size: 0.875em; /* 14px /16 */
 	margin-top: 1em;
-	border-top: 1px solid #eee;
-	padding: 1em 0 0;
+	border-top: 1px solid var(--border-subtle);
+	padding: 1em 16px 0;
 	font-style: italic;
 }
 :link,
 :visited {
-	color: #1C4A1D;
-	text-decoration-color: #17bf63;
+	color: var(--link-color);
+	text-decoration-color: var(--accent-color);
 }
 .sr-only {
 	position: absolute !important;
@@ -80,44 +175,97 @@ button {
 
 /* Page level stuff */
 .tweets-title {
-	display: inline-block;
-	font-size: 1em;
-	line-height: 1.6875; /* 27px /16 */
-	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 1.05rem;
+	line-height: 1.4;
+	font-weight: 700;
 	margin: 0;
-	margin-right: 1.5em;
 }
 .tweets-nav {
-	display: inline-block;
+	display: flex;
+	align-items: center;
 	padding: 0;
 	margin: 0;
-	line-height: 1.6875; /* 27px /16 */
+	gap: 12px;
+	list-style: none;
 }
 .tweets-nav li {
-	display: inline-block;
+	display: inline-flex;
 }
-@media (min-width: 48em) { /* 768px */
-	.tweets-nav {
-		float: right;
-	}
+.tweets-nav a {
+	font-size: 0.9rem;
+	color: var(--text-muted);
+	text-decoration: none;
 }
+
+.tweets-nav a:hover {
+	text-decoration: underline;
+}
+
 .tweets-primary-count {
-	font-size: 4em;
-	margin: 2em 0 1em;
-	padding: 0 0 2em;
+	font-size: 2rem;
+	margin: 0;
+	padding: 16px 16px 12px;
 	text-align: center;
-	border-bottom: 2px solid #eee;
+	border-bottom: 1px solid var(--border-subtle);
 	font-weight: 400;
 }
 .tweets-primary-count-num {
 	font-weight: 900;
 }
 
+/* Timeline tabs */
+.timeline-tabs {
+	display: flex;
+	justify-content: space-around;
+	border-bottom: 1px solid var(--border-subtle);
+	background-color: var(--bg-timeline);
+}
+
+.timeline-tab {
+	flex: 1;
+	text-align: center;
+	padding: 12px 4px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--text-muted);
+	text-decoration: none;
+	border-bottom: 2px solid transparent;
+}
+
+.timeline-tab:hover {
+	background-color: var(--accent-soft);
+	color: var(--text-primary);
+}
+
+.timeline-tab--active {
+	color: var(--text-primary);
+	border-bottom-color: var(--accent-color);
+	font-weight: 600;
+}
+
+/* Theme toggle */
+.theme-toggle {
+	font-size: 0.8rem;
+	color: var(--text-muted);
+	cursor: pointer;
+	border-radius: 999px;
+	padding: 4px 10px;
+	border: 1px solid var(--border-subtle);
+	background: transparent;
+}
+
+.theme-toggle:hover {
+	background-color: var(--accent-soft);
+}
+
 /* Tweet list */
 .tweets {
-	max-width: 40em;
-	margin: 4em auto;
-	padding: 0;
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 16px 0 32px;
 }
 .tweets .tweets-replies {
 	padding-left: 1em;
@@ -129,13 +277,71 @@ button {
 }
 /* Used on tweet-pages only */
 .tweets-thread {
-	margin-top: 15vh;
-	margin-bottom: 15vh;
+	margin-top: 56px;
+	margin-bottom: 56px;
 }
+
+/* Main tweet in a thread */
+.tweets-thread > .tweet {
+	background-color: var(--bg-tweet);
+	border-radius: 16px;
+	border: 1px solid var(--border-subtle);
+	padding: 16px 16px 12px;
+}
+
+/* Replies in a thread – no indent; each reply is its own card */
+.tweets-thread .tweets-replies {
+	margin-top: 12px;
+	margin-left: 0;
+	padding-left: 0;
+	border-left: none;
+	list-style: none;
+}
+
+.tweets-thread .tweets-replies .tweet {
+	background-color: var(--bg-tweet);
+	border-radius: 16px;
+	border: 1px solid var(--border-subtle);
+	padding: 16px 16px 12px;
+	margin-bottom: 12px;
+}
+
+.tweets-thread .tweets-replies .tweet:last-child {
+	margin-bottom: 0;
+}
+
+/* On individual tweet pages, disable the header link back to /twitter/
+   so the archive index isn’t discoverable from permalinks */
+body:has(.tweets-thread) header .tweets-title a[href="/twitter/"] {
+	pointer-events: none;
+	cursor: default;
+	text-decoration: none;
+	color: inherit;
+}
+
+body:has(.tweets-thread) header .tweets-title a[href="/twitter/"] img {
+	pointer-events: none;
+}
+
+/* On individual tweet pages, also hide the Newest/Newer/Older tweet links in
+   the header nav, but keep the theme toggle button visible */
+body:has(.tweets-thread) .tweets-nav li:nth-child(-n+3) {
+	display: none;
+}
+
+/* On individual tweet pages, don't make the archive index discoverable
+   from the header title/avatar links back to `/twitter/` */
+.tweets-thread a[href="/twitter/"] {
+	pointer-events: none;
+	cursor: default;
+	text-decoration: none;
+	color: inherit;
+}
+
 .tweets-linear-list .tweet {
-	margin-bottom: 3.5rem;
-	padding-bottom: 3.5rem;
-	border-bottom: 1px solid #ccc;
+	margin-bottom: 0;
+	padding: 16px 0;
+	border-bottom: 1px solid var(--border-subtle);
 }
 
 /* Individual tweet */
@@ -168,7 +374,7 @@ button {
 }
 .tweet-pretext,
 .tweet-pretext:visited {
-	color: #555;
+	color: var(--text-muted);
 }
 .tweet-metadata {
 	display: block;
@@ -177,23 +383,23 @@ button {
 .tweet-metadata,
 .tweet-metadata :link,
 .tweet-metadata :visited {
-	color: #757575;
+	color: var(--text-muted);
 }
 
 /* Individual tweet */
 .tweet {
-	font-size: 1.625em; /* 26px /16 */
-	margin: 0 0 3.5rem;
-	padding: 0;
+	font-size: 1rem;
+	margin: 0;
+	padding: 16px 0;
 	list-style: none;
 }
 .tweet.is_reply,
 .tweet.is_retweet {
-	font-size: 1.375em; /* 22px /16 */
+	font-size: 0.95rem;
 }
 .tweet-next .tweet-text,
 .tweet-previous .tweet-text {
-	color: #777;
+	color: var(--text-muted);
 }
 .tweet-next .tag-favorite,
 .tweet-next .tag-retweet,
@@ -228,13 +434,13 @@ h1 .tweet-avatar {
 }
 .tweet-media {
 	border-radius: .25em;
-	box-shadow: 0 0px 18px 3px rgb(0 0 0 / 40%);
+	box-shadow: 0 0px 12px 0 rgb(0 0 0 / 20%);
 }
 img.tweet-media {
 	display: block;
 	width: 100%;
 	height: 100%;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-strong);
 }
 video.tweet-media {
 	max-width: 100%;
@@ -246,11 +452,11 @@ video.tweet-media {
 	border-top: 1px dashed;
 	margin: .5em 0;
 	padding-top: .5em;
-	color: #777;
+	color: var(--text-muted);
 }
 a[href]:focus .tweet-media-load-error,
 a[href]:hover .tweet-media-load-error {
-	color: #333;
+	color: var(--text-primary);
 }
 @supports (object-fit: cover) {
 	.tweet-media {
@@ -275,7 +481,7 @@ a[href]:hover .tweet-media-load-error {
 	max-width: 12em;
 }
 .tweet-media:hover {
-	border-color: #999;
+	border-color: var(--border-strong);
 }
 .tweet-previous .tweet-media:hover,
 .tweet-next .tweet-media:hover {
@@ -322,23 +528,23 @@ img.tweet-media-og {
 }
 .tag-naked {
 	background-color: #fff;
-	color: #757575;
+	color: var(--text-muted);
 }
 .tweet-metadata .tag-naked:link,
 .tweet-metadata .tag-naked:visited {
-	color: #757575;
+	color: var(--text-muted);
 }
 .tag:first-child,
 .tag + .tag {
 	margin-left: 0;
 }
 .tag-favorite {
-	background-color: #e0245e;
-	border-color: #e0245e;
+	background-color: var(--favorite-color);
+	border-color: var(--favorite-color);
 }
 .tag-retweet {
-	background-color: #397d58;
-	border-color: #397d58;
+	background-color: var(--retweet-color);
+	border-color: var(--retweet-color);
 }
 .tag-lite.tag-favorite,
 .tag-lite.tag-retweet {
@@ -347,10 +553,10 @@ img.tweet-media-og {
 	font-weight: inherit;
 }
 .tag-lite.tag-favorite {
-	color: #e0245e;
+	color: var(--favorite-color);
 }
 .tag-lite.tag-retweet {
-	color: #096f37;
+	color: var(--retweet-color);
 }
 .tag-avatar {
 	padding: 0;

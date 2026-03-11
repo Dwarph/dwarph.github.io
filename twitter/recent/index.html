@@ -13,20 +13,33 @@
 
 		
 	</head>
-	<body>
-		<header>
-			<h1 class="tweets-title"><a href="/twitter/"><img src="https://v1.indieweb-avatar.11ty.dev/pipturner.co.uk/" width="52" height="52" alt="dwarph’s avatar" class="tweet-avatar">dwarph’s Twitter Archive</a></h1>
-			<ul class="tweets-nav">
-				<li><a rel="home" href="pipturner.co.uk">← pipturner.co.uk</a></li>
-			</ul>
-			
-		</header>
-		<main>
-			<h2>Most Recent 40 Tweets</h2>
-		<p>Not including replies or retweets or mentions.</p>
+	<body class="theme-twitter">
+		<div class="timeline-shell">
+			<header>
+				<h1 class="tweets-title">
+					<a href="/twitter/">
+						<img src="https://v1.indieweb-avatar.11ty.dev/pipturner.co.uk/" width="52" height="52" alt="dwarph’s avatar" class="tweet-avatar">
+						dwarph’s Twitter Archive
+					</a>
+				</h1>
+				<ul class="tweets-nav">
+					<li><a rel="home" href="https://www.pipturner.co.uk">← pipturner.co.uk</a></li>
+					<li><button type="button" class="theme-toggle" id="archive-theme-toggle">Theme</button></li>
+				</ul>
+			</header>
 
-		<h3>Tweets</h3>
-		<ol class="tweets tweets-linear-list h-feed hfeed">
+			<nav class="timeline-tabs" aria-label="Tweet views">
+				<a href="/twitter/" class="timeline-tab">All</a>
+				<a href="/twitter/recent/" class="timeline-tab timeline-tab--active">Recent</a>
+				<a href="/twitter/popular/" class="timeline-tab">Popular</a>
+			</nav>
+
+			<main>
+				<h2>Most Recent 40 Tweets</h2>
+				<p>Not including replies or retweets or mentions.</p>
+
+				<h3>Tweets</h3>
+				<ol class="tweets tweets-linear-list h-feed hfeed">
 			<li id="1854831091451851224" class="tweet h-entry" data-pagefind-index-attrs="id">
 		
 			<div class="tweet-text e-content">Hey XR Design folks! The XR Design discord server i help run hosts regular industry talks - the next one is 1 week today! 
@@ -581,10 +594,11 @@ Ken is an expert in gaze &amp; hand tracking interactions, and will be presentin
 				<span class="tag tag-naked tag-lite">Mood +<strong class="tweet-sentiment">4</strong> 🙂</span>
 			</span>
 		</li>
-		</ol>
-		</main>
-		<footer>
-			<p>An open source project from <a href="https://github.com/tweetback">tweetback</a>.</p>
-		</footer>
+				</ol>
+			</main>
+			<footer>
+				<p>An open source project from <a href="https://github.com/tweetback">tweetback</a>.</p>
+			</footer>
+		</div>
 	</body>
 </html>

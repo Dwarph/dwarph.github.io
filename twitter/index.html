@@ -13,21 +13,36 @@
 
 		
 	</head>
-	<body>
-		<header>
-			<h1 class="tweets-title"><a href="/twitter/"><img src="https://v1.indieweb-avatar.11ty.dev/pipturner.co.uk/" width="52" height="52" alt="dwarph’s avatar" class="tweet-avatar">dwarph’s Twitter Archive</a></h1>
-			<ul class="tweets-nav">
-				<li><a rel="home" href="https://www.pipturner.co.uk">← pipturner.co.uk</a></li>
-			</ul>
-			
-		</header>
-		
-		<h2 class="tweets-primary-count">
-			<span class="tweets-primary-count-num">9,477</span> tweets
-		</h2>
+	<body class="theme-twitter">
+		<div class="timeline-shell">
+			<header>
+				<h1 class="tweets-title">
+					<a href="/twitter/">
+						<img src="https://v1.indieweb-avatar.11ty.dev/pipturner.co.uk/" width="52" height="52" alt="dwarph’s avatar" class="tweet-avatar">
+						dwarph’s Twitter Archive
+					</a>
+				</h1>
+				<ul class="tweets-nav">
+					<li><a rel="home" href="https://www.pipturner.co.uk">← pipturner.co.uk</a></li>
+					<li><button type="button" class="theme-toggle" id="archive-theme-toggle">Theme</button></li>
+				</ul>
+			</header>
 
-		<footer>
-			<p>An open source project from <a href="https://github.com/tweetback">tweetback</a>.</p>
-		</footer>
+			<nav class="timeline-tabs" aria-label="Tweet views">
+				<a href="/twitter/" class="timeline-tab timeline-tab--active">All</a>
+				<a href="/twitter/recent/" class="timeline-tab">Recent</a>
+				<a href="/twitter/popular/" class="timeline-tab">Popular</a>
+			</nav>
+
+			<main>
+				<h2 class="tweets-primary-count">
+					<span class="tweets-primary-count-num">9,477</span> tweets
+				</h2>
+			</main>
+
+			<footer>
+				<p>An open source project from <a href="https://github.com/tweetback">tweetback</a>.</p>
+			</footer>
+		</div>
 	</body>
 </html>

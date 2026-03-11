@@ -106,21 +106,38 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
+  // For CSS and JS, use network-first so style and script changes
+  // are picked up without needing a hard refresh.
+  if (event.request.url.match(/\.(css|js)$/)) {
+    event.respondWith(
+      fetch(event.request).then(function(fetchResponse) {
+        if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+          return fetchResponse;
+        }
+        var responseToCache = fetchResponse.clone();
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(event.request, responseToCache);
+        });
+        return fetchResponse;
+      }).catch(function() {
+        return caches.match(event.request);
+      })
+    );
+    return;
+  }
+
+  // Default: cache-first for other static assets (images, media, etc.)
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      // Return cached version or fetch from network
       return response || fetch(event.request).then(function(fetchResponse) {
-        // Don't cache if not a valid response
         if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
           return fetchResponse;
         }
 
-        // Clone the response
         var responseToCache = fetchResponse.clone();
 
-        // Cache images and static assets
         if (event.request.destination === 'image' || 
-            event.request.url.match(/\.(css|js|json|svg|png|jpg|jpeg|webp|mp4|mp3)$/)) {
+            event.request.url.match(/\.(svg|png|jpg|jpeg|webp|mp4|mp3)$/)) {
           caches.open(CACHE_NAME).then(function(cache) {
             cache.put(event.request, responseToCache);
           });
@@ -129,7 +146,6 @@ self.addEventListener('fetch', function(event) {
         return fetchResponse;
       }).catch(function(error) {
         console.log('Fetch failed:', error);
-        // Return offline page or fallback if available
         if (event.request.destination === 'document') {
           return caches.match('/index.html');
         }

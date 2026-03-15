@@ -400,7 +400,8 @@ function loadHomepageData() {
         if (!container) return;
 
         var html = '';
-        // Use shared header function with homepage option, then add navigation
+        // Header and nav wrapped in one div with 0px gap so layout stays identical
+        html += '<div class="homepage-header-nav-wrapper" style="display: flex; flex-direction: column; gap: 0;">';
         html += window.renderHeader(data.header, { isHomepage: true });
         html += `
             <nav class="homepage-nav" role="navigation" aria-label="Main navigation">
@@ -411,6 +412,7 @@ function loadHomepageData() {
                 <a href="#contact" class="nav-link" aria-label="Navigate to Contact section">Contact</a>
             </nav>
         `;
+        html += '</div>';
         html += renderAbout(data.about);
         html += renderWork(data.work);
         html += renderProjects(data.projects);

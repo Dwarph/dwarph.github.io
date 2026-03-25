@@ -269,6 +269,7 @@ select:focus-visible {
     font-family: 'Outfit', sans-serif;
     pointer-events: none;
     box-sizing: border-box;
+    display: none;
 }
 
 .header-distortion-controls__panel,
@@ -1321,10 +1322,12 @@ select:focus-visible {
         overflow: hidden;
         /* Slightly tighter radius on short mobile hero so corners stay proportional */
         --header-frame-radius: clamp(22px, 7vw, 40px);
+        /* Dragging on the hero does not scroll the page; children default to `auto` and would still pan */
+        touch-action: none;
     }
 
-    .header-distortion-controls {
-        display: none;
+    .homepage-header * {
+        touch-action: inherit;
     }
 
     .header-content {

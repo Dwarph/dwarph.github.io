@@ -28,13 +28,31 @@ void main() {
 }
 `;
 
-/** Codrops demo 2 — index2.html */
-const DISTORTION_PRESET = {
-    grid: 607,
-    mouse: 0.11,
+/** Codrops demo 2 — index2.html (default control panel values) */
+export const DISTORTION_PRESET = {
+    grid: 400,
+    mouse: 0.21,
     strength: 0.36,
     relaxation: 0.96,
 };
+
+/**
+ * Simulation speed multiplier (1 = default). Higher = faster settling and snappier hover.
+ * Optional runtime override: `window.__HEADER_DISTORTION_SPEED` (same range, checked at init).
+ */
+export const HEADER_DISTORTION_SPEED = 1;
+
+function resolveSimulationSpeed(override) {
+    if (typeof override === 'number' && !isNaN(override)) {
+        return clamp(override, 0.25, 4);
+    }
+    if (typeof window !== 'undefined' && typeof window.__HEADER_DISTORTION_SPEED === 'number') {
+        return clamp(window.__HEADER_DISTORTION_SPEED, 0.25, 4);
+    }
+    return clamp(HEADER_DISTORTION_SPEED, 0.25, 4);
+}
+
+const CONTROLS_STORAGE_KEY = 'pipHeaderDistortionControls';
 
 /**
  * Draw the decoded bitmap into a canvas and upload as CanvasTexture.
@@ -111,6 +129,10 @@ class DistortionSketch {
             relaxation: DISTORTION_PRESET.relaxation,
         };
 
+        /** When true, start from a flat field (no random “intro” shimmer). Used off the homepage. */
+        this.skipIntro = options.skipIntro === true;
+        this.simulationSpeed = resolveSimulationSpeed(options.simulationSpeed);
+
         this.size = 0;
         this.texture = null;
         this.material = null;
@@ -149,7 +171,12 @@ class DistortionSketch {
     }
 
     setPointerFromClient(e) {
-        if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+        if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') return;
+        /* pointerdown: establish contact without velocity — otherwise every tap injects a huge
+         * fake impulse (e.g. from prev 0,0 or from the last lift position). */
+        if (e.type === 'pointerdown') {
+            this.applyPointerPositionNoVelocity(e.clientX, e.clientY);
+        } else {
             this.applyPointerPosition(e.clientX, e.clientY);
         }
     }
@@ -157,7 +184,27 @@ class DistortionSketch {
     onTouchLike(e) {
         var t = e.touches && e.touches.length ? e.touches[0] : e.changedTouches && e.changedTouches[0];
         if (!t) return;
-        this.applyPointerPosition(t.clientX, t.clientY);
+        if (e.type === 'touchstart') {
+            this.applyPointerPositionNoVelocity(t.clientX, t.clientY);
+        } else {
+            this.applyPointerPosition(t.clientX, t.clientY);
+        }
+    }
+
+    /**
+     * Sync pointer position and zero velocity (finger/mouse down). Distortion only reacts to movement.
+     */
+    applyPointerPositionNoVelocity(clientX, clientY) {
+        var rect = this.container.getBoundingClientRect();
+        if (rect.width < 1 || rect.height < 1) return;
+        var nx = (clientX - rect.left) / rect.width;
+        var ny = (clientY - rect.top) / rect.height;
+        this.mouse.prevX = nx;
+        this.mouse.prevY = ny;
+        this.mouse.x = nx;
+        this.mouse.y = ny;
+        this.mouse.vX = 0;
+        this.mouse.vY = 0;
     }
 
     applyPointerPosition(clientX, clientY) {
@@ -237,11 +284,14 @@ class DistortionSketch {
         var data = new Float32Array(4 * size);
 
         for (var i = 0; i < size; i++) {
-            var r = Math.random() * 255 - 125;
-            var r1 = Math.random() * 255 - 125;
             var stride = i * 4;
-            data[stride] = r;
-            data[stride + 1] = r1;
+            if (this.skipIntro) {
+                data[stride] = 0;
+                data[stride + 1] = 0;
+            } else {
+                data[stride] = Math.random() * 255 - 125;
+                data[stride + 1] = Math.random() * 255 - 125;
+            }
             data[stride + 2] = 0;
             data[stride + 3] = 1;
         }
@@ -288,9 +338,12 @@ class DistortionSketch {
     updateDataTexture() {
         var data = this.texture.image.data;
         var i;
+        var s = this.simulationSpeed;
+        var relPow = Math.pow(this.settings.relaxation, s);
+        var velPow = Math.pow(0.9, s);
         for (i = 0; i < data.length; i += 4) {
-            data[i] *= this.settings.relaxation;
-            data[i + 1] *= this.settings.relaxation;
+            data[i] *= relPow;
+            data[i + 1] *= relPow;
         }
 
         var gridMouseX = this.size * this.mouse.x;
@@ -315,9 +368,42 @@ class DistortionSketch {
             }
         }
 
-        this.mouse.vX *= 0.9;
-        this.mouse.vY *= 0.9;
+        this.mouse.vX *= velPow;
+        this.mouse.vY *= velPow;
         this.texture.needsUpdate = true;
+    }
+
+    /**
+     * Live-update sim parameters from the control panel. Regenerates the data texture only when grid changes.
+     * @param {Partial<{grid:number,mouse:number,strength:number,relaxation:number}>} patch
+     */
+    applyControlSettings(patch) {
+        if (!patch || typeof patch !== 'object') return;
+        var prevGrid = this.settings.grid;
+        if (patch.grid !== undefined && patch.grid !== null) {
+            this.settings.grid = Math.round(clamp(Number(patch.grid), 2, 1000));
+        }
+        if (patch.mouse !== undefined && patch.mouse !== null) {
+            this.settings.mouse = clamp(Number(patch.mouse), 0, 1);
+        }
+        if (patch.strength !== undefined && patch.strength !== null) {
+            this.settings.strength = clamp(Number(patch.strength), 0, 1);
+        }
+        if (patch.relaxation !== undefined && patch.relaxation !== null) {
+            this.settings.relaxation = clamp(Number(patch.relaxation), 0, 1);
+        }
+        if (this.settings.grid !== prevGrid) {
+            this.regenerateGrid();
+        }
+    }
+
+    getControlSettings() {
+        return {
+            grid: this.settings.grid,
+            mouse: this.settings.mouse,
+            strength: this.settings.strength,
+            relaxation: this.settings.relaxation,
+        };
     }
 
     render() {
@@ -379,6 +465,205 @@ class DistortionSketch {
     }
 }
 
+function readStoredControls() {
+    try {
+        var raw = localStorage.getItem(CONTROLS_STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch (e) {
+        return null;
+    }
+}
+
+function writeStoredControls(settings) {
+    try {
+        localStorage.setItem(CONTROLS_STORAGE_KEY, JSON.stringify(settings));
+    } catch (e) {}
+}
+
+function mergeControls(stored) {
+    var d = DISTORTION_PRESET;
+    if (!stored || typeof stored !== 'object') {
+        return { grid: d.grid, mouse: d.mouse, strength: d.strength, relaxation: d.relaxation };
+    }
+    return {
+        grid: typeof stored.grid === 'number' ? Math.round(clamp(stored.grid, 2, 1000)) : d.grid,
+        mouse: typeof stored.mouse === 'number' ? clamp(stored.mouse, 0, 1) : d.mouse,
+        strength: typeof stored.strength === 'number' ? clamp(stored.strength, 0, 1) : d.strength,
+        relaxation: typeof stored.relaxation === 'number' ? clamp(stored.relaxation, 0, 1) : d.relaxation,
+    };
+}
+
+function formatControlValue(key, v) {
+    if (key === 'grid') return String(Math.round(v));
+    return v.toFixed(2);
+}
+
+/**
+ * @param {HTMLElement} headerEl
+ * @param {object} sketch — DistortionSketch instance with applyControlSettings / getControlSettings
+ */
+function buildDistortionPanel(headerEl, sketch) {
+    var initial = mergeControls(readStoredControls());
+    sketch.applyControlSettings(initial);
+
+    var root = document.createElement('div');
+    root.className = 'header-distortion-controls';
+    root.id = 'header-distortion-controls';
+
+    var panel = document.createElement('div');
+    panel.className = 'header-distortion-controls__panel';
+    panel.id = 'header-distortion-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'false');
+    panel.setAttribute('aria-labelledby', 'hdr-distortion-legend');
+    panel.setAttribute('aria-hidden', 'true');
+
+    var trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'header-distortion-controls__trigger';
+    trigger.setAttribute('aria-label', 'Distortion settings');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-controls', 'header-distortion-panel');
+
+    var triggerIconSettings = document.createElement('img');
+    triggerIconSettings.className =
+        'header-distortion-controls__trigger-icon header-distortion-controls__trigger-icon--settings';
+    triggerIconSettings.src = new URL('images/settings.svg', window.location.href).href;
+    triggerIconSettings.alt = '';
+    triggerIconSettings.setAttribute('decoding', 'async');
+    triggerIconSettings.setAttribute('aria-hidden', 'true');
+    trigger.appendChild(triggerIconSettings);
+
+    var triggerIconClose = document.createElement('img');
+    triggerIconClose.className =
+        'header-distortion-controls__trigger-icon header-distortion-controls__trigger-icon--close';
+    triggerIconClose.src = new URL('images/x.svg', window.location.href).href;
+    triggerIconClose.alt = '';
+    triggerIconClose.setAttribute('decoding', 'async');
+    triggerIconClose.setAttribute('aria-hidden', 'true');
+    trigger.appendChild(triggerIconClose);
+
+    var fieldset = document.createElement('fieldset');
+    fieldset.className = 'header-distortion-controls__fieldset';
+
+    var legend = document.createElement('legend');
+    legend.className = 'header-distortion-controls__legend';
+    legend.id = 'hdr-distortion-legend';
+    legend.textContent = 'Simulation';
+
+    fieldset.appendChild(legend);
+
+    var inputs = {};
+
+    function addRow(key, label, min, max, step) {
+        var row = document.createElement('div');
+        row.className = 'header-distortion-controls__row';
+
+        var lab = document.createElement('label');
+        lab.className = 'header-distortion-controls__label';
+        lab.setAttribute('for', 'hdr-dist-' + key);
+        lab.textContent = label;
+
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.id = 'hdr-dist-' + key;
+        input.className = 'header-distortion-controls__range';
+        input.min = String(min);
+        input.max = String(max);
+        input.step = String(step);
+        input.dataset.key = key;
+
+        var val = document.createElement('span');
+        val.className = 'header-distortion-controls__value';
+        val.setAttribute('aria-live', 'polite');
+
+        input.addEventListener('input', function () {
+            var v = parseFloat(input.value);
+            val.textContent = formatControlValue(key, v);
+            var patch = {};
+            patch[key] = v;
+            sketch.applyControlSettings(patch);
+            writeStoredControls(sketch.getControlSettings());
+        });
+
+        input.value = String(sketch.getControlSettings()[key]);
+        val.textContent = formatControlValue(key, parseFloat(input.value));
+
+        inputs[key] = { input: input, val: val };
+
+        lab.appendChild(input);
+        row.appendChild(lab);
+        row.appendChild(val);
+        fieldset.appendChild(row);
+    }
+
+    addRow('grid', 'Grid resolution', 2, 1000, 1);
+    addRow('mouse', 'Mouse radius', 0, 1, 0.01);
+    addRow('strength', 'Strength', 0, 1, 0.01);
+    addRow('relaxation', 'Relaxation', 0, 1, 0.01);
+
+    var actions = document.createElement('div');
+    actions.className = 'header-distortion-controls__actions';
+
+    var reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'header-distortion-controls__reset';
+    reset.textContent = 'Reset to defaults';
+
+    reset.addEventListener('click', function () {
+        sketch.applyControlSettings(DISTORTION_PRESET);
+        writeStoredControls(sketch.getControlSettings());
+        var s = sketch.getControlSettings();
+        var k;
+        for (k in inputs) {
+            if (Object.prototype.hasOwnProperty.call(inputs, k)) {
+                var pair = inputs[k];
+                pair.input.value = String(s[k]);
+                pair.val.textContent = formatControlValue(k, s[k]);
+            }
+        }
+    });
+
+    actions.appendChild(reset);
+
+    panel.appendChild(fieldset);
+    panel.appendChild(actions);
+
+    function setPanelOpen(open) {
+        if (open) {
+            root.classList.add('header-distortion-controls--open');
+        } else {
+            root.classList.remove('header-distortion-controls--open');
+        }
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if ('inert' in panel) {
+            panel.inert = !open;
+        }
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        trigger.setAttribute('aria-label', open ? 'Close distortion settings' : 'Distortion settings');
+    }
+
+    trigger.addEventListener('click', function () {
+        setPanelOpen(!root.classList.contains('header-distortion-controls--open'));
+    });
+
+    document.addEventListener('keydown', function onDistortionKeydown(e) {
+        if (e.key !== 'Escape' || !root.classList.contains('header-distortion-controls--open')) {
+            return;
+        }
+        setPanelOpen(false);
+        trigger.focus();
+    });
+
+    root.appendChild(panel);
+    root.appendChild(trigger);
+
+    headerEl.appendChild(root);
+
+    setPanelOpen(false);
+}
+
 function waitForLayout() {
     return new Promise(function (resolve) {
         requestAnimationFrame(function () {
@@ -423,6 +708,12 @@ export function initHeaderDistortion(root) {
     var img = mount.querySelector('img');
     if (!img) return;
 
+    /** Random initial displacement + settle = intro; only on index (`#homepage-container`). */
+    var isHomepage = root.id === 'homepage-container';
+    var sketchOpts = { skipIntro: !isHomepage };
+
+    var bgUrl = img.getAttribute('data-header-bg');
+
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         return;
     }
@@ -431,22 +722,70 @@ export function initHeaderDistortion(root) {
     var gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
     if (!gl) return;
 
-    waitForLayout()
-        .then(function () {
-            return waitForHeaderImage(img);
-        })
-        .then(function () {
+    function revealBackground() {
+        img.classList.add('header-image-ready');
+    }
+
+    /** Deferred header: assign real URL only after WebGL is available (see utils.loadHeaderDistortion). */
+    function assignAndWaitForBackground() {
+        if (bgUrl) {
+            img.src = bgUrl;
+        }
+        return waitForHeaderImage(img).then(function () {
             if (typeof img.decode === 'function') {
                 return img.decode().catch(function () {});
             }
+        });
+    }
+
+    /* Legacy markup: background image already in src (no data-header-bg). */
+    if (!bgUrl) {
+        waitForLayout()
+            .then(function () {
+                return waitForHeaderImage(img);
+            })
+            .then(function () {
+                if (typeof img.decode === 'function') {
+                    return img.decode().catch(function () {});
+                }
+            })
+            .then(function () {
+                try {
+                    var sketchLegacy = new DistortionSketch({ dom: mount });
+                    buildDistortionPanel(header, sketchLegacy);
+                    sketchLegacy.render();
+                    header.classList.add('header-distortion-active');
+                    revealBackground();
+                } catch (err) {
+                    console.warn('headerDistortion: WebGL sketch failed', err);
+                    revealBackground();
+                }
+            })
+            .catch(function (err) {
+                console.warn('headerDistortion: legacy init failed', err);
+                revealBackground();
+            });
+        return;
+    }
+
+    waitForLayout()
+        .then(function () {
+            return assignAndWaitForBackground();
         })
         .then(function () {
             try {
-                var sketch = new DistortionSketch({ dom: mount });
+                var sketch = new DistortionSketch(Object.assign({ dom: mount }, sketchOpts));
+                buildDistortionPanel(header, sketch);
                 sketch.render();
                 header.classList.add('header-distortion-active');
+                revealBackground();
             } catch (err) {
                 console.warn('headerDistortion: WebGL sketch failed', err);
+                revealBackground();
             }
+        })
+        .catch(function (err) {
+            console.warn('headerDistortion: init failed', err);
+            revealBackground();
         });
 }

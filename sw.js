@@ -1,5 +1,5 @@
 // Service Worker for pipturner.co.uk
-const CACHE_NAME = 'pipturner-v1';
+const CACHE_NAME = 'pipturner-v2';
 const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
@@ -48,7 +48,7 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim();
 });
 
-// Fetch event - use network-first for pages, cache-first for static assets
+// Fetch event — network-first for HTML, JSON, CSS, JS; cache-first for images and other static media
 self.addEventListener('fetch', function(event) {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
@@ -64,7 +64,7 @@ self.addEventListener('fetch', function(event) {
   // (talks, projects, work, etc.) shows up without a hard refresh.
   if (event.request.url.match(/\.json$/)) {
     event.respondWith(
-      fetch(event.request).then(function(fetchResponse) {
+      fetch(new Request(event.request, { cache: 'no-cache' })).then(function(fetchResponse) {
         if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
           return fetchResponse;
         }

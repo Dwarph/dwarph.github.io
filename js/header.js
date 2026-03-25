@@ -16,8 +16,8 @@ window.renderHeader = function(header, options) {
     // Always use the EXACT same structure for consistency across all pages
     // This ensures spacing is identical everywhere
     var profileImageHtml = isHomepage ? 
-        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="186" height="186" loading="eager" decoding="async" fetchpriority="high" />` :
-        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="186" height="186" loading="eager" decoding="async" fetchpriority="high" /></a>`;
+        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="256" height="256" loading="eager" decoding="async" fetchpriority="high" />` :
+        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="256" height="256" loading="eager" decoding="async" fetchpriority="high" /></a>`;
     
     // Subpages: name/role link home. Homepage: static text (no meaningless tab stop).
     var nameRoleHtml = isHomepage
@@ -38,7 +38,7 @@ window.renderHeader = function(header, options) {
         <header class="homepage-header" role="banner">
             <div class="header-background">
                 <div class="header-distortion-mount" data-header-distortion>
-                    <img src="${header.backgroundImage}" alt="" width="1920" height="400" loading="eager" decoding="async" fetchpriority="high" class="header-background-image" />
+                    <img data-header-bg="${header.backgroundImage}" alt="" width="2400" height="935" decoding="async" class="header-background-image" />
                 </div>
             </div>
             <div class="header-content">
@@ -47,6 +47,52 @@ window.renderHeader = function(header, options) {
             </div>
         </header>
     `;
+};
+
+/**
+ * Load the header background photo and fade it in (static fallback: no WebGL, reduced motion, or module load failure).
+ * The full-resolution asset is deferred until this runs — see loadHeaderDistortion / initHeaderDistortion.
+ * @param {ParentNode} [root]
+ */
+window.loadDeferredHeaderBackground = function (root) {
+    root = root || document;
+    var img = root.querySelector('.header-background-image[data-header-bg]');
+    if (!img) return;
+    var url = img.getAttribute('data-header-bg');
+    if (!url) return;
+
+    var reduced =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function reveal() {
+        img.classList.add('header-image-ready');
+    }
+
+    function wireRevealAfterLoad() {
+        if (reduced) {
+            reveal();
+            return;
+        }
+        if (img.complete && img.naturalWidth > 0) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(reveal);
+            });
+        } else {
+            img.addEventListener('load', reveal);
+            img.addEventListener('error', reveal);
+        }
+    }
+
+    /* initHeaderDistortion may have set src already; still reveal if that path failed before fade */
+    if (img.getAttribute('src')) {
+        if (!img.classList.contains('header-image-ready')) {
+            wireRevealAfterLoad();
+        }
+        return;
+    }
+
+    img.src = url;
+    wireRevealAfterLoad();
 };
 
 /**
@@ -64,6 +110,10 @@ window.initHeaderImageReveal = function (root) {
 
     for (var i = 0; i < imgs.length; i++) {
         (function (img) {
+            /* Background photo is revealed by loadDeferredHeaderBackground / initHeaderDistortion */
+            if (img.classList.contains('header-background-image') && img.hasAttribute('data-header-bg')) {
+                return;
+            }
             function reveal() {
                 img.classList.add('header-image-ready');
             }

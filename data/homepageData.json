@@ -2,8 +2,8 @@
   "header": {
     "name": "Pip Turner",
     "role": "Product Designer",
-    "profileImage": "images/profile-picture.jpg",
-    "backgroundImage": "images/header-background.png"
+    "profileImage": "images/profile-picture250326.png",
+    "backgroundImage": "images/header250326.png"
   },
   "about": {
     "bio": "Hi! I'm Pip - a product designer. I've worked in the XR industry since 2019.\n\nI started off at Ultraleap where I led an interaction r&d team, proving the value of high fidelity hand tracking. We focused on rapid prototyping in Unity, and novel spatial interaction design.\n\nI'm now at FitXR, designing the future of fitness - building xr experiences that work at scale, aiming to actively improve people's lives.\n\nI try to combine simplicity and fun to create designs that feel joyful and inevitable.",

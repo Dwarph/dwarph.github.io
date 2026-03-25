@@ -95,7 +95,23 @@ window.fetchTextWithRetry = function (url, onSuccess, onError, fetchOptions) {
 window.loadHeaderDistortion = function (root) {
     if (!root) return Promise.resolve();
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (typeof window.loadDeferredHeaderBackground === 'function') {
+            window.loadDeferredHeaderBackground(root);
+        }
         return Promise.resolve();
+    }
+    var testCanvas = document.createElement('canvas');
+    var gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+    if (!gl) {
+        if (typeof window.loadDeferredHeaderBackground === 'function') {
+            window.loadDeferredHeaderBackground(root);
+        }
+        return Promise.resolve();
+    }
+    /* Subpages: assign `src` and reveal the PNG now so it appears while the module loads and WebGL inits.
+       Homepage keeps the deferred path in initHeaderDistortion only (avoids img flash before canvas). */
+    if (root.id !== 'homepage-container' && typeof window.loadDeferredHeaderBackground === 'function') {
+        window.loadDeferredHeaderBackground(root);
     }
     var url = new URL('js/headerDistortion.js', document.baseURI).href;
     return import(url)
@@ -105,7 +121,9 @@ window.loadHeaderDistortion = function (root) {
             }
         })
         .catch(function () {
-            /* Static header image fallback */
+            if (typeof window.loadDeferredHeaderBackground === 'function') {
+                window.loadDeferredHeaderBackground(root);
+            }
         });
 };
 

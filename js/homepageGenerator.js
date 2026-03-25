@@ -224,6 +224,7 @@ function renderWork(work) {
                         </div>
                     </div>
                     <div class="job-right-column ${needsTimeline ? 'has-case-studies ' + job.gradientColor : ''}">
+                        ${needsTimeline ? '<div class="job-timeline-scroll-bar ' + job.gradientColor + '" aria-hidden="true"></div>' : ''}
                         <!-- Desktop: job info and description -->
                         <div class="job-info-desktop">
                             <div class="job-info">
@@ -442,7 +443,9 @@ function loadHomepageData() {
         requestAnimationFrame(function() {
             requestAnimationFrame(function() {
                 updateTimelinePositions();
-                
+                if (window.initScrollAnim) window.initScrollAnim(container);
+               // if (window.createScrollAnimPanel) window.createScrollAnimPanel();
+
                 // Also update after images load in case they affect layout
                 var images = container.querySelectorAll('img');
                 var imagesLoaded = 0;

@@ -483,23 +483,26 @@ select:focus-visible {
     position: relative;
 }
 
-.job-right-column.has-case-studies::after {
-    content: '';
+/* Scroll-driven timeline bar (real element for round ends) */
+.job-timeline-scroll-bar {
     position: absolute;
     left: -51px;
     width: 16px;
+    top: var(--timeline-top, 0);
+    bottom: auto;
+    min-height: 0;
+    height: 0;
     border-radius: 999px;
     pointer-events: none;
     z-index: 1;
-    top: var(--timeline-top, 0);
-    bottom: 0;
+    box-sizing: border-box;
 }
 
-.job-right-column.has-case-studies.fitxr::after {
+.job-timeline-scroll-bar.fitxr {
     background: linear-gradient(to bottom, var(--fitxr-start), var(--fitxr-end));
 }
 
-.job-right-column.has-case-studies.ultraleap::after {
+.job-timeline-scroll-bar.ultraleap {
     background: linear-gradient(to bottom, var(--ultraleap-start), var(--ultraleap-end));
 }
 
@@ -1380,6 +1383,37 @@ select:focus-visible {
     .job-bottom-bar {
         display: none;
     }
+
+    /* Scroll-driven bar is desktop-only */
+    .job-timeline-scroll-bar {
+        display: none;
+    }
+}
+
+/* Scroll-linked animations: initial state (desktop only; JS drives opacity and --timeline-scroll-progress) */
+@media (min-width: 769px) {
+    #work.work-section {
+        opacity: 0;
+    }
+    .job-case-studies > .case-study-card-link,
+    .job-case-studies > .case-study-card,
+    .job-other-work > .case-study-card-link,
+    .job-other-work > .case-study-card {
+        opacity: 0;
+    }
+    #projects.projects-section {
+        opacity: 0;
+    }
+    .projects-list > .project-card-link,
+    .projects-list > .project-card {
+        opacity: 0;
+    }
+    #talks.talks-section {
+        opacity: 0;
+    }
+    #contact.contact-section {
+        opacity: 0;
+    }
 }
 
 /* Desktop specific adjustments */
@@ -2158,5 +2192,85 @@ select:focus-visible {
 
     .archive-empty-message {
         font-size: 16px;
+    }
+}
+
+/* LEVA-style control panel for scroll anim (desktop only) */
+.scroll-anim-panel {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 10000;
+    min-width: 200px;
+    padding: 10px 12px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    color: #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.scroll-anim-panel__title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.scroll-anim-panel__group {
+    margin-bottom: 10px;
+}
+
+.scroll-anim-panel__group:last-child {
+    margin-bottom: 0;
+}
+
+.scroll-anim-panel__group-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+}
+
+.scroll-anim-panel select {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.scroll-anim-panel__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.scroll-anim-panel__row:last-child {
+    margin-bottom: 0;
+}
+
+.scroll-anim-panel input[type="checkbox"] {
+    accent-color: var(--highlight-yellow, #ffc405);
+    cursor: pointer;
+}
+
+.scroll-anim-panel input[type="range"] {
+    width: 80px;
+    cursor: pointer;
+    accent-color: var(--highlight-yellow, #ffc405);
+}
+
+@media (max-width: 768px) {
+    .scroll-anim-panel {
+        display: none;
     }
 }

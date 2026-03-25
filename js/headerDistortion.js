@@ -165,6 +165,15 @@ class DistortionSketch {
         if (rect.width < 1 || rect.height < 1) return;
         var nx = (clientX - rect.left) / rect.width;
         var ny = (clientY - rect.top) / rect.height;
+        /* Desktop: pointermove + mousemove both fire for the same physical move. The second call
+         * would set vX/vY to 0 because prev was just updated — killing distortion. DevTools mobile
+         * often only gets mousemove, so we keep both listeners and skip duplicate coordinates. */
+        if (
+            Math.abs(nx - this.mouse.prevX) < 1e-7 &&
+            Math.abs(ny - this.mouse.prevY) < 1e-7
+        ) {
+            return;
+        }
         this.mouse.vX = nx - this.mouse.prevX;
         this.mouse.vY = ny - this.mouse.prevY;
         this.mouse.prevX = nx;

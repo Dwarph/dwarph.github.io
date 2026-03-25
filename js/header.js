@@ -16,14 +16,19 @@ window.renderHeader = function(header, options) {
     // Always use the EXACT same structure for consistency across all pages
     // This ensures spacing is identical everywhere
     var profileImageHtml = isHomepage ? 
-        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" loading="eager" width="170" height="170" />` :
-        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" loading="eager" width="170" height="170" /></a>`;
+        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="186" height="186" loading="eager" decoding="async" fetchpriority="high" />` :
+        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="186" height="186" loading="eager" decoding="async" fetchpriority="high" /></a>`;
     
-    // Always wrap name/role in a link for consistent structure
-    // On homepage, link points to # (current page) so it's effectively non-functional
-    var nameRoleLink = isHomepage ? '#' : homeLink;
-    var nameRoleHtml = `<div class="header-name-role">
-            <a href="${nameRoleLink}" class="header-link">
+    // Subpages: name/role link home. Homepage: static text (no meaningless tab stop).
+    var nameRoleHtml = isHomepage
+        ? `<div class="header-name-role">
+            <div class="header-name-stack">
+                <h1 class="header-name">${header.name}</h1>
+                <p class="header-role">${header.role}</p>
+            </div>
+        </div>`
+        : `<div class="header-name-role">
+            <a href="${homeLink}" class="header-link" aria-label="Go to homepage">
                 <h1 class="header-name">${header.name}</h1>
                 <p class="header-role">${header.role}</p>
             </a>
@@ -32,7 +37,7 @@ window.renderHeader = function(header, options) {
     return `
         <header class="homepage-header" role="banner">
             <div class="header-background">
-                <img src="${header.backgroundImage}" alt="Header background" loading="eager" width="1920" height="400" />
+                <img src="${header.backgroundImage}" alt="" width="1920" height="400" loading="eager" decoding="async" fetchpriority="high" class="header-background-image" />
             </div>
             <div class="header-content">
                 ${profileImageHtml}
@@ -40,5 +45,39 @@ window.renderHeader = function(header, options) {
             </div>
         </header>
     `;
+};
+
+/**
+ * Fade header photos in after decode so they do not pop in. Call after injecting the header into the DOM.
+ * @param {ParentNode} [root] document or container that includes .homepage-header
+ */
+window.initHeaderImageReveal = function (root) {
+    root = root || document;
+    var header = root.querySelector('.homepage-header');
+    if (!header) return;
+
+    var reduced =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var imgs = header.querySelectorAll('img');
+
+    for (var i = 0; i < imgs.length; i++) {
+        (function (img) {
+            function reveal() {
+                img.classList.add('header-image-ready');
+            }
+            if (reduced) {
+                reveal();
+                return;
+            }
+            if (img.complete && img.naturalWidth > 0) {
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(reveal);
+                });
+            } else {
+                img.addEventListener('load', reveal);
+                img.addEventListener('error', reveal);
+            }
+        })(imgs[i]);
+    }
 };
 

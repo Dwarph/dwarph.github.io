@@ -1,20 +1,5 @@
 // Mobile detection is now in utils.js
 
-function loadHomepageJSON(callback) {
-    fetch('../data/homepageData.json')
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            callback(data);
-        })
-        .catch(function(error) {
-            console.error('Error loading homepage data:', error);
-        });
-}
 
 function getGradientClass(company) {
     if (company === "fitxr") {
@@ -369,9 +354,9 @@ function renderContact(contact) {
     var socialLinksHtml = '';
     for (var i = 0; i < contact.socialLinks.length; i++) {
         var link = contact.socialLinks[i];
-        var linkIcon = '<span class="material-icons link-icon external">north_east</span>';
+        var linkIcon = '<span class="material-icons link-icon external" aria-hidden="true">north_east</span>';
         
-        var linkAriaLabel = `Visit ${link.name} profile`;
+        var linkAriaLabel = 'Visit ' + link.name + ' profile';
         socialLinksHtml += `
             <div class="contact-item">
                 ${link.link ? `<a href="${link.link}" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="${linkAriaLabel}">${link.name}${linkIcon}</a>` : `<span class="contact-link">${link.name}${linkIcon}</span>`}
@@ -396,13 +381,26 @@ function renderContact(contact) {
 }
 
 function loadHomepageData() {
-    loadHomepageJSON(function (data) {
-        var container = document.getElementById('homepage-container');
-        if (!container) return;
+    var container = document.getElementById('homepage-container');
+    if (!container) return;
+
+    container.setAttribute('aria-busy', 'true');
+    container.innerHTML =
+        '<div class="page-status page-status--loading" role="status" id="about">Loading…</div>';
+
+    if (typeof window.fetchJsonWithRetry !== 'function') {
+        container.removeAttribute('aria-busy');
+        container.innerHTML =
+            '<div class="page-status page-status--error" role="alert" id="about"><p class="page-status-text">Could not load scripts.</p></div>';
+        return;
+    }
+
+    window.fetchJsonWithRetry('data/homepageData.json', function (data) {
+        container.removeAttribute('aria-busy');
 
         var html = '';
         // Header and nav wrapped in one div with 0px gap so layout stays identical
-        html += '<div class="homepage-header-nav-wrapper" style="display: flex; flex-direction: column; gap: 0;">';
+        html += '<div class="homepage-header-nav-wrapper">';
         html += window.renderHeader(data.header, { isHomepage: true });
         html += `
             <nav class="homepage-nav" role="navigation" aria-label="Main navigation">
@@ -421,6 +419,7 @@ function loadHomepageData() {
         html += renderContact(data.contact);
 
         container.innerHTML = html;
+        if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {
@@ -458,8 +457,12 @@ function loadHomepageData() {
         requestAnimationFrame(function() {
             requestAnimationFrame(function() {
                 updateTimelinePositions();
-                if (window.initScrollAnim) window.initScrollAnim(container);
-               // if (window.createScrollAnimPanel) window.createScrollAnimPanel();
+                try {
+                    if (window.initScrollAnim) window.initScrollAnim(container);
+                } catch (err) {
+                    console.error('Scroll animation failed:', err);
+                    if (window.forceVisibleScrollSections) window.forceVisibleScrollSections(container);
+                }
 
                 // Also update after images load in case they affect layout
                 var images = container.querySelectorAll('img');
@@ -510,13 +513,17 @@ function loadHomepageData() {
 
         // Handle smooth scrolling for navigation links
         var navLinks = document.querySelectorAll('.nav-link');
+        var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         for (var i = 0; i < navLinks.length; i++) {
             navLinks[i].addEventListener('click', function(e) {
                 e.preventDefault();
                 var targetId = this.getAttribute('href').substring(1);
                 var targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    targetElement.scrollIntoView({
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         }
@@ -527,6 +534,19 @@ function loadHomepageData() {
                 setupComingSoonTooltips();
             }
         }, 0);
+    }, function () {
+        container.removeAttribute('aria-busy');
+        container.innerHTML =
+            '<div class="page-status page-status--error" role="alert" id="about">' +
+            '<p class="page-status-text">Could not load this page. Check your connection and try again.</p>' +
+            '<button type="button" class="page-status-retry" id="homepage-retry">Try again</button>' +
+            '</div>';
+        var retryBtn = document.getElementById('homepage-retry');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', function () {
+                loadHomepageData();
+            });
+        }
     });
 }
 

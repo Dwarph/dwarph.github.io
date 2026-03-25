@@ -18,3 +18,71 @@ window.mobileCheck = function() {
     return check;
 };
 
+/**
+ * Fetch JSON with retries (network flakiness, transient failures).
+ * @param {string} url
+ * @param {function(*)} onSuccess
+ * @param {function(Error)} onError
+ * @param {RequestInit} [fetchOptions]
+ */
+window.fetchJsonWithRetry = function (url, onSuccess, onError, fetchOptions) {
+    var maxAttempts = 3;
+    var attempt = 0;
+
+    function tryFetch() {
+        attempt++;
+        fetch(url, fetchOptions || {})
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Request failed: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(onSuccess)
+            .catch(function (err) {
+                if (attempt < maxAttempts) {
+                    setTimeout(tryFetch, 400 * attempt);
+                } else {
+                    console.error('fetchJsonWithRetry failed:', url, err);
+                    if (typeof onError === 'function') {
+                        onError(err);
+                    }
+                }
+            });
+    }
+
+    tryFetch();
+};
+
+/**
+ * Fetch text with retries.
+ */
+window.fetchTextWithRetry = function (url, onSuccess, onError, fetchOptions) {
+    var maxAttempts = 3;
+    var attempt = 0;
+
+    function tryFetch() {
+        attempt++;
+        fetch(url, fetchOptions || {})
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Request failed: ' + response.status);
+                }
+                return response.text();
+            })
+            .then(onSuccess)
+            .catch(function (err) {
+                if (attempt < maxAttempts) {
+                    setTimeout(tryFetch, 400 * attempt);
+                } else {
+                    console.error('fetchTextWithRetry failed:', url, err);
+                    if (typeof onError === 'function') {
+                        onError(err);
+                    }
+                }
+            });
+    }
+
+    tryFetch();
+};
+

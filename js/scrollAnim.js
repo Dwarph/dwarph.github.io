@@ -94,9 +94,14 @@
     window.initScrollAnim = function (container) {
         if (!container) return;
         var isMobile = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
+        var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+            config.barSmooth = 1;
+        }
         // On mobile we animate the timeline bar, but avoid opacity-driven fade.
         // Mobile CSS doesn’t set the same initial opacity state, so fading can cause content to disappear until scroll.
-        var enableFade = !isMobile;
+        // Respect reduced motion: no scroll-linked fade; timeline bar snaps without lerp.
+        var enableFade = !isMobile && !prefersReducedMotion;
 
         var workSection = container.querySelector('#work');
         var workJobs = container.querySelectorAll('.work-job');
@@ -284,6 +289,28 @@
             // Resize can change rect geometry; update immediately (no need for a long loop).
             requestAnimationFrame(function () { update(1000 / 60); });
         });
+    };
+
+    /**
+     * If scroll animation fails or leaves sections invisible, force full opacity (recovery).
+     */
+    window.forceVisibleScrollSections = function (container) {
+        if (!container) return;
+        var workSection = container.querySelector('#work');
+        var fadeCards = container.querySelectorAll(
+            '.job-case-studies > .case-study-card-link, .job-case-studies > .case-study-card, ' +
+            '.job-other-work > .case-study-card-link, .job-other-work > .case-study-card'
+        );
+        var projectsSection = container.querySelector('#projects');
+        var projectCards = container.querySelectorAll('.projects-list > .project-card-link, .projects-list > .project-card');
+        var talksSection = container.querySelector('#talks');
+        var contactSection = container.querySelector('#contact');
+        if (workSection) workSection.style.opacity = '1';
+        for (var i = 0; i < fadeCards.length; i++) fadeCards[i].style.opacity = '1';
+        if (projectsSection) projectsSection.style.opacity = '1';
+        for (var j = 0; j < projectCards.length; j++) projectCards[j].style.opacity = '1';
+        if (talksSection) talksSection.style.opacity = '1';
+        if (contactSection) contactSection.style.opacity = '1';
     };
 
     /**

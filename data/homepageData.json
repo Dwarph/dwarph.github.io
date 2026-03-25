@@ -163,12 +163,12 @@
     "email": "pipturner.work@gmail.com",
     "socialLinks": [
       {
-        "name": "Linkedin",
+        "name": "LinkedIn",
         "link": "https://www.linkedin.com/in/pip-turner97/",
         "icon": "icons/linkedin.svg"
       },
       {
-        "name": "Github",
+        "name": "GitHub",
         "link": "https://github.com/dwarph",
         "icon": "icons/github.svg"
       },

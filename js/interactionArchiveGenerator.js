@@ -1,36 +1,5 @@
 // Mobile detection is now in utils.js
 
-function loadProjectsJSON(callback) {
-    fetch('./data/projectsData.json')
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            callback(data);
-        })
-        .catch(function(error) {
-            console.error('Error loading projects data:', error);
-        });
-}
-
-function loadHomepageJSON(callback) {
-    fetch('./data/homepageData.json')
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            callback(data);
-        })
-        .catch(function(error) {
-            console.error('Error loading homepage data:', error);
-        });
-}
 
 // Header is now rendered using window.renderHeader from header.js
 
@@ -296,23 +265,56 @@ function loadVideosSequentiallyFallback(projects, isMobile) {
     setTimeout(loadNextVideo, 100);
 }
 
-function loadArchiveData() {
-    // Load both homepage data (for header) and projects data
-    loadHomepageJSON(function (homepageData) {
-        loadProjectsJSON(function (data) {
-            var container = document.getElementById('archive-container');
-            if (!container) return;
+function renderArchiveFetchError() {
+    return (
+        '<div class="page-status page-status--error" role="alert" id="archive-projects-grid">' +
+        '<p class="page-status-text">Could not load the archive. Check your connection and try again.</p>' +
+        '<button type="button" class="page-status-retry" id="archive-retry">Try again</button>' +
+        '</div>'
+    );
+}
 
-            var isMobile = window.mobileCheck();
-            var projects = data;
-            var videoCache = null;
-            
-            // Build HTML with header
-            var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
-            html += `
-                <nav class="breadcrumb-nav">
+function loadArchiveData() {
+    var container = document.getElementById('archive-container');
+    if (!container) return;
+
+    if (typeof window.fetchJsonWithRetry !== 'function') {
+        container.innerHTML =
+            '<div class="page-status page-status--error" role="alert"><p class="page-status-text">Could not load scripts.</p></div>';
+        return;
+    }
+
+    container.setAttribute('aria-busy', 'true');
+    container.innerHTML =
+        '<div class="page-status page-status--loading" role="status" id="archive-projects-grid">Loading…</div>';
+
+    function showArchiveError() {
+        container.removeAttribute('aria-busy');
+        container.innerHTML = renderArchiveFetchError();
+        var btn = document.getElementById('archive-retry');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                loadArchiveData();
+            });
+        }
+    }
+
+    window.fetchJsonWithRetry(
+        'data/homepageData.json',
+        function (homepageData) {
+            window.fetchJsonWithRetry(
+                'data/projectsData.json',
+                function (data) {
+                    container.removeAttribute('aria-busy');
+
+                    var isMobile = window.mobileCheck();
+                    var projects = data;
+
+                    var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
+                    html += `
+                <nav class="breadcrumb-nav" role="navigation" aria-label="Breadcrumb">
                     <a href="index.html" class="breadcrumb-link">Home</a>
-                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-separator" aria-hidden="true">/</span>
                     <span class="breadcrumb-current">Interaction Archive</span>
                 </nav>
                 <section class="homepage-section archive-section">
@@ -323,49 +325,48 @@ function loadArchiveData() {
                 </section>
             `;
 
-            container.innerHTML = html;
+                    container.innerHTML = html;
+                    if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
 
-            // Render all projects immediately
-            renderProjects();
+                    function renderProjects() {
+                        var grid = document.getElementById('archive-projects-grid');
+                        if (!grid) return;
 
-            // Render all projects
-            function renderProjects() {
-                var grid = document.getElementById('archive-projects-grid');
-                if (!grid) return;
+                        grid.innerHTML = '';
 
-                grid.innerHTML = '';
+                        var sortedProjects = projects.slice().sort(function (a, b) {
+                            if (b.year !== a.year) {
+                                return b.year - a.year;
+                            }
+                            if (b.featured !== a.featured) {
+                                return b.featured ? 1 : -1;
+                            }
+                            return 0;
+                        });
 
-                // Sort by year descending, then by featured status
-                var sortedProjects = projects.slice().sort(function(a, b) {
-                    if (b.year !== a.year) {
-                        return b.year - a.year;
+                        if (sortedProjects.length === 0) {
+                            grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
+                            return;
+                        }
+
+                        for (var i = 0; i < sortedProjects.length; i++) {
+                            grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, null);
+                        }
+
+                        requestAnimationFrame(function () {
+                            setTimeout(function () {
+                                loadVideosSequentially(sortedProjects, isMobile);
+                            }, 100);
+                        });
                     }
-                    if (b.featured !== a.featured) {
-                        return b.featured ? 1 : -1;
-                    }
-                    return 0;
-                });
 
-                if (sortedProjects.length === 0) {
-                    grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
-                    return;
-                }
-
-                // Render all projects with videos in loading state
-                for (var i = 0; i < sortedProjects.length; i++) {
-                    grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, null);
-                }
-
-                // Start loading videos sequentially after rendering
-                // Use requestAnimationFrame to ensure DOM is ready
-                requestAnimationFrame(function() {
-                    setTimeout(function() {
-                        loadVideosSequentially(sortedProjects, isMobile);
-                    }, 100);
-                });
-            }
-        });
-    });
+                    renderProjects();
+                },
+                showArchiveError
+            );
+        },
+        showArchiveError
+    );
 }
 
 // Load on page load

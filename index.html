@@ -10,6 +10,8 @@
   <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Nunito+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"></noscript>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="styling/homepage.css">
+  <link rel="preload" href="images/header-background.png" as="image" fetchpriority="high">
+  <link rel="preload" href="images/profile-picture.jpg" as="image" fetchpriority="high">
 
   <meta name="description" content="Hello! I'm Pip. Portfolio showcasing interaction design, XR development, and case studies from my work at Ultraleap and FitXR." />
   <meta property="og:url" content="https://pipturner.co.uk" />
@@ -62,11 +64,7 @@
     // Register service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(function(registration) {
-          console.log('ServiceWorker registration successful');
-        }, function(err) {
-          console.log('ServiceWorker registration failed: ', err);
-        });
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
       });
     }
   </script>

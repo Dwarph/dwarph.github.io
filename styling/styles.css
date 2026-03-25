@@ -32,7 +32,25 @@
 body {
   background-color: var(--primary-color);
   font-size: 28px;
-  transition: 1s;
+  transition: background-color 1s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography polish: reduce awkward line breaks */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+blockquote {
+  text-wrap: pretty;
 }
 
 /* Skip Link */
@@ -151,7 +169,7 @@ body.no-transition {
   font-size: small;
   background-image: linear-gradient(var(--primary-color) 30%, rgba(255, 140, 168, 1) 100%);
   background-size: auto 200%;
-  transition: all 0.5s;
+  transition: background-position 0.5s ease, border-color 0.5s ease, transform 120ms ease;
   background-position: 0 0;
   color: var(--black);
   border: 2px solid #ffffff;
@@ -162,6 +180,9 @@ body.no-transition {
 }
 
 
+.nav-btn:active {
+  transform: scale(0.96);
+}
 
 .footer-icon {
   height: 25px;
@@ -173,9 +194,13 @@ body.no-transition {
 
 .svg-link {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
   filter: var(--svg-filter);
-  transition: all 0.5s;
+  transition: filter 0.5s ease, transform 120ms ease;
 
 }
 
@@ -187,6 +212,11 @@ body.no-transition {
   left: 0;
   bottom: 0;
   right: 0;
+  pointer-events: none;
+}
+
+.svg-link:active {
+  transform: scale(0.96);
 }
 
 
@@ -218,26 +248,28 @@ body.no-transition {
 
 
 .btn-outline-primary {
-  height: 30px;
-  line-height: 15px;
+  height: 40px;
+  line-height: 20px;
   margin-left: 2px;
   margin-right: 2px;
   margin-top: 20px;
   margin-bottom: 20px;
   background-size: auto 200%;
-  transition: all 0.5s;
+  transition: background-position 0.5s ease, border-color 0.5s ease, transform 120ms ease;
   color: var(--black);
   border: 2px solid var(--secondary-color);
   border-radius: 1em;
   vertical-align: middle;
 }
 
-
+.btn-outline-primary:active {
+  transform: scale(0.96);
+}
 
 .btn-check:checked+.btn-outline-primary {
   border: 1px solid #ffffff;
   background-position: 0 70%;
-  transition: all 0.5s;
+  transition: background-position 0.5s ease, border-color 0.5s ease;
 }
 
 
@@ -270,6 +302,7 @@ body.no-transition {
   margin-top: 25px;
   color: #ffffff;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
 }
 
 #footer {
@@ -279,23 +312,23 @@ body.no-transition {
 
 #portfolio-items.pre-animation {
   opacity: 0;
-  transition: all 0.5s;
+  transition: opacity 0.5s ease;
 }
 
 
 #portfolio-container.pre-animation {
   opacity: 0;
-  transition: all 0.5s;
+  transition: opacity 0.5s ease;
 }
 
 
 #portfolio-items {
-  transition: all 0.5s;
+  transition: opacity 0.5s ease;
   max-height: auto;
 }
 
 #portfolio-container {
-  transition: all 0.5s;
+  transition: opacity 0.5s ease;
   max-height: auto;
 }
 
@@ -319,7 +352,7 @@ body.no-transition {
   margin-top: -8px;
   position: absolute;
   opacity: 0.3;
-  transition: all 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out, background-color 0.4s ease-in-out;
   width: 40px;
 }
 
@@ -333,7 +366,7 @@ body.no-transition {
   margin-top: -8px;
   position: absolute;
   top: -4px;
-  transition: all 0.3s ease-in-out;
+  transition: left 0.3s ease-in-out, background-color 0.3s ease-in-out;
   width: 24px;
 }
 
@@ -392,13 +425,17 @@ video::-internal-media-controls-overlay-cast-button {
 .btn-download {
   background-color: var(--secondary-color);
   color: #FFF5F7;
-  transition: all 0.3s ease-in-out;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, filter 0.3s ease-in-out, transform 120ms ease;
   margin-top: 10px;
   margin-bottom: 20px;
   border-radius: 1em
 }
 
 
+
+.btn-download:active {
+  transform: scale(0.96);
+}
 
 @media (hover: hover) {
 
@@ -419,7 +456,7 @@ video::-internal-media-controls-overlay-cast-button {
   .btn-outline-primary:hover,
   .btn-check:checked+.btn-outline-primary:hover {
     border: 1px solid var(--secondary-color);
-    background-color: none;
+    background-color: transparent;
   }
 
   .form-check-input:checked:hover {
@@ -437,6 +474,5 @@ video::-internal-media-controls-overlay-cast-button {
     background-color: var(--secondary-color);
     filter: brightness(120%);
     color: #FFF5F7;
-    transition: all 0.3s ease-in-out;
   }
 }

@@ -66,12 +66,12 @@ ul {
   max-width: 100%;
   max-height: 100%;
   border-radius: 2rem;
-  transition: all 0.5s;
+  transition: border-radius 0.5s ease;
 }
 
 @media (hover: hover) {
   .modal-body img:hover {
-    transition: all 0.5s;
+    transition: border-radius 0.5s ease;
     border-radius: 1rem;
   }
   
@@ -84,7 +84,7 @@ ul {
 
 
 .modal.fade {
-  transition: .5s linear all !important;
+  transition: opacity 0.5s linear !important;
 }
 
 .modal-header .btn-close {

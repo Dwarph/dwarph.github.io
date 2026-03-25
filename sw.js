@@ -1,5 +1,5 @@
 // Service Worker for pipturner.co.uk
-const CACHE_NAME = 'pipturner-v2';
+const CACHE_NAME = 'pipturner-v3';
 const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
@@ -12,10 +12,10 @@ const STATIC_CACHE_URLS = [
   '/js/homepageGenerator.js',
   '/js/soundboard.js',
   '/js/themeManager.js',
-  '/favicon.ico',
-  '/favicon.svg',
-  '/favicon-96x96.png',
-  '/apple-touch-icon.png'
+  '/assets/branding/favicon.ico',
+  '/assets/branding/favicon.svg',
+  '/assets/branding/favicon-96x96.png',
+  '/assets/branding/apple-touch-icon.png'
 ];
 
 // Install event - cache static assets

@@ -272,7 +272,10 @@ class DistortionSketch {
         this.material.uniforms.resolution.value.z = a1;
         this.material.uniforms.resolution.value.w = a2;
 
-        this.regenerateGrid();
+        /* Do not call regenerateGrid() here. Mobile browsers fire resize/ResizeObserver when the
+         * URL bar shows or hides while scrolling; resetting the data texture looked like the
+         * effect restarting. Grid is simulation resolution, not canvas size — only regenerate
+         * when settings change (applyControlSettings) or at first build (addObjects). */
     }
 
     regenerateGrid() {

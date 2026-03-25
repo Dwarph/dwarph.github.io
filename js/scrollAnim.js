@@ -93,7 +93,10 @@
 
     window.initScrollAnim = function (container) {
         if (!container) return;
-        if (typeof window.mobileCheck === 'function' && window.mobileCheck()) return;
+        var isMobile = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
+        // On mobile we animate the timeline bar, but avoid opacity-driven fade.
+        // Mobile CSS doesn’t set the same initial opacity state, so fading can cause content to disappear until scroll.
+        var enableFade = !isMobile;
 
         var workSection = container.querySelector('#work');
         var workJobs = container.querySelectorAll('.work-job');
@@ -108,6 +111,16 @@
 
         config.completed = new Set();
         var barHeights = [];
+
+        if (!enableFade) {
+            // Ensure mobile content stays visible (CSS is responsible for initial visibility on mobile).
+            if (workSection) workSection.style.opacity = '1';
+            for (var m = 0; m < fadeCards.length; m++) fadeCards[m].style.opacity = '1';
+            if (projectsSection) projectsSection.style.opacity = '1';
+            for (var n = 0; n < projectCards.length; n++) projectCards[n].style.opacity = '1';
+            if (talksSection) talksSection.style.opacity = '1';
+            if (contactSection) contactSection.style.opacity = '1';
+        }
 
         function applyProgress(el, progress, key) {
             var th = config.threshold;
@@ -131,10 +144,12 @@
             var frameMs = 1000 / 60;
             var dt = (typeof dtMs === 'number' && dtMs > 0) ? dtMs : frameMs;
 
-            if (workSection) {
-                var p = fadeProgress(getProgressInViewport(workSection, scrollY, maxScrollY));
-                var use = applyProgress(workSection, p, 'work');
-                workSection.style.opacity = String(use);
+            if (enableFade) {
+                if (workSection) {
+                    var p = fadeProgress(getProgressInViewport(workSection, scrollY, maxScrollY));
+                    var use = applyProgress(workSection, p, 'work');
+                    workSection.style.opacity = String(use);
+                }
             }
 
             for (var i = 0; i < workJobs.length; i++) {
@@ -163,7 +178,7 @@
                     var topPx = parsePx(getComputedStyle(col).getPropertyValue('--timeline-top'));
                     var fullHeight = col.offsetHeight - topPx;
                     if (fullHeight > 0) {
-                        var barWidth = 16;
+                        var barWidth = barEl.offsetWidth || 16;
                         var targetH = Math.max(barWidth, fullHeight * barUse);
                         if (typeof barHeights[i] !== 'number') barHeights[i] = targetH;
                         else {
@@ -184,33 +199,35 @@
                 }
             }
 
-            for (var j = 0; j < fadeCards.length; j++) {
-                var card = fadeCards[j];
-                var cardP = fadeProgress(getProgressInViewport(card, scrollY, maxScrollY));
-                var cardUse = applyProgress(card, cardP, 'card-' + j);
-                card.style.opacity = String(cardUse);
-            }
+            if (enableFade) {
+                for (var j = 0; j < fadeCards.length; j++) {
+                    var card = fadeCards[j];
+                    var cardP = fadeProgress(getProgressInViewport(card, scrollY, maxScrollY));
+                    var cardUse = applyProgress(card, cardP, 'card-' + j);
+                    card.style.opacity = String(cardUse);
+                }
 
-            if (projectsSection) {
-                var projP = fadeProgress(getProgressInViewport(projectsSection, scrollY, maxScrollY));
-                var projUse = applyProgress(projectsSection, projP, 'projects');
-                projectsSection.style.opacity = String(projUse);
-            }
-            for (var k = 0; k < projectCards.length; k++) {
-                var projCard = projectCards[k];
-                var projCardP = fadeProgress(getProgressInViewport(projCard, scrollY, maxScrollY));
-                var projCardUse = applyProgress(projCard, projCardP, 'project-' + k);
-                projCard.style.opacity = String(projCardUse);
-            }
-            if (talksSection) {
-                var talksP = fadeProgress(getProgressInViewport(talksSection, scrollY, maxScrollY));
-                var talksUse = applyProgress(talksSection, talksP, 'talks');
-                talksSection.style.opacity = String(talksUse);
-            }
-            if (contactSection) {
-                var contactP = fadeProgress(getProgressInViewport(contactSection, scrollY, maxScrollY));
-                var contactUse = applyProgress(contactSection, contactP, 'contact');
-                contactSection.style.opacity = String(contactUse);
+                if (projectsSection) {
+                    var projP = fadeProgress(getProgressInViewport(projectsSection, scrollY, maxScrollY));
+                    var projUse = applyProgress(projectsSection, projP, 'projects');
+                    projectsSection.style.opacity = String(projUse);
+                }
+                for (var k = 0; k < projectCards.length; k++) {
+                    var projCard = projectCards[k];
+                    var projCardP = fadeProgress(getProgressInViewport(projCard, scrollY, maxScrollY));
+                    var projCardUse = applyProgress(projCard, projCardP, 'project-' + k);
+                    projCard.style.opacity = String(projCardUse);
+                }
+                if (talksSection) {
+                    var talksP = fadeProgress(getProgressInViewport(talksSection, scrollY, maxScrollY));
+                    var talksUse = applyProgress(talksSection, talksP, 'talks');
+                    talksSection.style.opacity = String(talksUse);
+                }
+                if (contactSection) {
+                    var contactP = fadeProgress(getProgressInViewport(contactSection, scrollY, maxScrollY));
+                    var contactUse = applyProgress(contactSection, contactP, 'contact');
+                    contactSection.style.opacity = String(contactUse);
+                }
             }
         }
 

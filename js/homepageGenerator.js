@@ -424,17 +424,32 @@ function loadHomepageData() {
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {
-            // Only find desktop case studies (direct children of .job-right-column, not in mobile containers)
+            // Set --timeline-top so the animated .job-timeline-scroll-bar starts at the correct y-position.
+            // On desktop this uses the direct .job-case-studies; on mobile the visible timeline lives inside .job-case-studies-container.
             var rightColumns = container.querySelectorAll('.job-right-column.has-case-studies');
             for (var i = 0; i < rightColumns.length; i++) {
                 var rightColumn = rightColumns[i];
-                // Find the first case studies section that's a direct child (desktop layout)
-                var caseStudiesSection = rightColumn.querySelector(':scope > .job-case-studies');
-                if (caseStudiesSection) {
-                    var caseStudiesRect = caseStudiesSection.getBoundingClientRect();
+
+                var timelineAnchor = null;
+                // Mobile (visible) anchor
+                var mobileTimelineAnchor = rightColumn.querySelector('.job-case-studies-container .job-timeline-gradient');
+                if (mobileTimelineAnchor && mobileTimelineAnchor.offsetHeight > 0) timelineAnchor = mobileTimelineAnchor;
+
+                // Desktop (visible) anchor
+                var desktopTimelineAnchor = rightColumn.querySelector(':scope > .job-case-studies');
+                if (!timelineAnchor && desktopTimelineAnchor && desktopTimelineAnchor.offsetHeight > 0) timelineAnchor = desktopTimelineAnchor;
+
+                // Fallbacks for edge cases (e.g. before layout/visibility settles)
+                if (!timelineAnchor) {
+                    if (mobileTimelineAnchor) timelineAnchor = mobileTimelineAnchor;
+                    else if (desktopTimelineAnchor) timelineAnchor = desktopTimelineAnchor;
+                }
+
+                if (timelineAnchor) {
+                    var anchorRect = timelineAnchor.getBoundingClientRect();
                     var rightColumnRect = rightColumn.getBoundingClientRect();
-                    var caseStudiesOffset = caseStudiesRect.top - rightColumnRect.top;
-                    rightColumn.style.setProperty('--timeline-top', caseStudiesOffset + 'px');
+                    var anchorOffset = anchorRect.top - rightColumnRect.top;
+                    rightColumn.style.setProperty('--timeline-top', anchorOffset + 'px');
                 }
             }
         }

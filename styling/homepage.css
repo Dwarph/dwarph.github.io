@@ -1384,9 +1384,17 @@ select:focus-visible {
         display: none;
     }
 
-    /* Scroll-driven bar is desktop-only */
+    /* Scroll-driven timeline bar (animate on mobile too) */
     .job-timeline-scroll-bar {
-        display: none;
+        display: block;
+        left: 0;
+        width: 10px;
+        z-index: 2;
+    }
+
+    /* Hide the base timeline on mobile; only the animated scroll-bar should be visible. */
+    .job-timeline-gradient {
+        opacity: 0;
     }
 }
 

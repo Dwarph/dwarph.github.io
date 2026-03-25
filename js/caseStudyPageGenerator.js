@@ -96,6 +96,7 @@ function loadCaseStudyPage() {
                         document.title = 'Pip Turner — Case study not found';
                         container.innerHTML = renderCaseStudyNotFound(homepageData);
                         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+                        if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
                         return;
                     }
 
@@ -109,6 +110,7 @@ function loadCaseStudyPage() {
                             html += renderCaseStudyContent(caseStudy, markdown);
                             container.innerHTML = html;
                             if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+                            if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
                         },
                         function () {
                             container.removeAttribute('aria-busy');

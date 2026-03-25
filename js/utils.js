@@ -86,3 +86,26 @@ window.fetchTextWithRetry = function (url, onSuccess, onError, fetchOptions) {
     tryFetch();
 };
 
+/**
+ * Loads the DistortedPixels-style header WebGL effect (ES module) after the header is in the DOM.
+ * No-ops when prefers-reduced-motion is set or when the module fails to load.
+ * @param {ParentNode} root
+ * @returns {Promise<void>}
+ */
+window.loadHeaderDistortion = function (root) {
+    if (!root) return Promise.resolve();
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return Promise.resolve();
+    }
+    var url = new URL('js/headerDistortion.js', document.baseURI).href;
+    return import(url)
+        .then(function (m) {
+            if (typeof m.initHeaderDistortion === 'function') {
+                m.initHeaderDistortion(root);
+            }
+        })
+        .catch(function () {
+            /* Static header image fallback */
+        });
+};
+

@@ -327,6 +327,7 @@ function loadArchiveData() {
 
                     container.innerHTML = html;
                     if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+                    if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
 
                     function renderProjects() {
                         var grid = document.getElementById('archive-projects-grid');

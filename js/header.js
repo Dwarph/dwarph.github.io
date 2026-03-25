@@ -37,7 +37,9 @@ window.renderHeader = function(header, options) {
     return `
         <header class="homepage-header" role="banner">
             <div class="header-background">
-                <img src="${header.backgroundImage}" alt="" width="1920" height="400" loading="eager" decoding="async" fetchpriority="high" class="header-background-image" />
+                <div class="header-distortion-mount" data-header-distortion>
+                    <img src="${header.backgroundImage}" alt="" width="1920" height="400" loading="eager" decoding="async" fetchpriority="high" class="header-background-image" />
+                </div>
             </div>
             <div class="header-content">
                 ${profileImageHtml}

@@ -420,6 +420,9 @@ function loadHomepageData() {
 
         container.innerHTML = html;
         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+        if (window.loadHeaderDistortion) {
+            window.loadHeaderDistortion(container);
+        }
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {

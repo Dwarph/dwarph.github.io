@@ -386,7 +386,7 @@ function loadHomepageData() {
 
     container.setAttribute('aria-busy', 'true');
     container.innerHTML =
-        '<div class="page-status page-status--loading" role="status" id="about">Loading…</div>';
+        '<div class="sr-only" role="status" aria-live="polite" aria-label="Loading content">Loading</div>';
 
     if (typeof window.fetchJsonWithRetry !== 'function') {
         container.removeAttribute('aria-busy');

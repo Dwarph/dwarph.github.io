@@ -75,7 +75,7 @@ function loadCaseStudyPage() {
 
     container.setAttribute('aria-busy', 'true');
     container.innerHTML =
-        '<div class="page-status page-status--loading" role="status" id="case-study-content">Loading…</div>';
+        '<div class="sr-only" role="status" aria-live="polite" aria-label="Loading case study">Loading</div>';
 
     window.fetchJsonWithRetry(
         'data/homepageData.json',

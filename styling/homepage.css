@@ -53,6 +53,8 @@
 html {
     overflow-x: hidden;
     width: 100%;
+    /* Avoid layout jump when the vertical scrollbar appears/disappears during resize */
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -548,41 +550,155 @@ select:focus-visible {
     margin: 0;
 }
 
+/* Desktop: fixed left “rail” (icons); mobile overrides below */
 .homepage-nav {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 34px;
-    padding: var(--spacing-md) var(--spacing-lg);
-    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 10px;
+    margin: 0;
+    flex-wrap: nowrap;
+    position: fixed;
+    left: clamp(12px, 2.5vw, 28px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 150;
+    max-width: none;
+    background: rgba(255, 253, 239, 0.94);
+    border: 1px solid rgba(55, 44, 9, 0.1);
+    border-radius: 999px;
+    box-shadow:
+        0 8px 28px rgba(55, 44, 9, 0.07),
+        0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    box-sizing: border-box;
 }
 
-/* Homepage: keep nav in the same column as the framed header (must follow .homepage-nav for padding override) */
 .homepage-header-nav-wrapper .homepage-nav {
-    max-width: var(--header-frame-max);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--header-frame-side);
-    padding-right: var(--header-frame-side);
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 10px;
+    padding-right: 10px;
     box-sizing: border-box;
 }
 
 .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 0;
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
     font-size: 24px;
-    line-height: 100%;
+    line-height: 1;
     color: var(--text-color);
     text-decoration: none;
-    transition: opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    transition: background-color 0.2s cubic-bezier(0.33, 1, 0.68, 1), color 0.2s cubic-bezier(0.33, 1, 0.68, 1), transform 0.15s ease;
+}
+
+.nav-link .nav-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+/* Label visible on mobile only; clipped on desktop (icons-only rail) */
+.homepage-nav .nav-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .nav-link:hover {
-    opacity: 0.7;
+    opacity: 1;
+    background-color: rgba(55, 44, 9, 0.09);
 }
 
 .nav-link:active {
-    opacity: 0.55;
+    opacity: 1;
+    transform: scale(0.96);
+}
+
+/* Active (Figma: first item); hover (Figma: second item) uses rule above */
+.nav-link.nav-link--active {
+    background-color: var(--highlight-pip);
+    color: var(--text-color);
+}
+
+.nav-link.nav-link--active .nav-icon {
+    color: var(--text-color);
+}
+
+.nav-link.nav-link--active:hover {
+    background-color: var(--highlight-pip);
+    opacity: 0.92;
+}
+
+/* Bottom floating dock — mid-width + mobile (class from JS; rail is wide desktop only) */
+html.home-nav-layout-dock #homepage-container {
+    padding-left: 0;
+    padding-bottom: clamp(68px, 11vh, 108px);
+    box-sizing: border-box;
+}
+
+/* Mid-width dock (769px+): same pill scale as the original desktop dock — 48px icons from .nav-link */
+html.home-nav-layout-dock .homepage-nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    max-width: calc(100vw - 16px);
+    box-sizing: border-box;
+}
+
+html.home-nav-layout-dock .homepage-header-nav-wrapper .homepage-nav {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+html.home-nav-layout-dock .nav-link {
+    flex: 0 0 auto;
+}
+
+/* Smallest layout (mobile dock only): tighter pill so five icons stay on one row */
+@media (max-width: 768px) {
+    /* Extra scroll room so #contact isn’t covered by the fixed pill + home indicator */
+    html.home-nav-layout-dock #homepage-container {
+        padding-bottom: max(88px, calc(env(safe-area-inset-bottom, 0px) + 76px));
+    }
+
+    html.home-nav-layout-dock .homepage-nav {
+        gap: 4px;
+        padding: 7px 8px;
+        max-width: calc(100vw - 12px);
+    }
+
+    html.home-nav-layout-dock .nav-link {
+        width: 40px;
+        height: 40px;
+    }
+
+    html.home-nav-layout-dock .nav-link .nav-icon {
+        font-size: 20px;
+        line-height: 1;
+    }
 }
 
 /* Section Styles */
@@ -1374,22 +1490,8 @@ select:focus-visible {
         text-align: center;
     }
 
-    .homepage-nav {
-        gap: 15px 34px;
-        padding: var(--spacing-md) var(--mobile-padding-horizontal);
-        box-sizing: border-box;
-    }
+    /* Homepage section nav: bottom floating dock (icons) — see html.home-nav-layout-dock rules above */
 
-    .homepage-header-nav-wrapper .homepage-nav {
-        padding-left: var(--mobile-padding-horizontal);
-        padding-right: var(--mobile-padding-horizontal);
-    }
-
-    .nav-link {
-        font-size: 24px;
-    }
-
-    /* Override negative margin on mobile - reduce gap to account for nav padding */
     .homepage-nav + .homepage-section,
     .homepage-header-nav-wrapper + .homepage-section {
         margin-top: var(--spacing-2xl);
@@ -1795,6 +1897,10 @@ select:focus-visible {
 
 /* Desktop specific adjustments */
 @media (min-width: 769px) {
+    #homepage-container {
+        box-sizing: border-box;
+    }
+
     .homepage-section {
         padding: 0 clamp(1rem, 4vw, 1.5rem);
         max-width: 730px;
@@ -1837,6 +1943,13 @@ select:focus-visible {
 
     .job-logo-container-mobile {
         display: none;
+    }
+}
+
+/* Wide desktop: left-rail gutter (paired with html.home-nav-layout-rail from JS) */
+@media (min-width: 769px) {
+    html.home-nav-layout-rail #homepage-container {
+        padding-left: clamp(52px, 6vw, 96px);
     }
 }
 

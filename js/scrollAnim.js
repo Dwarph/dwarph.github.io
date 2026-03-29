@@ -297,9 +297,13 @@
             scheduleStop();
         }, { passive: true });
 
+        var resizeDebounceTimer = null;
         window.addEventListener('resize', function () {
-            // Resize can change rect geometry; update immediately (no need for a long loop).
-            requestAnimationFrame(function () { update(1000 / 60); });
+            if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+            resizeDebounceTimer = setTimeout(function () {
+                resizeDebounceTimer = null;
+                requestAnimationFrame(function () { update(1000 / 60); });
+            }, 120);
         });
     };
 

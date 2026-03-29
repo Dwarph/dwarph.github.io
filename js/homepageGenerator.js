@@ -64,8 +64,8 @@ function renderAbout(about) {
 
     return `
         <section id="about" class="homepage-section about-section">
-            <h2 class="section-title">About</h2>
-            <div class="about-content">
+            <h2 class="section-title scroll-reveal-chunk">About</h2>
+            <div class="about-content scroll-reveal-chunk">
                 <div class="about-bio">${bioHtml}</div>
                 <a href="${about.cvLink}" class="cv-download-link" download aria-label="Download CV">
                     Download CV
@@ -144,7 +144,7 @@ function renderCaseStudy(caseStudy, isMobile) {
         var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
         var ariaLabel = caseStudy.imageAlt || caseStudy.title;
         return `
-            <a href="${caseStudyLink}" class="case-study-card-link"${targetAttr} aria-label="View case study: ${ariaLabel}">
+            <a href="${caseStudyLink}" class="case-study-card-link scroll-reveal-chunk"${targetAttr} aria-label="View case study: ${ariaLabel}">
                 <div class="case-study-card${comingSoonClass}"${comingSoonDataAttr}>
                     ${cardContent}
                 </div>
@@ -152,7 +152,7 @@ function renderCaseStudy(caseStudy, isMobile) {
         `;
     } else {
         return `
-            <div class="case-study-card${comingSoonClass}"${comingSoonDataAttr} role="article" aria-label="${caseStudy.title}">
+            <div class="case-study-card scroll-reveal-chunk${comingSoonClass}"${comingSoonDataAttr} role="article" aria-label="${caseStudy.title}">
                 ${cardContent}
             </div>
         `;
@@ -161,7 +161,7 @@ function renderCaseStudy(caseStudy, isMobile) {
 
 function renderWork(work) {
     var isMobile = window.mobileCheck();
-    var workHtml = '<section id="work" class="homepage-section work-section"><h2 class="section-title">Work</h2><div class="work-jobs">';
+    var workHtml = '<section id="work" class="homepage-section work-section"><h2 class="section-title scroll-reveal-chunk">Work</h2><div class="work-jobs scroll-reveal-chunk scroll-reveal-chunk--opacity">';
 
     for (var i = 0; i < work.length; i++) {
         var job = work[i];
@@ -277,7 +277,7 @@ function renderWork(work) {
 
 function renderProjects(projects) {
     var isMobile = window.mobileCheck();
-    var projectsHtml = '<section id="projects" class="homepage-section projects-section"><h2 class="section-title">Projects</h2><div class="projects-list">';
+    var projectsHtml = '<section id="projects" class="homepage-section projects-section"><h2 class="section-title scroll-reveal-chunk">Projects</h2><div class="projects-list scroll-reveal-chunk scroll-reveal-chunk--opacity">';
 
     for (var i = 0; i < projects.length; i++) {
         var project = projects[i];
@@ -317,7 +317,7 @@ function renderProjects(projects) {
             var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
             var ariaLabel = project.imageAlt || project.title;
             projectsHtml += `
-                <a href="${project.link}" class="project-card-link"${targetAttr} aria-label="View project: ${ariaLabel}">
+                <a href="${project.link}" class="project-card-link scroll-reveal-chunk"${targetAttr} aria-label="View project: ${ariaLabel}">
                     <div class="project-card">
                         ${cardContent}
                     </div>
@@ -325,7 +325,7 @@ function renderProjects(projects) {
             `;
         } else {
             projectsHtml += `
-                <div class="project-card" role="article" aria-label="${project.title}">
+                <div class="project-card scroll-reveal-chunk" role="article" aria-label="${project.title}">
                     ${cardContent}
                 </div>
             `;
@@ -337,7 +337,7 @@ function renderProjects(projects) {
 }
 
 function renderTalks(talks) {
-    var talksHtml = '<section id="talks" class="homepage-section talks-section"><h2 class="section-title">Talks</h2><div class="talks-list">';
+    var talksHtml = '<section id="talks" class="homepage-section talks-section"><h2 class="section-title scroll-reveal-chunk">Talks</h2><div class="talks-list scroll-reveal-chunk">';
 
     for (var i = 0; i < talks.length; i++) {
         var talk = talks[i];
@@ -391,8 +391,8 @@ function renderContact(contact) {
     
     return `
         <section id="contact" class="homepage-section contact-section">
-            <h2 class="section-title">Contact</h2>
-            <div class="contact-content">
+            <h2 class="section-title scroll-reveal-chunk">Contact</h2>
+            <div class="contact-content scroll-reveal-chunk scroll-reveal-chunk--opacity">
                 ${socialLinksHtml}
                 <div class="contact-item">
                     <a href="mailto:${contact.email}" class="contact-label" target="_blank" rel="noopener noreferrer" aria-label="Send email to ${contact.email}">Email${emailLinkIcon}</a>

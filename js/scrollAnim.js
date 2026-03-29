@@ -1,12 +1,19 @@
 /**
  * Scroll-linked fade-in and timeline bar growth.
- * Config is adjustable via the LEVA-style control panel (createScrollAnimPanel).
+ * Config: adjust defaults below, or in devtools `scrollAnimConfig.fadeZone = 0.5`, or
+ * `createScrollAnimPanel()` for a floating slider (call from console on desktop).
  */
 (function () {
     var config = {
         playOnce: false,
         threshold: 0.95,
-        fadeZone: 0.8,
+        /**
+         * Fade completes as the section crosses a band of height (viewport height × fadeZone).
+         * Lower = full opacity/unblur after less scrolling (snappier). Higher = longer roll-in.
+         * Typical range: 0.35–0.55 (fast) … 0.8 (slow).
+         */
+        fadeZone: 0.55,
+        /** Shapes how progress maps inside that band: linear | ease-in | ease-out | smooth */
         fadeEasing: 'smooth',
         enabled: true,
         barEnabled: true,
@@ -15,6 +22,9 @@
         barSmooth: 0.12,
         completed: null
     };
+
+    /** @type {typeof config} Mutable — tweak in browser console while testing. */
+    window.scrollAnimConfig = config;
 
     /**
      * Apply easing to raw progress (0–1).
@@ -91,6 +101,59 @@
         return parseInt(s, 10) || 0;
     }
 
+    /**
+     * Scroll stagger between title and body (~100ms equivalent in fade-zone progress).
+     * Matches split-and-stagger enter guidance from make-interfaces-feel-better.
+     */
+    var STAGGER_RAW = 0.1;
+
+    /**
+     * Body chunk lags title by STAGGER_RAW in raw progress, but still reaches raw=1 when the section does.
+     * (Subtract-only stagger never reaches eased 1 → stuck blur/opacity on Talks etc.)
+     */
+    function staggeredBodyRaw(raw) {
+        if (raw <= 0) return 0;
+        if (raw >= 1) return 1;
+        if (raw <= STAGGER_RAW) return 0;
+        return (raw - STAGGER_RAW) / (1 - STAGGER_RAW);
+    }
+
+    /**
+     * Enter: opacity + translateY(12px→0); optional blur (4px→0).
+     * The projects *list* wrapper stays opacity-only so we don’t blur the whole column as one layer; each card blurs like case studies.
+     */
+    function applyScrollReveal(el, progress, useBlur) {
+        if (!el) return;
+        var p = clamp01(progress);
+        el.style.opacity = String(p);
+        el.style.transform = 'translateY(' + 12 * (1 - p) + 'px)';
+        if (useBlur) {
+            el.style.filter = 'blur(' + 4 * (1 - p) + 'px)';
+        } else {
+            el.style.filter = 'none';
+        }
+    }
+
+    /** Staggered fade for wrappers that contain nested scroll-reveal cards (opacity only; no stacked transforms). */
+    function applyScrollRevealOpacity(el, progress) {
+        if (!el) return;
+        var p = clamp01(progress);
+        el.style.opacity = String(p);
+        el.style.transform = 'none';
+        el.style.filter = 'none';
+    }
+
+    function resetAllScrollRevealChunks(container) {
+        if (!container) return;
+        var chunks = container.querySelectorAll('.scroll-reveal-chunk');
+        for (var i = 0; i < chunks.length; i++) {
+            var ch = chunks[i];
+            ch.style.opacity = '1';
+            ch.style.transform = '';
+            ch.style.filter = '';
+        }
+    }
+
     window.initScrollAnim = function (container) {
         if (!container) return;
         var isMobile = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
@@ -119,14 +182,8 @@
         var barHeights = [];
 
         if (!enableFade) {
-            // Ensure mobile content stays visible (CSS is responsible for initial visibility on mobile).
-            if (aboutSection) aboutSection.style.opacity = '1';
-            if (workSection) workSection.style.opacity = '1';
-            for (var m = 0; m < fadeCards.length; m++) fadeCards[m].style.opacity = '1';
-            if (projectsSection) projectsSection.style.opacity = '1';
-            for (var n = 0; n < projectCards.length; n++) projectCards[n].style.opacity = '1';
-            if (talksSection) talksSection.style.opacity = '1';
-            if (contactSection) contactSection.style.opacity = '1';
+            // Ensure mobile / reduced-motion content stays visible (CSS also resets .scroll-reveal-chunk).
+            resetAllScrollRevealChunks(container);
         }
 
         function applyProgress(el, progress, key) {
@@ -153,19 +210,30 @@
 
             if (enableFade) {
                 if (aboutSection) {
-                    var aboutP = fadeProgress(getProgressInViewport(aboutSection, scrollY, maxScrollY));
-                    var aboutUse = applyProgress(aboutSection, aboutP, 'about');
+                    var aboutRaw = getProgressInViewport(aboutSection, scrollY, maxScrollY);
+                    var aboutTitleP = fadeProgress(aboutRaw);
+                    var aboutBodyRaw = staggeredBodyRaw(aboutRaw);
+                    var aboutBodyP = fadeProgress(aboutBodyRaw);
+                    var aboutTitleUse = applyProgress(aboutSection, aboutTitleP, 'about');
+                    var aboutBodyUse = applyProgress(aboutSection, aboutBodyP, 'about');
                     // At scroll top, About is often still in the “fade zone” (below the upper band
                     // of the viewport) but should read at full opacity.
                     if (scrollY <= 1) {
-                        aboutUse = 1;
+                        aboutTitleUse = 1;
+                        aboutBodyUse = 1;
                     }
-                    aboutSection.style.opacity = String(aboutUse);
+                    applyScrollReveal(aboutSection.querySelector('.section-title'), aboutTitleUse, true);
+                    applyScrollReveal(aboutSection.querySelector('.about-content'), aboutBodyUse, true);
                 }
                 if (workSection) {
-                    var p = fadeProgress(getProgressInViewport(workSection, scrollY, maxScrollY));
-                    var use = applyProgress(workSection, p, 'work');
-                    workSection.style.opacity = String(use);
+                    var workRaw = getProgressInViewport(workSection, scrollY, maxScrollY);
+                    var workTitleP = fadeProgress(workRaw);
+                    var workBodyRaw = staggeredBodyRaw(workRaw);
+                    var workBodyP = fadeProgress(workBodyRaw);
+                    var workTitleUse = applyProgress(workSection, workTitleP, 'work');
+                    var workBodyUse = applyProgress(workSection, workBodyP, 'work');
+                    applyScrollReveal(workSection.querySelector('.section-title'), workTitleUse, true);
+                    applyScrollRevealOpacity(workSection.querySelector('.work-jobs'), workBodyUse);
                 }
             }
 
@@ -221,29 +289,44 @@
                     var card = fadeCards[j];
                     var cardP = fadeProgress(getProgressInViewport(card, scrollY, maxScrollY));
                     var cardUse = applyProgress(card, cardP, 'card-' + j);
-                    card.style.opacity = String(cardUse);
+                    applyScrollReveal(card, cardUse, true);
                 }
 
                 if (projectsSection) {
-                    var projP = fadeProgress(getProgressInViewport(projectsSection, scrollY, maxScrollY));
-                    var projUse = applyProgress(projectsSection, projP, 'projects');
-                    projectsSection.style.opacity = String(projUse);
+                    var projRaw = getProgressInViewport(projectsSection, scrollY, maxScrollY);
+                    var projTitleP = fadeProgress(projRaw);
+                    var projBodyRaw = staggeredBodyRaw(projRaw);
+                    var projBodyP = fadeProgress(projBodyRaw);
+                    var projTitleUse = applyProgress(projectsSection, projTitleP, 'projects');
+                    var projBodyUse = applyProgress(projectsSection, projBodyP, 'projects');
+                    applyScrollReveal(projectsSection.querySelector('.section-title'), projTitleUse, true);
+                    applyScrollRevealOpacity(projectsSection.querySelector('.projects-list'), projBodyUse);
                 }
                 for (var k = 0; k < projectCards.length; k++) {
                     var projCard = projectCards[k];
                     var projCardP = fadeProgress(getProgressInViewport(projCard, scrollY, maxScrollY));
                     var projCardUse = applyProgress(projCard, projCardP, 'project-' + k);
-                    projCard.style.opacity = String(projCardUse);
+                    applyScrollReveal(projCard, projCardUse, true);
                 }
                 if (talksSection) {
-                    var talksP = fadeProgress(getProgressInViewport(talksSection, scrollY, maxScrollY));
-                    var talksUse = applyProgress(talksSection, talksP, 'talks');
-                    talksSection.style.opacity = String(talksUse);
+                    var talksRaw = getProgressInViewport(talksSection, scrollY, maxScrollY);
+                    var talksTitleP = fadeProgress(talksRaw);
+                    var talksBodyRaw = staggeredBodyRaw(talksRaw);
+                    var talksBodyP = fadeProgress(talksBodyRaw);
+                    var talksTitleUse = applyProgress(talksSection, talksTitleP, 'talks');
+                    var talksBodyUse = applyProgress(talksSection, talksBodyP, 'talks');
+                    applyScrollReveal(talksSection.querySelector('.section-title'), talksTitleUse, true);
+                    applyScrollReveal(talksSection.querySelector('.talks-list'), talksBodyUse, true);
                 }
                 if (contactSection) {
-                    var contactP = fadeProgress(getProgressInViewport(contactSection, scrollY, maxScrollY));
-                    var contactUse = applyProgress(contactSection, contactP, 'contact');
-                    contactSection.style.opacity = String(contactUse);
+                    var contactRaw = getProgressInViewport(contactSection, scrollY, maxScrollY);
+                    var contactTitleP = fadeProgress(contactRaw);
+                    var contactBodyRaw = staggeredBodyRaw(contactRaw);
+                    var contactBodyP = fadeProgress(contactBodyRaw);
+                    var contactTitleUse = applyProgress(contactSection, contactTitleP, 'contact');
+                    var contactBodyUse = applyProgress(contactSection, contactBodyP, 'contact');
+                    applyScrollReveal(contactSection.querySelector('.section-title'), contactTitleUse, true);
+                    applyScrollRevealOpacity(contactSection.querySelector('.contact-content'), contactBodyUse);
                 }
             }
         }
@@ -312,23 +395,7 @@
      */
     window.forceVisibleScrollSections = function (container) {
         if (!container) return;
-        var aboutSection = container.querySelector('#about');
-        var workSection = container.querySelector('#work');
-        var fadeCards = container.querySelectorAll(
-            '.job-case-studies > .case-study-card-link, .job-case-studies > .case-study-card, ' +
-            '.job-other-work > .case-study-card-link, .job-other-work > .case-study-card'
-        );
-        var projectsSection = container.querySelector('#projects');
-        var projectCards = container.querySelectorAll('.projects-list > .project-card-link, .projects-list > .project-card');
-        var talksSection = container.querySelector('#talks');
-        var contactSection = container.querySelector('#contact');
-        if (aboutSection) aboutSection.style.opacity = '1';
-        if (workSection) workSection.style.opacity = '1';
-        for (var i = 0; i < fadeCards.length; i++) fadeCards[i].style.opacity = '1';
-        if (projectsSection) projectsSection.style.opacity = '1';
-        for (var j = 0; j < projectCards.length; j++) projectCards[j].style.opacity = '1';
-        if (talksSection) talksSection.style.opacity = '1';
-        if (contactSection) contactSection.style.opacity = '1';
+        resetAllScrollRevealChunks(container);
     };
 
     /**
@@ -346,8 +413,8 @@
             '<label class="scroll-anim-panel__row"><input type="checkbox" id="scroll-anim-playOnce"> Play once</label>' +
             '<div class="scroll-anim-panel__row" title="When Play once is on: progress must reach this (0–1) before the element is marked done and no longer reverses. Higher = scroll further before it sticks."><span>Threshold</span><span id="scroll-anim-threshold-val">0.95</span></div>' +
             '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-threshold" min="0" max="1" step="0.05" value="0.95"></label>' +
-            '<div class="scroll-anim-panel__row"><span>Fade zone</span><span id="scroll-anim-fadeZone-val">0.8</span></div>' +
-            '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-fadeZone" min="0.1" max="1" step="0.05" value="0.8"></label>' +
+            '<div class="scroll-anim-panel__row" title="Lower = full fade/unblur in less scroll distance. Higher = longer roll-in."><span>Fade zone</span><span id="scroll-anim-fadeZone-val">0.55</span></div>' +
+            '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-fadeZone" min="0.1" max="1" step="0.05" value="0.55"></label>' +
             '<label class="scroll-anim-panel__row"><span>Easing</span><select id="scroll-anim-fadeEasing"><option value="linear">Linear</option><option value="ease-in">Ease in</option><option value="ease-out">Ease out</option><option value="smooth" selected>Smooth</option></select></label>' +
             '</div>' +
             '<div class="scroll-anim-panel__group">' +
@@ -387,7 +454,7 @@
             config.playOnce = playOnceEl ? playOnceEl.checked : false;
             if (wasPlayOnce && !config.playOnce && config.completed) config.completed.clear();
             config.threshold = thresholdEl ? parseFloat(thresholdEl.value, 10) : 0.95;
-            config.fadeZone = fadeZoneEl ? parseFloat(fadeZoneEl.value, 10) : 0.8;
+            config.fadeZone = fadeZoneEl ? parseFloat(fadeZoneEl.value, 10) : 0.55;
             config.fadeEasing = fadeEasingEl ? fadeEasingEl.value : 'smooth';
             config.barEnabled = barEnabledEl ? barEnabledEl.checked : true;
             config.barSensitivity = barSensitivityEl ? parseFloat(barSensitivityEl.value, 10) : 1.25;

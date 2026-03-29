@@ -567,12 +567,22 @@ select:focus-visible {
     z-index: 150;
     max-width: none;
     background: rgba(255, 253, 239, 0.94);
-    border: 1px solid rgba(55, 44, 9, 0.1);
+    border: none;
     border-radius: 999px;
+    /* Hairline + depth via layered shadows (no solid border) */
     box-shadow:
-        0 8px 28px rgba(55, 44, 9, 0.07),
-        0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+        0 10px 40px rgba(55, 44, 9, 0.08),
+        0 0 0 1px rgba(55, 44, 9, 0.07),
+        0 0 0 1px rgba(255, 255, 255, 0.42) inset;
     box-sizing: border-box;
+    transition: box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.homepage-nav:hover {
+    box-shadow:
+        0 14px 44px rgba(55, 44, 9, 0.1),
+        0 0 0 1px rgba(55, 44, 9, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.48) inset;
 }
 
 .homepage-header-nav-wrapper .homepage-nav {
@@ -598,12 +608,23 @@ select:focus-visible {
     line-height: 1;
     color: var(--text-color);
     text-decoration: none;
-    transition: background-color 0.2s cubic-bezier(0.33, 1, 0.68, 1), color 0.2s cubic-bezier(0.33, 1, 0.68, 1), transform 0.15s ease;
+    touch-action: manipulation;
+    flex-shrink: 0;
+    transition:
+        background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+        color 0.2s cubic-bezier(0.2, 0, 0, 1),
+        box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1),
+        transform 0.15s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .nav-link .nav-icon {
     font-size: 24px;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Material Icons sit slightly high in circles — nudge for optical center */
+    transform: translateY(0.5px);
 }
 
 /* Label visible on mobile only; clipped on desktop (icons-only rail) */
@@ -622,6 +643,7 @@ select:focus-visible {
 .nav-link:hover {
     opacity: 1;
     background-color: rgba(55, 44, 9, 0.09);
+    box-shadow: 0 2px 10px rgba(55, 44, 9, 0.07);
 }
 
 .nav-link:active {
@@ -633,6 +655,7 @@ select:focus-visible {
 .nav-link.nav-link--active {
     background-color: var(--highlight-pip);
     color: var(--text-color);
+    box-shadow: 0 2px 14px rgba(55, 44, 9, 0.12);
 }
 
 .nav-link.nav-link--active .nav-icon {
@@ -1888,6 +1911,21 @@ html.home-nav-layout-dock .nav-link {
     .project-title,
     .project-title-link {
         transition: none !important;
+    }
+
+    .homepage-nav {
+        transition: none !important;
+    }
+
+    .homepage-nav:hover {
+        box-shadow:
+            0 10px 40px rgba(55, 44, 9, 0.08),
+            0 0 0 1px rgba(55, 44, 9, 0.07),
+            0 0 0 1px rgba(255, 255, 255, 0.42) inset;
+    }
+
+    .nav-link:active {
+        transform: none !important;
     }
 }
 

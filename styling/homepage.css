@@ -42,7 +42,7 @@
     
     /* Mobile-specific spacing - Hierarchy-based */
     --mobile-padding-horizontal: 20px;  /* Consistent horizontal padding */
-    --mobile-section-gap: clamp(2.5rem, 6vw, 3rem);
+    --mobile-section-gap: clamp(1.75rem, 4.5vw, 2.25rem);
     --mobile-job-gap: 40px;             /* Space between work jobs (high hierarchy) */
     --mobile-card-gap: 25px;            /* Space between case studies/projects (medium hierarchy) */
     --mobile-element-gap: 15px;         /* Space between related elements (low hierarchy) */
@@ -1491,11 +1491,7 @@ html.home-nav-layout-dock .nav-link {
     }
 
     /* Homepage section nav: bottom floating dock (icons) — see html.home-nav-layout-dock rules above */
-
-    .homepage-nav + .homepage-section,
-    .homepage-header-nav-wrapper + .homepage-section {
-        margin-top: var(--spacing-2xl);
-    }
+    /* First section after hero: no extra top margin (base .homepage-header-nav-wrapper + .homepage-section) */
 
     .homepage-section {
         padding: 0 var(--mobile-padding-horizontal);

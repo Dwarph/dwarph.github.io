@@ -103,6 +103,7 @@
         // Respect reduced motion: no scroll-linked fade; timeline bar snaps without lerp.
         var enableFade = !isMobile && !prefersReducedMotion;
 
+        var aboutSection = container.querySelector('#about');
         var workSection = container.querySelector('#work');
         var workJobs = container.querySelectorAll('.work-job');
         var fadeCards = container.querySelectorAll(
@@ -119,6 +120,7 @@
 
         if (!enableFade) {
             // Ensure mobile content stays visible (CSS is responsible for initial visibility on mobile).
+            if (aboutSection) aboutSection.style.opacity = '1';
             if (workSection) workSection.style.opacity = '1';
             for (var m = 0; m < fadeCards.length; m++) fadeCards[m].style.opacity = '1';
             if (projectsSection) projectsSection.style.opacity = '1';
@@ -150,6 +152,16 @@
             var dt = (typeof dtMs === 'number' && dtMs > 0) ? dtMs : frameMs;
 
             if (enableFade) {
+                if (aboutSection) {
+                    var aboutP = fadeProgress(getProgressInViewport(aboutSection, scrollY, maxScrollY));
+                    var aboutUse = applyProgress(aboutSection, aboutP, 'about');
+                    // At scroll top, About is often still in the “fade zone” (below the upper band
+                    // of the viewport) but should read at full opacity.
+                    if (scrollY <= 1) {
+                        aboutUse = 1;
+                    }
+                    aboutSection.style.opacity = String(aboutUse);
+                }
                 if (workSection) {
                     var p = fadeProgress(getProgressInViewport(workSection, scrollY, maxScrollY));
                     var use = applyProgress(workSection, p, 'work');
@@ -296,6 +308,7 @@
      */
     window.forceVisibleScrollSections = function (container) {
         if (!container) return;
+        var aboutSection = container.querySelector('#about');
         var workSection = container.querySelector('#work');
         var fadeCards = container.querySelectorAll(
             '.job-case-studies > .case-study-card-link, .job-case-studies > .case-study-card, ' +
@@ -305,6 +318,7 @@
         var projectCards = container.querySelectorAll('.projects-list > .project-card-link, .projects-list > .project-card');
         var talksSection = container.querySelector('#talks');
         var contactSection = container.querySelector('#contact');
+        if (aboutSection) aboutSection.style.opacity = '1';
         if (workSection) workSection.style.opacity = '1';
         for (var i = 0; i < fadeCards.length; i++) fadeCards[i].style.opacity = '1';
         if (projectsSection) projectsSection.style.opacity = '1';

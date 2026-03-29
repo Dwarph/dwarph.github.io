@@ -1731,6 +1731,10 @@ select:focus-visible {
 
 /* Scroll-linked animations: initial state (desktop only; JS drives opacity and --timeline-scroll-progress) */
 @media (min-width: 769px) {
+    /* Full opacity at scroll top; scrollAnim.js fades other positions. */
+    #about.about-section {
+        opacity: 1;
+    }
     #work.work-section {
         opacity: 0;
     }

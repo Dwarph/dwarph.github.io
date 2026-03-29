@@ -222,6 +222,12 @@ select:focus-visible {
     box-shadow:
         0 10px 44px rgba(55, 44, 9, 0.08),
         0 0 0 1px rgba(55, 44, 9, 0.07);
+    /* Touch drag on the hero (tablet + phone): do not scroll the page. Wider breakpoints need this too — mobile-only rules missed tablets. */
+    touch-action: none;
+}
+
+.homepage-header * {
+    touch-action: inherit;
 }
 
 .header-background {
@@ -294,6 +300,7 @@ select:focus-visible {
     margin: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    touch-action: pan-y;
     padding: 12px;
     background: rgba(255, 253, 239, 0.96);
     border: 1px solid rgba(55, 44, 9, 0.12);
@@ -1464,12 +1471,6 @@ html.home-nav-layout-dock .nav-link {
         overflow: hidden;
         /* Slightly tighter radius on short mobile hero so corners stay proportional */
         --header-frame-radius: clamp(22px, 7vw, 40px);
-        /* Dragging on the hero does not scroll the page; children default to `auto` and would still pan */
-        touch-action: none;
-    }
-
-    .homepage-header * {
-        touch-action: inherit;
     }
 
     .header-content {

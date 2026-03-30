@@ -36,6 +36,11 @@ export const DISTORTION_PRESET = {
     relaxation: 0.96,
 };
 
+/** Defaults when `mobileCheck()` — same feel, less GPU/CPU (see DistortionSketch options). */
+export const MOBILE_DISTORTION_PRESET = Object.assign({}, DISTORTION_PRESET, {
+    grid: 200,
+});
+
 /**
  * Simulation speed multiplier (1 = default). Higher = faster settling and snappier hover.
  * Optional runtime override: `window.__HEADER_DISTORTION_SPEED` (same range, checked at init).
@@ -57,18 +62,28 @@ const CONTROLS_STORAGE_KEY = 'pipHeaderDistortionControls';
 /**
  * Draw the decoded bitmap into a canvas and upload as CanvasTexture.
  * WebGL often fails to sample from HTMLImageElement textures (black) even after decode; this path is reliable.
+ * @param {HTMLImageElement} img
+ * @param {number} [maxDim] — if set, longest edge is scaled down (mobile: less VRAM / bandwidth).
  */
-function createCanvasTextureFromImage(img) {
+function createCanvasTextureFromImage(img, maxDim) {
+    maxDim = maxDim == null || maxDim === Infinity ? Infinity : Number(maxDim);
+    if (!isFinite(maxDim) || maxDim <= 0) maxDim = Infinity;
+
     var w = img.naturalWidth;
     var h = img.naturalHeight;
     if (!w || !h) return null;
+    if (maxDim < Infinity && (w > maxDim || h > maxDim)) {
+        var scale = Math.min(maxDim / w, maxDim / h);
+        w = Math.max(1, Math.round(w * scale));
+        h = Math.max(1, Math.round(h * scale));
+    }
     try {
         var c = document.createElement('canvas');
         c.width = w;
         c.height = h;
         var ctx = c.getContext('2d');
         if (!ctx) return null;
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, w, h);
         var tex = new THREE.CanvasTexture(c);
         tex.minFilter = THREE.LinearFilter;
         tex.magFilter = THREE.LinearFilter;
@@ -85,14 +100,27 @@ function clamp(number, min, max) {
 
 class DistortionSketch {
     constructor(options) {
+        options = options || {};
         this.container = options.dom;
         /** Region where pointer/touch counts for distortion (typically `.homepage-header`). */
         this.hitTarget = options.hitTarget || this.container.closest('.homepage-header') || this.container;
         this.img = this.container.querySelector('img');
         this.width = this.container.offsetWidth;
         this.height = this.container.offsetHeight;
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        /** Longest edge of uploaded bitmap texture (Infinity = full resolution). */
+        this.textureMaxDim = options.textureMaxDim != null ? options.textureMaxDim : Infinity;
+        /** Cap for `setPixelRatio` (desktop default 2). */
+        this.pixelRatioCap = options.pixelRatioCap != null ? options.pixelRatioCap : 2;
+        /** When set, `mergeControls` + panel cannot exceed this grid (avoids desktop localStorage restoring 400). */
+        this._maxSimulationGrid =
+            options.maxSimulationGrid != null ? options.maxSimulationGrid : null;
+        /** Reset button + merge base use mobile-friendly defaults. */
+        this._mobileProfile = options.mobileProfile === true;
+
+        var useAa = options.antialias !== false;
+        this.renderer = new THREE.WebGLRenderer({ antialias: useAa, alpha: false });
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.pixelRatioCap));
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(0xfffdef, 1);
         this.renderer.toneMapping = THREE.NoToneMapping;
@@ -136,6 +164,9 @@ class DistortionSketch {
             strength: DISTORTION_PRESET.strength,
             relaxation: DISTORTION_PRESET.relaxation,
         };
+        if (options.grid !== undefined && options.grid !== null) {
+            this.settings.grid = Math.round(clamp(Number(options.grid), 2, 1000));
+        }
 
         /** When true, start from a flat field (no random “intro” shimmer). Used off the homepage. */
         this.skipIntro = options.skipIntro === true;
@@ -153,9 +184,28 @@ class DistortionSketch {
         this.resize();
         this.setupResize();
         this.setupPointerInput();
+        this.setupVisibilityPause();
         if (this.img) {
             this.img.addEventListener('load', this._boundResize);
         }
+    }
+
+    /** Stop the sim while the tab is in the background (battery / thermal on phones). */
+    setupVisibilityPause() {
+        var self = this;
+        this._onVisibilityChange = function () {
+            if (document.hidden) {
+                self.isPlaying = false;
+                if (self._rafId) {
+                    cancelAnimationFrame(self._rafId);
+                    self._rafId = 0;
+                }
+            } else {
+                self.isPlaying = true;
+                self.render();
+            }
+        };
+        document.addEventListener('visibilitychange', this._onVisibilityChange);
     }
 
     /**
@@ -365,7 +415,7 @@ class DistortionSketch {
 
     addObjects() {
         this.regenerateGrid();
-        var texture = createCanvasTextureFromImage(this.img);
+        var texture = createCanvasTextureFromImage(this.img, this.textureMaxDim);
         if (!texture) {
             texture = new THREE.Texture(this.img);
             texture.needsUpdate = true;
@@ -496,6 +546,10 @@ class DistortionSketch {
             this._resizeObserver.disconnect();
             this._resizeObserver = null;
         }
+        if (this._onVisibilityChange) {
+            document.removeEventListener('visibilitychange', this._onVisibilityChange);
+            this._onVisibilityChange = null;
+        }
 
         if (this.renderer) {
             if (this.renderer.domElement.parentNode) {
@@ -541,8 +595,8 @@ function writeStoredControls(settings) {
     } catch (e) {}
 }
 
-function mergeControls(stored) {
-    var d = DISTORTION_PRESET;
+function mergeControls(stored, basePreset) {
+    var d = basePreset || DISTORTION_PRESET;
     if (!stored || typeof stored !== 'object') {
         return { grid: d.grid, mouse: d.mouse, strength: d.strength, relaxation: d.relaxation };
     }
@@ -564,7 +618,11 @@ function formatControlValue(key, v) {
  * @param {object} sketch — DistortionSketch instance with applyControlSettings / getControlSettings
  */
 function buildDistortionPanel(headerEl, sketch) {
-    var initial = mergeControls(readStoredControls());
+    var base = sketch._mobileProfile ? MOBILE_DISTORTION_PRESET : DISTORTION_PRESET;
+    var initial = mergeControls(readStoredControls(), base);
+    if (sketch._maxSimulationGrid != null && initial.grid > sketch._maxSimulationGrid) {
+        initial.grid = sketch._maxSimulationGrid;
+    }
     sketch.applyControlSettings(initial);
 
     var root = document.createElement('div');
@@ -672,7 +730,8 @@ function buildDistortionPanel(headerEl, sketch) {
     reset.textContent = 'Reset to defaults';
 
     reset.addEventListener('click', function () {
-        sketch.applyControlSettings(DISTORTION_PRESET);
+        var preset = sketch._mobileProfile ? MOBILE_DISTORTION_PRESET : DISTORTION_PRESET;
+        sketch.applyControlSettings(preset);
         writeStoredControls(sketch.getControlSettings());
         var s = sketch.getControlSettings();
         var k;
@@ -770,7 +829,23 @@ export function initHeaderDistortion(root) {
 
     /** Random initial displacement + settle = intro; only on index (`#homepage-container`). */
     var isHomepage = root.id === 'homepage-container';
+    var isMobile =
+        typeof window !== 'undefined' &&
+        typeof window.mobileCheck === 'function' &&
+        window.mobileCheck();
+
     var sketchOpts = { skipIntro: !isHomepage };
+
+    if (isMobile) {
+        Object.assign(sketchOpts, {
+            textureMaxDim: 1280,
+            pixelRatioCap: 1,
+            grid: MOBILE_DISTORTION_PRESET.grid,
+            antialias: false,
+            mobileProfile: true,
+            maxSimulationGrid: 280,
+        });
+    }
 
     var bgUrl = img.getAttribute('data-header-bg');
 
@@ -811,7 +886,9 @@ export function initHeaderDistortion(root) {
             })
             .then(function () {
                 try {
-                    var sketchLegacy = new DistortionSketch({ dom: mount, hitTarget: header });
+                    var sketchLegacy = new DistortionSketch(
+                        Object.assign({ dom: mount, hitTarget: header }, sketchOpts)
+                    );
                     buildDistortionPanel(header, sketchLegacy);
                     sketchLegacy.render();
                     header.classList.add('header-distortion-active');

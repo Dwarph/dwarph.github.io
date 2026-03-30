@@ -609,6 +609,9 @@ select:focus-visible {
     height: 48px;
     border-radius: 50%;
     padding: 0;
+    background-color: transparent; /* Active pink bg handled by ::before */
+    position: relative;
+    overflow: hidden; /* Clip blur edges to the circle */
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
     font-size: 24px;
@@ -624,6 +627,22 @@ select:focus-visible {
         transform 0.15s cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Active pink background: blur in/out without affecting the icon. */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: var(--highlight-pip);
+    opacity: 0;
+    filter: blur(10px);
+    transition:
+        opacity 0.2s cubic-bezier(0.2, 0, 0, 1),
+        filter 0.2s cubic-bezier(0.2, 0, 0, 1);
+    z-index: 0;
+    pointer-events: none;
+}
+
 .nav-link .nav-icon {
     font-size: 24px;
     line-height: 1;
@@ -632,6 +651,8 @@ select:focus-visible {
     justify-content: center;
     /* Material Icons sit slightly high in circles — nudge for optical center */
     transform: translateY(0.5px);
+    position: relative;
+    z-index: 1;
 }
 
 /* Label visible on mobile only; clipped on desktop (icons-only rail) */
@@ -672,7 +693,6 @@ html.home-nav-scrolling .nav-link:active {
 
 /* Active (Figma: first item); hover (Figma: second item) uses rule above */
 .nav-link.nav-link--active {
-    background-color: var(--highlight-pip);
     color: var(--text-color);
     box-shadow: 0 2px 14px rgba(55, 44, 9, 0.12);
 }
@@ -681,8 +701,16 @@ html.home-nav-scrolling .nav-link:active {
     color: var(--text-color);
 }
 
+.nav-link.nav-link--active::before {
+    opacity: 1;
+    filter: blur(0px);
+}
+
 .nav-link.nav-link--active:hover {
-    background-color: var(--highlight-pip);
+    background-color: transparent; /* Keep hover background from bleeding through */
+}
+
+.nav-link.nav-link--active:hover::before {
     opacity: 0.92;
 }
 
@@ -1928,6 +1956,11 @@ html.home-nav-layout-dock .nav-link {
 
     .nav-link:active {
         transform: none !important;
+    }
+
+    .nav-link::before {
+        transition: none !important;
+        filter: none !important;
     }
 }
 

@@ -627,6 +627,14 @@ var homepageNavSpySuppressUntil = 0;
  */
 var homepageNavNearBottomLatch = false;
 
+/**
+ * Scroll-spy stabilization:
+ * When the anchor lands near a section boundary, the computed active id can oscillate.
+ * Require two consecutive matches before updating the UI to avoid flicker.
+ */
+var homepageNavPendingActiveId = null;
+var homepageNavPendingCount = 0;
+
 function homepageNavNow() {
     return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
 }
@@ -695,6 +703,8 @@ function syncHomepageNavLayout() {
 
 function setHomepageNavActive(container, sectionId) {
     lastHomepageNavActiveId = sectionId;
+    homepageNavPendingActiveId = null;
+    homepageNavPendingCount = 0;
     var links = container.querySelectorAll('.homepage-nav .nav-link');
     for (var i = 0; i < links.length; i++) {
         var link = links[i];
@@ -800,8 +810,25 @@ function updateHomepageNavFromScroll(container) {
     }
 
     if (activeId === lastHomepageNavActiveId) {
+        homepageNavPendingActiveId = null;
+        homepageNavPendingCount = 0;
         return;
     }
+
+    if (activeId === homepageNavPendingActiveId) {
+        homepageNavPendingCount++;
+    } else {
+        homepageNavPendingActiveId = activeId;
+        homepageNavPendingCount = 1;
+    }
+
+    // Wait for a second consecutive scroll tick before updating.
+    if (homepageNavPendingCount < 2) {
+        return;
+    }
+
+    homepageNavPendingActiveId = null;
+    homepageNavPendingCount = 0;
     setHomepageNavActive(container, activeId);
 }
 
@@ -810,7 +837,29 @@ function initHomepageSectionNav(container) {
     if (!nav) return;
 
     var scrollTicking = false;
+    var scrollEndTimer = null;
+
+    function cancelHomepageNavSpySuppression() {
+        // If the user starts interacting (scrolling away), we should stop holding
+        // the clicked active id; otherwise the "dark" active background can feel stuck.
+        homepageNavSpySuppressUntil = 0;
+        homepageNavPendingActiveId = null;
+        homepageNavPendingCount = 0;
+    }
+
+    // Clear click-suppression as soon as the user starts a new gesture.
+    // Passive listeners keep scroll performance good.
+    window.addEventListener('touchstart', cancelHomepageNavSpySuppression, { passive: true, capture: true });
+    window.addEventListener('wheel', cancelHomepageNavSpySuppression, { passive: true, capture: true });
     function onScroll() {
+        // Helps prevent stuck `:active` styles on touch browsers.
+        document.documentElement.classList.add('home-nav-scrolling');
+        if (scrollEndTimer) clearTimeout(scrollEndTimer);
+        scrollEndTimer = setTimeout(function() {
+            scrollEndTimer = null;
+            document.documentElement.classList.remove('home-nav-scrolling');
+        }, 120);
+
         if (scrollTicking) return;
         scrollTicking = true;
         window.requestAnimationFrame(function() {

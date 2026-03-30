@@ -658,6 +658,18 @@ select:focus-visible {
     transform: scale(0.96);
 }
 
+/* On touch devices, browsers can keep `:active` stuck during scroll; remove the pressed transform. */
+@media (hover: none) and (pointer: coarse) {
+    .nav-link:active {
+        transform: none;
+    }
+}
+
+/* Extra safety: while the page is scrolling, never show a stuck pressed transform. */
+html.home-nav-scrolling .nav-link:active {
+    transform: none !important;
+}
+
 /* Active (Figma: first item); hover (Figma: second item) uses rule above */
 .nav-link.nav-link--active {
     background-color: var(--highlight-pip);
@@ -1974,6 +1986,7 @@ html.home-nav-layout-dock .nav-link {
 @media (min-width: 769px) {
     html.home-nav-layout-rail #homepage-container {
         padding-left: clamp(52px, 6vw, 96px);
+        padding-right: clamp(52px, 6vw, 96px);
     }
 }
 

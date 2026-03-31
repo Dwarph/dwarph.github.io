@@ -573,7 +573,12 @@ function loadHomepageData() {
                     homepageNavNow() + (prefersReducedMotion ? 50 : 950);
                 var targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    if (targetId === 'talks') {
+                    if (targetId === 'about') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                        });
+                    } else if (targetId === 'talks') {
                         scrollTalksLeavingRoomForContact(targetElement, prefersReducedMotion);
                     } else {
                         targetElement.scrollIntoView({
@@ -645,12 +650,18 @@ function homepageNavNow() {
 function scrollTalksLeavingRoomForContact(talksEl, prefersReducedMotion) {
     if (!talksEl) return;
 
+    // iOS Safari's bottom address bar changes the usable viewport while scrolling.
+    // `visualViewport.height` tracks the visible area more reliably than `window.innerHeight`.
+    var viewportHeight =
+        (window.visualViewport && typeof window.visualViewport.height === 'number')
+            ? window.visualViewport.height
+            : window.innerHeight;
+
     var scrollHeight = Math.max(
         document.documentElement.scrollHeight,
         document.body ? document.body.scrollHeight : 0
     );
-    var innerHeight = window.innerHeight;
-    var maxScroll = Math.max(0, scrollHeight - innerHeight);
+    var maxScroll = Math.max(0, scrollHeight - viewportHeight);
     if (maxScroll <= 0) {
         talksEl.scrollIntoView({
             behavior: prefersReducedMotion ? 'auto' : 'smooth',
@@ -665,10 +676,16 @@ function scrollTalksLeavingRoomForContact(talksEl, prefersReducedMotion) {
     var rect = talksEl.getBoundingClientRect();
     var docTop = rect.top + (window.scrollY || window.pageYOffset || 0);
     var fromTop =
-        innerHeight * HOMEPAGE_TALKS_VIEWPORT_TOP_FRACTION + HOMEPAGE_TALKS_VIEWPORT_TOP_INSET_PX;
+        viewportHeight * HOMEPAGE_TALKS_VIEWPORT_TOP_FRACTION + HOMEPAGE_TALKS_VIEWPORT_TOP_INSET_PX;
     var idealTop = docTop - fromTop + HOMEPAGE_TALKS_SCROLL_OVERSHOOT_PX;
     var targetTop = Math.min(idealTop, maxAllowed);
     targetTop = Math.max(0, targetTop);
+
+    // Never scroll *past* the section start; on small iPhones the overshoot/cap can hide the heading.
+    // Keep at least a small gap so the heading is visibly on-screen.
+    var minGap = Math.max(8, HOMEPAGE_TALKS_VIEWPORT_TOP_INSET_PX || 0);
+    var latestAllowed = Math.max(0, docTop - minGap);
+    targetTop = Math.min(targetTop, latestAllowed);
 
     window.scrollTo({
         top: targetTop,

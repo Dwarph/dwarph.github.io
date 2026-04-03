@@ -1,5 +1,5 @@
 // Service Worker for pipturner.co.uk
-const CACHE_NAME = 'pipturner-v3';
+const CACHE_NAME = 'pipturner-v4';
 const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
@@ -57,6 +57,16 @@ self.addEventListener('fetch', function(event) {
 
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
+  // Experiments: never intercept — always use the network (no cache reads/writes under /experiments/).
+  try {
+    var path = new URL(event.request.url).pathname;
+    if (path === '/experiments' || path.indexOf('/experiments/') === 0) {
+      return;
+    }
+  } catch (e) {
     return;
   }
 

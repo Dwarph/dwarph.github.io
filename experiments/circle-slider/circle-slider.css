@@ -1,0 +1,413 @@
+/* Circle slider experiment — build here */
+
+.circle-slider-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: 1.5rem;
+  padding-bottom: max(5rem, calc(4.5rem + env(safe-area-inset-bottom, 0px)));
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.circle-slider-page a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.circle-slider-page a:visited {
+  color: #000;
+}
+
+.circle-slider-page :is(h1, h2, h3, h4, h5, h6) {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+}
+
+.circle-slider-page h1 {
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.circle-slider-page .skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  padding: 0.5rem 1rem;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  z-index: 10;
+}
+
+.circle-slider-page .skip-link:focus {
+  top: 0;
+}
+
+/* Figma frame “iPhone 17 - 1” — prompt + value card (circle control TBD) */
+.cs-stage {
+  margin-top: 1.5rem;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prompt + number share one column so “How many?” centres over the value only */
+.cs-value-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+}
+
+.cs-prompt {
+  margin: 0 0 clamp(2rem, 8vw, 5rem);
+  font-family: "Nunito Sans", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  color: #000;
+}
+
+/* Ring / thumb area (Figma node 1:84) + value column on one row */
+.cs-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  /* ~63px between Figma control slice and value card */
+  gap: clamp(1rem, 4vw, 3.9375rem);
+}
+
+.cs-control-slot {
+  flex: 0 0 auto;
+  width: 5.5rem; /* ~88px */
+  min-height: 4.8125rem; /* ~77px */
+}
+
+/* Figma: w 101px, p 10.802px, r 7.021px — width is outer (border-box) */
+.cs-value-card {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 101px;
+  padding: 10.802px;
+  background: #fff;
+  border-radius: 7.021px;
+  box-shadow:
+    0 5.401px 19.444px rgba(0, 0, 0, 0.16),
+    0 0 0 0 rgba(0, 0, 0, 0.06);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cs-value {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 34.027px;
+  line-height: 1;
+  color: #000;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card + radial share a stack so the ring can sit under / around the value */
+.cs-card-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cs-value-card.cs-value-card--active {
+  cursor: grabbing;
+}
+
+.cs-value-card:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 3px;
+}
+
+/* Radial track + thumb — blur-fade in/out (see README) */
+.cs-radial-layer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(72vw, 280px);
+  max-width: 280px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -38%);
+  z-index: 0;
+  pointer-events: none;
+  --cs-track-stroke: #c8c8c8;
+  color: var(--cs-track-stroke);
+  opacity: 0;
+  filter: blur(var(--cs-blur-rest, 14px));
+  transition:
+    opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    filter var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, filter;
+}
+
+.cs-radial-layer--visible {
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    filter var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cs-radial-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.cs-thumb-path {
+  color: #1a1a1a;
+}
+
+/* Track stroke uses gradient stops (stroke="url(#…)" ignores `color` on the path) */
+.cs-track-fade-stop--edge {
+  stop-color: var(--cs-track-stroke);
+  stop-opacity: 0;
+}
+
+.cs-track-fade-stop--solid {
+  stop-color: var(--cs-track-stroke);
+  stop-opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-radial-layer {
+    filter: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cs-radial-layer:not(.cs-radial-layer--visible) {
+    opacity: 0;
+  }
+}
+
+/* ——— Collapsible tweak panel (bottom) ——— */
+.cs-tweak-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #111;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.cs-tweak-panel__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.65rem 1rem;
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
+  border: none;
+  border-top: 1px solid #e8e8e8;
+  background: #fafafa;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #222;
+  cursor: pointer;
+}
+
+.cs-tweak-panel__toggle:hover {
+  background: #f0f0f0;
+}
+
+.cs-tweak-panel__toggle:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
+.cs-tweak-panel__chev::after {
+  content: "▲";
+  display: inline-block;
+  font-size: 0.65em;
+  opacity: 0.55;
+  transition: transform 0.2s ease;
+}
+
+.cs-tweak-panel:not(.cs-tweak-panel--open) .cs-tweak-panel__chev::after {
+  transform: rotate(180deg);
+}
+
+.cs-tweak-panel__body {
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  padding: 0.75rem 1rem 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid #eee;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cs-tweak-panel__hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: #444;
+}
+
+.cs-tweak-fieldset {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+.cs-tweak-fieldset:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.cs-tweak-fieldset legend {
+  padding: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.cs-tweak-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  margin-top: 0.65rem;
+}
+
+.cs-tweak-row--radios {
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+}
+
+.cs-tweak-row--radios .cs-tweak-label {
+  grid-column: 1 / -1;
+}
+
+.cs-tweak-row--radios label {
+  font-weight: 400;
+  margin-right: 1rem;
+}
+
+.cs-tweak-row--number {
+  grid-template-columns: 1fr auto auto;
+}
+
+.cs-tweak-label {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.cs-tweak-label em {
+  font-weight: 400;
+  font-style: normal;
+  color: #666;
+}
+
+.cs-tweak-row input[type="range"] {
+  width: 100%;
+  min-width: 6rem;
+  max-width: 12rem;
+  accent-color: #111;
+}
+
+.cs-tweak-row input[type="number"] {
+  width: 5rem;
+  padding: 0.25rem 0.4rem;
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.cs-tweak-out {
+  min-width: 3.25rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  color: #333;
+  text-align: right;
+}
+
+.cs-tweak-help {
+  margin: 0.35rem 0 0;
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.cs-tweak-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.cs-tweak-btn {
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.cs-tweak-btn:hover {
+  background: #f5f5f5;
+}
+
+.cs-tweak-btn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.cs-tweak-btn--danger {
+  border-color: #c44;
+  color: #a22;
+}
+
+.cs-tweak-btn--danger:hover {
+  background: #fff5f5;
+}
+
+@media (max-width: 36rem) {
+  .cs-tweak-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .cs-tweak-row input[type="range"] {
+    max-width: none;
+  }
+
+  .cs-tweak-out {
+    text-align: left;
+  }
+}

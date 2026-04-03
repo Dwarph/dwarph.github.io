@@ -233,8 +233,8 @@ function renderWork(work) {
                     </div>
                     <div class="job-right-column ${needsTimeline ? 'has-case-studies ' + job.gradientColor : ''}">
                         ${needsTimeline ? '<div class="job-timeline-scroll-bar ' + job.gradientColor + '" aria-hidden="true"></div>' : ''}
-                        <!-- Desktop: job info and description -->
-                        <div class="job-info-desktop">
+                        <!-- Desktop: job info and description (scroll-reveal matches case study cards) -->
+                        <div class="job-info-desktop scroll-reveal-chunk">
                             <div class="job-info">
                                 <h3 class="job-company ${gradientClass}">${job.company}</h3>
                                 <p class="job-dates">${job.dates}</p>

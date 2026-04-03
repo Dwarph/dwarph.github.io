@@ -134,6 +134,23 @@
         }
     }
 
+    /**
+     * Same motion as applyScrollReveal but without opacity — for nodes inside a parent that
+     * already has scroll-driven opacity (e.g. .work-jobs) so opacity does not multiply.
+     */
+    function applyScrollRevealMotionOnly(el, progress, useBlur) {
+        if (!el) return;
+        var p = clamp01(progress);
+        /* Full local opacity: parent .work-jobs already applies scroll opacity to the group. */
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(' + 12 * (1 - p) + 'px)';
+        if (useBlur) {
+            el.style.filter = 'blur(' + 4 * (1 - p) + 'px)';
+        } else {
+            el.style.filter = 'none';
+        }
+    }
+
     /** Staggered fade for wrappers that contain nested scroll-reveal cards (opacity only; no stacked transforms). */
     function applyScrollRevealOpacity(el, progress) {
         if (!el) return;
@@ -234,6 +251,15 @@
                     var workBodyUse = applyProgress(workSection, workBodyP, 'work');
                     applyScrollReveal(workSection.querySelector('.section-title'), workTitleUse, true);
                     applyScrollRevealOpacity(workSection.querySelector('.work-jobs'), workBodyUse);
+
+                    var jobInfoHeaders = workSection.querySelectorAll('.job-info-desktop.scroll-reveal-chunk');
+                    for (var hi = 0; hi < jobInfoHeaders.length; hi++) {
+                        var jobHeaderEl = jobInfoHeaders[hi];
+                        var jobHeaderRaw = getProgressInViewport(jobHeaderEl, scrollY, maxScrollY);
+                        var jobHeaderP = fadeProgress(jobHeaderRaw);
+                        var jobHeaderUse = applyProgress(jobHeaderEl, jobHeaderP, 'job-header-' + hi);
+                        applyScrollRevealMotionOnly(jobHeaderEl, jobHeaderUse, true);
+                    }
                 }
             }
 

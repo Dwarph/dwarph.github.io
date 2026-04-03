@@ -1,0 +1,13 @@
+# Agent instructions
+
+## Persistent preferences and skills
+
+When the user asks for something that could reasonably be treated as **long-lived guidance** — for example: a standing preference, a workflow they want repeated, domain rules, tooling conventions, or anything that sounds like it should become a **Cursor skill** or **remembered rule** — do **not** silently add it to this file or create a new skill.
+
+Instead:
+
+1. **Recognize** that the request may warrant updating `AGENTS.md` (capture the key fact here) or **creating a new skill** (for richer, step-by-step procedures the agent should load when relevant).
+2. **Ask the user first** whether they want you to persist it, and if so, whether they prefer a short entry in `AGENTS.md` or a dedicated skill (and where, if they use a specific skills location).
+3. **Only after they confirm**, add the distilled key information to `AGENTS.md` and/or create the skill as agreed.
+
+If the user explicitly says to remember something or to add a rule, still confirm the exact wording and placement when it is ambiguous.

@@ -55,11 +55,12 @@ html.cs-scroll-lock {
 }
 
 .circle-slider-page h1 {
+  /* Fixed size at all breakpoints (no fluid type). */
   font-size: 1.25rem;
   margin: 0 0 1rem;
 }
 
-/* Centre the experiment in the viewport (horizontal + vertical). */
+/* Centre horizontally; stage uses flex spacers so the control stays vertically centred in the main column. */
 .circle-slider-page main {
   display: flex;
   flex-direction: column;
@@ -104,7 +105,7 @@ html.cs-scroll-lock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   max-width: 100%;
   min-height: 0;
@@ -113,7 +114,16 @@ html.cs-scroll-lock {
   overflow: visible;
 }
 
+/* Equal flex growth above/below the control → vertically centred in remaining viewport (like justify:center on the old stage). */
+.cs-stage__fill {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
 .cs-control-root {
+  flex: 0 0 auto;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -132,9 +142,11 @@ html.cs-scroll-lock {
 }
 
 .cs-prompt {
-  margin: 0 0 clamp(2rem, 8vw, 5rem);
+  /* Fixed gap to card — no vw/clamp so narrow viewports don’t tighten this. */
+  margin: 0 0 4rem;
   font-family: "Nunito Sans", sans-serif;
   font-weight: 700;
+  /* Same size at all viewports (no fluid type). */
   font-size: 2rem;
   line-height: 1;
   color: #000;
@@ -156,18 +168,6 @@ html.cs-scroll-lock {
 /* Empty Figma placeholder — keep in DOM for a11y tree but out of layout so the control is viewport-centred */
 .cs-control-slot {
   display: none;
-}
-
-@media (max-width: 40rem) {
-  .cs-prompt {
-    font-size: clamp(1.35rem, 6.5vw, 2rem);
-    margin-bottom: clamp(1.25rem, 6vw, 3rem);
-  }
-
-  .circle-slider-page main {
-    min-height: calc(100dvh - 6rem);
-    min-height: calc(100vh - 6rem);
-  }
 }
 
 /* Figma: w 101px, p 10.802px, r 7.021px — width is outer (border-box) */

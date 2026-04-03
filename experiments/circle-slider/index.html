@@ -75,114 +75,94 @@
         them.</p>
 
       <fieldset class="cs-tweak-fieldset">
+        <legend>Circle</legend>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Size <em>(radius)</em></span>
+          <input type="range" data-cs-config-key="trackRadius" min="52" max="92" step="1" value="78" />
+          <output class="cs-tweak-out" data-cs-tweak-out="trackRadius" data-decimals="0"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Grey arc thickness</span>
+          <input type="range" data-cs-config-key="trackStrokeWidth" min="1" max="10" step="0.5" value="3" />
+          <output class="cs-tweak-out" data-cs-tweak-out="trackStrokeWidth" data-decimals="1"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Black thumb thickness</span>
+          <input type="range" data-cs-config-key="thumbStrokeWidth" min="3" max="16" step="0.5" value="7" />
+          <output class="cs-tweak-out" data-cs-tweak-out="thumbStrokeWidth" data-decimals="1"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Thumb length <em>(° along arc)</em></span>
+          <input type="range" data-cs-config-key="thumbArcDeg" min="8" max="36" step="1" value="16" />
+          <output class="cs-tweak-out" data-cs-tweak-out="thumbArcDeg" data-decimals="0"></output>
+        </label>
+      </fieldset>
+
+      <fieldset class="cs-tweak-fieldset">
+        <legend>Radial fade</legend>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Duration <em>(show &amp; hide)</em></span>
+          <input type="range" data-cs-config-key="appearDurationMs" min="120" max="600" step="10" value="300" />
+          <output class="cs-tweak-out" data-cs-tweak-out="appearDurationMs" data-decimals="0"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Blur <em>(rest → sharp)</em></span>
+          <input type="range" data-cs-config-key="blurAppearPx" min="0" max="28" step="1" value="14" />
+          <output class="cs-tweak-out" data-cs-tweak-out="blurAppearPx" data-decimals="0"></output>
+        </label>
+      </fieldset>
+
+      <fieldset class="cs-tweak-fieldset">
+        <legend>Feel</legend>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Sensitivity <em>(lower = finer steps)</em></span>
+          <input type="range" data-cs-config-key="radPerStep" min="0.05" max="0.35" step="0.01" value="0.14" />
+          <output class="cs-tweak-out" data-cs-tweak-out="radPerStep" data-decimals="2"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Flick boost <em>(fast spin multiplier)</em></span>
+          <input type="range" data-cs-config-key="velocityGainMaxExtra" min="0" max="10" step="0.5" value="5" />
+          <output class="cs-tweak-out" data-cs-tweak-out="velocityGainMaxExtra" data-decimals="1"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Pull-out ease <em>(start scale, 1 = off)</em></span>
+          <input type="range" data-cs-config-key="sensitivityRampMin" min="0.05" max="1" step="0.05" value="0.22" />
+          <output class="cs-tweak-out" data-cs-tweak-out="sensitivityRampMin" data-decimals="2"></output>
+        </label>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Pull-out distance <em>(px past activation, 0 = off)</em></span>
+          <input type="range" data-cs-config-key="sensitivityRampSpanPx" min="0" max="120" step="2" value="52" />
+          <output class="cs-tweak-out" data-cs-tweak-out="sensitivityRampSpanPx" data-decimals="0"></output>
+        </label>
+        <p class="cs-tweak-help">Extra motion tuning lives in <code>DEFAULT_CONFIG</code> in <code>circle-slider.js</code>
+          if you need it.</p>
+      </fieldset>
+
+      <fieldset class="cs-tweak-fieldset">
         <legend>Interaction</legend>
         <label class="cs-tweak-row">
           <span class="cs-tweak-label">Activation drag (px)</span>
           <input type="range" data-cs-config-key="activationRadiusPx" min="2" max="48" step="1" value="10" />
           <output class="cs-tweak-out" data-cs-tweak-out="activationRadiusPx" data-decimals="0"></output>
         </label>
-        <p class="cs-tweak-help">Distance from first press before the encoder and radial turn on.</p>
 
         <div class="cs-tweak-row cs-tweak-row--radios">
           <span class="cs-tweak-label">Rotation pivot</span>
           <label><input type="radio" name="cs-rot" data-cs-config-key="rotationOrigin" value="cardCenter" checked />
-            Card centre</label>
+            Card centre <em>(thumb follows finger)</em></label>
           <label><input type="radio" name="cs-rot" data-cs-config-key="rotationOrigin" value="initialPress" />
             Initial press</label>
         </div>
 
         <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Leave card before arming <em>(card centre only; avoids middle flip)</em></span>
+          <input type="checkbox" data-cs-config-key="requireOutsideCardToActivate" checked />
+        </label>
+
+        <label class="cs-tweak-row">
           <span class="cs-tweak-label">Grey arc lag (°)</span>
           <input type="range" data-cs-config-key="maskDeadzoneDeg" min="0" max="40" step="1" value="15" />
           <output class="cs-tweak-out" data-cs-tweak-out="maskDeadzoneDeg" data-decimals="0"></output>
-        </label>
-      </fieldset>
-
-      <fieldset class="cs-tweak-fieldset">
-        <legend>Sensitivity &amp; motion</legend>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Radians per step <em>(lower = more sensitive)</em></span>
-          <input type="range" data-cs-config-key="radPerStep" min="0.03" max="0.42" step="0.01" value="0.14" />
-          <output class="cs-tweak-out" data-cs-tweak-out="radPerStep" data-decimals="2"></output>
-        </label>
-
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Velocity reference ω (rad/ms)</span>
-          <input type="range" data-cs-config-key="velocityOmegaRefRadPerMs" min="0.0005" max="0.012" step="0.0005"
-            value="0.0035" />
-          <output class="cs-tweak-out" data-cs-tweak-out="velocityOmegaRefRadPerMs" data-decimals="4"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Velocity gain <em>k</em></span>
-          <input type="range" data-cs-config-key="velocityGainK" min="0" max="5" step="0.05" value="2.25" />
-          <output class="cs-tweak-out" data-cs-tweak-out="velocityGainK" data-decimals="2"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Max extra velocity multiplier</span>
-          <input type="range" data-cs-config-key="velocityGainMaxExtra" min="0" max="12" step="0.25" value="5" />
-          <output class="cs-tweak-out" data-cs-tweak-out="velocityGainMaxExtra" data-decimals="2"></output>
-        </label>
-
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Min ω for boost (rad/ms)</span>
-          <input type="range" data-cs-config-key="velocityBoostMinOmegaRadPerMs" min="0" max="0.02" step="0.00025"
-            value="0" />
-          <output class="cs-tweak-out" data-cs-tweak-out="velocityBoostMinOmegaRadPerMs" data-decimals="4"></output>
-        </label>
-        <p class="cs-tweak-help"><strong>0</strong> = velocity boost always applies. Above <strong>0</strong>, slower
-          turns stay at multiplier <strong>1</strong> until |ω| exceeds this (fine control vs flick spins).</p>
-
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Minimum speed (rad/ms)</span>
-          <input type="range" data-cs-config-key="minOmegaRadPerMs" min="0" max="0.012" step="0.00025" value="0" />
-          <output class="cs-tweak-out" data-cs-tweak-out="minOmegaRadPerMs" data-decimals="4"></output>
-        </label>
-        <p class="cs-tweak-help"><strong>0</strong> = off. If set, movement slower than this does <strong>not</strong>
-          change the number (still updates thumb + arc).</p>
-
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Ignore tiny moves (° / frame)</span>
-          <input type="range" data-cs-config-key="minAngleDeltaDeg" min="0" max="2.5" step="0.05" value="0" />
-          <output class="cs-tweak-out" data-cs-tweak-out="minAngleDeltaDeg" data-decimals="2"></output>
-        </label>
-        <p class="cs-tweak-help"><strong>0</strong> = off. Filters jitter from shaky input.</p>
-      </fieldset>
-
-      <fieldset class="cs-tweak-fieldset">
-        <legend>Radial appearance</legend>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Appear (ms)</span>
-          <input type="range" data-cs-config-key="appearDurationMs" min="80" max="600" step="10" value="300" />
-          <output class="cs-tweak-out" data-cs-tweak-out="appearDurationMs" data-decimals="0"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Hide (ms)</span>
-          <input type="range" data-cs-config-key="hideDurationMs" min="80" max="500" step="10" value="240" />
-          <output class="cs-tweak-out" data-cs-tweak-out="hideDurationMs" data-decimals="0"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Blur (appear px)</span>
-          <input type="range" data-cs-config-key="blurAppearPx" min="0" max="28" step="1" value="14" />
-          <output class="cs-tweak-out" data-cs-tweak-out="blurAppearPx" data-decimals="0"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Blur (hide px)</span>
-          <input type="range" data-cs-config-key="blurHidePx" min="0" max="28" step="1" value="14" />
-          <output class="cs-tweak-out" data-cs-tweak-out="blurHidePx" data-decimals="0"></output>
-        </label>
-      </fieldset>
-
-      <fieldset class="cs-tweak-fieldset">
-        <legend>Geometry</legend>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Track radius (SVG units)</span>
-          <input type="range" data-cs-config-key="trackRadius" min="52" max="92" step="1" value="78" />
-          <output class="cs-tweak-out" data-cs-tweak-out="trackRadius" data-decimals="0"></output>
-        </label>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Thumb arc (°)</span>
-          <input type="range" data-cs-config-key="thumbArcDeg" min="8" max="36" step="1" value="16" />
-          <output class="cs-tweak-out" data-cs-tweak-out="thumbArcDeg" data-decimals="0"></output>
         </label>
       </fieldset>
 

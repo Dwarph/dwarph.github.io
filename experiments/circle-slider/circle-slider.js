@@ -19,9 +19,12 @@
    * @typedef {object} CircleSliderConfig
    * @property {number} initialValue
    * @property {number} activationRadiusPx
-   * @property {RotationOrigin} rotationOrigin
+   * @property {RotationOrigin} rotationOrigin — card centre: centre→pointer angle; initial press: pivot at down position
+   * @property {boolean} requireOutsideCardToActivate — card-centre mode only; if true, encoder arms only after the pointer leaves the card bounds (avoids atan2 flip when dragging across the middle on-card)
    * @property {number} maskDeadzoneDeg
    * @property {number} radPerStep — higher = less sensitive (more rad per integer step)
+   * @property {number} sensitivityRampMin — 0–1, step scale right at activation (lower = gentler pull-out)
+   * @property {number} sensitivityRampSpanPx — 0 = off; else distance from press (beyond activation) to ease rampMin → 1
    * @property {number} velocityOmegaRefRadPerMs
    * @property {number} velocityGainK
    * @property {number} velocityGainMaxExtra
@@ -34,6 +37,8 @@
    * @property {number} blurHidePx
    * @property {number} thumbArcDeg
    * @property {number} trackRadius
+   * @property {number} trackStrokeWidth — SVG grey arc stroke
+   * @property {number} thumbStrokeWidth — SVG black thumb stroke
    */
 
   /** @type {CircleSliderConfig} */
@@ -41,8 +46,11 @@
     initialValue: 114,
     activationRadiusPx: 10,
     rotationOrigin: "cardCenter",
+    requireOutsideCardToActivate: true,
     maskDeadzoneDeg: 15,
     radPerStep: 0.14,
+    sensitivityRampMin: 0.22,
+    sensitivityRampSpanPx: 52,
     velocityOmegaRefRadPerMs: 0.0035,
     velocityGainK: 2.25,
     velocityGainMaxExtra: 5,
@@ -50,17 +58,21 @@
     minOmegaRadPerMs: 0,
     minAngleDeltaDeg: 0,
     appearDurationMs: 300,
-    hideDurationMs: 240,
+    hideDurationMs: 300,
     blurAppearPx: 14,
     blurHidePx: 14,
     thumbArcDeg: 16,
     trackRadius: 78,
+    trackStrokeWidth: 3,
+    thumbStrokeWidth: 7,
   };
 
   /** @type {string[]} */
   const VISUAL_CONFIG_KEYS = [
     "trackRadius",
     "thumbArcDeg",
+    "trackStrokeWidth",
+    "thumbStrokeWidth",
     "appearDurationMs",
     "hideDurationMs",
     "blurAppearPx",
@@ -105,9 +117,14 @@
   }
 
   /**
-   * @param {number} a
-   * @param {number} b
+   * @param {number} t
    */
+  function smoothstep01(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    return t * t * (3 - 2 * t);
+  }
+
   function shortestAngleDiff(a, b) {
     let d = b - a;
     while (d > Math.PI) d -= TAU;
@@ -188,6 +205,8 @@
       trackFadeGradient.setAttribute("x2", String(r));
     }
     thumbPath.setAttribute("d", thumbArcPath(r, (cfg.thumbArcDeg / 2) * (Math.PI / 180)));
+    trackPath.setAttribute("stroke-width", String(cfg.trackStrokeWidth));
+    thumbPath.setAttribute("stroke-width", String(cfg.thumbStrokeWidth));
 
     radialLayer.style.setProperty("--cs-radial-appear-ms", `${cfg.appearDurationMs}ms`);
     radialLayer.style.setProperty("--cs-radial-hide-ms", `${cfg.hideDurationMs}ms`);
@@ -268,6 +287,11 @@
       radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
     }
 
+    function isPointerOverCard(clientX, clientY) {
+      const r = card.getBoundingClientRect();
+      return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+    }
+
     function pivotFor(clientX, clientY) {
       if (cfg.rotationOrigin === "initialPress") {
         return { x: pressPivotX, y: pressPivotY };
@@ -282,10 +306,33 @@
       return angleAt(p.x, p.y, clientX, clientY);
     }
 
+    /** Card-centre mode: wait until the pointer has left the card before arming, so the first angle uses a stable ray. */
+    function activationSatisfied(clientX, clientY) {
+      if (distanceFromStart(clientX, clientY) < cfg.activationRadiusPx) return false;
+      if (cfg.rotationOrigin !== "cardCenter" || !cfg.requireOutsideCardToActivate) return true;
+      return !isPointerOverCard(clientX, clientY);
+    }
+
     function distanceFromStart(clientX, clientY) {
       const dx = clientX - startClientX;
       const dy = clientY - startClientY;
       return Math.hypot(dx, dy);
+    }
+
+    /**
+     * Ease step rate from low (just past activation) to full as the finger moves farther out.
+     * @param {number} clientX
+     * @param {number} clientY
+     */
+    function sensitivityRampFactor(clientX, clientY) {
+      const span = cfg.sensitivityRampSpanPx;
+      if (span <= 0) return 1;
+      const lo = Math.min(Math.max(cfg.sensitivityRampMin, 0), 1);
+      if (lo >= 1) return 1;
+      const d = distanceFromStart(clientX, clientY);
+      const linearT = (d - cfg.activationRadiusPx) / span;
+      const u = smoothstep01(linearT);
+      return lo + (1 - lo) * u;
     }
 
     function deadzoneRad() {
@@ -367,7 +414,7 @@
       ev.preventDefault();
 
       if (!activated) {
-        if (distanceFromStart(ev.clientX, ev.clientY) >= cfg.activationRadiusPx) {
+        if (activationSatisfied(ev.clientX, ev.clientY)) {
           activated = true;
           const a = angleForPointer(ev.clientX, ev.clientY);
           lastAngle = a;
@@ -402,7 +449,8 @@
       }
 
       if (allowValue && dValue !== 0) {
-        valueAcc += (dValue * mult) / cfg.radPerStep;
+        const ramp = sensitivityRampFactor(ev.clientX, ev.clientY);
+        valueAcc += (dValue * mult * ramp) / cfg.radPerStep;
         const steps = Math.trunc(valueAcc);
         if (steps !== 0) {
           valueAcc -= steps;
@@ -490,6 +538,10 @@
         cfg.rotationOrigin = v === "initialPress" ? "initialPress" : "cardCenter";
         return;
       }
+      if (key === "requireOutsideCardToActivate") {
+        cfg.requireOutsideCardToActivate = Boolean(v);
+        return;
+      }
       const num = typeof v === "number" ? v : Number(v);
       if (!Number.isFinite(num)) return;
       if (key === "initialValue") {
@@ -520,6 +572,8 @@
         if (el instanceof HTMLInputElement) {
           if (el.type === "radio") {
             el.checked = el.value === String(v);
+          } else if (el.type === "checkbox") {
+            el.checked = Boolean(v);
           } else if (el.tagName === "SELECT") {
             el.value = String(v);
           } else {
@@ -539,6 +593,8 @@
         assignConfig(key, t.value);
       } else if (t.type === "radio") {
         if (t.checked) assignConfig(key, t.value);
+      } else if (t.type === "checkbox") {
+        assignConfig(key, t.checked);
       } else {
         let num = t.valueAsNumber;
         if (Number.isNaN(num)) {
@@ -547,6 +603,13 @@
         }
         if (!Number.isFinite(num)) return;
         assignConfig(key, num);
+      }
+
+      if (key === "blurAppearPx") {
+        cfg.blurHidePx = cfg.blurAppearPx;
+      }
+      if (key === "appearDurationMs") {
+        cfg.hideDurationMs = cfg.appearDurationMs;
       }
 
       scheduleSaveConfig(cfg);
@@ -590,7 +653,12 @@
   /** @type {CircleSliderConfig} */
   const cfg = Object.assign({}, DEFAULT_CONFIG, stored || {});
   if (cfg.rotationOrigin !== "initialPress") cfg.rotationOrigin = "cardCenter";
+  if (typeof cfg.requireOutsideCardToActivate !== "boolean") {
+    cfg.requireOutsideCardToActivate = DEFAULT_CONFIG.requireOutsideCardToActivate;
+  }
   cfg.initialValue = Math.round(Number(cfg.initialValue)) || DEFAULT_CONFIG.initialValue;
+  cfg.blurHidePx = cfg.blurAppearPx;
+  cfg.hideDurationMs = cfg.appearDurationMs;
 
   const root = document.getElementById("circle-slider");
   const panel = document.getElementById("cs-tweak-panel");

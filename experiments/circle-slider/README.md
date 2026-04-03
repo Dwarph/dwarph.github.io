@@ -18,7 +18,7 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 
 6. **Thumb vs track** — The **dark segment** follows the **pointer angle** immediately. The **gray track** is a fixed semicircle in local SVG space; its **bisector** (middle of the arc) is kept aligned with an **`arcCenterAngle`** that **lags** the thumb by **`maskDeadzoneDeg`**. On **activation**, `arcCenterAngle` is set to the thumb angle so the arc is **centred on the initial thumb direction**. The track group uses a fixed offset from `arcCenterAngle` (including a **π flip** so SVG/screen space matches `atan2`, not the arc facing 180° wrong).
 
-7. **Value integration** — Each move applies the **shortest** angular delta between frames (wrap-safe across ±π). That delta is scaled by a **velocity multiplier** unless angular speed is below **`velocityBoostMinOmegaRadPerMs`** (then multiplier stays **1**). Optionally **`minOmegaRadPerMs`** blocks all value change when slower than that threshold, and **`minAngleDeltaDeg`** drops tiny per-frame moves. Fractional accumulation is kept internal so the displayed value stays an **integer**.
+7. **Value integration** — Each move applies the **shortest** angular delta between frames (wrap-safe across ±π), scaled by a **velocity multiplier** (tweak panel: **flick boost** + defaults in `DEFAULT_CONFIG` for reference ω, gain *k*, optional floors / jitter filters). Fractional accumulation stays internal so the displayed value stays an **integer**.
 
 8. **No value change before activation** — If the pointer **releases** before crossing the activation radius, the integer **does not** change.
 
@@ -35,29 +35,25 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 
 ## Configuration
 
-Defaults live in **`DEFAULT_CONFIG`** at the top of `circle-slider.js`. Change values there and refresh the page.
+Defaults live in **`DEFAULT_CONFIG`** in `circle-slider.js`. The **tweak panel** exposes a short set; everything else is still in **`DEFAULT_CONFIG`** if you want to edit the file.
+
+**Tweak panel (live + `localStorage`):** circle **size** (`trackRadius`), **grey / black stroke widths** (`trackStrokeWidth`, `thumbStrokeWidth`), **thumb span** (`thumbArcDeg`), **one fade duration** (sets both `appearDurationMs` and `hideDurationMs`), **one blur** (sets both `blurAppearPx` and `blurHidePx`), **sensitivity** (`radPerStep`), **flick boost** (`velocityGainMaxExtra`), **activation** drag, **pivot**, **arc lag**.
+
+**Code-only in `DEFAULT_CONFIG` (defaults shown):** `velocityOmegaRefRadPerMs`, `velocityGainK`, `velocityBoostMinOmegaRadPerMs`, `minOmegaRadPerMs`, `minAngleDeltaDeg`.
 
 | Option | Default | Meaning |
 |--------|---------|---------|
-| `initialValue` | `114` | Starting integer |
-| `activationRadiusPx` | `10` | Drag distance from initial press before engage |
-| `rotationOrigin` | `'cardCenter'` | `'cardCenter'` \| `'initialPress'` |
-| `maskDeadzoneDeg` | `15` | Track rotation lags thumb until separation exceeds this |
-| `radPerStep` | `0.14` | ~Radians of rotation (at velocity multiplier 1) per unit of accumulation before integer steps |
-| `velocityOmegaRefRadPerMs` | `0.0035` | Scale for “how fast is fast” angular velocity |
-| `velocityGainK` | `2.25` | How much extra gain velocity adds before cap |
-| `velocityGainMaxExtra` | `5` | Cap on extra velocity multiplier |
-| `velocityBoostMinOmegaRadPerMs` | `0` | **0** = always apply velocity boost; else below this angular speed use multiplier **1** only |
-| `minOmegaRadPerMs` | `0` | **0** = off; below this angular speed, **no** integer change (thumb/arc still move) |
-| `minAngleDeltaDeg` | `0` | **0** = off; ignore per-frame \|Δθ\| smaller than this (jitter filter) |
-| `appearDurationMs` | `300` | Radial show duration |
-| `hideDurationMs` | `240` | Radial hide duration |
-| `blurAppearPx` | `14` | Blur tuning (paired with `blurHidePx`) |
-| `blurHidePx` | `14` | Blur tuning (paired with `blurAppearPx`) |
-| `thumbArcDeg` | `16` | Angular thickness of the dark thumb stroke |
-| `trackRadius` | `78` | SVG semicircle radius in viewBox units |
+| `trackRadius` | `78` | Semicircle radius (SVG units) |
+| `trackStrokeWidth` | `3` | Grey arc stroke width |
+| `thumbStrokeWidth` | `7` | Black thumb stroke width |
+| `thumbArcDeg` | `16` | Angular length of thumb along the ring |
+| `appearDurationMs` / `hideDurationMs` | `300` | Radial show/hide (panel keeps them equal) |
+| `blurAppearPx` / `blurHidePx` | `14` | Blur for fade (panel keeps them equal) |
+| `radPerStep` | `0.14` | Radians per step at multiplier 1 (lower → more sensitive) |
+| `velocityGainMaxExtra` | `5` | Extra velocity multiplier cap (flick boost) |
+| … | … | See `DEFAULT_CONFIG` for the full list |
 
-The blurred “rest” state uses **`max(blurAppearPx, blurHidePx)`** as `--cs-blur-rest` so you can keep both knobs without the hidden state looking weaker than intended.
+The blurred “rest” state uses **`max(blurAppearPx, blurHidePx)`** as `--cs-blur-rest`.
 
 The grey track stroke uses a **horizontal linear gradient** in the track’s local space (inside the rotating group) so opacity **ramps to 0 at the arc endpoints** (~22%–78% fully opaque by default). Adjust the `<stop offset="…"/>` values in `index.html` if you want a longer or shorter fade.
 
@@ -71,7 +67,7 @@ The grey track stroke uses a **horizontal linear gradient** in the track’s loc
 
 ### Tweak panel (bottom of page)
 
-A **collapsible bar** exposes the same options as sliders/inputs. Changes apply **live** (no reload). Settings are **saved to `localStorage`** under `dwarph.io.experiments.circleSlider.config.v1` (debounced). **Reset all settings** clears storage and restores `DEFAULT_CONFIG`. **Reset value** sets the displayed integer to **Reset target** (`initialValue`) and clears fractional carry.
+A **collapsible bar** exposes a **reduced** set of sliders (see above); changes apply **live**. Settings save to **`localStorage`** (`dwarph.io.experiments.circleSlider.config.v1`, debounced). **Reset all** restores **`DEFAULT_CONFIG`**. **Reset value** uses **Reset target** (`initialValue`) and clears fractional carry.
 
 `window.__CIRCLE_SLIDER_CONFIG__` still references the live config object; `window.__CIRCLE_SLIDER__.resetValue()` resets the number only.
 

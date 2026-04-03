@@ -61,6 +61,14 @@ The blurred “rest” state uses **`max(blurAppearPx, blurHidePx)`** as `--cs-b
 
 The grey track stroke uses a **horizontal linear gradient** in the track’s local space (inside the rotating group) so opacity **ramps to 0 at the arc endpoints** (~22%–78% fully opaque by default). Adjust the `<stop offset="…"/>` values in `index.html` if you want a longer or shorter fade.
 
+### Mobile / touch
+
+- **`touch-action: none`** on the value card and card stack so the browser does not steal the gesture for scroll.
+- **Scroll lock** while pressing the slider: `position: fixed` + saved scroll position (iOS-friendly), and **`html` + `body`** get **`cs-scroll-lock`** with **`overscroll-behavior: none`** so **Chrome Android pull-to-refresh** does not fire during the gesture.
+- **`pointermove` / `pointerdown`** use `{ passive: false }` and **`preventDefault`** on moves so scrolling does not win.
+- **Window-level** `pointermove` / `pointerup` / `pointercancel` during a gesture so behaviour still works if **`setPointerCapture`** fails (common on some iOS builds).
+- **Layout**: **`main`** is a flex column with **`min-height`** tied to the viewport so **`.cs-stage`** can **`flex: 1`** and vertically centre the control; the empty **Figma slot** is **`display: none`** so it never shifts the group sideways on wide screens. Radial uses **`translateZ(0)`**, **`-webkit-filter`**, and **visibility** timing to avoid invisible SVG/blur glitches on WebKit.
+
 ### Tweak panel (bottom of page)
 
 A **collapsible bar** exposes the same options as sliders/inputs. Changes apply **live** (no reload). Settings are **saved to `localStorage`** under `dwarph.io.experiments.circleSlider.config.v1` (debounced). **Reset all settings** clears storage and restores `DEFAULT_CONFIG`. **Reset value** sets the displayed integer to **Reset target** (`initialValue`) and clears fractional carry.

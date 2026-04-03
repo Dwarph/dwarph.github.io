@@ -2,6 +2,7 @@
 
 .circle-slider-page {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 1.5rem;
   padding-bottom: max(5rem, calc(4.5rem + env(safe-area-inset-bottom, 0px)));
@@ -13,6 +14,29 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Reduce scroll chaining; full P2R block while gesture active uses html.cs-scroll-lock */
+  overscroll-behavior-y: contain;
+}
+
+/*
+ * While dragging the slider: block iOS scroll + Chrome Android pull-to-refresh.
+ * P2R consults the root; locking both html and body during the gesture is important.
+ */
+html.cs-scroll-lock {
+  overscroll-behavior: none;
+  touch-action: none;
+  overflow: hidden;
+  height: 100%;
+}
+
+.circle-slider-page.cs-scroll-lock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 .circle-slider-page a {
@@ -34,6 +58,30 @@
   margin: 0 0 1rem;
 }
 
+/* Centre the experiment in the viewport (horizontal + vertical). */
+.circle-slider-page main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: calc(100dvh - 5.5rem);
+  min-height: calc(100vh - 5.5rem);
+  padding-bottom: 0.5rem;
+}
+
+.circle-slider-page main > p {
+  margin: 0 0 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+.circle-slider-page main > h1 {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
 .circle-slider-page .skip-link {
   position: absolute;
   top: -100px;
@@ -51,12 +99,27 @@
 
 /* Figma frame “iPhone 17 - 1” — prompt + value card (circle control TBD) */
 .cs-stage {
-  margin-top: 1.5rem;
-  min-height: 60vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  margin-top: 0.25rem;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.cs-control-root {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 /* Prompt + number share one column so “How many?” centres over the value only */
@@ -74,22 +137,36 @@
   font-size: 2rem;
   line-height: 1;
   color: #000;
+  text-align: center;
 }
 
 /* Ring / thumb area (Figma node 1:84) + value column on one row */
 .cs-row {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  /* ~63px between Figma control slice and value card */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   gap: clamp(1rem, 4vw, 3.9375rem);
 }
 
+/* Empty Figma placeholder — keep in DOM for a11y tree but out of layout so the control is viewport-centred */
 .cs-control-slot {
-  flex: 0 0 auto;
-  width: 5.5rem; /* ~88px */
-  min-height: 4.8125rem; /* ~77px */
+  display: none;
+}
+
+@media (max-width: 40rem) {
+  .cs-prompt {
+    font-size: clamp(1.35rem, 6.5vw, 2rem);
+    margin-bottom: clamp(1.25rem, 6vw, 3rem);
+  }
+
+  .circle-slider-page main {
+    min-height: calc(100dvh - 6rem);
+    min-height: calc(100vh - 6rem);
+  }
 }
 
 /* Figma: w 101px, p 10.802px, r 7.021px — width is outer (border-box) */
@@ -110,6 +187,8 @@
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cs-value {
@@ -127,6 +206,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: visible;
+  touch-action: none;
 }
 
 .cs-value-card.cs-value-card--active {
@@ -143,28 +224,37 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: min(72vw, 280px);
+  width: min(85vw, 280px);
   max-width: 280px;
   aspect-ratio: 1;
-  transform: translate(-50%, -38%);
+  transform: translate3d(-50%, -38%, 0);
   z-index: 0;
   pointer-events: none;
   --cs-track-stroke: #c8c8c8;
   color: var(--cs-track-stroke);
   opacity: 0;
+  visibility: hidden;
   filter: blur(var(--cs-blur-rest, 14px));
+  -webkit-filter: blur(var(--cs-blur-rest, 14px));
   transition:
     opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
-    filter var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
+    filter var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear var(--cs-radial-hide-ms, 240ms);
   will-change: opacity, filter;
+  isolation: isolate;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .cs-radial-layer--visible {
   opacity: 1;
+  visibility: visible;
   filter: blur(0);
+  -webkit-filter: blur(0);
   transition:
     opacity var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
-    filter var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
+    filter var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0s;
 }
 
 .cs-radial-svg {
@@ -192,11 +282,13 @@
 @media (prefers-reduced-motion: reduce) {
   .cs-radial-layer {
     filter: none !important;
+    -webkit-filter: none !important;
     transition-duration: 0.01ms !important;
   }
 
   .cs-radial-layer:not(.cs-radial-layer--visible) {
     opacity: 0;
+    visibility: hidden;
   }
 }
 

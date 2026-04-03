@@ -240,6 +240,27 @@
     let lastT = 0;
     let arcCenterAngle = 0;
 
+    let scrollLocked = false;
+    let lockedScrollY = 0;
+
+    function lockPageScroll() {
+      if (scrollLocked) return;
+      scrollLocked = true;
+      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      document.documentElement.classList.add("cs-scroll-lock");
+      document.body.classList.add("cs-scroll-lock");
+      document.body.style.top = `-${lockedScrollY}px`;
+    }
+
+    function unlockPageScroll() {
+      if (!scrollLocked) return;
+      scrollLocked = false;
+      document.documentElement.classList.remove("cs-scroll-lock");
+      document.body.classList.remove("cs-scroll-lock");
+      document.body.style.top = "";
+      window.scrollTo(0, lockedScrollY);
+    }
+
     function setRadialVisible(on) {
       radialLayer.classList.toggle("cs-radial-layer--visible", on);
       radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
@@ -284,8 +305,40 @@
       trackRot.setAttribute("transform", `rotate(${trackDeg})`);
     }
 
+    /** Same options object required for add/removeEventListener on window. */
+    const peOpts = { passive: false };
+
+    let gestureActive = false;
+
+    function removeWindowGestureListeners() {
+      window.removeEventListener("pointermove", onWindowPointerMove, peOpts);
+      window.removeEventListener("pointerup", onWindowPointerEnd);
+      window.removeEventListener("pointercancel", onWindowPointerEnd);
+    }
+
+    function teardownPointer() {
+      if (!gestureActive) return;
+      gestureActive = false;
+      removeWindowGestureListeners();
+      const pid = pointerId;
+      pointerId = null;
+      activated = false;
+      card.classList.remove("cs-value-card--active");
+      unlockPageScroll();
+      setRadialVisible(false);
+      if (pid != null) {
+        try {
+          card.releasePointerCapture(pid);
+        } catch (_) {
+          /* ignore */
+        }
+      }
+    }
+
     function onPointerDown(ev) {
-      if (ev.button != null && ev.button !== 0) return;
+      if (ev.pointerType !== "touch" && ev.button != null && ev.button !== 0) return;
+      if (gestureActive) return;
+      gestureActive = true;
       pointerId = ev.pointerId;
       startClientX = ev.clientX;
       startClientY = ev.clientY;
@@ -296,16 +349,20 @@
       lastT = performance.now();
       arcCenterAngle = 0;
       card.classList.add("cs-value-card--active");
-      card.setPointerCapture(ev.pointerId);
+      lockPageScroll();
+      window.addEventListener("pointermove", onWindowPointerMove, peOpts);
+      window.addEventListener("pointerup", onWindowPointerEnd);
+      window.addEventListener("pointercancel", onWindowPointerEnd);
       try {
-        card.style.touchAction = "none";
+        card.setPointerCapture(ev.pointerId);
       } catch (_) {
-        /* ignore */
+        /* iOS: capture can fail; window listeners still receive the gesture */
       }
     }
 
-    function onPointerMove(ev) {
-      if (ev.pointerId !== pointerId) return;
+    function onWindowPointerMove(ev) {
+      if (!gestureActive || ev.pointerId !== pointerId) return;
+      ev.preventDefault();
 
       if (!activated) {
         if (distanceFromStart(ev.clientX, ev.clientY) >= cfg.activationRadiusPx) {
@@ -356,37 +413,17 @@
       applyRotations(a);
     }
 
-    function teardownPointer() {
-      pointerId = null;
-      activated = false;
-      card.classList.remove("cs-value-card--active");
-      try {
-        card.style.touchAction = "";
-      } catch (_) {
-        /* ignore */
-      }
-      setRadialVisible(false);
-    }
-
-    function onPointerUp(ev) {
-      if (ev.pointerId !== pointerId) return;
-      try {
-        card.releasePointerCapture(ev.pointerId);
-      } catch (_) {
-        /* ignore */
-      }
+    function onWindowPointerEnd(ev) {
+      if (!gestureActive || ev.pointerId !== pointerId) return;
       teardownPointer();
     }
 
     function onLostCapture(ev) {
-      if (ev.pointerId !== pointerId) return;
+      if (!gestureActive || ev.pointerId !== pointerId) return;
       teardownPointer();
     }
 
-    card.addEventListener("pointerdown", onPointerDown);
-    card.addEventListener("pointermove", onPointerMove);
-    card.addEventListener("pointerup", onPointerUp);
-    card.addEventListener("pointercancel", onPointerUp);
+    card.addEventListener("pointerdown", onPointerDown, peOpts);
     card.addEventListener("lostpointercapture", onLostCapture);
 
     return {

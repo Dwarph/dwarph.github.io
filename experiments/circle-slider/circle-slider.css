@@ -1,5 +1,10 @@
 /* Circle slider experiment — build here */
 
+/* Keeps layout width steadier when scrollbars are overlay vs classic (pairs with scroll-lock JS). */
+html {
+  scrollbar-gutter: stable;
+}
+
 .circle-slider-page {
   min-height: 100vh;
   min-height: 100dvh;
@@ -19,21 +24,17 @@
 }
 
 /*
- * While dragging the slider: block iOS scroll + Chrome Android pull-to-refresh.
- * P2R consults the root; locking both html and body during the gesture is important.
+ * While dragging: freeze scroll without position:fixed on body (avoids horizontal layout jump).
+ * pointermove preventDefault + touch-action on the card handle most touch scroll; this blocks wheel/trackpad.
  */
 html.cs-scroll-lock {
-  overscroll-behavior: none;
-  touch-action: none;
   overflow: hidden;
   height: 100%;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .circle-slider-page.cs-scroll-lock {
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
   overflow: hidden;
   touch-action: none;
   overscroll-behavior: none;

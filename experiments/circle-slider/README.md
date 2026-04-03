@@ -64,7 +64,7 @@ The grey track stroke uses a **horizontal linear gradient** in the track’s loc
 ### Mobile / touch
 
 - **`touch-action: none`** on the value card and card stack so the browser does not steal the gesture for scroll.
-- **Scroll lock** while pressing the slider: `position: fixed` + saved scroll position (iOS-friendly), and **`html` + `body`** get **`cs-scroll-lock`** with **`overscroll-behavior: none`** so **Chrome Android pull-to-refresh** does not fire during the gesture.
+- **Scroll lock** while pressing: **`overflow: hidden`** on **`html`** and **`body`** (no **`position: fixed`** on the body, so the scrollbar does not disappear and the layout does not jump sideways). **`overscroll-behavior: none`** on **`html`** still targets **Chrome pull-to-refresh**. **`window` `pointermove`** uses **`preventDefault`** for the active gesture to block touch scrolling on the page.
 - **`pointermove` / `pointerdown`** use `{ passive: false }` and **`preventDefault`** on moves so scrolling does not win.
 - **Window-level** `pointermove` / `pointerup` / `pointercancel` during a gesture so behaviour still works if **`setPointerCapture`** fails (common on some iOS builds).
 - **Layout**: **`main`** is a flex column with **`min-height`** tied to the viewport so **`.cs-stage`** can **`flex: 1`** and vertically centre the control; the empty **Figma slot** is **`display: none`** so it never shifts the group sideways on wide screens. Radial uses **`translateZ(0)`**, **`-webkit-filter`**, and **visibility** timing to avoid invisible SVG/blur glitches on WebKit.

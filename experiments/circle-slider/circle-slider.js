@@ -247,9 +247,12 @@
       if (scrollLocked) return;
       scrollLocked = true;
       lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      /*
+       * Overflow-only lock: do not use position:fixed on body (that pattern removes the scrollbar
+       * and changes the viewport width, which shifts layout sideways). We only freeze further scroll.
+       */
       document.documentElement.classList.add("cs-scroll-lock");
       document.body.classList.add("cs-scroll-lock");
-      document.body.style.top = `-${lockedScrollY}px`;
     }
 
     function unlockPageScroll() {
@@ -257,7 +260,6 @@
       scrollLocked = false;
       document.documentElement.classList.remove("cs-scroll-lock");
       document.body.classList.remove("cs-scroll-lock");
-      document.body.style.top = "";
       window.scrollTo(0, lockedScrollY);
     }
 

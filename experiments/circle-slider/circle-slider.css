@@ -242,6 +242,15 @@ html.cs-scroll-lock {
   backface-visibility: hidden;
 }
 
+/* Hiding while radial appears: blur + opacity start together (no --cs-halo-hide-opacity-delay lag) */
+.cs-press-halo.cs-press-halo--arc-handoff {
+  transition:
+    filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    -webkit-filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear var(--cs-halo-hide-ms, 240ms);
+}
+
 .cs-press-halo::before {
   content: "";
   position: absolute;
@@ -274,6 +283,27 @@ html.cs-scroll-lock {
     -webkit-filter var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0s linear 0s;
   will-change: opacity, filter;
+}
+
+/* Touch: filter blur on the halo often fails to composite the ::before ring; opacity-only reads reliably */
+@media (pointer: coarse) {
+  .cs-press-halo,
+  .cs-press-halo--visible {
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+
+  .cs-press-halo {
+    transition:
+      opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s linear var(--cs-halo-hide-ms, 240ms);
+  }
+
+  .cs-press-halo--visible {
+    transition:
+      opacity var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 0s;
+  }
 }
 
 .cs-value-card.cs-value-card--active {

@@ -306,9 +306,22 @@
       radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
     }
 
-    function setPressHaloVisible(on) {
+    /**
+     * @param {boolean} on
+     * @param {{ arcHandoff?: boolean } | undefined} options — `arcHandoff`: hide halo in sync with radial (no opacity delay)
+     */
+    function setPressHaloVisible(on, options) {
       if (!pressHalo) return;
-      pressHalo.classList.toggle("cs-press-halo--visible", on);
+      const arcHandoff = options && options.arcHandoff;
+      if (on) {
+        pressHalo.classList.remove("cs-press-halo--arc-handoff");
+        pressHalo.classList.add("cs-press-halo--visible");
+        return;
+      }
+      if (arcHandoff) {
+        pressHalo.classList.add("cs-press-halo--arc-handoff");
+      }
+      pressHalo.classList.remove("cs-press-halo--visible");
     }
 
     function clearActivationDelayTimer() {
@@ -326,7 +339,7 @@
       lastAngle = a;
       arcCenterAngle = a;
       lastT = performance.now();
-      setPressHaloVisible(false);
+      setPressHaloVisible(false, { arcHandoff: true });
       setRadialVisible(true);
       applyRotations(a);
     }
@@ -435,6 +448,7 @@
       if (gestureActive) return;
       gestureActive = true;
       pointerId = ev.pointerId;
+      const pid = ev.pointerId;
       startClientX = ev.clientX;
       startClientY = ev.clientY;
       pressPivotX = ev.clientX;
@@ -449,7 +463,6 @@
       arcCenterAngle = 0;
       card.classList.add("cs-value-card--active");
       setPressHaloVisible(true);
-      lockPageScroll();
       window.addEventListener("pointermove", onWindowPointerMove, peOpts);
       window.addEventListener("pointerup", onWindowPointerEnd);
       window.addEventListener("pointercancel", onWindowPointerEnd);
@@ -458,6 +471,15 @@
       } catch (_) {
         /* iOS: capture can fail; window listeners still receive the gesture */
       }
+      /*
+       * Mutating html/body (overflow/touch-action) in the same turn as setPointerCapture can drop
+       * capture and fire lostpointercapture → teardown before the halo paints. Defer scroll lock.
+       */
+      requestAnimationFrame(function () {
+        if (gestureActive && pointerId === pid) {
+          lockPageScroll();
+        }
+      });
     }
 
     function onWindowPointerMove(ev) {
@@ -532,10 +554,41 @@
 
     function onLostCapture(ev) {
       if (!gestureActive || ev.pointerId !== pointerId) return;
+      /*
+       * Touch: capture is unreliable; changing scroll lock on html can fire spurious lostpointercapture
+       * while window-level pointer listeners still receive the gesture. Teardown here nukes the halo
+       * and breaks the encoder on some Android / iOS builds.
+       */
+      if (ev.pointerType === "touch") return;
       teardownPointer();
     }
 
-    card.addEventListener("pointerdown", onPointerDown, peOpts);
+    const touchHaloOpts = { passive: true };
+    card.addEventListener(
+      "touchstart",
+      function (ev) {
+        if (!pressHalo || ev.touches.length !== 1) return;
+        setPressHaloVisible(true);
+      },
+      touchHaloOpts
+    );
+    card.addEventListener(
+      "touchend",
+      function () {
+        if (!gestureActive) setPressHaloVisible(false);
+      },
+      touchHaloOpts
+    );
+    card.addEventListener(
+      "touchcancel",
+      function () {
+        if (!gestureActive) setPressHaloVisible(false);
+      },
+      touchHaloOpts
+    );
+
+    const peCaptureOpts = { passive: false, capture: true };
+    card.addEventListener("pointerdown", onPointerDown, peCaptureOpts);
     card.addEventListener("lostpointercapture", onLostCapture);
 
     return {

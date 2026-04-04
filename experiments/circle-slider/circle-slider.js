@@ -9,6 +9,9 @@
   /** @type {const} */
   const TAU = Math.PI * 2;
 
+  /** Touch often arms the encoder on the first move; keep the press halo visible at least this long so it reads on mobile. */
+  const MIN_PRESS_HALO_MS = 220;
+
   const STORAGE_KEY = "dwarph.io.experiments.circleSlider.config.v1";
 
   /**
@@ -265,6 +268,11 @@
     let startClientY = 0;
     let pressPivotX = 0;
     let pressPivotY = 0;
+    let pointerDownAt = 0;
+    let lastPointerClientX = 0;
+    let lastPointerClientY = 0;
+    /** @type {number | null} */
+    let activationDelayTimer = null;
     let activated = false;
     let lastAngle = 0;
     let lastT = 0;
@@ -301,6 +309,26 @@
     function setPressHaloVisible(on) {
       if (!pressHalo) return;
       pressHalo.classList.toggle("cs-press-halo--visible", on);
+    }
+
+    function clearActivationDelayTimer() {
+      if (activationDelayTimer != null) {
+        clearTimeout(activationDelayTimer);
+        activationDelayTimer = null;
+      }
+    }
+
+    function completeEncoderActivation(clientX, clientY) {
+      clearActivationDelayTimer();
+      if (activated) return;
+      activated = true;
+      const a = angleForPointer(clientX, clientY);
+      lastAngle = a;
+      arcCenterAngle = a;
+      lastT = performance.now();
+      setPressHaloVisible(false);
+      setRadialVisible(true);
+      applyRotations(a);
     }
 
     function isPointerOverCard(clientX, clientY) {
@@ -384,6 +412,7 @@
     function teardownPointer() {
       if (!gestureActive) return;
       gestureActive = false;
+      clearActivationDelayTimer();
       removeWindowGestureListeners();
       const pid = pointerId;
       pointerId = null;
@@ -410,6 +439,10 @@
       startClientY = ev.clientY;
       pressPivotX = ev.clientX;
       pressPivotY = ev.clientY;
+      pointerDownAt = performance.now();
+      lastPointerClientX = ev.clientX;
+      lastPointerClientY = ev.clientY;
+      clearActivationDelayTimer();
       activated = false;
       lastAngle = 0;
       lastT = performance.now();
@@ -431,16 +464,26 @@
       if (!gestureActive || ev.pointerId !== pointerId) return;
       ev.preventDefault();
 
+      lastPointerClientX = ev.clientX;
+      lastPointerClientY = ev.clientY;
+
       if (!activated) {
-        if (activationSatisfied(ev.clientX, ev.clientY)) {
-          activated = true;
-          const a = angleForPointer(ev.clientX, ev.clientY);
-          lastAngle = a;
-          arcCenterAngle = a;
-          lastT = performance.now();
-          setPressHaloVisible(false);
-          setRadialVisible(true);
-          applyRotations(a);
+        if (activationSatisfied(lastPointerClientX, lastPointerClientY)) {
+          const elapsed = performance.now() - pointerDownAt;
+          const wait = Math.max(0, MIN_PRESS_HALO_MS - elapsed);
+          if (wait === 0) {
+            completeEncoderActivation(lastPointerClientX, lastPointerClientY);
+          } else if (activationDelayTimer == null) {
+            activationDelayTimer = setTimeout(function () {
+              activationDelayTimer = null;
+              if (!gestureActive || pointerId == null) return;
+              if (activated) return;
+              if (!activationSatisfied(lastPointerClientX, lastPointerClientY)) return;
+              completeEncoderActivation(lastPointerClientX, lastPointerClientY);
+            }, wait);
+          }
+        } else {
+          clearActivationDelayTimer();
         }
         return;
       }

@@ -174,7 +174,7 @@ html.cs-scroll-lock {
 .cs-value-card {
   box-sizing: border-box;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,7 +217,8 @@ html.cs-scroll-lock {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 0;
+  /* Above .cs-radial-layer (same box size) so the ring isn’t lost in WebKit compositing when the radial is opacity 0 */
+  z-index: 1;
   width: min(85vw, 280px);
   max-width: 280px;
   aspect-ratio: 1;
@@ -251,8 +252,15 @@ html.cs-scroll-lock {
   width: calc(100% * var(--cs-halo-diameter-fr, 0.78));
   height: calc(100% * var(--cs-halo-diameter-fr, 0.78));
   border-radius: 50%;
-  border: 2px solid color-mix(in srgb, var(--cs-track-stroke) 50%, transparent);
+  /* Fallback when color-mix unsupported (older WebKit): ~50% of --cs-track-stroke #c8c8c8 */
+  border: 2px solid rgba(200, 200, 200, 0.5);
   pointer-events: none;
+}
+
+@supports (color: color-mix(in srgb, black 50%, transparent)) {
+  .cs-press-halo::before {
+    border-color: color-mix(in srgb, var(--cs-track-stroke) 50%, transparent);
+  }
 }
 
 .cs-press-halo--visible {

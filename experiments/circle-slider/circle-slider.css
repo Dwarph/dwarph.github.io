@@ -203,12 +203,69 @@ html.cs-scroll-lock {
 
 /* Card + radial share a stack so the ring can sit under / around the value */
 .cs-card-stack {
+  --cs-track-stroke: #c8c8c8;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: visible;
   touch-action: none;
+}
+
+/* Press halo — same frame + offset as radial SVG; ring diameter = track circle (viewBox 200, radius r → 2r/200 of layer width) */
+.cs-press-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(85vw, 280px);
+  max-width: 280px;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  margin: 0;
+  transform: translate3d(-50%, -38%, 0);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(var(--cs-halo-blur-rest, 14px));
+  -webkit-filter: blur(var(--cs-halo-blur-rest, 14px));
+  /* Blur leads, opacity follows so the ring visibly softens before it fades */
+  transition:
+    filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    -webkit-filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1) var(--cs-halo-hide-opacity-delay, 72ms),
+    visibility 0s linear calc(var(--cs-halo-hide-ms, 240ms) + var(--cs-halo-hide-opacity-delay, 72ms));
+  will-change: opacity, filter;
+  isolation: isolate;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.cs-press-halo::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: calc(100% * var(--cs-halo-diameter-fr, 0.78));
+  height: calc(100% * var(--cs-halo-diameter-fr, 0.78));
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--cs-track-stroke) 50%, transparent);
+  pointer-events: none;
+}
+
+.cs-press-halo--visible {
+  opacity: 1;
+  visibility: visible;
+  filter: blur(0);
+  -webkit-filter: blur(0);
+  transition:
+    opacity var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    filter var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    -webkit-filter var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0s;
+  will-change: opacity, filter;
 }
 
 .cs-value-card.cs-value-card--active {
@@ -231,7 +288,6 @@ html.cs-scroll-lock {
   transform: translate3d(-50%, -38%, 0);
   z-index: 0;
   pointer-events: none;
-  --cs-track-stroke: #c8c8c8;
   color: var(--cs-track-stroke);
   opacity: 0;
   visibility: hidden;
@@ -256,6 +312,19 @@ html.cs-scroll-lock {
     opacity var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
     filter var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0s linear 0s;
+}
+
+/* Black thumb fades in shortly after the grey arc begins appearing */
+.cs-radial-layer:not(.cs-radial-layer--visible) .cs-thumb-rot {
+  opacity: 0;
+  transition: opacity 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0ms;
+}
+
+.cs-radial-layer--visible .cs-thumb-rot {
+  opacity: 1;
+  transition: opacity calc(var(--cs-radial-appear-ms, 300ms) * 0.45) cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--cs-radial-appear-ms, 300ms) * 0.38);
 }
 
 .cs-radial-svg {
@@ -290,6 +359,32 @@ html.cs-scroll-lock {
   .cs-radial-layer:not(.cs-radial-layer--visible) {
     opacity: 0;
     visibility: hidden;
+  }
+
+  .cs-press-halo {
+    filter: none !important;
+    -webkit-filter: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .cs-press-halo:not(.cs-press-halo--visible) {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .cs-radial-layer--visible .cs-thumb-rot,
+  .cs-radial-layer:not(.cs-radial-layer--visible) .cs-thumb-rot {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .cs-value-card {
+    transition-duration: 0.01ms !important;
+  }
+
+  .cs-value-card.cs-value-card--active {
+    transform: scale(1);
   }
 }
 

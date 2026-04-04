@@ -214,6 +214,16 @@
       "--cs-blur-rest",
       `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`
     );
+
+    const pressHalo = root.querySelector("#cs-press-halo");
+    if (pressHalo) {
+      const blurPx = `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`;
+      pressHalo.style.setProperty("--cs-halo-appear-ms", `${cfg.appearDurationMs}ms`);
+      pressHalo.style.setProperty("--cs-halo-hide-ms", `${cfg.hideDurationMs}ms`);
+      pressHalo.style.setProperty("--cs-halo-blur-rest", blurPx);
+      /* SVG viewBox 200×200; track circle radius r → diameter fraction 2r/200 */
+      pressHalo.style.setProperty("--cs-halo-diameter-fr", String((2 * cfg.trackRadius) / 200));
+    }
   }
 
   /**
@@ -225,6 +235,7 @@
     const card = root.querySelector("[data-cs-card]");
     const valueEl = root.querySelector("#cs-value-display");
     const radialLayer = root.querySelector("#cs-radial-layer");
+    const pressHalo = root.querySelector("#cs-press-halo");
     const trackRot = root.querySelector("[data-track-rot]");
     const thumbRot = root.querySelector("[data-thumb-rot]");
     const trackPath = root.querySelector("[data-track-path]");
@@ -285,6 +296,11 @@
     function setRadialVisible(on) {
       radialLayer.classList.toggle("cs-radial-layer--visible", on);
       radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
+    }
+
+    function setPressHaloVisible(on) {
+      if (!pressHalo) return;
+      pressHalo.classList.toggle("cs-press-halo--visible", on);
     }
 
     function isPointerOverCard(clientX, clientY) {
@@ -374,6 +390,7 @@
       activated = false;
       card.classList.remove("cs-value-card--active");
       unlockPageScroll();
+      setPressHaloVisible(false);
       setRadialVisible(false);
       if (pid != null) {
         try {
@@ -398,6 +415,7 @@
       lastT = performance.now();
       arcCenterAngle = 0;
       card.classList.add("cs-value-card--active");
+      setPressHaloVisible(true);
       lockPageScroll();
       window.addEventListener("pointermove", onWindowPointerMove, peOpts);
       window.addEventListener("pointerup", onWindowPointerEnd);
@@ -420,6 +438,7 @@
           lastAngle = a;
           arcCenterAngle = a;
           lastT = performance.now();
+          setPressHaloVisible(false);
           setRadialVisible(true);
           applyRotations(a);
         }

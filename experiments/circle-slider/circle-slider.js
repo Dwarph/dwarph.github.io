@@ -70,8 +70,8 @@
     trackRadius: 78,
     trackStrokeWidth: 3,
     thumbStrokeWidth: 7,
-    releaseInwardCosMin: 0.22,
-    releaseDirectionMinSpeedPx: 0.45,
+    releaseInwardCosMin: 0.94,
+    releaseDirectionMinSpeedPx: 2.2,
   };
 
   /** @type {string[]} */

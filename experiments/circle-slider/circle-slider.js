@@ -350,6 +350,30 @@
     }
 
     /**
+     * True if the finger is effectively on the value card (release radial → pressed halo).
+     * Stricter rect math often misses on touch; we add slop and elementFromPoint as a fallback.
+     */
+    function isPointerOverCardForRelease(clientX, clientY) {
+      const r = card.getBoundingClientRect();
+      const pad = 28;
+      if (
+        clientX >= r.left - pad &&
+        clientX <= r.right + pad &&
+        clientY >= r.top - pad &&
+        clientY <= r.bottom + pad
+      ) {
+        return true;
+      }
+      try {
+        const el = document.elementFromPoint(clientX, clientY);
+        if (el && card.contains(el)) return true;
+      } catch (_) {
+        /* elementFromPoint can throw in edge iframe / detached cases */
+      }
+      return false;
+    }
+
+    /**
      * Pointer is over the value card again after activation — show press halo and wait for a new pull-out.
      */
     function releaseEncoderNearCard() {
@@ -425,22 +449,25 @@
       trackRot.setAttribute("transform", `rotate(${trackDeg})`);
     }
 
-    /** Same options object required for add/removeEventListener on window. */
-    const peOpts = { passive: false };
+    /**
+     * Capture on document so pointermove reaches us on iOS/WebKit even when capture/target quirks
+     * would skip window bubble; object identity must match add/remove.
+     */
+    const gesturePeOpts = { passive: false, capture: true };
 
     let gestureActive = false;
 
-    function removeWindowGestureListeners() {
-      window.removeEventListener("pointermove", onWindowPointerMove, peOpts);
-      window.removeEventListener("pointerup", onWindowPointerEnd);
-      window.removeEventListener("pointercancel", onWindowPointerEnd);
+    function removeDocumentGestureListeners() {
+      document.removeEventListener("pointermove", onDocumentPointerMove, gesturePeOpts);
+      document.removeEventListener("pointerup", onDocumentPointerEnd, gesturePeOpts);
+      document.removeEventListener("pointercancel", onDocumentPointerEnd, gesturePeOpts);
     }
 
     function teardownPointer() {
       if (!gestureActive) return;
       gestureActive = false;
       clearActivationDelayTimer();
-      removeWindowGestureListeners();
+      removeDocumentGestureListeners();
       const pid = pointerId;
       pointerId = null;
       activated = false;
@@ -477,9 +504,9 @@
       arcCenterAngle = 0;
       card.classList.add("cs-value-card--active");
       setPressHaloVisible(true);
-      window.addEventListener("pointermove", onWindowPointerMove, peOpts);
-      window.addEventListener("pointerup", onWindowPointerEnd);
-      window.addEventListener("pointercancel", onWindowPointerEnd);
+      document.addEventListener("pointermove", onDocumentPointerMove, gesturePeOpts);
+      document.addEventListener("pointerup", onDocumentPointerEnd, gesturePeOpts);
+      document.addEventListener("pointercancel", onDocumentPointerEnd, gesturePeOpts);
       try {
         card.setPointerCapture(ev.pointerId);
       } catch (_) {
@@ -496,7 +523,7 @@
       });
     }
 
-    function onWindowPointerMove(ev) {
+    function onDocumentPointerMove(ev) {
       if (!gestureActive || ev.pointerId !== pointerId) return;
       ev.preventDefault();
 
@@ -524,7 +551,7 @@
         return;
       }
 
-      if (isPointerOverCard(lastPointerClientX, lastPointerClientY)) {
+      if (isPointerOverCardForRelease(lastPointerClientX, lastPointerClientY)) {
         releaseEncoderNearCard();
         return;
       }
@@ -566,7 +593,7 @@
       applyRotations(a);
     }
 
-    function onWindowPointerEnd(ev) {
+    function onDocumentPointerEnd(ev) {
       if (!gestureActive || ev.pointerId !== pointerId) return;
       teardownPointer();
     }

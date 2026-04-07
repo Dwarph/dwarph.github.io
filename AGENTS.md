@@ -11,3 +11,7 @@ Instead:
 3. **Only after they confirm**, add the distilled key information to `AGENTS.md` and/or create the skill as agreed.
 
 If the user explicitly says to remember something or to add a rule, still confirm the exact wording and placement when it is ambiguous.
+
+## User preferences
+
+- **Do not assume OS, browser, or device** unless the user has stated them explicitly. Avoid iOS/Android/desktop or Chrome/Safari-specific explanations or fixes as “the” case unless they apply to what the user said they use.

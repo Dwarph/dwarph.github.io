@@ -12,10 +12,6 @@
   /** Touch often arms the encoder on the first move; keep the press halo visible at least this long so it reads on mobile. */
   const MIN_PRESS_HALO_MS = 220;
 
-  /** Release to pressed halo: min cos(angle) between frame velocity and inward radial (toward card centre). Tangential orbit ≈0; ignore direction gate below this speed (px/frame). */
-  const RELEASE_INWARD_COS_MIN = 0.22;
-  const RELEASE_DIRECTION_MIN_SPEED_PX = 0.45;
-
   const STORAGE_KEY = "dwarph.io.experiments.circleSlider.config.v1";
 
   /**
@@ -46,6 +42,8 @@
    * @property {number} trackRadius
    * @property {number} trackStrokeWidth — SVG grey arc stroke
    * @property {number} thumbStrokeWidth — SVG black thumb stroke
+   * @property {number} releaseInwardCosMin — min cos(angle) between frame velocity and inward radial when releasing to pressed halo (0–1); tangential orbit ≈0
+   * @property {number} releaseDirectionMinSpeedPx — below this pointer speed (px/frame), skip direction gate when releasing to halo
    */
 
   /** @type {CircleSliderConfig} */
@@ -72,6 +70,8 @@
     trackRadius: 78,
     trackStrokeWidth: 3,
     thumbStrokeWidth: 7,
+    releaseInwardCosMin: 0.22,
+    releaseDirectionMinSpeedPx: 0.45,
   };
 
   /** @type {string[]} */
@@ -372,7 +372,7 @@
      */
     function movementIsTowardCardCentre(vx, vy, clientX, clientY, cr) {
       const speed = Math.hypot(vx, vy);
-      if (speed < RELEASE_DIRECTION_MIN_SPEED_PX) return true;
+      if (speed < cfg.releaseDirectionMinSpeedPx) return true;
       const cx = cr.left + cr.width / 2;
       const cy = cr.top + cr.height / 2;
       const rdx = cx - clientX;
@@ -380,7 +380,7 @@
       const rlen = Math.hypot(rdx, rdy);
       if (rlen < 2) return true;
       const cosInward = (vx * rdx + vy * rdy) / (speed * rlen);
-      return cosInward >= RELEASE_INWARD_COS_MIN;
+      return cosInward >= cfg.releaseInwardCosMin;
     }
 
     /**
@@ -849,6 +849,17 @@
     cfg.requireOutsideCardToActivate = DEFAULT_CONFIG.requireOutsideCardToActivate;
   }
   cfg.initialValue = Math.round(Number(cfg.initialValue)) || DEFAULT_CONFIG.initialValue;
+  {
+    const c = Number(cfg.releaseInwardCosMin);
+    cfg.releaseInwardCosMin = Number.isFinite(c)
+      ? Math.min(1, Math.max(0, c))
+      : DEFAULT_CONFIG.releaseInwardCosMin;
+  }
+  {
+    const s = Number(cfg.releaseDirectionMinSpeedPx);
+    cfg.releaseDirectionMinSpeedPx =
+      Number.isFinite(s) && s >= 0 ? Math.min(8, s) : DEFAULT_CONFIG.releaseDirectionMinSpeedPx;
+  }
   cfg.blurHidePx = cfg.blurAppearPx;
   cfg.hideDurationMs = cfg.appearDurationMs;
 

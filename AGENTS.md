@@ -15,3 +15,5 @@ If the user explicitly says to remember something or to add a rule, still confir
 ## User preferences
 
 - **Do not assume OS, browser, or device** unless the user has stated them explicitly. Avoid iOS/Android/desktop or Chrome/Safari-specific explanations or fixes as “the” case unless they apply to what the user said they use.
+- **Vague requests** — ask a short clarifying question (goal, constraints, “what does good look like?”) before committing to a solution; don’t guess the whole problem from one underspecified sentence.
+- **Questions** — when the user asks a question (not a direct “do X” task), talk it through with them first: trade-offs, options, and what you’d need to know before recommending or building something—rather than jumping straight to a single answer or implementation.

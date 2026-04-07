@@ -12,6 +12,10 @@
   /** Touch often arms the encoder on the first move; keep the press halo visible at least this long so it reads on mobile. */
   const MIN_PRESS_HALO_MS = 220;
 
+  /** Release to pressed halo: min cos(angle) between frame velocity and inward radial (toward card centre). Tangential orbit ≈0; ignore direction gate below this speed (px/frame). */
+  const RELEASE_INWARD_COS_MIN = 0.22;
+  const RELEASE_DIRECTION_MIN_SPEED_PX = 0.45;
+
   const STORAGE_KEY = "dwarph.io.experiments.circleSlider.config.v1";
 
   /**
@@ -350,27 +354,52 @@
     }
 
     /**
-     * True if the finger is effectively on the value card (release radial → pressed halo).
-     * Stricter rect math often misses on touch; we add slop and elementFromPoint as a fallback.
+     * Track circle radius in CSS pixels (SVG viewBox width 200).
      */
-    function isPointerOverCardForRelease(clientX, clientY) {
-      const r = card.getBoundingClientRect();
-      const pad = 28;
-      if (
-        clientX >= r.left - pad &&
-        clientX <= r.right + pad &&
-        clientY >= r.top - pad &&
-        clientY <= r.bottom + pad
-      ) {
-        return true;
-      }
-      try {
-        const el = document.elementFromPoint(clientX, clientY);
-        if (el && card.contains(el)) return true;
-      } catch (_) {
-        /* elementFromPoint can throw in edge iframe / detached cases */
-      }
-      return false;
+    function trackRadiusScreenPx() {
+      const svg = radialLayer.querySelector(".cs-radial-svg");
+      let w = 0;
+      if (svg) w = svg.getBoundingClientRect().width;
+      if (!(w > 0)) w = Math.min(window.innerWidth * 0.85, 280);
+      return cfg.trackRadius * (w / 200);
+    }
+
+    /**
+     * Frame velocity vs inward radial (card centre): tangential orbit has ~0 inward cosine;
+     * deliberate move toward centre has positive cosine. Slow moves skip this gate.
+     * @param {number} vx
+     * @param {number} vy
+     */
+    function movementIsTowardCardCentre(vx, vy, clientX, clientY, cr) {
+      const speed = Math.hypot(vx, vy);
+      if (speed < RELEASE_DIRECTION_MIN_SPEED_PX) return true;
+      const cx = cr.left + cr.width / 2;
+      const cy = cr.top + cr.height / 2;
+      const rdx = cx - clientX;
+      const rdy = cy - clientY;
+      const rlen = Math.hypot(rdx, rdy);
+      if (rlen < 2) return true;
+      const cosInward = (vx * rdx + vy * rdy) / (speed * rlen);
+      return cosInward >= RELEASE_INWARD_COS_MIN;
+    }
+
+    /**
+     * Release radial → pressed halo: (1) position in “card zone” vs still on outer ring band;
+     * (2) movement toward centre when speed is enough to infer direction (skips tangential brush).
+     */
+    function shouldReleaseEncoderToPressedHalo(clientX, clientY, vx, vy) {
+      const cr = card.getBoundingClientRect();
+      const cx = cr.left + cr.width / 2;
+      const cy = cr.top + cr.height / 2;
+      const d = Math.hypot(clientX - cx, clientY - cy);
+      const rCardMax = Math.hypot(cr.width / 2, cr.height / 2);
+      const rTrack = trackRadiusScreenPx();
+      const cardSlopPx = 8;
+      const nearCardMax = rCardMax + cardSlopPx;
+      if (d > nearCardMax) return false;
+      if (rTrack > nearCardMax + 4 && d >= rTrack - 3) return false;
+      if (!movementIsTowardCardCentre(vx, vy, clientX, clientY, cr)) return false;
+      return true;
     }
 
     /**
@@ -527,6 +556,8 @@
       if (!gestureActive || ev.pointerId !== pointerId) return;
       ev.preventDefault();
 
+      const vx = ev.clientX - lastPointerClientX;
+      const vy = ev.clientY - lastPointerClientY;
       lastPointerClientX = ev.clientX;
       lastPointerClientY = ev.clientY;
 
@@ -551,7 +582,7 @@
         return;
       }
 
-      if (isPointerOverCardForRelease(lastPointerClientX, lastPointerClientY)) {
+      if (shouldReleaseEncoderToPressedHalo(lastPointerClientX, lastPointerClientY, vx, vy)) {
         releaseEncoderNearCard();
         return;
       }

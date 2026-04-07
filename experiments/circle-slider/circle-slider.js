@@ -365,29 +365,34 @@
     }
 
     /**
-     * Frame velocity vs inward radial (card centre): tangential orbit has ~0 inward cosine;
-     * deliberate move toward centre has positive cosine. Slow moves skip this gate.
-     * @param {number} vx
-     * @param {number} vy
+     * @returns {{ pass: boolean; speed: number; cosInward: number | null; skip: 'slow' | 'centre' | null }}
      */
-    function movementIsTowardCardCentre(vx, vy, clientX, clientY, cr) {
+    function releaseDirectionDiagnosis(vx, vy, clientX, clientY, cr) {
       const speed = Math.hypot(vx, vy);
-      if (speed < cfg.releaseDirectionMinSpeedPx) return true;
+      if (speed < cfg.releaseDirectionMinSpeedPx) {
+        return { pass: true, speed, cosInward: null, skip: "slow" };
+      }
       const cx = cr.left + cr.width / 2;
       const cy = cr.top + cr.height / 2;
       const rdx = cx - clientX;
       const rdy = cy - clientY;
       const rlen = Math.hypot(rdx, rdy);
-      if (rlen < 2) return true;
+      if (rlen < 2) {
+        return { pass: true, speed, cosInward: null, skip: "centre" };
+      }
       const cosInward = (vx * rdx + vy * rdy) / (speed * rlen);
-      return cosInward >= cfg.releaseInwardCosMin;
+      return {
+        pass: cosInward >= cfg.releaseInwardCosMin,
+        speed,
+        cosInward,
+        skip: null,
+      };
     }
 
     /**
-     * Release radial → pressed halo: (1) position in “card zone” vs still on outer ring band;
-     * (2) movement toward centre when speed is enough to infer direction (skips tangential brush).
+     * Single place for “release to pressed halo” logic + numbers for optional debug HUD.
      */
-    function shouldReleaseEncoderToPressedHalo(clientX, clientY, vx, vy) {
+    function releaseGestureDiagnosis(clientX, clientY, vx, vy) {
       const cr = card.getBoundingClientRect();
       const cx = cr.left + cr.width / 2;
       const cy = cr.top + cr.height / 2;
@@ -396,10 +401,59 @@
       const rTrack = trackRadiusScreenPx();
       const cardSlopPx = 8;
       const nearCardMax = rCardMax + cardSlopPx;
-      if (d > nearCardMax) return false;
-      if (rTrack > nearCardMax + 4 && d >= rTrack - 3) return false;
-      if (!movementIsTowardCardCentre(vx, vy, clientX, clientY, cr)) return false;
-      return true;
+      /** @type {'tooFar' | 'onRing' | null} */
+      let posFail = null;
+      if (d > nearCardMax) posFail = "tooFar";
+      else if (rTrack > nearCardMax + 4 && d >= rTrack - 3) posFail = "onRing";
+      const dir = releaseDirectionDiagnosis(vx, vy, clientX, clientY, cr);
+      const release = posFail == null && dir.pass;
+      return {
+        release,
+        d,
+        rTrack,
+        nearCardMax,
+        posFail,
+        dir,
+        cosMin: cfg.releaseInwardCosMin,
+        speedGate: cfg.releaseDirectionMinSpeedPx,
+      };
+    }
+
+    /** @param {object} diag — from releaseGestureDiagnosis */
+    function formatReleaseDebugText(diag) {
+      const pos =
+        diag.posFail == null
+          ? "ok"
+          : diag.posFail === "tooFar"
+            ? "block: too far from card"
+            : "block: on ring band";
+      const dir = diag.dir;
+      let dirLine = "";
+      if (dir.skip === "slow") {
+        dirLine =
+          "direction: skip (speed < min)  sp=" +
+          dir.speed.toFixed(2) +
+          "  min=" +
+          diag.speedGate.toFixed(2);
+      } else if (dir.skip === "centre") {
+        dirLine = "direction: skip (on centre)  sp=" + dir.speed.toFixed(2);
+      } else {
+        dirLine =
+          "direction: cos=" +
+          (dir.cosInward != null ? dir.cosInward.toFixed(3) : "?") +
+          "  need ≥ " +
+          diag.cosMin.toFixed(2) +
+          "  " +
+          (dir.pass ? "OK" : "no") +
+          "  sp=" +
+          dir.speed.toFixed(2);
+      }
+      return [
+        "d=" + diag.d.toFixed(0) + "  card+r≤" + diag.nearCardMax.toFixed(0) + "  rTrack=" + diag.rTrack.toFixed(0),
+        "position: " + pos,
+        dirLine,
+        "→ release=" + (diag.release ? "yes" : "no"),
+      ].join("\n");
     }
 
     /**
@@ -504,6 +558,8 @@
       unlockPageScroll();
       setPressHaloVisible(false);
       setRadialVisible(false);
+      const releaseDebugPre = document.getElementById("cs-release-debug");
+      if (releaseDebugPre) releaseDebugPre.textContent = "";
       if (pid != null) {
         try {
           card.releasePointerCapture(pid);
@@ -582,7 +638,13 @@
         return;
       }
 
-      if (shouldReleaseEncoderToPressedHalo(lastPointerClientX, lastPointerClientY, vx, vy)) {
+      const releaseDiag = releaseGestureDiagnosis(lastPointerClientX, lastPointerClientY, vx, vy);
+      const debugPre = document.getElementById("cs-release-debug");
+      const debugToggle = document.getElementById("cs-release-debug-toggle");
+      if (debugPre && debugToggle && debugToggle.checked) {
+        debugPre.textContent = formatReleaseDebugText(releaseDiag);
+      }
+      if (releaseDiag.release) {
         releaseEncoderNearCard();
         return;
       }
@@ -720,6 +782,29 @@
     toggle.addEventListener("click", function () {
       setExpanded(body.hidden);
     });
+
+    const RELEASE_DEBUG_KEY = "dwarph.io.experiments.circleSlider.releaseDebug.v1";
+    const releaseDebugToggle = panel.querySelector("#cs-release-debug-toggle");
+    const releaseDebugPre = panel.querySelector("#cs-release-debug");
+    if (releaseDebugToggle && releaseDebugPre) {
+      function syncReleaseDebug() {
+        const on = releaseDebugToggle.checked;
+        releaseDebugPre.hidden = !on;
+        if (!on) releaseDebugPre.textContent = "";
+        try {
+          localStorage.setItem(RELEASE_DEBUG_KEY, on ? "1" : "0");
+        } catch {
+          /* ignore */
+        }
+      }
+      try {
+        releaseDebugToggle.checked = localStorage.getItem(RELEASE_DEBUG_KEY) === "1";
+      } catch {
+        /* ignore */
+      }
+      syncReleaseDebug();
+      releaseDebugToggle.addEventListener("change", syncReleaseDebug);
+    }
 
     /**
      * @param {string} key

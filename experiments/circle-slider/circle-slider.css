@@ -587,6 +587,27 @@ html.cs-scroll-lock {
   color: #666;
 }
 
+.cs-tweak-row--release-debug {
+  grid-template-columns: 1fr auto;
+}
+
+.cs-release-debug {
+  grid-column: 1 / -1;
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.65rem;
+  max-height: 7rem;
+  overflow: auto;
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: #222;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .cs-tweak-actions {
   display: flex;
   flex-wrap: wrap;

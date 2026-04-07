@@ -177,6 +177,12 @@
           <input type="range" data-cs-config-key="releaseDirectionMinSpeedPx" min="0" max="3" step="0.05" value="0.45" />
           <output class="cs-tweak-out" data-cs-tweak-out="releaseDirectionMinSpeedPx" data-decimals="2"></output>
         </label>
+
+        <label class="cs-tweak-row cs-tweak-row--release-debug">
+          <span class="cs-tweak-label">Show release debug <em>(live metrics while radial is active)</em></span>
+          <input type="checkbox" id="cs-release-debug-toggle" />
+        </label>
+        <pre id="cs-release-debug" class="cs-release-debug" hidden aria-live="polite"></pre>
       </fieldset>
 
       <fieldset class="cs-tweak-fieldset">

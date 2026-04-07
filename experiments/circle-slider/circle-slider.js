@@ -22,6 +22,7 @@
    * @typedef {object} CircleSliderConfig
    * @property {number} initialValue
    * @property {number} activationRadiusPx
+   * @property {number} nearCardReleaseThresholdPx — while dragging after activation, if pointer comes within this distance (px) of the card rect, return to pressed-halo state (radial off); 0 = off
    * @property {RotationOrigin} rotationOrigin — card centre: centre→pointer angle; initial press: pivot at down position
    * @property {boolean} requireOutsideCardToActivate — card-centre mode only; if true, encoder arms only after the pointer leaves the card bounds (avoids atan2 flip when dragging across the middle on-card)
    * @property {number} maskDeadzoneDeg
@@ -48,6 +49,7 @@
   const DEFAULT_CONFIG = {
     initialValue: 114,
     activationRadiusPx: 10,
+    nearCardReleaseThresholdPx: 1,
     rotationOrigin: "cardCenter",
     requireOutsideCardToActivate: true,
     maskDeadzoneDeg: 15,
@@ -349,6 +351,32 @@
       return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
     }
 
+    /**
+     * Shortest distance from a point to the edge of an axis-aligned rectangle (0 if inside).
+     * @param {number} px
+     * @param {number} py
+     * @param {DOMRect} rect
+     */
+    function distancePointToRectEdge(px, py, rect) {
+      const dx = Math.max(rect.left - px, 0, px - rect.right);
+      const dy = Math.max(rect.top - py, 0, py - rect.bottom);
+      return Math.hypot(dx, dy);
+    }
+
+    /**
+     * Pointer came back near the card after activation — show press halo again and wait for a new pull-out.
+     */
+    function releaseEncoderNearCard() {
+      clearActivationDelayTimer();
+      activated = false;
+      lastAngle = 0;
+      lastT = performance.now();
+      arcCenterAngle = 0;
+      pointerDownAt = performance.now();
+      setRadialVisible(false);
+      setPressHaloVisible(true);
+    }
+
     function pivotFor(clientX, clientY) {
       if (cfg.rotationOrigin === "initialPress") {
         return { x: pressPivotX, y: pressPivotY };
@@ -508,6 +536,18 @@
           clearActivationDelayTimer();
         }
         return;
+      }
+
+      if (cfg.nearCardReleaseThresholdPx > 0) {
+        const dist = distancePointToRectEdge(
+          lastPointerClientX,
+          lastPointerClientY,
+          card.getBoundingClientRect()
+        );
+        if (dist <= cfg.nearCardReleaseThresholdPx) {
+          releaseEncoderNearCard();
+          return;
+        }
       }
 
       const now = performance.now();
@@ -772,6 +812,11 @@
     cfg.requireOutsideCardToActivate = DEFAULT_CONFIG.requireOutsideCardToActivate;
   }
   cfg.initialValue = Math.round(Number(cfg.initialValue)) || DEFAULT_CONFIG.initialValue;
+  {
+    const n = Number(cfg.nearCardReleaseThresholdPx);
+    cfg.nearCardReleaseThresholdPx =
+      Number.isFinite(n) && n >= 0 ? n : DEFAULT_CONFIG.nearCardReleaseThresholdPx;
+  }
   cfg.blurHidePx = cfg.blurAppearPx;
   cfg.hideDurationMs = cfg.appearDurationMs;
 

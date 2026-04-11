@@ -29,6 +29,7 @@ import {
  * @property {RadialSliderView} view
  * @property {() => void} syncDisplay
  * @property {{ min: number; max: number } | null | undefined} valueBounds
+ * @property {number | undefined} radPerStepMultiplier — optional; positive multiplier on cfg.radPerStep for value integration only
  */
 
 /**
@@ -47,6 +48,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   const { cfg, card, radialLayer, pressHalo, view, syncDisplay } = ctx;
   const vb = ctx.valueBounds;
   const bounded = !!(vb && Number.isFinite(vb.min) && Number.isFinite(vb.max));
+  const radPerStepMul =
+    ctx.radPerStepMultiplier != null && ctx.radPerStepMultiplier > 0 ? ctx.radPerStepMultiplier : 1;
+  const effectiveRadPerStep = cfg.radPerStep * radPerStepMul;
   /** ~px along finger arc → rad at current radius; tight feel, clamped when r is tiny or huge. */
   const SLIP_HOME_ARC_PX = 5;
   const SLIP_HOME_R_MIN_PX = 14;
@@ -555,7 +559,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     }
     if (allowValue && dValue !== 0) {
       const ramp = sensitivityRampFactor(ev.clientX, ev.clientY);
-      state.valueAcc += (dValue * mult * ramp) / cfg.radPerStep;
+      state.valueAcc += (dValue * mult * ramp) / effectiveRadPerStep;
       const steps = Math.trunc(state.valueAcc);
       if (steps !== 0) {
         state.valueAcc -= steps;

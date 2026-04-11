@@ -32,6 +32,13 @@
 
 export const MIN_PRESS_HALO_MS = 220;
 
+/**
+ * Range mode (0–100) scales effective {@link CircleSliderConfig.radPerStep} by this factor so values
+ * change more slowly than the unbounded standard slider for the same tweak-panel setting.
+ * Higher = less sensitive (more radians per integer step).
+ */
+export const RANGE_MODE_RAD_PER_STEP_MULTIPLIER = 2.35;
+
 export const STORAGE_KEY = "dwarph.io.experiments.circleSlider.config.v1";
 
 /** @type {CircleSliderConfig} */

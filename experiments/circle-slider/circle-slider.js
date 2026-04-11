@@ -15,6 +15,7 @@ import {
   DEFAULT_CONFIG,
   loadStoredConfig,
   normalizeRuntimeConfig,
+  RANGE_MODE_RAD_PER_STEP_MULTIPLIER,
 } from "./circle-slider-config.js";
 import { attachVelocityUnboundedRadialBehavior } from "./circle-slider-behavior-velocity.js";
 import { applyVisualConfig, createRadialSliderView } from "./circle-slider-view.js";
@@ -41,6 +42,7 @@ import { initTweakPanel } from "./circle-slider-tweak-panel.js";
  * @property {RadialSliderView} view
  * @property {() => void} syncDisplay
  * @property {{ min: number; max: number } | null | undefined} valueBounds
+ * @property {number | undefined} radPerStepMultiplier
  */
 
 /**
@@ -93,6 +95,7 @@ function initCircleSlider(root, cfg, options) {
   };
   if (behaviorId === "velocityBounded100") {
     behaviorCtx.valueBounds = { min: 0, max: 100 };
+    behaviorCtx.radPerStepMultiplier = RANGE_MODE_RAD_PER_STEP_MULTIPLIER;
   }
 
   /** @type {RadialSliderValueState} */

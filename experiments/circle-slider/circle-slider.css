@@ -530,6 +530,12 @@ html.cs-scroll-lock {
   transition-delay: calc(var(--cs-radial-appear-ms, 300ms) * 0.38);
 }
 
+/* Pointer-up overscroll: thumb arc eases smaller while the layer’s hide opacity/blur runs (same window). */
+.cs-radial-layer[data-cs-release-overlap]:not(.cs-radial-layer--visible) .cs-thumb-rot {
+  opacity: 1;
+  transition: opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .cs-radial-svg {
   display: block;
   width: 100%;
@@ -556,6 +562,10 @@ html.cs-scroll-lock {
   .cs-radial-layer {
     filter: none !important;
     -webkit-filter: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cs-radial-layer[data-cs-release-overlap]:not(.cs-radial-layer--visible) .cs-thumb-rot {
     transition-duration: 0.01ms !important;
   }
 

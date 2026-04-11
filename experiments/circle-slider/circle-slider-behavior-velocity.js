@@ -84,6 +84,10 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   const SLIP_WIND_EASE_EXIT_RAD = 5.5e-4;
   /** Low-pass (s) on drawn stretch after mode selection — kills residual single-frame pops. */
   const SLIP_STRETCH_DRAW_TAU_S = 0.02;
+  /** Pointer-up: if stretched thumb is beyond this (rad), ease stretch to 0 before hiding the radial. */
+  const SLIP_RELEASE_STRETCH_EPS = 0.012;
+  /** Time constant (s) for stretch spring-back after release — lower = snappier settle. */
+  const SLIP_RELEASE_SPRING_TAU_S = 0.055;
   /**
    * Thumb slip uses SVG arc with the small-arc flag (span under 180°). Very large |stretchRad| makes the
    * geometry exceed half a circle and the engine picks the wrong arc — the black stroke looks like it leaves the ring.
@@ -102,6 +106,12 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   let slipWindEaseLatch = false;
   let slipVisArmFactorSmoothed = 1;
   let slipStretchDrawSmoothed = 0;
+  /** Last rendered thumb angle while encoder active (used to hold rotation during release stretch spring). */
+  let lastThumbAngleForReleaseSpring = 0;
+  /** @type {number} */
+  let releaseStretchRaf = 0;
+  /** Bumped when a release spring is cancelled so stale rAF callbacks exit. */
+  let releaseStretchRunId = 0;
 
   function resetSlipSpring() {
     slipOverscrollAccum = 0;
@@ -423,22 +433,53 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     document.removeEventListener("pointercancel", onDocumentPointerEnd, gesturePeOpts);
   }
 
-  function teardownPointer() {
+  function clearReleaseOverlapAttr() {
+    if (bounded) radialLayer.removeAttribute("data-cs-release-overlap");
+  }
+
+  function interruptReleaseStretchSpring() {
+    if (!releaseStretchRaf) return;
+    cancelAnimationFrame(releaseStretchRaf);
+    releaseStretchRaf = 0;
+    releaseStretchRunId++;
+    clearReleaseOverlapAttr();
+    resetSlipSpring();
+    if (bounded) restoreThumbPathDefault();
+    view.setRadialVisible(false);
+  }
+
+  /**
+   * @param {{ immediate?: boolean } | undefined} opt — immediate: skip post-release stretch (e.g. detach)
+   */
+  function teardownPointer(opt) {
     if (!gestureActive) return;
+    const immediate = !!(opt && opt.immediate);
+
+    const hadSlipAcc = bounded && slipActive;
+    const stretchMag = Math.abs(slipStretchDrawSmoothed);
+    const prefersReduced =
+      typeof matchMedia !== "undefined" &&
+      matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const useReleaseSpring =
+      !immediate &&
+      bounded &&
+      activated &&
+      stretchMag > SLIP_RELEASE_STRETCH_EPS &&
+      !prefersReduced;
+
     gestureActive = false;
     clearActivationDelayTimer();
     removeDocumentGestureListeners();
     const pid = pointerId;
     pointerId = null;
     activated = false;
-    if (bounded && slipActive) state.valueAcc = 0;
+    if (hadSlipAcc) state.valueAcc = 0;
     slipActive = false;
-    resetSlipSpring();
-    restoreThumbPathDefault();
+
     card.classList.remove("cs-value-card--active");
     view.unlockPageScroll();
     view.setPressHaloVisible(false);
-    view.setRadialVisible(false);
+
     if (pid != null) {
       try {
         card.releasePointerCapture(pid);
@@ -446,11 +487,56 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
         /* ignore */
       }
     }
+
+    if (useReleaseSpring) {
+      const thumbAngle = lastThumbAngleForReleaseSpring;
+      const runId = releaseStretchRunId;
+      if (bounded) radialLayer.setAttribute("data-cs-release-overlap", "");
+      /* Fade the radial and ease thumb stretch together (see CSS [data-cs-release-overlap]). */
+      view.setRadialVisible(false);
+      let prevTick = 0;
+      function tickReleaseStretch(ts) {
+        if (runId !== releaseStretchRunId) return;
+        const dtSec =
+          prevTick > 0
+            ? Math.min(Math.max((ts - prevTick) / 1000, 0.001), 0.055)
+            : 1 / 60;
+        prevTick = ts;
+        const k = 1 - Math.exp(-dtSec / SLIP_RELEASE_SPRING_TAU_S);
+        slipStretchDrawSmoothed += (0 - slipStretchDrawSmoothed) * Math.max(k, 0.32);
+        if (bounded) {
+          const pathEl = radialLayer.querySelector("[data-thumb-path]");
+          if (pathEl) {
+            const r = cfg.trackRadius;
+            const baseHalf = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
+            pathEl.setAttribute("d", thumbArcPathDirectedStretch(r, baseHalf, slipStretchDrawSmoothed));
+          }
+        }
+        updateArcCenterTowardThumb(thumbAngle);
+        view.applyRotations(thumbAngle, arcCenterAngle);
+
+        if (Math.abs(slipStretchDrawSmoothed) < SLIP_RELEASE_STRETCH_EPS) {
+          slipStretchDrawSmoothed = 0;
+          resetSlipSpring();
+          if (bounded) restoreThumbPathDefault();
+          clearReleaseOverlapAttr();
+          releaseStretchRaf = 0;
+          return;
+        }
+        releaseStretchRaf = requestAnimationFrame(tickReleaseStretch);
+      }
+      releaseStretchRaf = requestAnimationFrame(tickReleaseStretch);
+    } else {
+      resetSlipSpring();
+      restoreThumbPathDefault();
+      view.setRadialVisible(false);
+    }
   }
 
   function onPointerDown(ev) {
     if (ev.pointerType !== "touch" && ev.button != null && ev.button !== 0) return;
     if (gestureActive) return;
+    interruptReleaseStretchSpring();
     gestureActive = true;
     pointerId = ev.pointerId;
     const pid = ev.pointerId;
@@ -734,6 +820,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     }
     updateArcCenterTowardThumb(thumbRender);
     view.applyRotations(thumbRender, arcCenterAngle);
+    if (activated) lastThumbAngleForReleaseSpring = thumbRender;
   }
 
   function onDocumentPointerEnd(ev) {
@@ -773,7 +860,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
 
   return {
     detach: function () {
-      teardownPointer();
+      interruptReleaseStretchSpring();
+      teardownPointer({ immediate: true });
       card.removeEventListener("pointerdown", onPointerDown, peCaptureOpts);
       card.removeEventListener("lostpointercapture", onLostCapture);
       card.removeEventListener("touchstart", onCardTouchStart, touchHaloOpts);

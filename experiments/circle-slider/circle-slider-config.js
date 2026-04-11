@@ -5,6 +5,7 @@
 /**
  * @typedef {object} CircleSliderConfig
  * @property {number} initialValue
+ * @property {number} initialValueRange — default / reset for 0–100 range mode only
  * @property {number} activationRadiusPx
  * @property {RotationOrigin} rotationOrigin
  * @property {boolean} requireOutsideCardToActivate
@@ -44,6 +45,7 @@ export const STORAGE_KEY = "dwarph.io.experiments.circleSlider.config.v1";
 /** @type {CircleSliderConfig} */
 export const DEFAULT_CONFIG = {
   initialValue: 114,
+  initialValueRange: 50,
   activationRadiusPx: 10,
   rotationOrigin: "cardCenter",
   requireOutsideCardToActivate: true,
@@ -129,6 +131,12 @@ export function normalizeRuntimeConfig(cfg) {
     cfg.requireOutsideCardToActivate = DEFAULT_CONFIG.requireOutsideCardToActivate;
   }
   cfg.initialValue = Math.round(Number(cfg.initialValue)) || DEFAULT_CONFIG.initialValue;
+  {
+    const r = Number(cfg.initialValueRange);
+    cfg.initialValueRange = Number.isFinite(r)
+      ? Math.round(Math.max(0, Math.min(100, r)))
+      : DEFAULT_CONFIG.initialValueRange;
+  }
   {
     const c = Number(cfg.releaseInwardCosMin);
     cfg.releaseInwardCosMin = Number.isFinite(c)

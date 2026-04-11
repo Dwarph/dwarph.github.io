@@ -101,8 +101,12 @@ function initCircleSlider(root, cfg, options) {
   /** @type {RadialSliderValueState} */
   const state = {
     value: (function () {
-      const iv = Math.round(cfg.initialValue);
       const b = behaviorCtx.valueBounds;
+      const raw =
+        b && Number.isFinite(b.min) && Number.isFinite(b.max)
+          ? cfg.initialValueRange
+          : cfg.initialValue;
+      const iv = Math.round(Number(raw));
       if (b && Number.isFinite(b.min) && Number.isFinite(b.max)) {
         return Math.max(b.min, Math.min(b.max, iv));
       }

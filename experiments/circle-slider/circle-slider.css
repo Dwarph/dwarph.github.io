@@ -127,33 +127,11 @@ html.cs-scroll-lock {
   padding: 4px 0 12px;
 }
 
-.cs-picker-top__row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cs-picker-brand,
-.cs-picker-title {
-  font: 700 var(--exp-size-title) / 1.2 var(--exp-font-display);
-  color: #000;
-}
-
 .cs-picker-title {
   margin: 0;
   letter-spacing: -0.02em;
-}
-
-.cs-picker-badge {
-  font: 700 var(--exp-size-meta) / 1.2 var(--exp-font-display);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #666;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: #fafafa;
-  border: 1px solid #e8e8e8;
+  font: 700 var(--exp-size-title) / 1.2 var(--exp-font-display);
+  color: #000;
 }
 
 .cs-picker-intro {

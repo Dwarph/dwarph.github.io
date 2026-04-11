@@ -94,7 +94,7 @@ The grey track stroke uses a **horizontal linear gradient** in the track’s loc
 
 ### Tweak panel (bottom of page)
 
-A **collapsible bar** exposes a **reduced** set of sliders (see above); changes apply **live**. Settings save to **`localStorage`** (`dwarph.io.experiments.circleSlider.config.v1`, debounced). **Reset all** restores **`DEFAULT_CONFIG`**. **Reset value** uses **Reset target** (`initialValue`) and clears fractional carry.
+A **collapsible bar** exposes a **reduced** set of sliders (see above); changes apply **live**. Settings save to **`localStorage`** (`dwarph.io.experiments.circleSlider.config.v1`, debounced). **Reset all** restores **`DEFAULT_CONFIG`**. **Reset value** uses **Reset target** (`initialValue`) and clears fractional carry (range mode clamps that target to 0–100). On first load, the **0–100** control uses **`initialValueRange`** in `circle-slider-config.js` (default `50`) so it can differ from the unbounded slider’s **`initialValue`** (`114`).
 
 `window.__CIRCLE_SLIDER_CONFIG__` still references the live config object; `window.__CIRCLE_SLIDER__.resetValue()` resets the number only.
 

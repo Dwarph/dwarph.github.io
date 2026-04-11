@@ -1,5 +1,13 @@
 /**
- * Circle slider — encoder-style control (see README.md in this folder).
+ * Circle slider — radial value control (see README.md in this folder).
+ *
+ * Architecture:
+ * - **View** (`createRadialSliderView`) — SVG thumb/track transforms, radial + halo visibility, scroll lock.
+ * - **Value state** — integer + fractional carry; lives in `initCircleSlider` and is passed into behaviors.
+ * - **Behavior** — pointer/gesture strategy. Default: **`velocityUnbounded`** (encoder: cumulative angle
+ *   delta × velocity, unbounded integer). Swap via `initCircleSlider(root, cfg, { behavior: "…" })`;
+ *   register new ids on `window.__CIRCLE_SLIDER_BEHAVIORS__` (e.g. absolute angle → bounded value later).
+ *
  * Mutable config + optional localStorage; tweak panel at bottom of page.
  */
 
@@ -234,38 +242,99 @@
   }
 
   /**
-   * @param {HTMLElement} root
-   * @param {CircleSliderConfig} cfg
-   * @returns {{ resetValue: () => void; syncDisplay: () => void }}
+   * @typedef {object} RadialSliderValueState
+   * @property {number} value
+   * @property {number} valueAcc
    */
-  function initCircleSlider(root, cfg) {
-    const card = root.querySelector("[data-cs-card]");
-    const valueEl = root.querySelector("#cs-value-display");
-    const radialLayer = root.querySelector("#cs-radial-layer");
-    const pressHalo = root.querySelector("#cs-press-halo");
-    const trackRot = root.querySelector("[data-track-rot]");
-    const thumbRot = root.querySelector("[data-thumb-rot]");
-    const trackPath = root.querySelector("[data-track-path]");
-    const thumbPath = root.querySelector("[data-thumb-path]");
 
-    if (!card || !valueEl || !radialLayer || !trackRot || !thumbRot || !trackPath || !thumbPath) {
-      return {
-        resetValue: function () {},
-        syncDisplay: function () {},
-      };
-    }
+  /**
+   * @typedef {object} RadialSliderView
+   * @property {(thumbAngleRad: number, arcCenterAngleRad: number) => void} applyRotations
+   * @property {(on: boolean) => void} setRadialVisible
+   * @property {(on: boolean, options?: { arcHandoff?: boolean }) => void} setPressHaloVisible
+   * @property {() => void} lockPageScroll
+   * @property {() => void} unlockPageScroll
+   */
 
-    applyVisualConfig(root, cfg);
+  /**
+   * @typedef {object} RadialSliderBehaviorContext
+   * @property {CircleSliderConfig} cfg
+   * @property {HTMLElement} root
+   * @property {HTMLElement} card
+   * @property {HTMLElement} radialLayer
+   * @property {HTMLElement | null} pressHalo
+   * @property {RadialSliderView} view
+   * @property {() => void} syncDisplay
+   */
 
-    let value = Math.round(cfg.initialValue);
-    let valueAcc = 0;
+  /**
+   * @typedef {object} RadialSliderBehaviorHandle
+   * @property {() => void} detach
+   */
 
-    function syncDisplay() {
-      valueEl.textContent = String(value);
-      card.setAttribute("aria-valuenow", String(value));
-    }
+  /**
+   * @typedef {{ behavior?: string }} CircleSliderInitOptions
+   */
 
-    syncDisplay();
+  /**
+   * @param {{ radialLayer: HTMLElement; pressHalo: HTMLElement | null; thumbRot: SVGGElement; trackRot: SVGGElement }} deps
+   * @returns {RadialSliderView}
+   */
+  function createRadialSliderView(deps) {
+    const { radialLayer, pressHalo, thumbRot, trackRot } = deps;
+    let scrollLocked = false;
+    let lockedScrollY = 0;
+
+    return {
+      applyRotations: function (thumbAngle, arcCenterAngle) {
+        const thumbDeg = (thumbAngle * 180) / Math.PI;
+        const trackDeg = ((arcCenterAngle - TRACK_ARC_BISECTOR_RAD) * 180) / Math.PI;
+        thumbRot.setAttribute("transform", `translate(100 100) rotate(${thumbDeg})`);
+        trackRot.setAttribute("transform", `rotate(${trackDeg})`);
+      },
+      setRadialVisible: function (on) {
+        radialLayer.classList.toggle("cs-radial-layer--visible", on);
+        radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
+      },
+      setPressHaloVisible: function (on, options) {
+        if (!pressHalo) return;
+        const arcHandoff = options && options.arcHandoff;
+        if (on) {
+          pressHalo.classList.remove("cs-press-halo--arc-handoff");
+          pressHalo.classList.add("cs-press-halo--visible");
+          return;
+        }
+        if (arcHandoff) {
+          pressHalo.classList.add("cs-press-halo--arc-handoff");
+        }
+        pressHalo.classList.remove("cs-press-halo--visible");
+      },
+      lockPageScroll: function () {
+        if (scrollLocked) return;
+        scrollLocked = true;
+        lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.documentElement.classList.add("cs-scroll-lock");
+        document.body.classList.add("cs-scroll-lock");
+      },
+      unlockPageScroll: function () {
+        if (!scrollLocked) return;
+        scrollLocked = false;
+        document.documentElement.classList.remove("cs-scroll-lock");
+        document.body.classList.remove("cs-scroll-lock");
+        window.scrollTo(0, lockedScrollY);
+      },
+    };
+  }
+
+  /**
+   * Velocity-scaled cumulative rotation → unbounded integer (original experiment behaviour).
+   *
+   * @param {RadialSliderBehaviorContext} ctx
+   * @param {RadialSliderValueState} state
+   * @returns {RadialSliderBehaviorHandle}
+   */
+  function attachVelocityUnboundedRadialBehavior(ctx, state) {
+    const { cfg, card, radialLayer, pressHalo, view, syncDisplay } = ctx;
 
     let pointerId = null;
     let startClientX = 0;
@@ -282,52 +351,6 @@
     let lastT = 0;
     let arcCenterAngle = 0;
 
-    let scrollLocked = false;
-    let lockedScrollY = 0;
-
-    function lockPageScroll() {
-      if (scrollLocked) return;
-      scrollLocked = true;
-      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      /*
-       * Overflow-only lock: do not use position:fixed on body (that pattern removes the scrollbar
-       * and changes the viewport width, which shifts layout sideways). We only freeze further scroll.
-       */
-      document.documentElement.classList.add("cs-scroll-lock");
-      document.body.classList.add("cs-scroll-lock");
-    }
-
-    function unlockPageScroll() {
-      if (!scrollLocked) return;
-      scrollLocked = false;
-      document.documentElement.classList.remove("cs-scroll-lock");
-      document.body.classList.remove("cs-scroll-lock");
-      window.scrollTo(0, lockedScrollY);
-    }
-
-    function setRadialVisible(on) {
-      radialLayer.classList.toggle("cs-radial-layer--visible", on);
-      radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
-    }
-
-    /**
-     * @param {boolean} on
-     * @param {{ arcHandoff?: boolean } | undefined} options — `arcHandoff`: hide halo in sync with radial (no opacity delay)
-     */
-    function setPressHaloVisible(on, options) {
-      if (!pressHalo) return;
-      const arcHandoff = options && options.arcHandoff;
-      if (on) {
-        pressHalo.classList.remove("cs-press-halo--arc-handoff");
-        pressHalo.classList.add("cs-press-halo--visible");
-        return;
-      }
-      if (arcHandoff) {
-        pressHalo.classList.add("cs-press-halo--arc-handoff");
-      }
-      pressHalo.classList.remove("cs-press-halo--visible");
-    }
-
     function clearActivationDelayTimer() {
       if (activationDelayTimer != null) {
         clearTimeout(activationDelayTimer);
@@ -343,9 +366,9 @@
       lastAngle = a;
       arcCenterAngle = a;
       lastT = performance.now();
-      setPressHaloVisible(false, { arcHandoff: true });
-      setRadialVisible(true);
-      applyRotations(a);
+      view.setPressHaloVisible(false, { arcHandoff: true });
+      view.setRadialVisible(true);
+      view.applyRotations(a, arcCenterAngle);
     }
 
     function isPointerOverCard(clientX, clientY) {
@@ -466,8 +489,8 @@
       lastT = performance.now();
       arcCenterAngle = 0;
       pointerDownAt = performance.now();
-      setRadialVisible(false);
-      setPressHaloVisible(true);
+      view.setRadialVisible(false);
+      view.setPressHaloVisible(true);
     }
 
     function pivotFor(clientX, clientY) {
@@ -525,13 +548,6 @@
       }
     }
 
-    function applyRotations(thumbAngle) {
-      const thumbDeg = (thumbAngle * 180) / Math.PI;
-      const trackDeg = ((arcCenterAngle - TRACK_ARC_BISECTOR_RAD) * 180) / Math.PI;
-      thumbRot.setAttribute("transform", `translate(100 100) rotate(${thumbDeg})`);
-      trackRot.setAttribute("transform", `rotate(${trackDeg})`);
-    }
-
     /**
      * Capture on document so pointermove reaches us on iOS/WebKit even when capture/target quirks
      * would skip window bubble; object identity must match add/remove.
@@ -555,9 +571,9 @@
       pointerId = null;
       activated = false;
       card.classList.remove("cs-value-card--active");
-      unlockPageScroll();
-      setPressHaloVisible(false);
-      setRadialVisible(false);
+      view.unlockPageScroll();
+      view.setPressHaloVisible(false);
+      view.setRadialVisible(false);
       const releaseDebugPre = document.getElementById("cs-release-debug");
       if (releaseDebugPre) releaseDebugPre.textContent = "";
       if (pid != null) {
@@ -588,7 +604,7 @@
       lastT = performance.now();
       arcCenterAngle = 0;
       card.classList.add("cs-value-card--active");
-      setPressHaloVisible(true);
+      view.setPressHaloVisible(true);
       document.addEventListener("pointermove", onDocumentPointerMove, gesturePeOpts);
       document.addEventListener("pointerup", onDocumentPointerEnd, gesturePeOpts);
       document.addEventListener("pointercancel", onDocumentPointerEnd, gesturePeOpts);
@@ -603,7 +619,7 @@
        */
       requestAnimationFrame(function () {
         if (gestureActive && pointerId === pid) {
-          lockPageScroll();
+          view.lockPageScroll();
         }
       });
     }
@@ -673,17 +689,17 @@
 
       if (allowValue && dValue !== 0) {
         const ramp = sensitivityRampFactor(ev.clientX, ev.clientY);
-        valueAcc += (dValue * mult * ramp) / cfg.radPerStep;
-        const steps = Math.trunc(valueAcc);
+        state.valueAcc += (dValue * mult * ramp) / cfg.radPerStep;
+        const steps = Math.trunc(state.valueAcc);
         if (steps !== 0) {
-          valueAcc -= steps;
-          value += steps;
+          state.valueAcc -= steps;
+          state.value += steps;
           syncDisplay();
         }
       }
 
       updateArcCenterTowardThumb(a);
-      applyRotations(a);
+      view.applyRotations(a, arcCenterAngle);
     }
 
     function onDocumentPointerEnd(ev) {
@@ -703,40 +719,135 @@
     }
 
     const touchHaloOpts = { passive: true };
-    card.addEventListener(
-      "touchstart",
-      function (ev) {
-        if (!pressHalo || ev.touches.length !== 1) return;
-        setPressHaloVisible(true);
-      },
-      touchHaloOpts
-    );
-    card.addEventListener(
-      "touchend",
-      function () {
-        if (!gestureActive) setPressHaloVisible(false);
-      },
-      touchHaloOpts
-    );
-    card.addEventListener(
-      "touchcancel",
-      function () {
-        if (!gestureActive) setPressHaloVisible(false);
-      },
-      touchHaloOpts
-    );
+    function onCardTouchStart(ev) {
+      if (!pressHalo || ev.touches.length !== 1) return;
+      view.setPressHaloVisible(true);
+    }
+    function onCardTouchEnd() {
+      if (!gestureActive) view.setPressHaloVisible(false);
+    }
+    function onCardTouchCancel() {
+      if (!gestureActive) view.setPressHaloVisible(false);
+    }
+    card.addEventListener("touchstart", onCardTouchStart, touchHaloOpts);
+    card.addEventListener("touchend", onCardTouchEnd, touchHaloOpts);
+    card.addEventListener("touchcancel", onCardTouchCancel, touchHaloOpts);
 
     const peCaptureOpts = { passive: false, capture: true };
     card.addEventListener("pointerdown", onPointerDown, peCaptureOpts);
     card.addEventListener("lostpointercapture", onLostCapture);
 
     return {
+      detach: function () {
+        teardownPointer();
+        card.removeEventListener("pointerdown", onPointerDown, peCaptureOpts);
+        card.removeEventListener("lostpointercapture", onLostCapture);
+        card.removeEventListener("touchstart", onCardTouchStart, touchHaloOpts);
+        card.removeEventListener("touchend", onCardTouchEnd, touchHaloOpts);
+        card.removeEventListener("touchcancel", onCardTouchCancel, touchHaloOpts);
+      },
+    };
+  }
+
+  /**
+   * @param {HTMLElement} root
+   * @param {CircleSliderConfig} cfg
+   * @param {CircleSliderInitOptions | undefined} options
+   * @returns {{ resetValue: () => void; syncDisplay: () => void; getValue: () => number; setValue: (n: number) => void; detachBehavior?: () => void }}
+   */
+  function initCircleSlider(root, cfg, options) {
+    const card = root.querySelector("[data-cs-card]");
+    const valueEl = root.querySelector("#cs-value-display");
+    const radialLayer = root.querySelector("#cs-radial-layer");
+    const pressHalo = root.querySelector("#cs-press-halo");
+    const trackRot = root.querySelector("[data-track-rot]");
+    const thumbRot = root.querySelector("[data-thumb-rot]");
+    const trackPath = root.querySelector("[data-track-path]");
+    const thumbPath = root.querySelector("[data-thumb-path]");
+
+    if (!card || !valueEl || !radialLayer || !trackRot || !thumbRot || !trackPath || !thumbPath) {
+      return {
+        resetValue: function () {},
+        syncDisplay: function () {},
+        getValue: function () {
+          return 0;
+        },
+        setValue: function () {},
+      };
+    }
+
+    applyVisualConfig(root, cfg);
+
+    /** @type {RadialSliderValueState} */
+    const state = {
+      value: Math.round(cfg.initialValue),
+      valueAcc: 0,
+    };
+
+    function syncDisplay() {
+      valueEl.textContent = String(state.value);
+      card.setAttribute("aria-valuenow", String(state.value));
+    }
+
+    syncDisplay();
+
+    const view = createRadialSliderView({
+      radialLayer: /** @type {HTMLElement} */ (radialLayer),
+      pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
+      thumbRot,
+      trackRot,
+    });
+
+    const behaviorId =
+      options && options.behavior && typeof options.behavior === "string"
+        ? options.behavior
+        : "velocityUnbounded";
+
+    /** @type {RadialSliderBehaviorContext} */
+    const behaviorCtx = {
+      cfg,
+      root,
+      card: /** @type {HTMLElement} */ (card),
+      radialLayer: /** @type {HTMLElement} */ (radialLayer),
+      pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
+      view,
+      syncDisplay,
+    };
+
+    const w = typeof window !== "undefined" ? window : undefined;
+    const registry =
+      w && w.__CIRCLE_SLIDER_BEHAVIORS__
+        ? w.__CIRCLE_SLIDER_BEHAVIORS__
+        : { velocityUnbounded: attachVelocityUnboundedRadialBehavior };
+    const attachBehavior =
+      typeof registry[behaviorId] === "function" ? registry[behaviorId] : attachVelocityUnboundedRadialBehavior;
+    const behaviorHandle = attachBehavior(behaviorCtx, state);
+
+    return {
       resetValue: function () {
-        value = Math.round(cfg.initialValue);
-        valueAcc = 0;
+        state.value = Math.round(cfg.initialValue);
+        state.valueAcc = 0;
         syncDisplay();
       },
       syncDisplay: syncDisplay,
+      getValue: function () {
+        return state.value;
+      },
+      /**
+       * @param {number} n
+       */
+      setValue: function (n) {
+        const v = Math.round(Number(n));
+        if (!Number.isFinite(v)) return;
+        state.value = v;
+        state.valueAcc = 0;
+        syncDisplay();
+      },
+      detachBehavior: function () {
+        if (behaviorHandle && typeof behaviorHandle.detach === "function") {
+          behaviorHandle.detach();
+        }
+      },
     };
   }
 
@@ -753,7 +864,7 @@
    * @param {HTMLElement} panel
    * @param {CircleSliderConfig} cfg
    * @param {HTMLElement} sliderRoot
-   * @param {{ resetValue: () => void }} sliderApi
+   * @param {{ resetValue: () => void; getValue: () => number; setValue: (n: number) => void }} sliderApi
    */
   function initTweakPanel(panel, cfg, sliderRoot, sliderApi) {
     const toggle = panel.querySelector("[data-cs-tweak-toggle]");
@@ -905,6 +1016,11 @@
     if (resetValBtn) {
       resetValBtn.addEventListener("click", function () {
         sliderApi.resetValue();
+        const rangeInput = document.getElementById("cs-range-input");
+        if (rangeInput instanceof HTMLInputElement) {
+          rangeInput.value = String(cfg.initialValue);
+          rangeInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
       });
     }
 
@@ -924,6 +1040,92 @@
     }
 
     refreshOutputs();
+  }
+
+  const MODE_STORAGE_KEY = "dwarph.io.experiments.circleSlider.uiMode.v1";
+
+  /**
+   * @param {{ getValue: () => number; setValue: (n: number) => void }} api
+   */
+  function initModePicker(api) {
+    const demo = document.getElementById("cs-demo");
+    const buttons = document.querySelectorAll("[data-cs-pick]");
+    const panels = document.querySelectorAll("[data-cs-mode-panel]");
+    const rangeInput = document.getElementById("cs-range-input");
+    const rangeOut = document.getElementById("cs-range-out");
+
+    if (!buttons.length || !panels.length) return;
+
+    function syncRangeOut() {
+      if (rangeInput instanceof HTMLInputElement && rangeOut) {
+        rangeOut.textContent = rangeInput.value;
+        rangeInput.setAttribute("aria-valuenow", rangeInput.value);
+      }
+    }
+
+    if (rangeInput instanceof HTMLInputElement) {
+      rangeInput.addEventListener("input", syncRangeOut);
+    }
+
+    /**
+     * @param {"standard" | "range"} mode
+     */
+    function setMode(mode) {
+      const m = mode === "range" ? "range" : "standard";
+      buttons.forEach(function (btn) {
+        const on = btn.getAttribute("data-cs-pick") === m;
+        btn.classList.toggle("cs-picker-row--active", on);
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      panels.forEach(function (p) {
+        const id = p.getAttribute("data-cs-mode-panel");
+        if (!id) return;
+        p.hidden = id !== m;
+      });
+      if (m === "range" && rangeInput instanceof HTMLInputElement) {
+        rangeInput.value = String(api.getValue());
+        syncRangeOut();
+      }
+      if (m === "standard" && rangeInput instanceof HTMLInputElement) {
+        const v = Number(rangeInput.value);
+        if (Number.isFinite(v)) api.setValue(v);
+      }
+      try {
+        localStorage.setItem(MODE_STORAGE_KEY, m);
+      } catch (_) {
+        /* ignore */
+      }
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const pick = btn.getAttribute("data-cs-pick");
+        if (pick !== "standard" && pick !== "range") return;
+        setMode(pick);
+        if (demo) {
+          demo.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    /** @type {"standard" | "range"} */
+    let initial = "standard";
+    try {
+      const s = localStorage.getItem(MODE_STORAGE_KEY);
+      if (s === "range" || s === "standard") initial = s;
+    } catch (_) {
+      /* ignore */
+    }
+    setMode(initial);
+  }
+
+  if (typeof window !== "undefined") {
+    window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(
+      {
+        velocityUnbounded: attachVelocityUnboundedRadialBehavior,
+      },
+      window.__CIRCLE_SLIDER_BEHAVIORS__ || {}
+    );
   }
 
   const stored = loadStoredConfig();
@@ -954,7 +1156,20 @@
   if (root) {
     const api = initCircleSlider(root, cfg);
     window.__CIRCLE_SLIDER_CONFIG__ = cfg;
-    window.__CIRCLE_SLIDER__ = { config: cfg, resetValue: api.resetValue };
+    window.__CIRCLE_SLIDER__ = {
+      config: cfg,
+      resetValue: api.resetValue,
+      getValue: api.getValue,
+      setValue: api.setValue,
+    };
+
+    const rangeInput = document.getElementById("cs-range-input");
+    if (rangeInput instanceof HTMLInputElement) {
+      rangeInput.value = String(cfg.initialValue);
+      rangeInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    initModePicker(api);
 
     if (panel) {
       initTweakPanel(panel, cfg, root, api);

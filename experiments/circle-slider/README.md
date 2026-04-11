@@ -30,8 +30,29 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 |------|------|
 | `index.html` | Markup: prompt, value card, SVG radial |
 | `circle-slider.css` | Layout, radial placement, blur-fade transitions |
-| `circle-slider.js` | Pointer logic, tweak panel, `localStorage`, live config |
+| `circle-slider.js` | View + pluggable behaviors, tweak panel, `localStorage`, live config |
 | `README.md` | This document |
+
+## Architecture (view vs behaviour)
+
+`circle-slider.js` splits the control into:
+
+1. **View** — `createRadialSliderView(...)`: SVG thumb/track transforms, radial layer + press halo visibility, page scroll lock. Shared by all interaction styles.
+2. **Value state** — `{ value, valueAcc }` owned by `initCircleSlider`; behaviours read/update it and call `syncDisplay()`.
+3. **Behaviour** — pointer / gesture strategy, registered by string id. Default: **`velocityUnbounded`** (`attachVelocityUnboundedRadialBehavior`): the encoder described in *Behaviour (agreed plan)* below (velocity-scaled deltas, unbounded integer).
+
+**Adding another behaviour** (e.g. absolute angle → bounded value): implement a function with the same signature as `attachVelocityUnboundedRadialBehavior(ctx, state)` returning `{ detach() }`. The script assigns **`window.__CIRCLE_SLIDER_BEHAVIORS__`** on load (merging in `velocityUnbounded`). Register **before** `circle-slider.js` by setting `window.__CIRCLE_SLIDER_BEHAVIORS__`, or **after** load by extending the map:
+
+```js
+window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(window.__CIRCLE_SLIDER_BEHAVIORS__ || {}, {
+  myAbsolute: function (ctx, state) {
+    /* …attach listeners, return… */
+    return { detach: function () { /* remove listeners */ } };
+  },
+});
+```
+
+Then `initCircleSlider(root, cfg, { behavior: "myAbsolute" })`. The default boot path still uses `velocityUnbounded`. `api.detachBehavior()` is available if you need to tear down and re-init with another behavior.
 
 ## Configuration
 

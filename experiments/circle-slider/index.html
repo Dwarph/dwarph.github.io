@@ -23,48 +23,114 @@
   <main id="main">
     <p><a href="../">Experiments</a></p>
     <h1>Circle slider</h1>
-    <div id="circle-slider" class="cs-stage" aria-label="Circle slider">
-      <div class="cs-stage__fill" aria-hidden="true"></div>
-      <div class="cs-control-root">
-        <div class="cs-row">
-          <div class="cs-control-slot" aria-hidden="true"></div>
-          <div class="cs-value-column">
-            <p class="cs-prompt">How many?</p>
-            <div class="cs-card-stack">
-              <div class="cs-radial-layer" id="cs-radial-layer" aria-hidden="true">
-                <svg class="cs-radial-svg" viewBox="0 0 200 200" width="280" height="280" focusable="false">
-                  <g class="cs-radial-rotate-mask" transform="translate(100 100)">
-                    <g class="cs-track-rot" data-track-rot>
-                      <defs>
-                        <linearGradient id="cs-track-edge-fade" data-track-fade-gradient
-                          gradientUnits="userSpaceOnUse" x1="-78" y1="0" x2="78" y2="0">
-                          <stop offset="0%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
-                          <stop offset="22%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
-                          <stop offset="78%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
-                          <stop offset="100%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
-                        </linearGradient>
-                      </defs>
-                      <path class="cs-track-path" fill="none" stroke="url(#cs-track-edge-fade)" stroke-width="3"
-                        stroke-linecap="butt" d="" data-track-path />
-                    </g>
-                  </g>
-                  <g class="cs-thumb-rot" transform="translate(100 100)" data-thumb-rot>
-                    <path class="cs-thumb-path" fill="none" stroke="currentColor" stroke-width="7"
-                      stroke-linecap="round" d="" data-thumb-path />
-                  </g>
-                </svg>
-              </div>
-              <div class="cs-press-halo" id="cs-press-halo" aria-hidden="true"></div>
-              <div class="cs-value-card" id="cs-value-card" role="spinbutton" tabindex="0"
-                aria-label="Value, press and drag outward to adjust" aria-valuenow="114" data-cs-card>
-                <span class="cs-value" id="cs-value-display">114</span>
+
+    <div class="cs-picker-shell" aria-label="Choose interaction style">
+      <div class="cs-picker-top">
+        <div class="cs-picker-top__row">
+          <span class="cs-picker-brand">Circle slider</span>
+          <span class="cs-picker-badge">Exp</span>
+        </div>
+        <div class="cs-picker-intro">
+          <p class="cs-picker-title">Pick a control</p>
+          <p class="cs-picker-sub">Choose how you want to set the number, then try it in the section below.</p>
+        </div>
+      </div>
+      <div class="cs-picker-list" role="group" aria-label="Modes">
+        <button type="button" class="cs-picker-row cs-picker-row--active" data-cs-pick="standard" id="cs-pick-standard"
+          aria-pressed="true" aria-controls="cs-panel-standard">
+          <span class="cs-picker-row__icon" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 200 200" focusable="false">
+              <circle cx="100" cy="100" r="78" fill="none" stroke="#c8c8c8" stroke-width="3" />
+              <circle cx="100" cy="100" r="78" fill="none" stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"
+                stroke-dasharray="86 404" transform="rotate(-90 100 100)" />
+            </svg>
+          </span>
+          <span class="cs-picker-row__text">
+            <span class="cs-picker-row__label">Standard</span>
+            <span class="cs-picker-row__desc">Radial drag on the value card—pull outward to spin the grey ring.</span>
+          </span>
+          <svg class="cs-picker-row__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button type="button" class="cs-picker-row" data-cs-pick="range" id="cs-pick-range" aria-pressed="false"
+          aria-controls="cs-panel-range">
+          <span class="cs-picker-row__icon" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 200 200" focusable="false">
+              <line x1="28" y1="100" x2="172" y2="100" stroke="#c8c8c8" stroke-width="3" stroke-linecap="round" />
+              <circle cx="118" cy="100" r="10" fill="#1a1a1a" />
+            </svg>
+          </span>
+          <span class="cs-picker-row__text">
+            <span class="cs-picker-row__label">Range</span>
+            <span class="cs-picker-row__desc">Straight slider with fixed ends—same number, less gesture setup.</span>
+          </span>
+          <svg class="cs-picker-row__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <section class="cs-demo" id="cs-demo" aria-label="Control preview" tabindex="-1">
+      <div class="cs-mode-panel" data-cs-mode-panel="standard" id="cs-panel-standard">
+        <div id="circle-slider" class="cs-stage" aria-label="Circle slider">
+          <div class="cs-stage__fill" aria-hidden="true"></div>
+          <div class="cs-control-root">
+            <div class="cs-row">
+              <div class="cs-control-slot" aria-hidden="true"></div>
+              <div class="cs-value-column">
+                <p class="cs-prompt">How many?</p>
+                <div class="cs-card-stack">
+                  <div class="cs-radial-layer" id="cs-radial-layer" aria-hidden="true">
+                    <svg class="cs-radial-svg" viewBox="0 0 200 200" width="280" height="280" focusable="false">
+                      <g class="cs-radial-rotate-mask" transform="translate(100 100)">
+                        <g class="cs-track-rot" data-track-rot>
+                          <defs>
+                            <linearGradient id="cs-track-edge-fade" data-track-fade-gradient
+                              gradientUnits="userSpaceOnUse" x1="-78" y1="0" x2="78" y2="0">
+                              <stop offset="0%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
+                              <stop offset="22%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
+                              <stop offset="78%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
+                              <stop offset="100%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
+                            </linearGradient>
+                          </defs>
+                          <path class="cs-track-path" fill="none" stroke="url(#cs-track-edge-fade)" stroke-width="3"
+                            stroke-linecap="butt" d="" data-track-path />
+                        </g>
+                      </g>
+                      <g class="cs-thumb-rot" transform="translate(100 100)" data-thumb-rot>
+                        <path class="cs-thumb-path" fill="none" stroke="currentColor" stroke-width="7"
+                          stroke-linecap="round" d="" data-thumb-path />
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="cs-press-halo" id="cs-press-halo" aria-hidden="true"></div>
+                  <div class="cs-value-card" id="cs-value-card" role="spinbutton" tabindex="0"
+                    aria-label="Value, press and drag outward to adjust" aria-valuenow="114" data-cs-card>
+                    <span class="cs-value" id="cs-value-display">114</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          <div class="cs-stage__fill" aria-hidden="true"></div>
         </div>
       </div>
-      <div class="cs-stage__fill" aria-hidden="true"></div>
-    </div>
+
+      <div class="cs-mode-panel" data-cs-mode-panel="range" id="cs-panel-range" hidden>
+        <div class="cs-range-stage" aria-label="Range slider">
+          <p class="cs-prompt">How many?</p>
+          <div class="cs-range-wrap">
+            <span class="cs-range-tick" aria-hidden="true">0</span>
+            <input type="range" class="cs-range-input" id="cs-range-input" name="cs-range" min="0" max="200" value="114"
+              aria-valuemin="0" aria-valuemax="200" aria-valuenow="114" aria-label="Value" />
+            <span class="cs-range-tick" aria-hidden="true">200</span>
+          </div>
+          <output class="cs-range-out" id="cs-range-out" for="cs-range-input">114</output>
+        </div>
+      </div>
+    </section>
   </main>
 
   <aside id="cs-tweak-panel" class="cs-tweak-panel" aria-label="Slider tweak controls">

@@ -508,10 +508,20 @@ html.cs-scroll-lock {
   transition-delay: calc(var(--cs-radial-appear-ms, 300ms) * 0.38);
 }
 
-/* Pointer-up overscroll: thumb arc eases smaller while the layer’s hide opacity/blur runs (same window). */
-.cs-radial-layer[data-cs-release-overlap]:not(.cs-radial-layer--visible) .cs-thumb-rot {
-  opacity: 1;
-  transition: opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
+/*
+ * Pointer-up overscroll (JS eases thumb path): keep --visible so visibility stays composited.
+ * Fading by removing --visible first makes parent opacity 0 on WebKit/Android and often stops
+ * repainting SVG `d` updates during rAF. This class fades opacity/filter while visibility stays visible.
+ */
+.cs-radial-layer.cs-radial-layer--visible.cs-radial-layer--release-out {
+  opacity: 0;
+  visibility: visible;
+  filter: blur(var(--cs-blur-rest, 14px));
+  -webkit-filter: blur(var(--cs-blur-rest, 14px));
+  transition:
+    opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    filter var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s;
 }
 
 .cs-radial-svg {
@@ -543,7 +553,7 @@ html.cs-scroll-lock {
     transition-duration: 0.01ms !important;
   }
 
-  .cs-radial-layer[data-cs-release-overlap]:not(.cs-radial-layer--visible) .cs-thumb-rot {
+  .cs-radial-layer.cs-radial-layer--visible.cs-radial-layer--release-out {
     transition-duration: 0.01ms !important;
   }
 

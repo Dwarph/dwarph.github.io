@@ -433,16 +433,17 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     document.removeEventListener("pointercancel", onDocumentPointerEnd, gesturePeOpts);
   }
 
-  function clearReleaseOverlapAttr() {
-    if (bounded) radialLayer.removeAttribute("data-cs-release-overlap");
+  function clearRadialReleaseOutShell() {
+    radialLayer.classList.remove("cs-radial-layer--release-out");
   }
 
   function interruptReleaseStretchSpring() {
-    if (!releaseStretchRaf) return;
-    cancelAnimationFrame(releaseStretchRaf);
-    releaseStretchRaf = 0;
-    releaseStretchRunId++;
-    clearReleaseOverlapAttr();
+    if (releaseStretchRaf) {
+      cancelAnimationFrame(releaseStretchRaf);
+      releaseStretchRaf = 0;
+      releaseStretchRunId++;
+    }
+    clearRadialReleaseOutShell();
     resetSlipSpring();
     if (bounded) restoreThumbPathDefault();
     view.setRadialVisible(false);
@@ -464,7 +465,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
       !immediate &&
       bounded &&
       activated &&
-      stretchMag > SLIP_RELEASE_STRETCH_EPS &&
+      (hadSlipAcc || stretchMag > SLIP_RELEASE_STRETCH_EPS) &&
       !prefersReduced;
 
     gestureActive = false;
@@ -491,9 +492,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     if (useReleaseSpring) {
       const thumbAngle = lastThumbAngleForReleaseSpring;
       const runId = releaseStretchRunId;
-      if (bounded) radialLayer.setAttribute("data-cs-release-overlap", "");
-      /* Fade the radial and ease thumb stretch together (see CSS [data-cs-release-overlap]). */
-      view.setRadialVisible(false);
+      /* Fade opacity while keeping --visible so WebKit/Android still repaints thumb `d` (see .cs-radial-layer--release-out). */
+      radialLayer.classList.add("cs-radial-layer--release-out");
       let prevTick = 0;
       function tickReleaseStretch(ts) {
         if (runId !== releaseStretchRunId) return;
@@ -519,7 +519,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
           slipStretchDrawSmoothed = 0;
           resetSlipSpring();
           if (bounded) restoreThumbPathDefault();
-          clearReleaseOverlapAttr();
+          clearRadialReleaseOutShell();
+          view.setRadialVisible(false);
           releaseStretchRaf = 0;
           return;
         }
@@ -536,6 +537,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   function onPointerDown(ev) {
     if (ev.pointerType !== "touch" && ev.button != null && ev.button !== 0) return;
     if (gestureActive) return;
+    /* Always clear release-out / rAF even when rAF id is 0 (stuck class from interrupted spring). */
     interruptReleaseStretchSpring();
     gestureActive = true;
     pointerId = ev.pointerId;

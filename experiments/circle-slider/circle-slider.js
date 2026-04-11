@@ -203,11 +203,29 @@
   }
 
   /**
+   * Same arc topology as thumbArcPath, but extends only on one end by stretchRad (+ = longer toward +θ).
+   */
+  function thumbArcPathDirectedStretch(r, baseHalfRad, stretchRad) {
+    let a0 = -baseHalfRad;
+    let a1 = baseHalfRad;
+    if (stretchRad > 0) {
+      a1 += stretchRad;
+    } else if (stretchRad < 0) {
+      a0 += stretchRad;
+    }
+    const x0 = r * Math.cos(a0);
+    const y0 = r * Math.sin(a0);
+    const x1 = r * Math.cos(a1);
+    const y1 = r * Math.sin(a1);
+    return `M ${x0} ${y0} A ${r} ${r} 0 0 1 ${x1} ${y1}`;
+  }
+
+  /**
    * @param {HTMLElement} root
    * @param {CircleSliderConfig} cfg
    */
   function applyVisualConfig(root, cfg) {
-    const radialLayer = root.querySelector("#cs-radial-layer");
+    const radialLayer = root.querySelector("[data-cs-radial-layer]");
     const trackPath = root.querySelector("[data-track-path]");
     const thumbPath = root.querySelector("[data-thumb-path]");
     const trackFadeGradient = root.querySelector("[data-track-fade-gradient]");
@@ -230,7 +248,7 @@
       `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`
     );
 
-    const pressHalo = root.querySelector("#cs-press-halo");
+    const pressHalo = root.querySelector("[data-cs-press-halo]");
     if (pressHalo) {
       const blurPx = `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`;
       pressHalo.style.setProperty("--cs-halo-appear-ms", `${cfg.appearDurationMs}ms`);
@@ -265,6 +283,7 @@
    * @property {HTMLElement | null} pressHalo
    * @property {RadialSliderView} view
    * @property {() => void} syncDisplay
+   * @property {{ min: number; max: number } | null | undefined} valueBounds
    */
 
   /**
@@ -335,6 +354,95 @@
    */
   function attachVelocityUnboundedRadialBehavior(ctx, state) {
     const { cfg, card, radialLayer, pressHalo, view, syncDisplay } = ctx;
+    const vb = ctx.valueBounds;
+    const bounded = !!(vb && Number.isFinite(vb.min) && Number.isFinite(vb.max));
+    /** ~px along finger arc → rad at current radius; tight feel, clamped when r is tiny or huge. */
+    const SLIP_HOME_ARC_PX = 4;
+    const SLIP_HOME_R_MIN_PX = 14;
+    const SLIP_HOME_RAD_MAX = (14 * Math.PI) / 180;
+    /** Treat per-frame angular delta this small as “still” for unlock (rad). */
+    const SLIP_HOME_STILL_RAD = (0.45 * Math.PI) / 180;
+    let slipActive = false;
+    let slipThumbAngle = 0;
+    /** Overscroll: integrated finger delta (rad) since slip arm—unbounded so multi-turn scrub stays pegged. */
+    let slipOverscrollAccum = 0;
+    /** Smoothed display offset toward the peg-clamped target (avoids negative spring at max / positive at min → reversed stretch). */
+    let slipSpringPos = 0;
+
+    function resetSlipSpring() {
+      slipOverscrollAccum = 0;
+      slipSpringPos = 0;
+    }
+
+    function armSlipAnchor(angle) {
+      slipThumbAngle = angle;
+      resetSlipSpring();
+    }
+
+    function restoreThumbPathDefault() {
+      if (!bounded) return;
+      const pathEl = radialLayer.querySelector("[data-thumb-path]");
+      if (!pathEl) return;
+      const r = cfg.trackRadius;
+      const baseHalf = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
+      pathEl.setAttribute("d", thumbArcPath(r, baseHalf));
+    }
+
+    /**
+     * ~linear when |raw| ≪ scale, then marginal gain falls like 1/(scale+|raw|) — no hard cap on output.
+     */
+    function perceptualOvershootRad(raw, scale) {
+      if (!(scale > 0)) return 0;
+      const ax = Math.abs(raw);
+      return Math.sign(raw) * scale * Math.log(1 + ax / scale);
+    }
+
+    /**
+     * Raw accum can cross zero while the finger has not yet returned to the armed angle (spring lag, jitter).
+     * Clamp the spring target to the overscroll side for the active peg so stretch never flips “through” the lock.
+     * @param {number} accum
+     */
+    function slipSpringTargetRad(accum) {
+      if (!vb) return accum;
+      const lo = vb.min;
+      const hi = vb.max;
+      if (state.value >= hi) return Math.max(0, accum);
+      if (state.value <= lo) return Math.min(0, accum);
+      return accum;
+    }
+
+    /**
+     * Angular half-width for “on the home ray”: arc length ≈ SLIP_HOME_ARC_PX at finger radius (px).
+     * @param {number} clientX
+     * @param {number} clientY
+     */
+    function slipHomeJoinRad(clientX, clientY) {
+      const p = pivotFor(clientX, clientY);
+      const rPx = Math.hypot(clientX - p.x, clientY - p.y);
+      const effR = Math.max(rPx, SLIP_HOME_R_MIN_PX);
+      let theta = SLIP_HOME_ARC_PX / effR;
+      if (theta > SLIP_HOME_RAD_MAX) theta = SLIP_HOME_RAD_MAX;
+      return theta;
+    }
+
+    /**
+     * Bounded slip: unlock when finger is on the armed ray (B1) and motion is opposite “past peg” or ~still (C).
+     * @param {number} a — pointer angle (rad)
+     * @param {number} d — shortest delta from last frame (rad)
+     * @param {number} clientX
+     * @param {number} clientY
+     */
+    function slipHomeUnlock(a, d, clientX, clientY) {
+      if (!vb) return false;
+      const lo = vb.min;
+      const hi = vb.max;
+      const join = slipHomeJoinRad(clientX, clientY);
+      if (Math.abs(shortestAngleDiff(slipThumbAngle, a)) >= join) return false;
+      const still = Math.abs(d) <= SLIP_HOME_STILL_RAD;
+      if (state.value >= hi) return d < 0 || still;
+      if (state.value <= lo) return d > 0 || still;
+      return false;
+    }
 
     let pointerId = null;
     let startClientX = 0;
@@ -362,6 +470,9 @@
       clearActivationDelayTimer();
       if (activated) return;
       activated = true;
+      slipActive = false;
+      resetSlipSpring();
+      restoreThumbPathDefault();
       const a = angleForPointer(clientX, clientY);
       lastAngle = a;
       arcCenterAngle = a;
@@ -485,6 +596,9 @@
     function releaseEncoderNearCard() {
       clearActivationDelayTimer();
       activated = false;
+      slipActive = false;
+      resetSlipSpring();
+      restoreThumbPathDefault();
       lastAngle = 0;
       lastT = performance.now();
       arcCenterAngle = 0;
@@ -570,6 +684,9 @@
       const pid = pointerId;
       pointerId = null;
       activated = false;
+      slipActive = false;
+      resetSlipSpring();
+      restoreThumbPathDefault();
       card.classList.remove("cs-value-card--active");
       view.unlockPageScroll();
       view.setPressHaloVisible(false);
@@ -600,6 +717,9 @@
       lastPointerClientY = ev.clientY;
       clearActivationDelayTimer();
       activated = false;
+      slipActive = false;
+      resetSlipSpring();
+      restoreThumbPathDefault();
       lastAngle = 0;
       lastT = performance.now();
       arcCenterAngle = 0;
@@ -687,19 +807,118 @@
         dValue = 0;
       }
 
+      /** Still pushing past a pegged bound (even sub-step / sub-ω)—do not angular-rejoin yet. */
+      let pastMin = false;
+      let pastMax = false;
+      if (bounded && vb) {
+        const lo = vb.min;
+        const hi = vb.max;
+        pastMin = state.value <= lo && (dValue < 0 || (dValue === 0 && d < 0));
+        pastMax = state.value >= hi && (dValue > 0 || (dValue === 0 && d > 0));
+      }
       if (allowValue && dValue !== 0) {
         const ramp = sensitivityRampFactor(ev.clientX, ev.clientY);
         state.valueAcc += (dValue * mult * ramp) / cfg.radPerStep;
         const steps = Math.trunc(state.valueAcc);
         if (steps !== 0) {
           state.valueAcc -= steps;
-          state.value += steps;
-          syncDisplay();
+          if (bounded && vb) {
+            const lo = vb.min;
+            const hi = vb.max;
+            const prev = state.value;
+            const next = prev + steps;
+            const clamped = Math.max(lo, Math.min(hi, next));
+            const applied = clamped - prev;
+            state.value = clamped;
+            state.valueAcc += steps - applied;
+            /* Slip only when already on an edge and scrubbing further past it—not when approaching the edge from inside. */
+            if ((prev >= hi && steps > 0) || (prev <= lo && steps < 0)) {
+              if (!slipActive) armSlipAnchor(a);
+              slipActive = true;
+            }
+            /* Leaving the edge (e.g. 100 → 99) must release slip before thumbRender is chosen this frame. */
+            if (slipActive) {
+              if (state.value > lo && state.value < hi) {
+                slipActive = false;
+                resetSlipSpring();
+              } else if (prev >= hi && applied < 0) {
+                slipActive = false;
+                resetSlipSpring();
+              } else if (prev <= lo && applied > 0) {
+                slipActive = false;
+                resetSlipSpring();
+              }
+            }
+            if (applied !== 0) syncDisplay();
+          } else {
+            state.value += steps;
+            syncDisplay();
+          }
         }
       }
 
-      updateArcCenterTowardThumb(a);
-      view.applyRotations(a, arcCenterAngle);
+      /*
+       * Integer steps can lag behind the finger at the bound (fractional acc), and min-ω / deadzone can skip
+       * the whole value block—still treat "past min/max" as slip so the thumb freezes while value stays pegged.
+       * Slip / unlock (bounded): arm while past peg; unlock on home ray + opposite-or-still (see slipHomeUnlock).
+       * If home already allows unlock, do not arm—avoids same-frame unlock↔re-arm when motion is tiny.
+       */
+      if (bounded && vb && activated) {
+        if (pastMin || pastMax) {
+          if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+            slipActive = false;
+            resetSlipSpring();
+            restoreThumbPathDefault();
+          } else if (!slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+            if (!slipActive) armSlipAnchor(a);
+            slipActive = true;
+          }
+        } else if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+          /* Peg intent gone but still slipped (e.g. value pegged, finger retracing): release on home + dir. */
+          slipActive = false;
+          resetSlipSpring();
+          restoreThumbPathDefault();
+        }
+      }
+
+      /*
+       * Past the peg: slipOverscrollAccum is unbounded (multi-turn scrub stays pegged). The spring
+       * follows a peg-clamped target so stretch does not flip sign while the finger is still away from
+       * the armed angle. Rotation + stretch use perceptualOvershootRad (marginal gain falls at large |x|).
+       */
+      let thumbRender;
+      if (bounded && slipActive) {
+        slipOverscrollAccum += d;
+        const springTarget = slipSpringTargetRad(slipOverscrollAccum);
+        const dtSec = Math.min(Math.max(dt / 1000, 0), 0.05);
+        const tauSec = 0.055;
+        const alpha = Math.max(1 - Math.exp(-dtSec / tauSec), 0.09);
+        slipSpringPos += (springTarget - slipSpringPos) * alpha;
+
+        const moveScale = 0.24;
+        const stretchScale = 0.2;
+        const moveRad = perceptualOvershootRad(slipSpringPos, moveScale);
+        const stretchRad = perceptualOvershootRad(slipSpringPos, stretchScale) * 1.12;
+
+        thumbRender = Math.atan2(
+          Math.sin(slipThumbAngle + moveRad),
+          Math.cos(slipThumbAngle + moveRad)
+        );
+        const pathEl = radialLayer.querySelector("[data-thumb-path]");
+        if (pathEl) {
+          const r = cfg.trackRadius;
+          const baseHalf = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
+          pathEl.setAttribute("d", thumbArcPathDirectedStretch(r, baseHalf, stretchRad));
+        }
+      } else {
+        thumbRender = a;
+        if (bounded) {
+          resetSlipSpring();
+          restoreThumbPathDefault();
+        }
+      }
+      updateArcCenterTowardThumb(thumbRender);
+      view.applyRotations(thumbRender, arcCenterAngle);
     }
 
     function onDocumentPointerEnd(ev) {
@@ -757,9 +976,9 @@
    */
   function initCircleSlider(root, cfg, options) {
     const card = root.querySelector("[data-cs-card]");
-    const valueEl = root.querySelector("#cs-value-display");
-    const radialLayer = root.querySelector("#cs-radial-layer");
-    const pressHalo = root.querySelector("#cs-press-halo");
+    const valueEl = root.querySelector("[data-cs-value-display]");
+    const radialLayer = root.querySelector("[data-cs-radial-layer]");
+    const pressHalo = root.querySelector("[data-cs-press-halo]");
     const trackRot = root.querySelector("[data-track-rot]");
     const thumbRot = root.querySelector("[data-thumb-rot]");
     const trackPath = root.querySelector("[data-track-path]");
@@ -778,26 +997,6 @@
 
     applyVisualConfig(root, cfg);
 
-    /** @type {RadialSliderValueState} */
-    const state = {
-      value: Math.round(cfg.initialValue),
-      valueAcc: 0,
-    };
-
-    function syncDisplay() {
-      valueEl.textContent = String(state.value);
-      card.setAttribute("aria-valuenow", String(state.value));
-    }
-
-    syncDisplay();
-
-    const view = createRadialSliderView({
-      radialLayer: /** @type {HTMLElement} */ (radialLayer),
-      pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
-      thumbRot,
-      trackRot,
-    });
-
     const behaviorId =
       options && options.behavior && typeof options.behavior === "string"
         ? options.behavior
@@ -810,9 +1009,49 @@
       card: /** @type {HTMLElement} */ (card),
       radialLayer: /** @type {HTMLElement} */ (radialLayer),
       pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
-      view,
-      syncDisplay,
+      view: /** @type {RadialSliderView} */ (/** @type {unknown} */ (null)),
+      syncDisplay: /** @type {() => void} */ (/** @type {unknown} */ (null)),
     };
+    if (behaviorId === "velocityBounded100") {
+      behaviorCtx.valueBounds = { min: 0, max: 100 };
+    }
+
+    /** @type {RadialSliderValueState} */
+    const state = {
+      value: (function () {
+        const iv = Math.round(cfg.initialValue);
+        const b = behaviorCtx.valueBounds;
+        if (b && Number.isFinite(b.min) && Number.isFinite(b.max)) {
+          return Math.max(b.min, Math.min(b.max, iv));
+        }
+        return iv;
+      })(),
+      valueAcc: 0,
+    };
+
+    function syncDisplay() {
+      valueEl.textContent = String(state.value);
+      card.setAttribute("aria-valuenow", String(state.value));
+      if (behaviorCtx.valueBounds) {
+        card.setAttribute("aria-valuemin", String(behaviorCtx.valueBounds.min));
+        card.setAttribute("aria-valuemax", String(behaviorCtx.valueBounds.max));
+      } else {
+        card.removeAttribute("aria-valuemin");
+        card.removeAttribute("aria-valuemax");
+      }
+    }
+
+    const view = createRadialSliderView({
+      radialLayer: /** @type {HTMLElement} */ (radialLayer),
+      pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
+      thumbRot,
+      trackRot,
+    });
+
+    behaviorCtx.view = view;
+    behaviorCtx.syncDisplay = syncDisplay;
+
+    syncDisplay();
 
     const w = typeof window !== "undefined" ? window : undefined;
     const registry =
@@ -825,7 +1064,12 @@
 
     return {
       resetValue: function () {
-        state.value = Math.round(cfg.initialValue);
+        let iv = Math.round(cfg.initialValue);
+        const b = behaviorCtx.valueBounds;
+        if (b && Number.isFinite(b.min) && Number.isFinite(b.max)) {
+          iv = Math.max(b.min, Math.min(b.max, iv));
+        }
+        state.value = iv;
         state.valueAcc = 0;
         syncDisplay();
       },
@@ -839,7 +1083,9 @@
       setValue: function (n) {
         const v = Math.round(Number(n));
         if (!Number.isFinite(v)) return;
-        state.value = v;
+        const b = behaviorCtx.valueBounds;
+        state.value =
+          b && Number.isFinite(b.min) && Number.isFinite(b.max) ? Math.max(b.min, Math.min(b.max, v)) : v;
         state.valueAcc = 0;
         syncDisplay();
       },
@@ -865,8 +1111,10 @@
    * @param {CircleSliderConfig} cfg
    * @param {HTMLElement} sliderRoot
    * @param {{ resetValue: () => void; getValue: () => number; setValue: (n: number) => void }} sliderApi
+   * @param {HTMLElement | null | undefined} rangeRoot
+   * @param {{ resetValue: () => void; getValue: () => number; setValue: (n: number) => void } | null | undefined} rangeApi
    */
-  function initTweakPanel(panel, cfg, sliderRoot, sliderApi) {
+  function initTweakPanel(panel, cfg, sliderRoot, sliderApi, rangeRoot, rangeApi) {
     const toggle = panel.querySelector("[data-cs-tweak-toggle]");
     const body = panel.querySelector("[data-cs-tweak-body]");
     if (!toggle || !body) return;
@@ -1004,9 +1252,15 @@
 
       if (VISUAL_CONFIG_KEYS.indexOf(key) !== -1) {
         applyVisualConfig(sliderRoot, cfg);
+        if (rangeRoot) applyVisualConfig(rangeRoot, cfg);
       }
 
       refreshOutputs();
+    }
+
+    function applyVisualAll() {
+      applyVisualConfig(sliderRoot, cfg);
+      if (rangeRoot) applyVisualConfig(rangeRoot, cfg);
     }
 
     panel.addEventListener("input", onControlInput);
@@ -1016,11 +1270,7 @@
     if (resetValBtn) {
       resetValBtn.addEventListener("click", function () {
         sliderApi.resetValue();
-        const rangeInput = document.getElementById("cs-range-input");
-        if (rangeInput instanceof HTMLInputElement) {
-          rangeInput.value = String(cfg.initialValue);
-          rangeInput.dispatchEvent(new Event("input", { bubbles: true }));
-        }
+        if (rangeApi) rangeApi.resetValue();
       });
     }
 
@@ -1033,9 +1283,10 @@
         } catch {
           /* ignore */
         }
-        applyVisualConfig(sliderRoot, cfg);
+        applyVisualAll();
         refreshOutputs();
         sliderApi.resetValue();
+        if (rangeApi) rangeApi.resetValue();
       });
     }
 
@@ -1045,27 +1296,15 @@
   const MODE_STORAGE_KEY = "dwarph.io.experiments.circleSlider.uiMode.v1";
 
   /**
-   * @param {{ getValue: () => number; setValue: (n: number) => void }} api
+   * @param {{ getValue: () => number; setValue: (n: number) => void }} standardApi
+   * @param {{ getValue: () => number; setValue: (n: number) => void } | null | undefined} rangeApi
    */
-  function initModePicker(api) {
+  function initModePicker(standardApi, rangeApi) {
     const demo = document.getElementById("cs-demo");
     const buttons = document.querySelectorAll("[data-cs-pick]");
     const panels = document.querySelectorAll("[data-cs-mode-panel]");
-    const rangeInput = document.getElementById("cs-range-input");
-    const rangeOut = document.getElementById("cs-range-out");
 
     if (!buttons.length || !panels.length) return;
-
-    function syncRangeOut() {
-      if (rangeInput instanceof HTMLInputElement && rangeOut) {
-        rangeOut.textContent = rangeInput.value;
-        rangeInput.setAttribute("aria-valuenow", rangeInput.value);
-      }
-    }
-
-    if (rangeInput instanceof HTMLInputElement) {
-      rangeInput.addEventListener("input", syncRangeOut);
-    }
 
     /**
      * @param {"standard" | "range"} mode
@@ -1082,13 +1321,11 @@
         if (!id) return;
         p.hidden = id !== m;
       });
-      if (m === "range" && rangeInput instanceof HTMLInputElement) {
-        rangeInput.value = String(api.getValue());
-        syncRangeOut();
+      if (m === "range" && rangeApi) {
+        rangeApi.setValue(Math.max(0, Math.min(100, standardApi.getValue())));
       }
-      if (m === "standard" && rangeInput instanceof HTMLInputElement) {
-        const v = Number(rangeInput.value);
-        if (Number.isFinite(v)) api.setValue(v);
+      if (m === "standard" && rangeApi) {
+        standardApi.setValue(rangeApi.getValue());
       }
       try {
         localStorage.setItem(MODE_STORAGE_KEY, m);
@@ -1123,6 +1360,7 @@
     window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(
       {
         velocityUnbounded: attachVelocityUnboundedRadialBehavior,
+        velocityBounded100: attachVelocityUnboundedRadialBehavior,
       },
       window.__CIRCLE_SLIDER_BEHAVIORS__ || {}
     );
@@ -1151,28 +1389,31 @@
   cfg.hideDurationMs = cfg.appearDurationMs;
 
   const root = document.getElementById("circle-slider");
+  const rangeRoot = document.getElementById("circle-slider-range");
   const panel = document.getElementById("cs-tweak-panel");
 
   if (root) {
     const api = initCircleSlider(root, cfg);
+    /** @type {{ resetValue: () => void; syncDisplay: () => void; getValue: () => number; setValue: (n: number) => void; detachBehavior?: () => void } | null} */
+    let rangeApi = null;
+    if (rangeRoot instanceof HTMLElement) {
+      rangeApi = initCircleSlider(rangeRoot, cfg, { behavior: "velocityBounded100" });
+    }
     window.__CIRCLE_SLIDER_CONFIG__ = cfg;
     window.__CIRCLE_SLIDER__ = {
       config: cfg,
       resetValue: api.resetValue,
       getValue: api.getValue,
       setValue: api.setValue,
+      rangeResetValue: rangeApi ? rangeApi.resetValue : undefined,
+      rangeGetValue: rangeApi ? rangeApi.getValue : undefined,
+      rangeSetValue: rangeApi ? rangeApi.setValue : undefined,
     };
 
-    const rangeInput = document.getElementById("cs-range-input");
-    if (rangeInput instanceof HTMLInputElement) {
-      rangeInput.value = String(cfg.initialValue);
-      rangeInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    initModePicker(api);
+    initModePicker(api, rangeApi);
 
     if (panel) {
-      initTweakPanel(panel, cfg, root, api);
+      initTweakPanel(panel, cfg, root, api, rangeRoot instanceof HTMLElement ? rangeRoot : null, rangeApi);
     }
   }
 })();

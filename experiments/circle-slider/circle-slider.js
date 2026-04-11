@@ -177,6 +177,104 @@
 
   const TRACK_ARC_BISECTOR_RAD = Math.PI / 2 + Math.PI;
 
+  /** Default off; add ?cs-slip-hud=1 to enable on load, or use the tweak-panel checkbox. */
+  function slipDiagHudActive() {
+    try {
+      const v = new URLSearchParams(window.location.search).get("cs-slip-hud");
+      if (v === "1" || v === "true") return true;
+      if (v === "0" || v === "false") return false;
+    } catch (_) {
+      /* ignore */
+    }
+    const cb = document.getElementById("cs-slip-diag-toggle");
+    return cb instanceof HTMLInputElement && cb.checked;
+  }
+
+  function initSlipDiagHudUI() {
+    const pre = document.getElementById("cs-slip-diag");
+    const cb = document.getElementById("cs-slip-diag-toggle");
+    if (!pre || !(cb instanceof HTMLInputElement)) return;
+    try {
+      const v = new URLSearchParams(window.location.search).get("cs-slip-hud");
+      if (v === "1" || v === "true") cb.checked = true;
+      else if (v === "0" || v === "false") cb.checked = false;
+    } catch (_) {
+      /* ignore */
+    }
+    function sync() {
+      pre.classList.toggle("cs-slip-diag--visible", cb.checked);
+    }
+    cb.addEventListener("change", sync);
+    sync();
+  }
+
+  let slipDiagLastConsoleMs = 0;
+
+  /**
+   * @param {object} snap
+   */
+  function emitSlipDiagHud(snap) {
+    const pre = document.getElementById("cs-slip-diag");
+    const active = slipDiagHudActive();
+    const lines = snap.lines || [];
+    if (pre) {
+      if (active) pre.textContent = lines.join("\n");
+      else pre.textContent = "";
+    }
+    if (active && snap.log) {
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      if (now - slipDiagLastConsoleMs >= 200) {
+        slipDiagLastConsoleMs = now;
+        console.log("[cs-slip]", snap.log);
+      }
+    }
+  }
+
+  /** Default off; add ?cs-slip-debug=1 to show pink slip unlock threshold rays. */
+  function slipThresholdDebugPreference() {
+    try {
+      const v = new URLSearchParams(window.location.search).get("cs-slip-debug");
+      if (v === "1" || v === "true") return true;
+    } catch (_) {
+      /* ignore */
+    }
+    return false;
+  }
+
+  /**
+   * @param {SVGSVGElement} svg
+   * @returns {SVGGElement | null}
+   */
+  function ensureSlipThresholdDebugSvg(svg) {
+    let g = svg.querySelector("[data-cs-slip-threshold-debug]");
+    if (g) return /** @type {SVGGElement} */ (g);
+    g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", "cs-slip-threshold-debug");
+    g.setAttribute("data-cs-slip-threshold-debug", "");
+    g.setAttribute("aria-hidden", "true");
+    g.setAttribute("visibility", "hidden");
+    const center = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    center.setAttribute("class", "cs-slip-threshold-debug__center");
+    center.setAttribute("data-cs-slip-threshold-center", "");
+    center.setAttribute("fill", "none");
+    const edges = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    edges.setAttribute("class", "cs-slip-threshold-debug__edges");
+    edges.setAttribute("data-cs-slip-threshold-edges", "");
+    edges.setAttribute("fill", "none");
+    g.appendChild(center);
+    g.appendChild(edges);
+    svg.appendChild(g);
+    return g;
+  }
+
+  /**
+   * @param {HTMLElement} radialLayer
+   */
+  function setSlipThresholdDebugHidden(radialLayer) {
+    const el = radialLayer.querySelector("[data-cs-slip-threshold-debug]");
+    if (el) el.setAttribute("visibility", "hidden");
+  }
+
   /**
    * @param {number} r
    */
@@ -356,27 +454,75 @@
     const { cfg, card, radialLayer, pressHalo, view, syncDisplay } = ctx;
     const vb = ctx.valueBounds;
     const bounded = !!(vb && Number.isFinite(vb.min) && Number.isFinite(vb.max));
+    const slipThresholdDebugOn = bounded && slipThresholdDebugPreference();
+    const slipDiagHudOn = bounded;
     /** ~px along finger arc → rad at current radius; tight feel, clamped when r is tiny or huge. */
-    const SLIP_HOME_ARC_PX = 4;
+    const SLIP_HOME_ARC_PX = 5;
     const SLIP_HOME_R_MIN_PX = 14;
+    /** Floor so long reach (large r → tiny arc/r) doesn’t shrink the home cone below ~1 frame of motion. */
+    const SLIP_HOME_RAD_MIN = (4 * Math.PI) / 180;
     const SLIP_HOME_RAD_MAX = (14 * Math.PI) / 180;
-    /** Treat per-frame angular delta this small as “still” for unlock (rad). */
-    const SLIP_HOME_STILL_RAD = (0.45 * Math.PI) / 180;
+    /** Per-frame |Δθ| this small counts as “still” for unlock (rad); wider in cone centre (slipHomeUnlock). */
+    const SLIP_HOME_STILL_RAD = (1 * Math.PI) / 180;
     let slipActive = false;
     let slipThumbAngle = 0;
     /** Overscroll: integrated finger delta (rad) since slip arm—unbounded so multi-turn scrub stays pegged. */
     let slipOverscrollAccum = 0;
     /** Smoothed display offset toward the peg-clamped target (avoids negative spring at max / positive at min → reversed stretch). */
     let slipSpringPos = 0;
+    /** Previous-frame peg-clamped overscroll; used to detect unwind vs wind-in (windDeeper can stay true while easing). */
+    let slipPrevSpringTarget = 0;
+    /**
+     * Wind-in only: stretch blend between spring-smoothed and truth. Unwind uses truth stretch whenever
+     * springTarget moves toward zero, even if slipSpringPos is still catching up (windDeeper).
+     */
+    const SLIP_GATE_BLEND_RAD = 0.72;
+    /** Latch “returning” on clear unwind step; clear only on clear wind-back (reduces stretch-mode jitter). */
+    const SLIP_RETURN_ENTER_RAD = 1.5e-4;
+    const SLIP_RETURN_EXIT_RAD = 6e-4;
+    /**
+     * Schmitt latch for spring easing: avoids windDeeper flipping when slipSpringPos chases springTarget
+     * (blend ↔ truth stretch wobble). Enter only on a clear step past the peg; exit when target drops
+     * clearly below the eased spring (max) or rises above it (min).
+     */
+    const SLIP_WIND_EASE_ENTER_RAD = 4e-4;
+    const SLIP_WIND_EASE_EXIT_RAD = 5.5e-4;
+    /** Low-pass (s) on drawn stretch after mode selection — kills residual single-frame pops. */
+    const SLIP_STRETCH_DRAW_TAU_S = 0.02;
+    /**
+     * Past this |pointer−arm| (rad), slip visuals use full springTarget; on the arm, visuals use 0 overshoot.
+     * Gated on “returning to threshold” so circling past the home ray while still overscrolling does not
+     * shrink the thumb (shortest-angle proximity would otherwise fake a return).
+     */
+    const SLIP_VIS_ARM_BLEND_RAD = (32 * Math.PI) / 180;
+    /** Low-pass time constant (s) for angular visual blend factor. */
+    const SLIP_VIS_ARM_SMOOTH_TAU_S = 0.04;
+    let slipReturnLatch = false;
+    let slipWindEaseLatch = false;
+    let slipVisArmFactorSmoothed = 1;
+    let slipStretchDrawSmoothed = 0;
 
     function resetSlipSpring() {
       slipOverscrollAccum = 0;
       slipSpringPos = 0;
+      slipPrevSpringTarget = 0;
+      slipReturnLatch = false;
+      slipWindEaseLatch = false;
+      slipVisArmFactorSmoothed = 1;
+      slipStretchDrawSmoothed = 0;
     }
 
     function armSlipAnchor(angle) {
       slipThumbAngle = angle;
       resetSlipSpring();
+    }
+
+    /** End slip and drop fractional encoder carry so pegged “phantom” steps cannot block value after unlock. */
+    function endSlipGesture() {
+      slipActive = false;
+      resetSlipSpring();
+      restoreThumbPathDefault();
+      if (bounded) state.valueAcc = 0;
     }
 
     function restoreThumbPathDefault() {
@@ -395,6 +541,34 @@
       if (!(scale > 0)) return 0;
       const ax = Math.abs(raw);
       return Math.sign(raw) * scale * Math.log(1 + ax / scale);
+    }
+
+    /**
+     * Slip move+stretch: perceptual for modest |s|, then **linear tail** so huge wind/unwind still changes
+     * the visual every rad (perceptual alone flattens at large |s|).
+     * @param {number} s — peg-clamped wind (rad)
+     * @param {number} moveScale
+     * @param {number} stretchScale
+     */
+    function slipVisualOvershoot(s, moveScale, stretchScale) {
+      const knee = 0.72;
+      const ax = Math.abs(s);
+      if (ax <= knee) {
+        return {
+          moveRad: perceptualOvershootRad(s, moveScale),
+          stretchRad: perceptualOvershootRad(s, stretchScale) * 1.12,
+        };
+      }
+      const sg = Math.sign(s);
+      const m0 = perceptualOvershootRad(sg * knee, moveScale);
+      const s0 = perceptualOvershootRad(sg * knee, stretchScale) * 1.12;
+      const tail = ax - knee;
+      const km = 0.092;
+      const ks = 0.108;
+      return {
+        moveRad: m0 + sg * tail * km,
+        stretchRad: s0 + sg * tail * ks,
+      };
     }
 
     /**
@@ -421,12 +595,15 @@
       const rPx = Math.hypot(clientX - p.x, clientY - p.y);
       const effR = Math.max(rPx, SLIP_HOME_R_MIN_PX);
       let theta = SLIP_HOME_ARC_PX / effR;
+      if (theta < SLIP_HOME_RAD_MIN) theta = SLIP_HOME_RAD_MIN;
       if (theta > SLIP_HOME_RAD_MAX) theta = SLIP_HOME_RAD_MAX;
       return theta;
     }
 
     /**
-     * Bounded slip: unlock when finger is on the armed ray (B1) and motion is opposite “past peg” or ~still (C).
+     * Bounded slip: unlock when finger aligns with the **armed** slip ray (`slipThumbAngle` — fixed when
+     * slip starts) and motion is opposite “past peg” or ~still. The drawn thumb may offset for overscroll
+     * juice; unlock cone does not follow that offset so the threshold stays put on the ring.
      * @param {number} a — pointer angle (rad)
      * @param {number} d — shortest delta from last frame (rad)
      * @param {number} clientX
@@ -437,8 +614,13 @@
       const lo = vb.min;
       const hi = vb.max;
       const join = slipHomeJoinRad(clientX, clientY);
-      if (Math.abs(shortestAngleDiff(slipThumbAngle, a)) >= join) return false;
-      const still = Math.abs(d) <= SLIP_HOME_STILL_RAD;
+      const align = slipThumbAngle;
+      const ang = Math.abs(shortestAngleDiff(align, a));
+      if (ang >= join) return false;
+      /* Near the middle of the home cone, allow a slightly larger per-frame Δθ as “still” so one fast frame doesn’t miss unlock. */
+      const stillSlop =
+        ang < join * 0.5 ? Math.max(SLIP_HOME_STILL_RAD, (1.8 * Math.PI) / 180) : SLIP_HOME_STILL_RAD;
+      const still = Math.abs(d) <= stillSlop;
       if (state.value >= hi) return d < 0 || still;
       if (state.value <= lo) return d > 0 || still;
       return false;
@@ -596,6 +778,7 @@
     function releaseEncoderNearCard() {
       clearActivationDelayTimer();
       activated = false;
+      if (bounded && slipActive) state.valueAcc = 0;
       slipActive = false;
       resetSlipSpring();
       restoreThumbPathDefault();
@@ -604,6 +787,11 @@
       arcCenterAngle = 0;
       pointerDownAt = performance.now();
       view.setRadialVisible(false);
+      if (slipThresholdDebugOn) setSlipThresholdDebugHidden(radialLayer);
+      if (slipDiagHudOn) {
+        const pre = document.getElementById("cs-slip-diag");
+        if (pre) pre.textContent = "";
+      }
       view.setPressHaloVisible(true);
     }
 
@@ -684,6 +872,7 @@
       const pid = pointerId;
       pointerId = null;
       activated = false;
+      if (bounded && slipActive) state.valueAcc = 0;
       slipActive = false;
       resetSlipSpring();
       restoreThumbPathDefault();
@@ -691,6 +880,11 @@
       view.unlockPageScroll();
       view.setPressHaloVisible(false);
       view.setRadialVisible(false);
+      if (slipThresholdDebugOn) setSlipThresholdDebugHidden(radialLayer);
+      if (slipDiagHudOn) {
+        const pre = document.getElementById("cs-slip-diag");
+        if (pre) pre.textContent = "";
+      }
       const releaseDebugPre = document.getElementById("cs-release-debug");
       if (releaseDebugPre) releaseDebugPre.textContent = "";
       if (pid != null) {
@@ -720,6 +914,11 @@
       slipActive = false;
       resetSlipSpring();
       restoreThumbPathDefault();
+      if (slipThresholdDebugOn) setSlipThresholdDebugHidden(radialLayer);
+      if (slipDiagHudOn) {
+        const pre = document.getElementById("cs-slip-diag");
+        if (pre) pre.textContent = "";
+      }
       lastAngle = 0;
       lastT = performance.now();
       arcCenterAngle = 0;
@@ -789,6 +988,7 @@
       const dt = Math.max(now - lastT, 1e-4);
       const a = angleForPointer(ev.clientX, ev.clientY);
       const d = shortestAngleDiff(lastAngle, a);
+      let slipHudSnap = /** @type {null | Record<string, unknown>} */ (null);
       const omegaAbs = Math.abs(d) / dt;
       lastAngle = a;
       lastT = now;
@@ -839,14 +1039,11 @@
             /* Leaving the edge (e.g. 100 → 99) must release slip before thumbRender is chosen this frame. */
             if (slipActive) {
               if (state.value > lo && state.value < hi) {
-                slipActive = false;
-                resetSlipSpring();
+                endSlipGesture();
               } else if (prev >= hi && applied < 0) {
-                slipActive = false;
-                resetSlipSpring();
+                endSlipGesture();
               } else if (prev <= lo && applied > 0) {
-                slipActive = false;
-                resetSlipSpring();
+                endSlipGesture();
               }
             }
             if (applied !== 0) syncDisplay();
@@ -858,57 +1055,156 @@
       }
 
       /*
-       * Integer steps can lag behind the finger at the bound (fractional acc), and min-ω / deadzone can skip
-       * the whole value block—still treat "past min/max" as slip so the thumb freezes while value stays pegged.
-       * Slip / unlock (bounded): arm while past peg; unlock on home ray + opposite-or-still (see slipHomeUnlock).
-       * If home already allows unlock, do not arm—avoids same-frame unlock↔re-arm when motion is tiny.
+       * Arm slip only when not already slipped (before physics) so the first peg frame still runs overscroll.
+       * Unlock uses fixed `slipThumbAngle` vs finger — see slipHomeUnlock.
        */
-      if (bounded && vb && activated) {
-        if (pastMin || pastMax) {
-          if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
-            slipActive = false;
-            resetSlipSpring();
-            restoreThumbPathDefault();
-          } else if (!slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
-            if (!slipActive) armSlipAnchor(a);
-            slipActive = true;
+      if (bounded && vb && activated && (pastMin || pastMax)) {
+        if (!slipActive && !slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+          armSlipAnchor(a);
+          slipActive = true;
+        }
+      }
+
+      let slipThumbDrawRad = a;
+      let slipStretchRadOut = 0;
+      if (bounded && slipActive) {
+        slipOverscrollAccum += d;
+        const springTarget = slipSpringTargetRad(slipOverscrollAccum);
+        const hudSpringPrev = slipPrevSpringTarget;
+        let windDeeper = false;
+        let returningToThreshold = false;
+        if (vb) {
+          const lo = vb.min;
+          const hi = vb.max;
+          if (state.value >= hi) {
+            if (!slipWindEaseLatch) {
+              if (springTarget > slipSpringPos + SLIP_WIND_EASE_ENTER_RAD) slipWindEaseLatch = true;
+            } else if (springTarget < slipSpringPos - SLIP_WIND_EASE_EXIT_RAD) {
+              slipWindEaseLatch = false;
+            }
+            windDeeper = slipWindEaseLatch;
+            if (springTarget < hudSpringPrev - SLIP_RETURN_ENTER_RAD) slipReturnLatch = true;
+            else if (springTarget > hudSpringPrev + SLIP_RETURN_EXIT_RAD) slipReturnLatch = false;
+            returningToThreshold = slipReturnLatch;
+          } else if (state.value <= lo) {
+            if (!slipWindEaseLatch) {
+              if (springTarget < slipSpringPos - SLIP_WIND_EASE_ENTER_RAD) slipWindEaseLatch = true;
+            } else if (springTarget > slipSpringPos + SLIP_WIND_EASE_EXIT_RAD) {
+              slipWindEaseLatch = false;
+            }
+            windDeeper = slipWindEaseLatch;
+            if (springTarget > hudSpringPrev + SLIP_RETURN_ENTER_RAD) slipReturnLatch = true;
+            else if (springTarget < hudSpringPrev - SLIP_RETURN_EXIT_RAD) slipReturnLatch = false;
+            returningToThreshold = slipReturnLatch;
           }
-        } else if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
-          /* Peg intent gone but still slipped (e.g. value pegged, finger retracing): release on home + dir. */
-          slipActive = false;
-          resetSlipSpring();
-          restoreThumbPathDefault();
+        }
+        slipPrevSpringTarget = springTarget;
+        const dtSecSlip = Math.min(Math.max(dt / 1000, 0), 0.05);
+        if (windDeeper) {
+          const alpha = Math.max(1 - Math.exp(-dtSecSlip / 0.055), 0.12);
+          slipSpringPos += (springTarget - slipSpringPos) * alpha;
+        } else {
+          slipSpringPos = springTarget;
+        }
+        const moveScale = 0.24;
+        const stretchScale = 0.2;
+        const visSpring = slipVisualOvershoot(slipSpringPos, moveScale, stretchScale);
+        let sVis = springTarget;
+        let visArmTarget = 1;
+        if (vb) {
+          const alphaArm = Math.max(
+            1 - Math.exp(-dtSecSlip / Math.max(SLIP_VIS_ARM_SMOOTH_TAU_S, 1e-4)),
+            0.07
+          );
+          if (returningToThreshold) {
+            const angFromArm = Math.abs(shortestAngleDiff(slipThumbAngle, a));
+            const denom = Math.max(SLIP_VIS_ARM_BLEND_RAD, 1e-6);
+            const t = Math.min(1, angFromArm / denom);
+            visArmTarget = t * t;
+          } else {
+            visArmTarget = 1;
+          }
+          slipVisArmFactorSmoothed += (visArmTarget - slipVisArmFactorSmoothed) * alphaArm;
+          sVis = springTarget * slipVisArmFactorSmoothed;
+        }
+        const visTruth = slipVisualOvershoot(sVis, moveScale, stretchScale);
+        const moveRad = visTruth.moveRad;
+        let truthWDisplay = NaN;
+        /* Unwind: truth stretch only. Wind-in while easing: blend — but not while returningToThreshold. */
+        if (windDeeper && !returningToThreshold) {
+          const axGate = Math.abs(springTarget);
+          const gateT = SLIP_GATE_BLEND_RAD > 1e-9 ? axGate / SLIP_GATE_BLEND_RAD : 1;
+          const truthW = smoothstep01(Math.max(0, Math.min(1, 1 - gateT)));
+          truthWDisplay = truthW;
+          slipStretchRadOut =
+            visSpring.stretchRad * (1 - truthW) + visTruth.stretchRad * truthW;
+        } else {
+          slipStretchRadOut = visTruth.stretchRad;
+        }
+        const alphaStDraw = Math.max(
+          1 - Math.exp(-dtSecSlip / Math.max(SLIP_STRETCH_DRAW_TAU_S, 1e-4)),
+          0.14
+        );
+        if (Math.abs(slipStretchRadOut - slipStretchDrawSmoothed) > 0.4) {
+          slipStretchDrawSmoothed = slipStretchRadOut;
+        } else {
+          slipStretchDrawSmoothed += (slipStretchRadOut - slipStretchDrawSmoothed) * alphaStDraw;
+        }
+        slipThumbDrawRad = Math.atan2(
+          Math.sin(slipThumbAngle + moveRad),
+          Math.cos(slipThumbAngle + moveRad)
+        );
+        if (vb) {
+          slipHudSnap = {
+            value: state.value,
+            pegMax: state.value >= vb.max,
+            accum: slipOverscrollAccum,
+            springTarget,
+            sVis,
+            visArmTarget,
+            visArmSmoothed: slipVisArmFactorSmoothed,
+            slipReturnLatch,
+            springPrevBeforeFrame: hudSpringPrev,
+            slipSpringPos,
+            windDeeper,
+            slipWindEaseLatch,
+            returningToThreshold,
+            stretchSpring: visSpring.stretchRad,
+            stretchTruth: visTruth.stretchRad,
+            stretchPreSmooth: slipStretchRadOut,
+            stretchOut: slipStretchDrawSmoothed,
+            stretchMode: windDeeper && !returningToThreshold ? "blend" : "truth",
+            truthW: Number.isFinite(truthWDisplay) ? truthWDisplay : null,
+            moveRad_deg: (moveRad * 180) / Math.PI,
+            arm_deg: (slipThumbAngle * 180) / Math.PI,
+            thumbDraw_deg: (slipThumbDrawRad * 180) / Math.PI,
+            pointer_deg: (a * 180) / Math.PI,
+          };
         }
       }
 
       /*
-       * Past the peg: slipOverscrollAccum is unbounded (multi-turn scrub stays pegged). The spring
-       * follows a peg-clamped target so stretch does not flip sign while the finger is still away from
-       * the armed angle. Rotation + stretch use perceptualOvershootRad (marginal gain falls at large |x|).
+       * Integer steps can lag behind the finger at the bound (fractional acc), and min-ω / deadzone can skip
+       * the whole value block—still treat "past min/max" as slip so the thumb freezes while value stays pegged.
        */
+      if (bounded && vb && activated) {
+        if (pastMin || pastMax) {
+          if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+            endSlipGesture();
+          }
+        } else if (slipActive && slipHomeUnlock(a, d, ev.clientX, ev.clientY)) {
+          endSlipGesture();
+        }
+      }
+
       let thumbRender;
       if (bounded && slipActive) {
-        slipOverscrollAccum += d;
-        const springTarget = slipSpringTargetRad(slipOverscrollAccum);
-        const dtSec = Math.min(Math.max(dt / 1000, 0), 0.05);
-        const tauSec = 0.055;
-        const alpha = Math.max(1 - Math.exp(-dtSec / tauSec), 0.09);
-        slipSpringPos += (springTarget - slipSpringPos) * alpha;
-
-        const moveScale = 0.24;
-        const stretchScale = 0.2;
-        const moveRad = perceptualOvershootRad(slipSpringPos, moveScale);
-        const stretchRad = perceptualOvershootRad(slipSpringPos, stretchScale) * 1.12;
-
-        thumbRender = Math.atan2(
-          Math.sin(slipThumbAngle + moveRad),
-          Math.cos(slipThumbAngle + moveRad)
-        );
+        thumbRender = slipThumbDrawRad;
         const pathEl = radialLayer.querySelector("[data-thumb-path]");
         if (pathEl) {
           const r = cfg.trackRadius;
           const baseHalf = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
-          pathEl.setAttribute("d", thumbArcPathDirectedStretch(r, baseHalf, stretchRad));
+          pathEl.setAttribute("d", thumbArcPathDirectedStretch(r, baseHalf, slipStretchDrawSmoothed));
         }
       } else {
         thumbRender = a;
@@ -919,6 +1215,77 @@
       }
       updateArcCenterTowardThumb(thumbRender);
       view.applyRotations(thumbRender, arcCenterAngle);
+
+      if (slipThresholdDebugOn && vb) {
+        const dbg = radialLayer.querySelector("[data-cs-slip-threshold-debug]");
+        const pegged = state.value >= vb.max || state.value <= vb.min;
+        if (!dbg || !activated || !pegged) {
+          if (dbg) dbg.setAttribute("visibility", "hidden");
+        } else {
+          dbg.removeAttribute("visibility");
+          const align = slipThumbAngle;
+          const join = slipHomeJoinRad(ev.clientX, ev.clientY);
+          dbg.setAttribute("transform", `translate(100 100) rotate(${(align * 180) / Math.PI})`);
+          const r = cfg.trackRadius;
+          const c1 = Math.cos(-join);
+          const s1 = Math.sin(-join);
+          const c2 = Math.cos(join);
+          const s2 = Math.sin(join);
+          const pCenter = dbg.querySelector("[data-cs-slip-threshold-center]");
+          const pEdges = dbg.querySelector("[data-cs-slip-threshold-edges]");
+          if (pCenter) pCenter.setAttribute("d", `M 0 0 L ${r} 0`);
+          if (pEdges) pEdges.setAttribute("d", `M 0 0 L ${r * c1} ${r * s1} M 0 0 L ${r * c2} ${r * s2}`);
+        }
+      }
+
+      if (slipDiagHudOn && vb && activated) {
+        const pegged = state.value >= vb.max || state.value <= vb.min;
+        const join = slipHomeJoinRad(ev.clientX, ev.clientY);
+        const angArm = Math.abs(shortestAngleDiff(slipThumbAngle, a));
+        const inCone = angArm < join;
+        if (slipHudSnap && typeof slipHudSnap === "object" && slipActive) {
+          const s = slipHudSnap;
+          emitSlipDiagHud({
+            lines: [
+              "slip ACTIVE",
+              `value=${s.value} atMaxPeg=${s.pegMax}`,
+              `accum(raw)=${Number(s.accum).toFixed(5)}  springTarget=${Number(s.springTarget).toFixed(5)}  sVis=${Number(s.sVis).toFixed(5)}`,
+              `arm² tgt=${Number(s.visArmTarget).toFixed(3)}  sm=${Number(s.visArmSmoothed).toFixed(3)}  returnLatch=${s.slipReturnLatch}`,
+              `prevFrame=${Number(s.springPrevBeforeFrame).toFixed(5)}`,
+              `slipSpringPos=${Number(s.slipSpringPos).toFixed(5)}  windEase=${s.slipWindEaseLatch}  returnToThresh=${s.returningToThreshold}`,
+              `stretchMode=${s.stretchMode}  truthW=${s.truthW != null ? Number(s.truthW).toFixed(3) : "—"}`,
+              `stretch: spring=${Number(s.stretchSpring).toFixed(4)}  truth=${Number(s.stretchTruth).toFixed(4)}  raw=${Number(s.stretchPreSmooth).toFixed(4)}  draw=${Number(s.stretchOut).toFixed(4)}`,
+              `moveRad=${Number(s.moveRad_deg).toFixed(2)}°  arm=${Number(s.arm_deg).toFixed(2)}°  thumbDraw=${Number(s.thumbDraw_deg).toFixed(2)}°  ptr=${Number(s.pointer_deg).toFixed(2)}°`,
+              `unlock |ptr-arm|=${angArm.toFixed(4)} rad  joinHalf=${join.toFixed(4)} rad  inCone=${inCone}`,
+            ],
+            log: Object.assign({}, s, { inCone, angArm, joinHalf: join }),
+          });
+        } else if (slipHudSnap && typeof slipHudSnap === "object" && !slipActive) {
+          const s = slipHudSnap;
+          emitSlipDiagHud({
+            lines: [
+              "slip ended this frame (snapshot before reset)",
+              `last springTarget=${Number(s.springTarget).toFixed(5)}  stretchOut=${Number(s.stretchOut).toFixed(4)}`,
+              `unlock |ptr-arm|=${angArm.toFixed(4)} rad  inCone=${inCone}`,
+            ],
+            log: Object.assign({}, s, { slipEndedFrame: true, inCone, angArm }),
+          });
+        } else if (pegged) {
+          emitSlipDiagHud({
+            lines: [
+              "slip inactive (pegged)",
+              `value=${state.value}  ptr=${((a * 180) / Math.PI).toFixed(2)}°  arm=${((slipThumbAngle * 180) / Math.PI).toFixed(2)}°`,
+              `|ptr-arm|=${angArm.toFixed(4)} rad  joinHalf=${join.toFixed(4)} rad  inCone=${inCone}`,
+            ],
+            log: { slipActive: false, pegged: true, value: state.value, inCone, angArm, join },
+          });
+        } else {
+          emitSlipDiagHud({
+            lines: ["not pegged — slip HUD idle"],
+            log: { pegged: false },
+          });
+        }
+      }
     }
 
     function onDocumentPointerEnd(ev) {
@@ -1014,6 +1381,10 @@
     };
     if (behaviorId === "velocityBounded100") {
       behaviorCtx.valueBounds = { min: 0, max: 100 };
+    }
+
+    if (behaviorCtx.valueBounds && thumbRot.ownerSVGElement) {
+      ensureSlipThresholdDebugSvg(/** @type {SVGSVGElement} */ (thumbRot.ownerSVGElement));
     }
 
     /** @type {RadialSliderValueState} */
@@ -1391,6 +1762,8 @@
   const root = document.getElementById("circle-slider");
   const rangeRoot = document.getElementById("circle-slider-range");
   const panel = document.getElementById("cs-tweak-panel");
+
+  initSlipDiagHudUI();
 
   if (root) {
     const api = initCircleSlider(root, cfg);

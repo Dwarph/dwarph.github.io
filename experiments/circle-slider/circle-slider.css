@@ -541,6 +541,53 @@ html.cs-scroll-lock {
   color: #1a1a1a;
 }
 
+/* Bounded slip: unlock cone (center = align ray, dashed = ±join); opt-in ?cs-slip-debug=1 */
+.cs-slip-threshold-debug {
+  pointer-events: none;
+}
+
+.cs-slip-threshold-debug__center {
+  stroke: #c2187a;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  opacity: 0.95;
+}
+
+.cs-slip-threshold-debug__edges {
+  stroke: #c2187a;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 4 5;
+  opacity: 0.75;
+}
+
+/* Bounded slip diagnostics (toggle in tweak panel; ?cs-slip-hud=1 enables on load) */
+.cs-slip-diag {
+  display: none;
+  position: fixed;
+  left: 0.75rem;
+  bottom: 5.5rem;
+  z-index: 40;
+  max-width: min(100vw - 1.5rem, 22rem);
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: #111;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cs-slip-diag.cs-slip-diag--visible {
+  display: block;
+}
+
 /* Track stroke uses gradient stops (stroke="url(#…)" ignores `color` on the path) */
 .cs-track-fade-stop--edge {
   stop-color: var(--cs-track-stroke);

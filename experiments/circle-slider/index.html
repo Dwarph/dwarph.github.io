@@ -167,6 +167,8 @@
     </section>
   </main>
 
+  <pre id="cs-slip-diag" class="cs-slip-diag" aria-live="polite" aria-label="Slip overscroll diagnostics"></pre>
+
   <aside id="cs-tweak-panel" class="cs-tweak-panel" aria-label="Slider tweak controls">
     <button type="button" class="cs-tweak-panel__toggle" data-cs-tweak-toggle aria-expanded="false"
       aria-controls="cs-tweak-panel-body" id="cs-tweak-panel-toggle">
@@ -239,6 +241,17 @@
         </label>
         <p class="cs-tweak-help">Extra motion tuning lives in <code>DEFAULT_CONFIG</code> in <code>circle-slider.js</code>
           if you need it.</p>
+      </fieldset>
+
+      <fieldset class="cs-tweak-fieldset">
+        <legend>Debug</legend>
+        <label class="cs-tweak-row">
+          <span class="cs-tweak-label">Slip diagnostics HUD</span>
+          <input type="checkbox" id="cs-slip-diag-toggle" />
+        </label>
+        <p class="cs-tweak-help">Live <code>springTarget</code>, stretch, wind/return flags (corner overlay). URL
+          <code>?cs-slip-hud=1</code> enables on load. Throttled lines in the console as <code>[cs-slip]</code>.
+          Slip threshold rays: <code>?cs-slip-debug=1</code>.</p>
       </fieldset>
 
       <fieldset class="cs-tweak-fieldset">

@@ -1,5 +1,6 @@
 /* Homepage Redesign - Figma Design System */
 /* Fonts load from index.html (avoids duplicate @import + duplicate requests). */
+/* Type scale: :root --font-display / --font-body + --fs-* (see DESIGN.md). */
 
 /* CSS Variables for Colors */
 :root {
@@ -47,6 +48,39 @@
     --mobile-card-gap: 25px;            /* Space between case studies/projects (medium hierarchy) */
     --mobile-element-gap: 15px;         /* Space between related elements (low hierarchy) */
     --mobile-tight-gap: 10px;           /* Space within cards (very low hierarchy) */
+
+    /* Typography (Outfit + Nunito) — sizes overridden once for mobile below */
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'Nunito Sans', sans-serif;
+    --fs-page-title: 4rem;           /* 64 — section titles, header name, case study H1 */
+    --fs-role: 3rem;                 /* 48 — header role */
+    --fs-employer: 3.125rem;         /* 50 — job company */
+    --fs-group: 2.5rem;              /* 40 — “Case Studies” group labels */
+    --fs-article-h2: 2.5rem;         /* 40 — case study markdown h2 */
+    --fs-card: 2rem;                 /* 32 — card / project / archive titles */
+    --fs-prose-h3: 2rem;             /* 32 — markdown h3 */
+    --fs-prose-h4: 1.5rem;           /* 24 — markdown h4 */
+    --fs-body: 1.5rem;               /* 24 — body, UI labels on desktop */
+    --fs-ui: 1.125rem;               /* 18 — page status, small controls copy */
+    --fs-nav: 1.5rem;                /* 24 — dock nav (Material icon sizing) */
+    --lh-display: 1;
+    --lh-body: 1.4;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --fs-page-title: 2.5rem;     /* 40 */
+        --fs-role: 2rem;             /* 32 */
+        --fs-employer: 2rem;         /* 32 */
+        --fs-group: 1.5rem;          /* 24 */
+        --fs-article-h2: 2rem;       /* 32 */
+        --fs-card: 1.25rem;          /* 20 */
+        --fs-prose-h3: 1.5rem;       /* 24 */
+        --fs-prose-h4: 1.25rem;      /* 20 */
+        --fs-body: 1rem;             /* 16 */
+        --fs-ui: 1rem;
+        --fs-nav: 1.25rem;           /* 20 — tighter dock on small phones */
+    }
 }
 
 /* Base Styles */
@@ -60,7 +94,7 @@ html {
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: var(--font-body);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -136,30 +170,6 @@ select:focus-visible {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-}
-
-/* Desktop Typography */
-.heading-1 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 64px; line-height: 100%; }
-.heading-2 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 50px; line-height: 100%; }
-.heading-3 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 40px; line-height: 100%; }
-.heading-4 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 32px; line-height: 100%; }
-.heading-5 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 24px; line-height: 100%; }
-.subheading { font-family: 'Outfit', sans-serif; font-weight: 400; font-size: 48px; line-height: 100%; }
-.body-text { font-family: 'Nunito Sans', sans-serif; font-weight: 400; font-size: 24px; line-height: 100%; }
-.body-bold { font-family: 'Nunito Sans', sans-serif; font-weight: 700; font-size: 24px; line-height: 100%; }
-.body-italic { font-family: 'Nunito Sans', sans-serif; font-weight: 400; font-style: italic; font-size: 24px; line-height: 100%; }
-
-/* Mobile Typography */
-@media (max-width: 768px) {
-    .heading-1 { font-size: 40px; }
-    .heading-2 { font-size: 32px; }
-    .heading-3 { font-size: 24px; }
-    .heading-4 { font-size: 20px; }
-    .heading-5 { font-size: 24px; }
-    .subheading { font-size: 32px; }
-    .body-text { font-size: 16px; }
-    .body-bold { font-size: 16px; }
-    .body-italic { font-size: 16px; }
 }
 
 /* Gradient Classes */
@@ -274,7 +284,7 @@ select:focus-visible {
     position: absolute;
     inset: 0;
     z-index: 3;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     pointer-events: none;
     box-sizing: border-box;
     display: none;
@@ -468,7 +478,7 @@ select:focus-visible {
 }
 
 .header-distortion-controls__reset {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 0.75rem;
     width: 100%;
@@ -540,19 +550,19 @@ select:focus-visible {
 }
 
 .header-name {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 64px;
-    line-height: 100%;
+    font-size: var(--fs-page-title);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
 
 .header-role {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 400;
-    font-size: 48px;
-    line-height: 100%;
+    font-size: var(--fs-role);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
@@ -612,9 +622,9 @@ select:focus-visible {
     background-color: transparent; /* Active pink bg handled by ::before */
     position: relative;
     overflow: hidden; /* Clip blur edges to the circle */
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 24px;
+    font-size: var(--fs-nav);
     line-height: 1;
     color: var(--text-color);
     text-decoration: none;
@@ -644,7 +654,7 @@ select:focus-visible {
 }
 
 .nav-link .nav-icon {
-    font-size: 24px;
+    font-size: var(--fs-nav);
     line-height: 1;
     display: inline-flex;
     align-items: center;
@@ -766,7 +776,7 @@ html.home-nav-layout-dock .nav-link {
     }
 
     html.home-nav-layout-dock .nav-link .nav-icon {
-        font-size: 20px;
+        font-size: var(--fs-nav);
         line-height: 1;
     }
 }
@@ -787,10 +797,10 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .section-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 64px;
-    line-height: 100%;
+    font-size: var(--fs-page-title);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin-bottom: var(--space-after-heading);
 }
@@ -819,10 +829,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .about-bio-paragraph {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     margin: 0;
     letter-spacing: 0;
@@ -834,10 +843,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .cv-download-link {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     text-decoration: none;
     display: inline-flex;
@@ -935,10 +943,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .job-description {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     margin: 0;
     padding-top: var(--space-stack);
     letter-spacing: 0;
@@ -946,25 +953,23 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .job-company {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 50px;
+    font-size: var(--fs-employer);
     line-height: normal;
     margin: 0;
 }
 
 .job-dates {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
+    font-size: var(--fs-body);
     line-height: normal;
     margin: 0;
 }
 
 .job-role {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
+    font-size: var(--fs-body);
     line-height: normal;
     margin: 0;
 }
@@ -1009,10 +1014,10 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .case-studies-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 40px;
-    line-height: 100%;
+    font-size: var(--fs-group);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
@@ -1136,10 +1141,10 @@ html.home-nav-layout-dock .nav-link {
 
 .case-study-title,
 .case-study-title-link {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 32px;
-    line-height: 100%;
+    font-size: var(--fs-card);
+    line-height: var(--lh-display);
     color: var(--text-color);
     text-decoration: none;
     transition: opacity 0.3s ease;
@@ -1164,9 +1169,8 @@ html.home-nav-layout-dock .nav-link {
     background-color: var(--text-color);
     color: var(--bg-color);
     border-radius: 24px;
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1;
     z-index: 10000;
     pointer-events: none;
@@ -1184,10 +1188,6 @@ html.home-nav-layout-dock .nav-link {
     height: 18px;
 }
 
-.coming-soon-tooltip-text {
-    font-size: 16px;
-}
-
 /* Coming Soon Badge (Mobile) */
 .coming-soon-badge {
     display: inline-flex;
@@ -1197,9 +1197,8 @@ html.home-nav-layout-dock .nav-link {
     background-color: var(--text-color);
     color: var(--bg-color);
     border-radius: 16px;
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 1;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     margin-left: 8px;
@@ -1232,10 +1231,10 @@ html.home-nav-layout-dock .nav-link {
 
 .project-title,
 .project-title-link {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 32px;
-    line-height: 100%;
+    font-size: var(--fs-card);
+    line-height: var(--lh-display);
     color: var(--text-color);
     display: flex;
     align-items: center;
@@ -1253,20 +1252,18 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .case-study-tags {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
 
 .case-study-description {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     margin: 0;
     letter-spacing: 0;
@@ -1277,11 +1274,10 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .project-tags {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
     word-wrap: break-word;
@@ -1290,10 +1286,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .project-description {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     margin: 0;
     letter-spacing: 0;
@@ -1307,10 +1302,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .project-year {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
     word-wrap: break-word;
@@ -1354,9 +1348,8 @@ html.home-nav-layout-dock .nav-link {
 
 .talk-title,
 .talk-title-link {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
+    font-size: var(--fs-body);
     line-height: normal;
     color: var(--text-color);
     display: inline-flex;
@@ -1388,10 +1381,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .talk-location {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 24px;
+    font-size: var(--fs-body);
     line-height: normal;
     color: var(--text-color);
     margin: 0;
@@ -1414,10 +1406,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .contact-link {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     display: inline-flex;
     align-items: center;
@@ -1431,10 +1422,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .contact-label {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
 }
 
@@ -1451,10 +1441,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .contact-email {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
@@ -1544,14 +1533,12 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .header-name {
-        font-size: 40px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         text-align: center;
     }
 
     .header-role {
-        font-size: 32px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         text-align: center;
@@ -1569,23 +1556,11 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .section-title {
-        font-size: 40px;
         margin-bottom: var(--space-after-heading);
-    }
-
-
-    .about-bio-paragraph {
-        font-size: 16px;
-        line-height: 1.4;
-        letter-spacing: 0;
     }
 
     .about-bio {
         margin-bottom: 0;
-    }
-
-    .cv-download-link {
-        font-size: 16px;
     }
 
     .work-jobs {
@@ -1653,28 +1628,15 @@ html.home-nav-layout-dock .nav-link {
         flex: 1;
     }
 
-    .job-company {
-        font-size: 32px;
-    }
-
-    .job-dates {
-        font-size: 16px;
-    }
-
-    .job-role {
-        font-size: 16px;
-    }
-
     /* Work Description Container - Mobile */
     .job-work-description {
         margin-top: var(--spacing-md);
     }
 
     .job-description-mobile {
-        font-family: 'Nunito Sans', sans-serif;
         font-weight: 400;
-        font-size: 16px;
-        line-height: 1.4;
+        font-size: var(--fs-body);
+        line-height: var(--lh-body);
         letter-spacing: 0;
         padding-top: 0;
         margin-top: 0;
@@ -1738,10 +1700,6 @@ html.home-nav-layout-dock .nav-link {
         margin-top: 0;
     }
 
-    .case-studies-title {
-        font-size: 24px;
-    }
-
     .case-study-card {
         flex-direction: column;
     }
@@ -1781,11 +1739,6 @@ html.home-nav-layout-dock .nav-link {
         justify-content: flex-start;
     }
 
-    .case-study-title,
-    .case-study-title-link {
-        font-size: 20px;
-    }
-
     .case-study-title-container .link-icon.chevron {
         width: 8.57px;
         height: 20px;
@@ -1793,7 +1746,6 @@ html.home-nav-layout-dock .nav-link {
 
     .project-title,
     .project-title-link {
-        font-size: 20px;
         gap: var(--spacing-xs);
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -1803,7 +1755,6 @@ html.home-nav-layout-dock .nav-link {
 
     .case-study-tags,
     .project-tags {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
@@ -1811,8 +1762,6 @@ html.home-nav-layout-dock .nav-link {
 
     .case-study-description,
     .project-description {
-        font-size: 16px;
-        line-height: 1.4;
         letter-spacing: 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -1820,7 +1769,6 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .project-year {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
@@ -1835,7 +1783,6 @@ html.home-nav-layout-dock .nav-link {
 
     .talk-title,
     .talk-title-link {
-        font-size: 16px;
         gap: 3px;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -1844,7 +1791,6 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .talk-location {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
@@ -1863,16 +1809,7 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .contact-link {
-        font-size: 16px;
         gap: 3px;
-    }
-
-    .contact-label {
-        font-size: 16px;
-    }
-
-    .contact-email {
-        font-size: 16px;
     }
 
     /* Hide colored bar at bottom of work sections on mobile */
@@ -2025,29 +1962,27 @@ html.home-nav-layout-dock .nav-link {
 
 /* Case Study Page Styles */
 .case-study-page-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 64px;
-    line-height: 100%;
+    font-size: var(--fs-page-title);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin-bottom: var(--space-intra);
 }
 
 .case-study-page-company {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0 0 var(--space-block) 0;
 }
 
 .case-study-section .case-study-content {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     letter-spacing: 0;
     font-variation-settings: 'YTLC' 500, 'wdth' 100;
@@ -2072,12 +2007,15 @@ html.home-nav-layout-dock .nav-link {
     margin-bottom: 0px;
 }
 
-.case-study-section .case-study-content h2 {
-    font-family: 'Outfit', sans-serif;
+.case-study-section .case-study-content :is(h2, h3, h4) {
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 40px;
-    line-height: 100%;
+    line-height: var(--lh-display);
     color: var(--text-color);
+}
+
+.case-study-section .case-study-content h2 {
+    font-size: var(--fs-article-h2);
     margin: var(--space-block) 0 var(--space-intra) 0;
 }
 
@@ -2090,20 +2028,12 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .case-study-section .case-study-content h3 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 32px;
-    line-height: 100%;
-    color: var(--text-color);
+    font-size: var(--fs-prose-h3);
     margin: var(--space-block) 0 var(--space-intra-tight) 0;
 }
 
 .case-study-section .case-study-content h4 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
-    color: var(--text-color);
+    font-size: var(--fs-prose-h4);
     margin: var(--space-stack) 0 var(--spacing-sm) 0;
 }
 
@@ -2304,8 +2234,7 @@ html.home-nav-layout-dock .nav-link {
     margin: 0 auto;
     padding: 40px 25px;
     box-sizing: border-box;
-    font-family: 'Nunito Sans', sans-serif;
-    font-size: 18px;
+    font-size: var(--fs-ui);
     line-height: 1.5;
     color: var(--text-color);
 }
@@ -2336,9 +2265,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .page-status-retry {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 18px;
+    font-size: var(--fs-ui);
     line-height: 1.2;
     color: var(--text-color);
     background: var(--highlight-yellow);
@@ -2360,7 +2289,6 @@ html.home-nav-layout-dock .nav-link {
 @media (max-width: 768px) {
     .page-status {
         padding: 32px var(--mobile-padding-horizontal);
-        font-size: 16px;
     }
 }
 
@@ -2376,12 +2304,15 @@ html.home-nav-layout-dock .nav-link {
     box-sizing: border-box;
 }
 
-.breadcrumb-link {
-    font-family: 'Outfit', sans-serif;
+.breadcrumb-nav :is(.breadcrumb-link, .breadcrumb-separator, .breadcrumb-current) {
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
+}
+
+.breadcrumb-link {
     text-decoration: none;
 }
 
@@ -2389,20 +2320,7 @@ html.home-nav-layout-dock .nav-link {
     opacity: 0.7;
 }
 
-.breadcrumb-separator {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
-    color: var(--text-color);
-}
-
 .breadcrumb-current {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
-    color: var(--text-color);
     opacity: 0.7;
 }
 
@@ -2422,32 +2340,27 @@ html.home-nav-layout-dock .nav-link {
     .breadcrumb-link,
     .breadcrumb-separator,
     .breadcrumb-current {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-page-title {
-        font-size: 40px;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-page-company {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-section .case-study-content {
-        font-size: 16px;
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
     }
     
     .case-study-section .case-study-content h2 {
-        font-size: 32px;
         margin: var(--space-stack) 0 var(--space-intra) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -2458,14 +2371,12 @@ html.home-nav-layout-dock .nav-link {
     }
     
     .case-study-section .case-study-content h3 {
-        font-size: 24px;
         margin: var(--space-stack) 0 var(--space-intra-tight) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
     
     .case-study-section .case-study-content h4 {
-        font-size: 20px;
         margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -2492,10 +2403,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .archive-intro {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     margin: 0 0 var(--space-block) 0;
     letter-spacing: 0;
@@ -2524,18 +2434,16 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .archive-filter-label {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
 }
 
 .archive-filter-radio-label {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     display: flex;
     align-items: center;
@@ -2668,38 +2576,35 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .archive-project-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 32px;
-    line-height: 100%;
+    font-size: var(--fs-card);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
 
 .archive-project-year {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
 
 .archive-project-tags {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;
 }
 
 .archive-project-description {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     margin: 0;
     letter-spacing: 0;
@@ -2726,10 +2631,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .archive-project-link {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    line-height: 100%;
+    font-size: var(--fs-body);
+    line-height: var(--lh-display);
     color: var(--text-color);
     text-decoration: none;
     display: inline-flex;
@@ -2742,10 +2646,9 @@ html.home-nav-layout-dock .nav-link {
 }
 
 .archive-empty-message {
-    font-family: 'Nunito Sans', sans-serif;
     font-weight: 400;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
     color: var(--text-color);
     grid-column: 1 / -1;
     text-align: center;
@@ -2764,16 +2667,11 @@ html.home-nav-layout-dock .nav-link {
         box-sizing: border-box;
     }
 
-    .archive-filter-radio-label {
-        font-size: 16px;
-    }
-
     .archive-section .section-title {
         margin-bottom: var(--space-after-heading);
     }
     
     .archive-intro {
-        font-size: 16px;
         margin-bottom: var(--spacing-lg);
     }
     
@@ -2820,7 +2718,6 @@ html.home-nav-layout-dock .nav-link {
     }
 
     .archive-project-title {
-        font-size: 20px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
@@ -2830,15 +2727,9 @@ html.home-nav-layout-dock .nav-link {
     .archive-project-tags,
     .archive-project-description,
     .archive-project-link {
-        font-size: 16px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         max-width: 100%;
-    }
-
-
-    .archive-empty-message {
-        font-size: 16px;
     }
 }
 

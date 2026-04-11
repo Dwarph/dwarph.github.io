@@ -18,7 +18,7 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 
 6. **Thumb vs track** — The **dark segment** follows the **pointer angle** immediately. The **gray track** is a fixed semicircle in local SVG space; its **bisector** (middle of the arc) is kept aligned with an **`arcCenterAngle`** that **lags** the thumb by **`maskDeadzoneDeg`**. On **activation**, `arcCenterAngle` is set to the thumb angle so the arc is **centred on the initial thumb direction**. The track group uses a fixed offset from `arcCenterAngle` (including a **π flip** so SVG/screen space matches `atan2`, not the arc facing 180° wrong).
 
-7. **Value integration** — Each move applies the **shortest** angular delta between frames (wrap-safe across ±π), scaled by a **velocity multiplier** (tweak panel: **flick boost** + defaults in `DEFAULT_CONFIG` for reference ω, gain *k*, optional floors / jitter filters). Fractional accumulation stays internal so the displayed value stays an **integer**.
+7. **Value integration** — Each move applies the **shortest** angular delta between frames (wrap-safe across ±π), scaled by a **velocity multiplier** (tweak panel: **flick boost** + defaults in `DEFAULT_CONFIG` in `circle-slider-config.js` for reference ω, gain *k*, optional floors / jitter filters). Fractional accumulation stays internal so the displayed value stays an **integer**.
 
 8. **No value change before activation** — If the pointer **releases** before crossing the activation radius, the integer **does not** change.
 
@@ -30,12 +30,18 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 |------|------|
 | `index.html` | Markup: prompt, value card, SVG radial |
 | `circle-slider.css` | Layout, radial placement, blur-fade transitions |
-| `circle-slider.js` | View + pluggable behaviors, tweak panel, `localStorage`, live config |
+| `circle-slider.js` | Entry (ES module): boot, `initCircleSlider`, `window.__CIRCLE_SLIDER__` |
+| `circle-slider-config.js` | `DEFAULT_CONFIG`, `localStorage` load/save, runtime normalisation |
+| `circle-slider-math.js` | Geometry helpers, velocity multiplier, arc path builders |
+| `circle-slider-view.js` | `applyVisualConfig`, `createRadialSliderView` |
+| `circle-slider-behavior-velocity.js` | `attachVelocityUnboundedRadialBehavior` (encoder + bounded slip) |
+| `circle-slider-tweak-panel.js` | Tweak panel wiring |
+| `circle-slider-mode-picker.js` | Standard / range mode UI |
 | `README.md` | This document |
 
 ## Architecture (view vs behaviour)
 
-`circle-slider.js` splits the control into:
+The scripts split the control into:
 
 1. **View** — `createRadialSliderView(...)`: SVG thumb/track transforms, radial layer + press halo visibility, page scroll lock. Shared by all interaction styles.
 2. **Value state** — `{ value, valueAcc }` owned by `initCircleSlider`; behaviours read/update it and call `syncDisplay()`.
@@ -56,7 +62,7 @@ Then `initCircleSlider(root, cfg, { behavior: "myAbsolute" })`. The default boot
 
 ## Configuration
 
-Defaults live in **`DEFAULT_CONFIG`** in `circle-slider.js`. The **tweak panel** exposes a short set; everything else is still in **`DEFAULT_CONFIG`** if you want to edit the file.
+Defaults live in **`DEFAULT_CONFIG`** in `circle-slider-config.js`. The **tweak panel** exposes a short set; everything else is still in **`DEFAULT_CONFIG`** if you want to edit the file.
 
 **Tweak panel (live + `localStorage`):** circle **size** (`trackRadius`), **grey / black stroke widths** (`trackStrokeWidth`, `thumbStrokeWidth`), **thumb span** (`thumbArcDeg`), **one fade duration** (sets both `appearDurationMs` and `hideDurationMs`), **one blur** (sets both `blurAppearPx` and `blurHidePx`), **sensitivity** (`radPerStep`), **flick boost** (`velocityGainMaxExtra`), **activation** drag, **pivot**, **arc lag**.
 

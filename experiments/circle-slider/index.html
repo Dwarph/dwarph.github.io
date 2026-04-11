@@ -167,8 +167,6 @@
     </section>
   </main>
 
-  <pre id="cs-slip-diag" class="cs-slip-diag" aria-live="polite" aria-label="Slip overscroll diagnostics"></pre>
-
   <aside id="cs-tweak-panel" class="cs-tweak-panel" aria-label="Slider tweak controls">
     <button type="button" class="cs-tweak-panel__toggle" data-cs-tweak-toggle aria-expanded="false"
       aria-controls="cs-tweak-panel-body" id="cs-tweak-panel-toggle">
@@ -239,19 +237,8 @@
           <input type="range" data-cs-config-key="sensitivityRampSpanPx" min="0" max="120" step="2" value="52" />
           <output class="cs-tweak-out" data-cs-tweak-out="sensitivityRampSpanPx" data-decimals="0"></output>
         </label>
-        <p class="cs-tweak-help">Extra motion tuning lives in <code>DEFAULT_CONFIG</code> in <code>circle-slider.js</code>
-          if you need it.</p>
-      </fieldset>
-
-      <fieldset class="cs-tweak-fieldset">
-        <legend>Debug</legend>
-        <label class="cs-tweak-row">
-          <span class="cs-tweak-label">Slip diagnostics HUD</span>
-          <input type="checkbox" id="cs-slip-diag-toggle" />
-        </label>
-        <p class="cs-tweak-help">Live <code>springTarget</code>, stretch, wind/return flags (corner overlay). URL
-          <code>?cs-slip-hud=1</code> enables on load. Throttled lines in the console as <code>[cs-slip]</code>.
-          Slip threshold rays: <code>?cs-slip-debug=1</code>.</p>
+        <p class="cs-tweak-help">Extra motion tuning lives in <code>DEFAULT_CONFIG</code> in
+          <code>circle-slider-config.js</code> if you need it.</p>
       </fieldset>
 
       <fieldset class="cs-tweak-fieldset">
@@ -290,12 +277,6 @@
           <input type="range" data-cs-config-key="releaseDirectionMinSpeedPx" min="0" max="3" step="0.05" value="2.2" />
           <output class="cs-tweak-out" data-cs-tweak-out="releaseDirectionMinSpeedPx" data-decimals="2"></output>
         </label>
-
-        <label class="cs-tweak-row cs-tweak-row--release-debug">
-          <span class="cs-tweak-label">Show release debug <em>(live metrics while radial is active)</em></span>
-          <input type="checkbox" id="cs-release-debug-toggle" />
-        </label>
-        <pre id="cs-release-debug" class="cs-release-debug" hidden aria-live="polite"></pre>
       </fieldset>
 
       <fieldset class="cs-tweak-fieldset">
@@ -315,7 +296,7 @@
     </div>
   </aside>
 
-  <script src="circle-slider.js" defer></script>
+  <script type="module" src="circle-slider.js"></script>
 </body>
 
 </html>

@@ -490,6 +490,12 @@
     /** Low-pass (s) on drawn stretch after mode selection — kills residual single-frame pops. */
     const SLIP_STRETCH_DRAW_TAU_S = 0.02;
     /**
+     * Thumb slip uses SVG arc with the small-arc flag (span under 180°). Very large |stretchRad| makes the
+     * geometry exceed half a circle and the engine picks the wrong arc — the black stroke looks like it leaves the ring.
+     * Cap |stretchRad| so total span 2·halfThumb + |stretch| stays below this (margin below π for stability).
+     */
+    const SLIP_STRETCH_PATH_SPAN_MAX_RAD = Math.PI - 0.06;
+    /**
      * Past this |pointer−arm| (rad), slip visuals use full springTarget; on the arm, visuals use 0 overshoot.
      * Gated on “returning to threshold” so circling past the home ray while still overscrolling does not
      * shrink the thumb (shortest-angle proximity would otherwise fake a return).
@@ -1140,6 +1146,13 @@
             visSpring.stretchRad * (1 - truthW) + visTruth.stretchRad * truthW;
         } else {
           slipStretchRadOut = visTruth.stretchRad;
+        }
+        {
+          const baseHalfCap = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
+          const stretchAbsMax = Math.max(0, SLIP_STRETCH_PATH_SPAN_MAX_RAD - 2 * baseHalfCap);
+          if (stretchAbsMax > 0) {
+            slipStretchRadOut = Math.max(-stretchAbsMax, Math.min(stretchAbsMax, slipStretchRadOut));
+          }
         }
         const alphaStDraw = Math.max(
           1 - Math.exp(-dtSecSlip / Math.max(SLIP_STRETCH_DRAW_TAU_S, 1e-4)),

@@ -13,9 +13,11 @@ export function initModePicker(standardApi, rangeApi) {
 
   /**
    * @param {"standard" | "range"} mode
+   * @param {{ syncValues?: boolean } | undefined} opt — syncValues: copy value between sliders (use when the user switches mode, not on first paint).
    */
-  function setMode(mode) {
+  function setMode(mode, opt) {
     const m = mode === "range" ? "range" : "standard";
+    const syncValues = !!(opt && opt.syncValues);
     buttons.forEach(function (btn) {
       const on = btn.getAttribute("data-cs-pick") === m;
       btn.classList.toggle("cs-picker-row--active", on);
@@ -26,10 +28,10 @@ export function initModePicker(standardApi, rangeApi) {
       if (!id) return;
       p.hidden = id !== m;
     });
-    if (m === "range" && rangeApi) {
+    if (syncValues && m === "range" && rangeApi) {
       rangeApi.setValue(Math.max(0, Math.min(100, standardApi.getValue())));
     }
-    if (m === "standard" && rangeApi) {
+    if (syncValues && m === "standard" && rangeApi) {
       standardApi.setValue(rangeApi.getValue());
     }
     try {
@@ -43,7 +45,7 @@ export function initModePicker(standardApi, rangeApi) {
     btn.addEventListener("click", function () {
       const pick = btn.getAttribute("data-cs-pick");
       if (pick !== "standard" && pick !== "range") return;
-      setMode(pick);
+      setMode(pick, { syncValues: true });
       if (demo) {
         demo.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -58,5 +60,6 @@ export function initModePicker(standardApi, rangeApi) {
   } catch (_) {
     /* ignore */
   }
+  /* Restore panel visibility only; each slider keeps its own initial value from config. */
   setMode(initial);
 }

@@ -355,6 +355,76 @@ html.cs-scroll-lock {
   touch-action: none;
 }
 
+/* Floating readout — anchored to track circle (viewBox y=22 / 200 = 11%), fully above the ring */
+.cs-dial-stack {
+  position: relative;
+  width: 100%;
+}
+
+.cs-radial-layer .cs-active-readout {
+  position: absolute;
+  left: 50%;
+  top: 11%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    filter var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear var(--cs-radial-hide-ms, 240ms);
+  will-change: opacity, filter;
+}
+
+.cs-dial-stack--radial-visible .cs-active-readout {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    filter var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0s;
+}
+
+.cs-active-readout__chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background-color: #1c1916;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.cs-active-readout__value {
+  font: 700 22px / 24px var(--exp-font-display);
+  color: #f4f2ee;
+  font-variant-numeric: tabular-nums;
+}
+
+.cs-active-readout__tail {
+  width: 0;
+  height: 0;
+  flex-shrink: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 11px solid #1c1916;
+}
+
+.cs-dial-stack--radial-visible .cs-value-card .cs-value {
+  color: #6e6962;
+  transition: color var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cs-dial-stack .cs-value-card .cs-value {
+  transition: color var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Press halo — same frame + offset as radial SVG; ring diameter = track circle (viewBox 200, radius r → 2r/200 of layer width) */
 .cs-press-halo {
   position: absolute;
@@ -550,6 +620,10 @@ html.cs-scroll-lock {
   .cs-radial-layer {
     filter: none !important;
     -webkit-filter: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cs-active-readout {
     transition-duration: 0.01ms !important;
   }
 

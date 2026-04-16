@@ -58,6 +58,7 @@ import { initTweakPanel } from "./circle-slider-tweak-panel.js";
 function initCircleSlider(root, cfg, options) {
   const card = root.querySelector("[data-cs-card]");
   const valueEl = root.querySelector("[data-cs-value-display]");
+  const activeReadoutEl = root.querySelector("[data-cs-active-readout-display]");
   const radialLayer = root.querySelector("[data-cs-radial-layer]");
   const pressHalo = root.querySelector("[data-cs-press-halo]");
   const trackRot = root.querySelector("[data-track-rot]");
@@ -116,8 +117,10 @@ function initCircleSlider(root, cfg, options) {
   };
 
   function syncDisplay() {
-    valueEl.textContent = String(state.value);
-    card.setAttribute("aria-valuenow", String(state.value));
+    const s = String(state.value);
+    valueEl.textContent = s;
+    if (activeReadoutEl) activeReadoutEl.textContent = s;
+    card.setAttribute("aria-valuenow", s);
     if (behaviorCtx.valueBounds) {
       card.setAttribute("aria-valuemin", String(behaviorCtx.valueBounds.min));
       card.setAttribute("aria-valuemax", String(behaviorCtx.valueBounds.max));

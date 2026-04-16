@@ -37,6 +37,12 @@ export function applyVisualConfig(root, cfg) {
     `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`
   );
 
+  const dialStack = root.querySelector("[data-cs-dial-stack]");
+  if (dialStack instanceof HTMLElement) {
+    dialStack.style.setProperty("--cs-radial-appear-ms", `${cfg.appearDurationMs}ms`);
+    dialStack.style.setProperty("--cs-radial-hide-ms", `${cfg.hideDurationMs}ms`);
+  }
+
   const pressHalo = root.querySelector("[data-cs-press-halo]");
   if (pressHalo) {
     const blurPx = `${Math.max(cfg.blurAppearPx, cfg.blurHidePx)}px`;
@@ -56,6 +62,8 @@ export function createRadialSliderView(deps) {
   let scrollLocked = false;
   let lockedScrollY = 0;
 
+  const dialStack = radialLayer.closest("[data-cs-dial-stack]");
+
   return {
     applyRotations: function (thumbAngle, arcCenterAngle) {
       const thumbDeg = (thumbAngle * 180) / Math.PI;
@@ -66,6 +74,9 @@ export function createRadialSliderView(deps) {
     setRadialVisible: function (on) {
       radialLayer.classList.toggle("cs-radial-layer--visible", on);
       radialLayer.setAttribute("aria-hidden", on ? "false" : "true");
+      if (dialStack instanceof HTMLElement) {
+        dialStack.classList.toggle("cs-dial-stack--radial-visible", on);
+      }
     },
     setPressHaloVisible: function (on, options) {
       if (!pressHalo) return;

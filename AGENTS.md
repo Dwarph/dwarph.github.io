@@ -12,6 +12,20 @@ Instead:
 
 If the user explicitly says to remember something or to add a rule, still confirm the exact wording and placement when it is ambiguous.
 
+## MCP servers
+
+If a task **depends on** an MCP server (tools, auth, or resources) and that server is **unavailable**, **fails to respond**, **returns an error indicating it is not connected**, or **cannot be used** (for example: missing tool descriptors, auth required but not completed, timeout, or “server not found”):
+
+1. **Stop** — do not continue the task by guessing, substituting another tool without saying so, or working around the missing integration silently.
+2. **Tell the user clearly** what failed (which server or capability, and the symptom).
+3. **Prompt them to fix it** — e.g. enable the MCP server in Cursor, complete authentication, check network, or adjust configuration — and wait for them to confirm it is working before resuming work that needs that server.
+
+If the task can be completed **without** that MCP (and you are sure of that), say so and proceed only on that reduced scope; otherwise treat unavailability as a blocker.
+
+## DESIGN.md
+
+When work touches **UI, layout, typography, color, motion, or product copy** in this repo, **look for `DESIGN.md`** in the project root and in **ancestor directories** of the files you are changing (same idea as nested `AGENTS.md`). **Read and use** the nearest relevant `DESIGN.md` for tokens, patterns, tone, and constraints before inventing new visual or UX conventions. If multiple apply, prefer the **more specific** (deeper) file and reconcile with parents when they conflict.
+
 ## User preferences
 
 - **Do not assume OS, browser, or device** unless the user has stated them explicitly. Avoid iOS/Android/desktop or Chrome/Safari-specific explanations or fixes as “the” case unless they apply to what the user said they use.

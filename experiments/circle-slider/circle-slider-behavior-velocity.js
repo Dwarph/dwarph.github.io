@@ -30,6 +30,8 @@ import {
  * @property {() => void} syncDisplay
  * @property {{ min: number; max: number } | null | undefined} valueBounds
  * @property {number | undefined} radPerStepMultiplier — optional; positive multiplier on cfg.radPerStep for value integration only
+ * @property {((value: number) => void) | undefined} onRadialRelease — pointer-up ended an active encoder session (radial will hide)
+ * @property {((active: boolean) => void) | undefined} onEncoderActiveChange — radial encoder engaged (true) or disengaged (false); used e.g. for time-scale effects
  */
 
 /**
@@ -45,7 +47,8 @@ import {
  * @returns {RadialSliderBehaviorHandle}
  */
 export function attachVelocityUnboundedRadialBehavior(ctx, state) {
-  const { cfg, card, radialLayer, pressHalo, view, syncDisplay } = ctx;
+  const { cfg, card, radialLayer, pressHalo, view, syncDisplay, onRadialRelease, onEncoderActiveChange } =
+    ctx;
   const vb = ctx.valueBounds;
   const bounded = !!(vb && Number.isFinite(vb.min) && Number.isFinite(vb.max));
   const radPerStepMul =
@@ -273,6 +276,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     view.setPressHaloVisible(false, { arcHandoff: true });
     view.setRadialVisible(true);
     view.applyRotations(a, arcCenterAngle);
+    notifyEncoderActive(true);
   }
 
   function isPointerOverCard(clientX, clientY) {
@@ -362,6 +366,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     pointerDownAt = performance.now();
     view.setRadialVisible(false);
     view.setPressHaloVisible(true);
+    notifyEncoderActive(false);
   }
 
   function pivotFor(clientX, clientY) {
@@ -437,6 +442,13 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     radialLayer.classList.remove("cs-radial-layer--release-out");
   }
 
+  let encoderActiveNotified = false;
+  function notifyEncoderActive(next) {
+    if (next === encoderActiveNotified) return;
+    encoderActiveNotified = next;
+    if (typeof onEncoderActiveChange === "function") onEncoderActiveChange(next);
+  }
+
   function interruptReleaseStretchSpring() {
     if (releaseStretchRaf) {
       cancelAnimationFrame(releaseStretchRaf);
@@ -447,14 +459,28 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     resetSlipSpring();
     if (bounded) restoreThumbPathDefault();
     view.setRadialVisible(false);
+    notifyEncoderActive(false);
   }
 
   /**
    * @param {{ immediate?: boolean } | undefined} opt — immediate: skip post-release stretch (e.g. detach)
    */
+  /**
+   * @param {number} [valueAtEnd] — value at pointer-up; required when release spring defers this callback
+   *   so a later gesture cannot overwrite `state.value` before `onRadialRelease` runs.
+   */
+  function notifyRadialRelease(valueAtEnd) {
+    if (typeof onRadialRelease !== "function") return;
+    const v = valueAtEnd !== undefined ? valueAtEnd : state.value;
+    onRadialRelease(v);
+  }
+
   function teardownPointer(opt) {
     if (!gestureActive) return;
     const immediate = !!(opt && opt.immediate);
+    const hadEncoder = activated;
+    /** Snapshot before any deferred rAF (release spring); avoids stale reads if user starts a new gesture. */
+    const valueAtPointerEnd = state.value;
 
     const hadSlipAcc = bounded && slipActive;
     const stretchMag = Math.abs(slipStretchDrawSmoothed);
@@ -474,6 +500,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     const pid = pointerId;
     pointerId = null;
     activated = false;
+    /* Encoder must stay “active” until onRadialRelease runs — otherwise deferred release (stretch
+     * spring) lets fry sim resume and overwrite the value card before the consumer applies the final value. */
     if (hadSlipAcc) state.valueAcc = 0;
     slipActive = false;
 
@@ -520,6 +548,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
           resetSlipSpring();
           if (bounded) restoreThumbPathDefault();
           clearRadialReleaseOutShell();
+          if (hadEncoder) notifyRadialRelease(valueAtPointerEnd);
+          notifyEncoderActive(false);
           view.setRadialVisible(false);
           releaseStretchRaf = 0;
           return;
@@ -530,6 +560,8 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     } else {
       resetSlipSpring();
       restoreThumbPathDefault();
+      if (hadEncoder) notifyRadialRelease(valueAtPointerEnd);
+      notifyEncoderActive(false);
       view.setRadialVisible(false);
     }
   }

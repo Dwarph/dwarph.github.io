@@ -216,3 +216,12 @@ Defined on **`.circle-slider-page`** (and mirrored on **`.experiments-page`** fo
 5. Match **focus** to **2px black outline** patterns used on picker rows and value card.
 6. When animating appearance, prefer **opacity + blur** with **`cubic-bezier(0.16, 1, 0.3, 1)`** for show and **`cubic-bezier(0.4, 0, 0.2, 1)`** for hide — then **test `prefers-reduced-motion`**.
 7. Cap **prototype chrome** near **390px** when mimicking **mobile Paper** frames; let the **demo stage** use **full width**.
+
+## 10. Parameter tweak panels ([Dialkit](https://github.com/joshpuckett/dialkit))
+
+For **live-tweak UIs** on experiments (physics, animation, layout constants), prefer **[Dialkit](https://github.com/joshpuckett/dialkit)** (`DialRoot` + `useDialKit`) over ad hoc HTML forms. It keeps panels consistent, gives presets/shortcuts/copy, and scales to new demos.
+
+- **Stack**: React + Dialkit + Motion (peer); ship a **bundled** entry (e.g. esbuild) for static pages, plus **`dialkit/styles.css`** (or copy `node_modules/dialkit/dist/styles.css` into the experiment).
+- **Production**: set **`productionEnabled`** on `DialRoot` so the FAB/panel appears on GitHub Pages, not only in dev.
+- **Wiring**: keep a **mutable params object** in vanilla simulation code; a small React bridge **`useEffect`**-syncs `useDialKit` values into that object each frame the store updates. Use **`onAction`** for one-shot controls (e.g. clear all fries).
+- **Simpler demos**: fixed constants or a single `createDefault*Params()` in plain JS (see [Fry shower](fry-picker/) `createDefaultFrySimParams` in `fry-picker-fries.js`) when a tweak panel is not worth the bundle.

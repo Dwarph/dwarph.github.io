@@ -43,10 +43,12 @@ import { initTweakPanel } from "./circle-slider-tweak-panel.js";
  * @property {() => void} syncDisplay
  * @property {{ min: number; max: number } | null | undefined} valueBounds
  * @property {number | undefined} radPerStepMultiplier
+ * @property {((value: number) => void) | undefined} [onRadialRelease]
+ * @property {((active: boolean) => void) | undefined} [onEncoderActiveChange]
  */
 
 /**
- * @typedef {{ behavior?: string }} CircleSliderInitOptions
+ * @typedef {{ behavior?: "velocityUnbounded" | "velocityBounded100" | "velocityBoundedRange" | string; onRadialRelease?: (value: number) => void; onEncoderActiveChange?: (active: boolean) => void }} CircleSliderInitOptions
  */
 
 /**
@@ -93,9 +95,21 @@ function initCircleSlider(root, cfg, options) {
     pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
     view: /** @type {RadialSliderView} */ (/** @type {unknown} */ (null)),
     syncDisplay: /** @type {() => void} */ (/** @type {unknown} */ (null)),
+    onRadialRelease:
+      options && typeof options.onRadialRelease === "function" ? options.onRadialRelease : undefined,
+    onEncoderActiveChange:
+      options && typeof options.onEncoderActiveChange === "function"
+        ? options.onEncoderActiveChange
+        : undefined,
   };
   if (behaviorId === "velocityBounded100") {
     behaviorCtx.valueBounds = { min: 0, max: 100 };
+    behaviorCtx.radPerStepMultiplier = RANGE_MODE_RAD_PER_STEP_MULTIPLIER;
+  }
+  if (behaviorId === "velocityBoundedRange") {
+    const min = Number.isFinite(cfg.rangeMin) ? Math.round(cfg.rangeMin) : 0;
+    const max = Number.isFinite(cfg.rangeMax) ? Math.round(cfg.rangeMax) : 1000;
+    behaviorCtx.valueBounds = { min: Math.min(min, max), max: Math.max(min, max) };
     behaviorCtx.radPerStepMultiplier = RANGE_MODE_RAD_PER_STEP_MULTIPLIER;
   }
 
@@ -153,10 +167,14 @@ function initCircleSlider(root, cfg, options) {
 
   return {
     resetValue: function () {
-      let iv = Math.round(cfg.initialValue);
       const b = behaviorCtx.valueBounds;
+      let iv;
       if (b && Number.isFinite(b.min) && Number.isFinite(b.max)) {
+        const raw = Number(cfg.initialValueRange);
+        iv = Number.isFinite(raw) ? Math.round(raw) : Math.round(cfg.initialValue);
         iv = Math.max(b.min, Math.min(b.max, iv));
+      } else {
+        iv = Math.round(cfg.initialValue);
       }
       state.value = iv;
       state.valueAcc = 0;
@@ -186,11 +204,14 @@ function initCircleSlider(root, cfg, options) {
   };
 }
 
+export { initCircleSlider };
+
 if (typeof window !== "undefined") {
   window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(
     {
       velocityUnbounded: attachVelocityUnboundedRadialBehavior,
       velocityBounded100: attachVelocityUnboundedRadialBehavior,
+      velocityBoundedRange: attachVelocityUnboundedRadialBehavior,
     },
     window.__CIRCLE_SLIDER_BEHAVIORS__ || {}
   );

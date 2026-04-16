@@ -5,7 +5,9 @@
 /**
  * @typedef {object} CircleSliderConfig
  * @property {number} initialValue
- * @property {number} initialValueRange — default / reset for 0–100 range mode only
+ * @property {number} initialValueRange — default / reset for bounded range mode (`velocityBounded100`, `velocityBoundedRange`)
+ * @property {number} [rangeMin] — with `velocityBoundedRange`, minimum value (default 0)
+ * @property {number} [rangeMax] — with `velocityBoundedRange`, maximum value (default 1000)
  * @property {number} activationRadiusPx
  * @property {RotationOrigin} rotationOrigin
  * @property {boolean} requireOutsideCardToActivate
@@ -132,10 +134,23 @@ export function normalizeRuntimeConfig(cfg) {
   }
   cfg.initialValue = Math.round(Number(cfg.initialValue)) || DEFAULT_CONFIG.initialValue;
   {
-    const r = Number(cfg.initialValueRange);
-    cfg.initialValueRange = Number.isFinite(r)
-      ? Math.round(Math.max(0, Math.min(100, r)))
-      : DEFAULT_CONFIG.initialValueRange;
+    const hasCustomRange =
+      Number.isFinite(cfg.rangeMin) && Number.isFinite(cfg.rangeMax);
+    if (hasCustomRange) {
+      const rMin = Math.round(Number(cfg.rangeMin));
+      const rMax = Math.round(Number(cfg.rangeMax));
+      cfg.rangeMin = Math.min(rMin, rMax);
+      cfg.rangeMax = Math.max(rMin, rMax);
+      const r = Number(cfg.initialValueRange);
+      cfg.initialValueRange = Number.isFinite(r)
+        ? Math.round(Math.max(cfg.rangeMin, Math.min(cfg.rangeMax, r)))
+        : Math.round((cfg.rangeMin + cfg.rangeMax) / 2);
+    } else {
+      const r = Number(cfg.initialValueRange);
+      cfg.initialValueRange = Number.isFinite(r)
+        ? Math.round(Math.max(0, Math.min(100, r)))
+        : DEFAULT_CONFIG.initialValueRange;
+    }
   }
   {
     const c = Number(cfg.releaseInwardCosMin);

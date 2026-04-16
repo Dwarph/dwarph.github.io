@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Nunito+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="/assets/branding/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/branding/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/branding/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="../circle-slider/circle-slider.css">
+  <link rel="stylesheet" href="fry-picker.css">
+  <title>Fry shower — Experiments</title>
+</head>
+
+<body class="circle-slider-page">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div id="fp-fry-layer" class="fp-fry-layer" aria-hidden="true"></div>
+  <main id="main">
+    <p><a href="../">Experiments</a></p>
+    <h1>Fry shower</h1>
+
+    <section class="cs-demo" aria-label="Fry shower demo" tabindex="-1">
+      <div id="fry-picker" class="cs-stage" aria-label="Fry shower">
+        <div class="cs-stage__fill" aria-hidden="true"></div>
+        <div class="cs-control-root">
+          <div class="cs-row">
+            <div class="cs-control-slot" aria-hidden="true"></div>
+            <div class="cs-value-column">
+              <p class="fp-tagline">Pull out to spin. Release to drop fries.</p>
+              <p class="cs-prompt">How many fries?</p>
+              <div class="cs-card-stack">
+                <div class="cs-dial-stack" data-cs-dial-stack>
+                  <div class="cs-radial-layer" data-cs-radial-layer aria-hidden="true">
+                    <div class="cs-active-readout" data-cs-active-readout aria-hidden="true">
+                      <div class="cs-active-readout__chip">
+                        <span class="cs-active-readout__value" data-cs-active-readout-display>100</span>
+                      </div>
+                      <div class="cs-active-readout__tail" aria-hidden="true"></div>
+                    </div>
+                    <svg class="cs-radial-svg" viewBox="0 0 200 200" width="280" height="280" focusable="false">
+                      <g class="cs-radial-rotate-mask" transform="translate(100 100)">
+                        <g class="cs-track-rot" data-track-rot>
+                          <defs>
+                            <linearGradient id="fp-track-edge-fade" data-track-fade-gradient
+                              gradientUnits="userSpaceOnUse" x1="-78" y1="0" x2="78" y2="0">
+                              <stop offset="0%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
+                              <stop offset="22%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
+                              <stop offset="78%" class="cs-track-fade-stop cs-track-fade-stop--solid" />
+                              <stop offset="100%" class="cs-track-fade-stop cs-track-fade-stop--edge" />
+                            </linearGradient>
+                          </defs>
+                          <path class="cs-track-path" fill="none" stroke="url(#fp-track-edge-fade)" stroke-width="3"
+                            stroke-linecap="butt" d="" data-track-path />
+                        </g>
+                      </g>
+                      <g class="cs-thumb-rot" transform="translate(100 100)" data-thumb-rot>
+                        <path class="cs-thumb-path" fill="none" stroke="currentColor" stroke-width="7"
+                          stroke-linecap="round" d="" data-thumb-path />
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="cs-press-halo" data-cs-press-halo aria-hidden="true"></div>
+                  <div class="cs-value-card" role="spinbutton" tabindex="0"
+                    aria-label="Number of chips, 0 to 1000, press and drag outward to adjust" aria-valuenow="100"
+                    aria-valuemin="0" aria-valuemax="1000" data-cs-card>
+                    <span class="cs-value" data-cs-value-display>100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cs-stage__fill" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="fry-picker.js"></script>
+</body>
+
+</html>

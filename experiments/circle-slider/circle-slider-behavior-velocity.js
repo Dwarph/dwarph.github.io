@@ -139,6 +139,21 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     }, ms);
   }
 
+  /**
+   * Tap affordance uses blur-hint + a deferred class removal. If that timer fires (or blur-hint is
+   * toggled) while the radial is animating out, sibling style updates can disrupt the radial layer’s
+   * release-out transition — clear as soon as the encoder is in play or the gesture ends with encoder.
+   */
+  function clearTapAffordanceClassAndCleanupTimer() {
+    if (tapBlurHintCleanupTimer != null) {
+      clearTimeout(tapBlurHintCleanupTimer);
+      tapBlurHintCleanupTimer = null;
+    }
+    if (pressHalo instanceof HTMLElement) {
+      pressHalo.classList.remove("cs-press-halo--blur-hint");
+    }
+  }
+
   function clearTapRadialHint() {
     if (tapHintHideTimer != null) {
       clearTimeout(tapHintHideTimer);
@@ -341,6 +356,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   function completeEncoderActivation(clientX, clientY) {
     clearActivationDelayTimer();
     if (activated) return;
+    clearTapAffordanceClassAndCleanupTimer();
     activated = true;
     slipActive = false;
     resetSlipSpring();
@@ -584,6 +600,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
 
     card.classList.remove("cs-value-card--active");
     view.unlockPageScroll();
+    if (hadEncoder) {
+      clearTapAffordanceClassAndCleanupTimer();
+    }
     view.setPressHaloVisible(false);
 
     if (pid != null) {

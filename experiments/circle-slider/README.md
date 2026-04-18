@@ -28,9 +28,14 @@ Encoder-style control: the value is **unbounded integers**, driven by **cumulati
 
 | File | Role |
 |------|------|
-| `index.html` | Markup: prompt, value card, SVG radial |
+| `index.html` | Experiment chrome: picker, tweak panel, empty mode panels (stages built in JS) |
 | `circle-slider.css` | Layout, radial placement, blur-fade transitions |
-| `circle-slider.js` | Entry (ES module): boot, `initCircleSlider`, `window.__CIRCLE_SLIDER__` |
+| `circle-slider.js` | Portable core: `initCircleSlider`, `window.__CIRCLE_SLIDER_BEHAVIORS__` |
+| `circle-slider-demo.js` | This page only: stored config, `renderCircleSliderStage`, tweak panel + mode picker, globals |
+| `circle-slider-stage.js` | Builds the `.cs-stage` markup (SVG + value card) for any instance |
+| `circle-slider-bundle-entry.js` | Barrel re-exports for embedding or a future npm package |
+| `circle-slider-element.js` | Optional `<circle-slider>` custom element + `registerCircleSliderElement()` |
+| `package.json` | `exports` map + `files` list for when you publish to npm (currently `"private": true`) |
 | `circle-slider-config.js` | `DEFAULT_CONFIG`, `localStorage` load/save, runtime normalisation |
 | `circle-slider-math.js` | Geometry helpers, velocity multiplier, arc path builders |
 | `circle-slider-view.js` | `applyVisualConfig`, `createRadialSliderView` |
@@ -58,7 +63,7 @@ window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(window.__CIRCLE_SLIDER_BEHAVI
 });
 ```
 
-Then `initCircleSlider(root, cfg, { behavior: "myAbsolute" })`. The default boot path still uses `velocityUnbounded`. `api.detachBehavior()` is available if you need to tear down and re-init with another behavior.
+Then `initCircleSlider(root, cfg, { behavior: "myAbsolute" })`. The default boot path still uses `velocityUnbounded`. Call `api.destroy()` (alias: `api.detachBehavior`) to tear down and re-init with another behavior.
 
 ## Configuration
 
@@ -82,7 +87,40 @@ Defaults live in **`DEFAULT_CONFIG`** in `circle-slider-config.js`. The **tweak 
 
 The blurred “rest” state uses **`max(blurAppearPx, blurHidePx)`** as `--cs-blur-rest`.
 
-The grey track stroke uses a **horizontal linear gradient** in the track’s local space (inside the rotating group) so opacity **ramps to 0 at the arc endpoints** (~22%–78% fully opaque by default). Adjust the `<stop offset="…"/>` values in `index.html` if you want a longer or shorter fade.
+The grey track stroke uses a **horizontal linear gradient** in the track’s local space (inside the rotating group) so opacity **ramps to 0 at the arc endpoints** (~22%–78% fully opaque by default). Adjust the `<stop offset="…"/>` values in [`circle-slider-stage.js`](circle-slider-stage.js) (or the equivalent markup if you hand-author HTML) if you want a longer or shorter fade.
+
+## Primitive-style API (events, barrel, custom element)
+
+**Events** (bubbling, `detail.value` is the integer):
+
+- **`input`** — Fires on the slider **root** whenever the displayed integer **changes** (during a drag / spin, or after `setValue` / `resetValue`). Skips the initial paint so first-load does not spam listeners.
+- **`change`** — Fires when a gesture **commits** after an active encoder session (pointer release that ends the radial interaction — same moment as `onRadialRelease`).
+
+Optional callbacks on `initCircleSlider(root, cfg, options)`: **`onInput`**, **`onChange`** (same semantics), alongside existing **`onRadialRelease`** (still called after `onChange`).
+
+**Barrel** — Import the public surface from one module:
+
+```js
+import {
+  initCircleSlider,
+  renderCircleSliderStage,
+  DEFAULT_CONFIG,
+  normalizeRuntimeConfig,
+  registerCircleSliderElement,
+} from "./circle-slider-bundle-entry.js";
+```
+
+**Custom element** — After `registerCircleSliderElement()` (the experiment calls this from `circle-slider-demo.js`), you can declare:
+
+```html
+<circle-slider behavior="velocityBounded100" value="50" label="Portions"></circle-slider>
+```
+
+Attributes: `value`, `behavior` (`velocityUnbounded` \| `velocityBounded100` \| `velocityBoundedRange`), `min` / `max` (for `velocityBoundedRange` only), optional `label` (passed to the value card `aria-label`). Include `circle-slider.css` on the page (light DOM).
+
+## npm / standalone repo (later)
+
+[`package.json`](package.json) lists **`exports`** (entry + CSS side-effect path) and **`files`** for publishing. It is **`"private": true`** until you choose a package name and publish. From another project you can copy this folder, run `npm pack`, or vendor the files into a static site. Pin a version once the package lives on the registry.
 
 ### Mobile / touch
 

@@ -74,6 +74,49 @@ export function thumbArcPath(r, halfSpanRad) {
 }
 
 /**
+ * Perceptual overshoot: ~linear when |raw| ≪ scale, then marginal gain falls like 1/(scale+|raw|)
+ * so wind pressure keeps reading even at large displacement — no hard cap on output.
+ *
+ * @param {number} raw
+ * @param {number} scale
+ */
+export function perceptualOvershootRad(raw, scale) {
+  if (!(scale > 0)) return 0;
+  const ax = Math.abs(raw);
+  return Math.sign(raw) * scale * Math.log(1 + ax / scale);
+}
+
+/**
+ * Slip move + stretch pair: perceptual for modest |s|, then a **linear tail** past the knee so
+ * large wind / unwind still moves the visual every radian (perceptual alone flattens).
+ *
+ * @param {number} s — peg-clamped wind (rad)
+ * @param {number} moveScale
+ * @param {number} stretchScale
+ * @returns {{ moveRad: number; stretchRad: number }}
+ */
+export function slipVisualOvershoot(s, moveScale, stretchScale) {
+  const knee = 0.72;
+  const ax = Math.abs(s);
+  if (ax <= knee) {
+    return {
+      moveRad: perceptualOvershootRad(s, moveScale),
+      stretchRad: perceptualOvershootRad(s, stretchScale) * 1.12,
+    };
+  }
+  const sg = Math.sign(s);
+  const m0 = perceptualOvershootRad(sg * knee, moveScale);
+  const s0 = perceptualOvershootRad(sg * knee, stretchScale) * 1.12;
+  const tail = ax - knee;
+  const km = 0.092;
+  const ks = 0.108;
+  return {
+    moveRad: m0 + sg * tail * km,
+    stretchRad: s0 + sg * tail * ks,
+  };
+}
+
+/**
  * Same arc topology as thumbArcPath, but extends only on one end by stretchRad (+ = longer toward +θ).
  */
 export function thumbArcPathDirectedStretch(r, baseHalfRad, stretchRad) {

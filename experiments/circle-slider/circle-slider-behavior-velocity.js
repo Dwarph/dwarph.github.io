@@ -1,8 +1,10 @@
 import { MIN_PRESS_HALO_MS } from "./circle-slider-config.js";
 import {
   angleAt,
+  perceptualOvershootRad,
   rectCenter,
   shortestAngleDiff,
+  slipVisualOvershoot,
   smoothstep01,
   thumbArcPath,
   thumbArcPathDirectedStretch,
@@ -237,43 +239,6 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     const r = cfg.trackRadius;
     const baseHalf = (cfg.thumbArcDeg / 2) * (Math.PI / 180);
     pathEl.setAttribute("d", thumbArcPath(r, baseHalf));
-  }
-
-  /**
-   * ~linear when |raw| ≪ scale, then marginal gain falls like 1/(scale+|raw|) — no hard cap on output.
-   */
-  function perceptualOvershootRad(raw, scale) {
-    if (!(scale > 0)) return 0;
-    const ax = Math.abs(raw);
-    return Math.sign(raw) * scale * Math.log(1 + ax / scale);
-  }
-
-  /**
-   * Slip move+stretch: perceptual for modest |s|, then **linear tail** so huge wind/unwind still changes
-   * the visual every rad (perceptual alone flattens at large |s|).
-   * @param {number} s — peg-clamped wind (rad)
-   * @param {number} moveScale
-   * @param {number} stretchScale
-   */
-  function slipVisualOvershoot(s, moveScale, stretchScale) {
-    const knee = 0.72;
-    const ax = Math.abs(s);
-    if (ax <= knee) {
-      return {
-        moveRad: perceptualOvershootRad(s, moveScale),
-        stretchRad: perceptualOvershootRad(s, stretchScale) * 1.12,
-      };
-    }
-    const sg = Math.sign(s);
-    const m0 = perceptualOvershootRad(sg * knee, moveScale);
-    const s0 = perceptualOvershootRad(sg * knee, stretchScale) * 1.12;
-    const tail = ax - knee;
-    const km = 0.092;
-    const ks = 0.108;
-    return {
-      moveRad: m0 + sg * tail * km,
-      stretchRad: s0 + sg * tail * ks,
-    };
   }
 
   /**

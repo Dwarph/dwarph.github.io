@@ -1,0 +1,20 @@
+{
+  "name": "dwarph-circle-slider",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Radial encoder-style circle slider (native ESM, browser-first). See README for embedding; remove \"private\" when publishing to npm under your chosen name.",
+  "type": "module",
+  "sideEffects": [
+    "circle-slider.css"
+  ],
+  "exports": {
+    ".": "./circle-slider-bundle-entry.js",
+    "./circle-slider.css": "./circle-slider.css",
+    "./circle-slider.js": "./circle-slider.js"
+  },
+  "files": [
+    "*.js",
+    "*.css",
+    "README.md"
+  ]
+}

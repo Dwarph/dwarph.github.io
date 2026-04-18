@@ -1,26 +1,23 @@
 /**
  * Circle slider — radial value control (see README.md in this folder).
  *
- * Architecture:
- * - **View** (`createRadialSliderView` in circle-slider-view.js) — SVG thumb/track transforms, radial + halo, scroll lock.
- * - **Value state** — integer + fractional carry; lives in `initCircleSlider` and is passed into behaviors.
- * - **Behavior** — pointer/gesture strategy. Default: **`velocityUnbounded`** (encoder: cumulative angle
- *   delta × velocity, unbounded integer). Swap via `initCircleSlider(root, cfg, { behavior: "…" })`;
- *   register new ids on `window.__CIRCLE_SLIDER_BEHAVIORS__` (e.g. absolute angle → bounded value later).
+ * This file is the **portable core**: `initCircleSlider(root, cfg, options)` plus the behavior
+ * registry. It has no DOM scanning, no `localStorage`, and no awareness of the tweak panel / mode
+ * picker — those live in `circle-slider-demo.js` for this experiment page.
  *
- * Mutable config + optional localStorage; tweak panel at bottom of page.
+ * Architecture:
+ * - **View** (`createRadialSliderView` in `circle-slider-view.js`) — SVG thumb/track transforms,
+ *   radial + halo visibility, scroll lock.
+ * - **Value state** — integer + fractional carry; lives in `initCircleSlider` and is passed into
+ *   behaviors.
+ * - **Behavior** — pointer/gesture strategy. Default: `velocityUnbounded`. Swap via
+ *   `initCircleSlider(root, cfg, { behavior: "…" })`; register new ids on
+ *   `window.__CIRCLE_SLIDER_BEHAVIORS__`.
  */
 
-import {
-  DEFAULT_CONFIG,
-  loadStoredConfig,
-  normalizeRuntimeConfig,
-  RANGE_MODE_RAD_PER_STEP_MULTIPLIER,
-} from "./circle-slider-config.js";
+import { RANGE_MODE_RAD_PER_STEP_MULTIPLIER } from "./circle-slider-config.js";
 import { attachVelocityUnboundedRadialBehavior } from "./circle-slider-behavior-velocity.js";
 import { applyVisualConfig, createRadialSliderView } from "./circle-slider-view.js";
-import { initModePicker } from "./circle-slider-mode-picker.js";
-import { initTweakPanel } from "./circle-slider-tweak-panel.js";
 
 /**
  * @typedef {object} RadialSliderValueState
@@ -48,16 +45,32 @@ import { initTweakPanel } from "./circle-slider-tweak-panel.js";
  */
 
 /**
- * @typedef {{ behavior?: "velocityUnbounded" | "velocityBounded100" | "velocityBoundedRange" | string; onRadialRelease?: (value: number) => void; onEncoderActiveChange?: (active: boolean) => void }} CircleSliderInitOptions
+ * @typedef {{
+ *   behavior?: "velocityUnbounded" | "velocityBounded100" | "velocityBoundedRange" | string;
+ *   onRadialRelease?: (value: number) => void;
+ *   onEncoderActiveChange?: (active: boolean) => void;
+ *   onInput?: (value: number) => void;
+ *   onChange?: (value: number) => void;
+ * }} CircleSliderInitOptions
+ */
+
+/**
+ * @typedef {object} CircleSliderInstance
+ * @property {() => void} resetValue
+ * @property {() => void} syncDisplay
+ * @property {() => number} getValue
+ * @property {(n: number) => void} setValue
+ * @property {() => void} destroy — full teardown: detaches pointer / window listeners.
+ * @property {() => void} [detachBehavior] — legacy alias of `destroy` for existing callers.
  */
 
 /**
  * @param {HTMLElement} root
  * @param {import("./circle-slider-config.js").CircleSliderConfig} cfg
- * @param {CircleSliderInitOptions | undefined} options
- * @returns {{ resetValue: () => void; syncDisplay: () => void; getValue: () => number; setValue: (n: number) => void; detachBehavior?: () => void }}
+ * @param {CircleSliderInitOptions | undefined} [options]
+ * @returns {CircleSliderInstance}
  */
-function initCircleSlider(root, cfg, options) {
+export function initCircleSlider(root, cfg, options) {
   const card = root.querySelector("[data-cs-card]");
   const valueEl = root.querySelector("[data-cs-value-display]");
   const activeReadoutEl = root.querySelector("[data-cs-active-readout-display]");
@@ -69,13 +82,16 @@ function initCircleSlider(root, cfg, options) {
   const thumbPath = root.querySelector("[data-thumb-path]");
 
   if (!card || !valueEl || !radialLayer || !trackRot || !thumbRot || !trackPath || !thumbPath) {
+    const noop = function () {};
     return {
-      resetValue: function () {},
-      syncDisplay: function () {},
+      resetValue: noop,
+      syncDisplay: noop,
       getValue: function () {
         return 0;
       },
-      setValue: function () {},
+      setValue: noop,
+      destroy: noop,
+      detachBehavior: noop,
     };
   }
 
@@ -86,6 +102,10 @@ function initCircleSlider(root, cfg, options) {
       ? options.behavior
       : "velocityUnbounded";
 
+  const userOnRadialRelease =
+    options && typeof options.onRadialRelease === "function" ? options.onRadialRelease : undefined;
+  const userOnChange = options && typeof options.onChange === "function" ? options.onChange : undefined;
+
   /** @type {RadialSliderBehaviorContext} */
   const behaviorCtx = {
     cfg,
@@ -95,8 +115,18 @@ function initCircleSlider(root, cfg, options) {
     pressHalo: pressHalo instanceof HTMLElement ? pressHalo : null,
     view: /** @type {RadialSliderView} */ (/** @type {unknown} */ (null)),
     syncDisplay: /** @type {() => void} */ (/** @type {unknown} */ (null)),
-    onRadialRelease:
-      options && typeof options.onRadialRelease === "function" ? options.onRadialRelease : undefined,
+    onRadialRelease: function (v) {
+      root.dispatchEvent(
+        new CustomEvent("change", {
+          bubbles: true,
+          composed: true,
+          cancelable: false,
+          detail: { value: v },
+        })
+      );
+      if (typeof userOnChange === "function") userOnChange(v);
+      if (typeof userOnRadialRelease === "function") userOnRadialRelease(v);
+    },
     onEncoderActiveChange:
       options && typeof options.onEncoderActiveChange === "function"
         ? options.onEncoderActiveChange
@@ -130,6 +160,9 @@ function initCircleSlider(root, cfg, options) {
     valueAcc: 0,
   };
 
+  let syncPassIndex = 0;
+  let lastEmittedInputValue = state.value;
+
   function syncDisplay() {
     const s = String(state.value);
     valueEl.textContent = s;
@@ -142,6 +175,21 @@ function initCircleSlider(root, cfg, options) {
       card.removeAttribute("aria-valuemin");
       card.removeAttribute("aria-valuemax");
     }
+
+    if (syncPassIndex > 0 && state.value !== lastEmittedInputValue) {
+      const v = state.value;
+      root.dispatchEvent(
+        new CustomEvent("input", {
+          bubbles: true,
+          composed: true,
+          cancelable: false,
+          detail: { value: v },
+        })
+      );
+      if (options && typeof options.onInput === "function") options.onInput(v);
+    }
+    lastEmittedInputValue = state.value;
+    syncPassIndex++;
   }
 
   const view = createRadialSliderView({
@@ -164,6 +212,12 @@ function initCircleSlider(root, cfg, options) {
   const attachBehavior =
     typeof registry[behaviorId] === "function" ? registry[behaviorId] : attachVelocityUnboundedRadialBehavior;
   const behaviorHandle = attachBehavior(behaviorCtx, state);
+
+  function destroy() {
+    if (behaviorHandle && typeof behaviorHandle.detach === "function") {
+      behaviorHandle.detach();
+    }
+  }
 
   return {
     resetValue: function () {
@@ -196,15 +250,10 @@ function initCircleSlider(root, cfg, options) {
       state.valueAcc = 0;
       syncDisplay();
     },
-    detachBehavior: function () {
-      if (behaviorHandle && typeof behaviorHandle.detach === "function") {
-        behaviorHandle.detach();
-      }
-    },
+    destroy: destroy,
+    detachBehavior: destroy,
   };
 }
-
-export { initCircleSlider };
 
 if (typeof window !== "undefined") {
   window.__CIRCLE_SLIDER_BEHAVIORS__ = Object.assign(
@@ -215,38 +264,4 @@ if (typeof window !== "undefined") {
     },
     window.__CIRCLE_SLIDER_BEHAVIORS__ || {}
   );
-}
-
-const stored = loadStoredConfig();
-/** @type {import("./circle-slider-config.js").CircleSliderConfig} */
-const cfg = Object.assign({}, DEFAULT_CONFIG, stored || {});
-normalizeRuntimeConfig(cfg);
-
-const root = document.getElementById("circle-slider");
-const rangeRoot = document.getElementById("circle-slider-range");
-const panel = document.getElementById("cs-tweak-panel");
-
-if (root) {
-  const api = initCircleSlider(root, cfg);
-  /** @type {{ resetValue: () => void; syncDisplay: () => void; getValue: () => number; setValue: (n: number) => void; detachBehavior?: () => void } | null} */
-  let rangeApi = null;
-  if (rangeRoot instanceof HTMLElement) {
-    rangeApi = initCircleSlider(rangeRoot, cfg, { behavior: "velocityBounded100" });
-  }
-  window.__CIRCLE_SLIDER_CONFIG__ = cfg;
-  window.__CIRCLE_SLIDER__ = {
-    config: cfg,
-    resetValue: api.resetValue,
-    getValue: api.getValue,
-    setValue: api.setValue,
-    rangeResetValue: rangeApi ? rangeApi.resetValue : undefined,
-    rangeGetValue: rangeApi ? rangeApi.getValue : undefined,
-    rangeSetValue: rangeApi ? rangeApi.setValue : undefined,
-  };
-
-  initModePicker(api, rangeApi);
-
-  if (panel) {
-    initTweakPanel(panel, cfg, root, api, rangeRoot instanceof HTMLElement ? rangeRoot : null, rangeApi);
-  }
 }

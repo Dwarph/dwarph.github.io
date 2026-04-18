@@ -114,20 +114,16 @@ function buildRadialLayer(opts) {
   readout.setAttribute("data-cs-active-readout", "");
   readout.setAttribute("aria-hidden", "true");
 
-  const chip = document.createElement("div");
-  chip.className = "cs-active-readout__chip";
-  const chipValue = document.createElement("span");
-  chipValue.className = "cs-active-readout__value";
-  chipValue.setAttribute("data-cs-active-readout-display", "");
-  chipValue.textContent = displayText;
-  chip.appendChild(chipValue);
+  const readoutCard = document.createElement("div");
+  readoutCard.className = "cs-value-card cs-value-card--readout-duplicate";
+  readoutCard.setAttribute("aria-hidden", "true");
+  const readoutValue = document.createElement("span");
+  readoutValue.className = "cs-value";
+  readoutValue.setAttribute("data-cs-active-readout-display", "");
+  readoutValue.textContent = displayText;
+  readoutCard.appendChild(readoutValue);
 
-  const tail = document.createElement("div");
-  tail.className = "cs-active-readout__tail";
-  tail.setAttribute("aria-hidden", "true");
-
-  readout.appendChild(chip);
-  readout.appendChild(tail);
+  readout.appendChild(readoutCard);
   layer.appendChild(readout);
 
   const svg = document.createElementNS(SVG_NS, "svg");

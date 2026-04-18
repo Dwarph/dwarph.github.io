@@ -355,7 +355,7 @@ html.cs-scroll-lock {
   touch-action: none;
 }
 
-/* Floating readout — anchored to track circle (viewBox y=22 / 200 = 11%), fully above the ring */
+/* Floating readout — anchored to track circle (viewBox y=22 / 200 ≈ 11%), fully above the ring */
 .cs-dial-stack {
   position: relative;
   width: 100%;
@@ -364,13 +364,13 @@ html.cs-scroll-lock {
 .cs-radial-layer .cs-active-readout {
   position: absolute;
   left: 50%;
-  top: 11%;
+  top: 9.5%;
   z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
   transform: translate(-50%, -100%);
-  margin-top: -8px;
+  margin-top: -16px;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -390,38 +390,27 @@ html.cs-scroll-lock {
     visibility 0s linear 0s;
 }
 
-.cs-active-readout__chip {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 18px;
-  border-radius: 10px;
-  background-color: #1c1916;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+/* Floating value — same chrome as the draggable card (see .cs-value-card) */
+.cs-active-readout .cs-value-card--readout-duplicate {
+  cursor: default;
+  touch-action: none;
 }
 
-.cs-active-readout__value {
-  font: 700 22px / 24px var(--exp-font-display);
-  color: #f4f2ee;
-  font-variant-numeric: tabular-nums;
+.cs-dial-stack > .cs-value-card {
+  transition: opacity var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cs-active-readout__tail {
-  width: 0;
-  height: 0;
-  flex-shrink: 0;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-top: 11px solid #1c1916;
+.cs-dial-stack--radial-visible > .cs-value-card {
+  opacity: 0.68;
+  transition: opacity var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cs-dial-stack--radial-visible .cs-value-card .cs-value {
-  color: #6e6962;
+.cs-dial-stack--radial-visible > .cs-value-card .cs-value {
+  color: #a39e98;
   transition: color var(--cs-radial-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cs-dial-stack .cs-value-card .cs-value {
+.cs-dial-stack > .cs-value-card .cs-value {
   transition: color var(--cs-radial-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1);
 }
 

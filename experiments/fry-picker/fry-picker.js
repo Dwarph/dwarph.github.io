@@ -44,9 +44,14 @@ if (root instanceof HTMLElement && layer instanceof HTMLElement) {
       const remaining = fryShower.getRemainingToSpawn();
       const roundedOpen = Math.round(sliderValueWhenEncoderOpened);
       const rounded = Math.round(Number(value));
-      /* Only reuse `remaining` when the dial didn’t move — never when releasing at 0 (that must cancel). */
+      /*
+       * Only reuse `remaining` when the dial didn’t move *and* a batch is still spawning (remaining > 0).
+       * Before any release, remaining is 0 — using it here would replace the initial dial (e.g. 100) with 0.
+       */
       const intent =
-        rounded === roundedOpen && rounded !== 0 ? remaining : rounded;
+        rounded === roundedOpen && rounded !== 0 && remaining > 0
+          ? remaining
+          : rounded;
       fryShower.release(intent);
       sliderApi.setValue(intent);
     },

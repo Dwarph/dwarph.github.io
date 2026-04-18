@@ -12,6 +12,7 @@ import {
   DEFAULT_CONFIG,
   loadStoredConfig,
   normalizeRuntimeConfig,
+  scheduleSaveConfig,
 } from "./circle-slider-config.js";
 import { renderCircleSliderStage } from "./circle-slider-stage.js";
 import { initModePicker } from "./circle-slider-mode-picker.js";
@@ -23,7 +24,12 @@ registerCircleSliderElement();
 const stored = loadStoredConfig();
 /** @type {import("./circle-slider-config.js").CircleSliderConfig} */
 const cfg = Object.assign({}, DEFAULT_CONFIG, stored || {});
+const cfgBeforeNormalize = JSON.stringify(cfg);
 normalizeRuntimeConfig(cfg);
+/* Persist clamped / migrated values so the next load matches what the sliders actually use. */
+if (JSON.stringify(cfg) !== cfgBeforeNormalize) {
+  scheduleSaveConfig(cfg);
+}
 
 const standardPanel = document.getElementById("cs-panel-standard");
 const rangePanel = document.getElementById("cs-panel-range");

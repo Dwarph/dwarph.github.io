@@ -61,7 +61,7 @@ export const DEFAULT_CONFIG = {
   velocityBoostMinOmegaRadPerMs: 0,
   minOmegaRadPerMs: 0,
   minAngleDeltaDeg: 0,
-  appearDurationMs: 50,
+  appearDurationMs: 300,
   hideDurationMs: 300,
   blurAppearPx: 14,
   blurHidePx: 14,
@@ -161,8 +161,86 @@ export function normalizeRuntimeConfig(cfg) {
   {
     const s = Number(cfg.releaseDirectionMinSpeedPx);
     cfg.releaseDirectionMinSpeedPx =
-      Number.isFinite(s) && s >= 0 ? Math.min(8, s) : DEFAULT_CONFIG.releaseDirectionMinSpeedPx;
+      Number.isFinite(s) && s >= 0 ? Math.min(3, s) : DEFAULT_CONFIG.releaseDirectionMinSpeedPx;
   }
+
+  /*
+   * Clamp to the same min/max as the tweak panel range inputs (`index.html`). Values outside those
+   * bounds (from older defaults or manual `localStorage`) make range controls invalid: the browser
+   * clamps the thumb while `cfg` still holds the raw number — feels "broken" until Reset syncs.
+   */
+  {
+    const n = Number(cfg.trackRadius);
+    cfg.trackRadius = Number.isFinite(n) ? Math.round(clamp(n, 52, 92)) : DEFAULT_CONFIG.trackRadius;
+  }
+  {
+    let v = Number(cfg.trackStrokeWidth);
+    v = Number.isFinite(v) ? clamp(v, 1, 10) : DEFAULT_CONFIG.trackStrokeWidth;
+    cfg.trackStrokeWidth = Math.round(v * 2) / 2;
+  }
+  {
+    let v = Number(cfg.thumbStrokeWidth);
+    v = Number.isFinite(v) ? clamp(v, 3, 16) : DEFAULT_CONFIG.thumbStrokeWidth;
+    cfg.thumbStrokeWidth = Math.round(v * 2) / 2;
+  }
+  {
+    const n = Number(cfg.thumbArcDeg);
+    cfg.thumbArcDeg = Number.isFinite(n) ? Math.round(clamp(n, 8, 36)) : DEFAULT_CONFIG.thumbArcDeg;
+  }
+  {
+    let v = Number(cfg.appearDurationMs);
+    v = Number.isFinite(v) ? clamp(v, 120, 600) : DEFAULT_CONFIG.appearDurationMs;
+    cfg.appearDurationMs = Math.round(v / 10) * 10;
+  }
+  {
+    const n = Number(cfg.blurAppearPx);
+    cfg.blurAppearPx = Number.isFinite(n) ? Math.round(clamp(n, 0, 28)) : DEFAULT_CONFIG.blurAppearPx;
+  }
+  {
+    let v = Number(cfg.radPerStep);
+    v = Number.isFinite(v) ? clamp(v, 0.05, 0.35) : DEFAULT_CONFIG.radPerStep;
+    cfg.radPerStep = Math.round(v * 100) / 100;
+  }
+  {
+    let v = Number(cfg.velocityGainMaxExtra);
+    v = Number.isFinite(v) ? clamp(v, 0, 10) : DEFAULT_CONFIG.velocityGainMaxExtra;
+    cfg.velocityGainMaxExtra = Math.round(v * 2) / 2;
+  }
+  {
+    let v = Number(cfg.sensitivityRampMin);
+    v = Number.isFinite(v) ? clamp(v, 0.05, 1) : DEFAULT_CONFIG.sensitivityRampMin;
+    cfg.sensitivityRampMin = Math.round(v * 100) / 100;
+  }
+  {
+    const n = Number(cfg.sensitivityRampSpanPx);
+    cfg.sensitivityRampSpanPx = Number.isFinite(n)
+      ? Math.round(clamp(n, 0, 120) / 2) * 2
+      : DEFAULT_CONFIG.sensitivityRampSpanPx;
+  }
+  {
+    const n = Number(cfg.activationRadiusPx);
+    cfg.activationRadiusPx = Number.isFinite(n)
+      ? Math.round(clamp(n, 2, 48))
+      : DEFAULT_CONFIG.activationRadiusPx;
+  }
+  {
+    const n = Number(cfg.maskDeadzoneDeg);
+    cfg.maskDeadzoneDeg = Number.isFinite(n)
+      ? Math.round(clamp(n, 0, 40))
+      : DEFAULT_CONFIG.maskDeadzoneDeg;
+  }
+
   cfg.blurHidePx = cfg.blurAppearPx;
   cfg.hideDurationMs = cfg.appearDurationMs;
+}
+
+/**
+ * @param {number} x
+ * @param {number} lo
+ * @param {number} hi
+ */
+function clamp(x, lo, hi) {
+  if (x < lo) return lo;
+  if (x > hi) return hi;
+  return x;
 }

@@ -79,7 +79,7 @@ Defaults live in **`DEFAULT_CONFIG`** in `circle-slider-config.js`. The **tweak 
 | `trackStrokeWidth` | `3` | Grey arc stroke width |
 | `thumbStrokeWidth` | `7` | Black thumb stroke width |
 | `thumbArcDeg` | `16` | Angular length of thumb along the ring |
-| `appearDurationMs` / `hideDurationMs` | `300` | Radial show/hide (panel keeps them equal) |
+| `appearDurationMs` / `hideDurationMs` | `300` | Radial show/hide (panel keeps them equal; clamped 120–600 ms in the UI) |
 | `blurAppearPx` / `blurHidePx` | `14` | Blur for fade (panel keeps them equal) |
 | `radPerStep` | `0.14` | Radians per step at multiplier 1 (lower → more sensitive) |
 | `velocityGainMaxExtra` | `5` | Extra velocity multiplier cap (flick boost) |

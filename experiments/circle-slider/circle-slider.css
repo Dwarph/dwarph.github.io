@@ -64,12 +64,6 @@ html.cs-scroll-lock {
   font-weight: 700;
 }
 
-.circle-slider-page h1 {
-  /* Fixed size at all breakpoints (no fluid type). */
-  font-size: var(--exp-size-title);
-  margin: 0 0 1rem;
-}
-
 /* Picker + demo stack; tweak panel stays fixed at bottom. */
 .circle-slider-page main {
   display: flex;
@@ -80,12 +74,6 @@ html.cs-scroll-lock {
   padding-bottom: 0.5rem;
   width: 100%;
   max-width: 100%;
-}
-
-.circle-slider-page main > h1 {
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
 }
 
 .circle-slider-page .skip-link {

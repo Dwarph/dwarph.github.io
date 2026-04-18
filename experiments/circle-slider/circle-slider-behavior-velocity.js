@@ -115,6 +115,82 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   let releaseStretchRaf = 0;
   /** Bumped when a release spring is cancelled so stale rAF callbacks exit. */
   let releaseStretchRunId = 0;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let tapHintHideTimer = null;
+  /** @type {number} */
+  let tapHintShowRaf = 0;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let tapBlurHintCleanupTimer = null;
+
+  function scheduleTapBlurHintClassRemoval() {
+    if (tapBlurHintCleanupTimer != null) {
+      clearTimeout(tapBlurHintCleanupTimer);
+      tapBlurHintCleanupTimer = null;
+    }
+    if (!(pressHalo instanceof HTMLElement) || !pressHalo.classList.contains("cs-press-halo--blur-hint")) {
+      return;
+    }
+    const ms = Math.max(0, cfg.hideDurationMs);
+    tapBlurHintCleanupTimer = setTimeout(function () {
+      tapBlurHintCleanupTimer = null;
+      if (pressHalo instanceof HTMLElement) {
+        pressHalo.classList.remove("cs-press-halo--blur-hint");
+      }
+    }, ms);
+  }
+
+  function clearTapRadialHint() {
+    if (tapHintHideTimer != null) {
+      clearTimeout(tapHintHideTimer);
+      tapHintHideTimer = null;
+    }
+    if (tapHintShowRaf) {
+      cancelAnimationFrame(tapHintShowRaf);
+      tapHintShowRaf = 0;
+    }
+    if (tapBlurHintCleanupTimer != null) {
+      clearTimeout(tapBlurHintCleanupTimer);
+      tapBlurHintCleanupTimer = null;
+    }
+    const hadBlurHint = pressHalo instanceof HTMLElement && pressHalo.classList.contains("cs-press-halo--blur-hint");
+    view.setPressHaloVisible(false, { arcHandoff: hadBlurHint });
+    if (hadBlurHint) {
+      scheduleTapBlurHintClassRemoval();
+    }
+  }
+
+  /**
+   * After a tap that never engaged the encoder, briefly show the circular press halo (not the SVG
+   * track arc) so “pull out” reads without flashing the grey arc / thumb.
+   */
+  function scheduleTapRadialHint() {
+    clearTapRadialHint();
+    const prefersReduced =
+      typeof matchMedia !== "undefined" &&
+      matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    tapHintShowRaf = requestAnimationFrame(function () {
+      tapHintShowRaf = 0;
+      if (pressHalo instanceof HTMLElement) {
+        pressHalo.classList.add("cs-press-halo--blur-hint");
+      }
+      view.setPressHaloVisible(true);
+      /*
+       * Start the hide timer *after* the halo is shown, not when this gesture’s teardown runs.
+       * Otherwise appearMs + holdMs elapses from ~t=0 while the halo only appears on the next frame,
+       * so hide can fire before the appear transition finishes and breaks the blur-out.
+       */
+      const appearMs = Math.max(0, cfg.appearDurationMs);
+      const holdMs = prefersReduced ? 48 : 150;
+      const hideAfterMs = appearMs + holdMs;
+      tapHintHideTimer = setTimeout(function () {
+        tapHintHideTimer = null;
+        /* arcHandoff: blur + opacity leave together (default hide delays opacity vs blur). */
+        view.setPressHaloVisible(false, { arcHandoff: true });
+        scheduleTapBlurHintClassRemoval();
+      }, hideAfterMs);
+    });
+  }
 
   function resetSlipSpring() {
     slipOverscrollAccum = 0;
@@ -450,6 +526,7 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   }
 
   function interruptReleaseStretchSpring() {
+    clearTapRadialHint();
     if (releaseStretchRaf) {
       cancelAnimationFrame(releaseStretchRaf);
       releaseStretchRaf = 0;
@@ -563,6 +640,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
       if (hadEncoder) notifyRadialRelease(valueAtPointerEnd);
       notifyEncoderActive(false);
       view.setRadialVisible(false);
+      if (!hadEncoder && !immediate) {
+        scheduleTapRadialHint();
+      }
     }
   }
 

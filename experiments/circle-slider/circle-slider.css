@@ -498,24 +498,57 @@ html.cs-scroll-lock {
   will-change: opacity, filter;
 }
 
-/* Touch: filter blur on the halo often fails to composite the ::before ring; opacity-only reads reliably */
+/*
+ * Touch: filter blur often fails to composite the ::before ring; opacity-only reads reliably.
+ * Exception: .cs-press-halo--blur-hint (tap affordance) opts back into blur + filter transitions.
+ */
 @media (pointer: coarse) {
-  .cs-press-halo,
-  .cs-press-halo--visible {
+  .cs-press-halo:not(.cs-press-halo--blur-hint),
+  .cs-press-halo--visible:not(.cs-press-halo--blur-hint) {
     filter: none !important;
     -webkit-filter: none !important;
   }
 
-  .cs-press-halo {
+  .cs-press-halo:not(.cs-press-halo--blur-hint) {
     transition:
       opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
       visibility 0s linear var(--cs-halo-hide-ms, 240ms);
   }
 
-  .cs-press-halo--visible {
+  .cs-press-halo--visible:not(.cs-press-halo--blur-hint) {
     transition:
       opacity var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
       visibility 0s linear 0s;
+  }
+
+  /* Tap hint: restore same blur in/out as fine pointer (see base .cs-press-halo / --visible above). */
+  .cs-press-halo.cs-press-halo--blur-hint:not(.cs-press-halo--visible) {
+    filter: blur(var(--cs-halo-blur-rest, 14px));
+    -webkit-filter: blur(var(--cs-halo-blur-rest, 14px));
+    transition:
+      filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      -webkit-filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1) var(--cs-halo-hide-opacity-delay, 72ms),
+      visibility 0s linear calc(var(--cs-halo-hide-ms, 240ms) + var(--cs-halo-hide-opacity-delay, 72ms));
+  }
+
+  .cs-press-halo.cs-press-halo--blur-hint.cs-press-halo--visible {
+    filter: blur(0);
+    -webkit-filter: blur(0);
+    transition:
+      opacity var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+      filter var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+      -webkit-filter var(--cs-halo-appear-ms, 300ms) cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 0s;
+  }
+
+  /* Tap hint hide: same as global arc-handoff — blur + opacity together (no opacity lag). */
+  .cs-press-halo.cs-press-halo--blur-hint.cs-press-halo--arc-handoff:not(.cs-press-halo--visible) {
+    transition:
+      filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      -webkit-filter var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      opacity var(--cs-halo-hide-ms, 240ms) cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s linear var(--cs-halo-hide-ms, 240ms);
   }
 }
 

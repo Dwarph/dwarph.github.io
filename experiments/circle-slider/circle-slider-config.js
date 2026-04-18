@@ -61,7 +61,7 @@ export const DEFAULT_CONFIG = {
   velocityBoostMinOmegaRadPerMs: 0,
   minOmegaRadPerMs: 0,
   minAngleDeltaDeg: 0,
-  appearDurationMs: 300,
+  appearDurationMs: 50,
   hideDurationMs: 300,
   blurAppearPx: 14,
   blurHidePx: 14,

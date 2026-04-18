@@ -32,13 +32,28 @@
   margin: 0 0 1rem;
 }
 
-.experiments-page ul {
+.experiments-page .exp-tree {
   margin: 0;
-  padding-left: 1.25rem;
+  font-family: ui-monospace, "Cascadia Code", "Consolas", "Menlo", monospace;
+  font-size: 0.9375rem;
+  line-height: 1.35;
 }
 
-.experiments-page li {
-  margin-bottom: 0.35rem;
+.experiments-page .exp-tree-head {
+  margin: 0 0 0.15rem;
+  user-select: none;
+}
+
+.experiments-page .exp-tree-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.experiments-page .exp-tree-glyph {
+  user-select: none;
 }
 
 .experiments-page a {
@@ -48,10 +63,6 @@
 
 .experiments-page a:visited {
   color: #000;
-}
-
-.experiments-page .back {
-  margin-top: 2rem;
 }
 
 .experiments-page .skip-link {
@@ -67,4 +78,54 @@
 
 .experiments-page .skip-link:focus {
   top: 0;
+}
+
+/*
+ * Breadcrumbs — match main site: display / “title” font (Outfit), bold, / separators.
+ * Typography equiv: homepage uses --font-display + --fs-body; here --exp-font-display + 1rem on this scale.
+ */
+.experiments-page .breadcrumb-nav,
+.circle-slider-page .breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  align-self: flex-start;
+  text-align: left;
+}
+
+.experiments-page .breadcrumb-nav :is(.breadcrumb-link, .breadcrumb-separator, .breadcrumb-current),
+.circle-slider-page .breadcrumb-nav :is(.breadcrumb-link, .breadcrumb-separator, .breadcrumb-current) {
+  font-family: var(--exp-font-display, "Outfit", sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  color: #000;
+}
+
+.experiments-page .breadcrumb-link,
+.circle-slider-page .breadcrumb-link {
+  text-decoration: none;
+  color: #000;
+}
+
+.experiments-page .breadcrumb-link:hover,
+.circle-slider-page .breadcrumb-link:hover {
+  opacity: 0.7;
+}
+
+.experiments-page .breadcrumb-link:visited,
+.circle-slider-page .breadcrumb-link:visited {
+  color: #000;
+}
+
+.experiments-page .breadcrumb-current,
+.circle-slider-page .breadcrumb-current {
+  opacity: 0.7;
 }

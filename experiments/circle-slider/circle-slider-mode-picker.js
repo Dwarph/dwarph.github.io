@@ -13,11 +13,11 @@ export function initModePicker(standardApi, rangeApi) {
 
   /**
    * @param {"standard" | "range"} mode
-   * @param {{ syncValues?: boolean } | undefined} opt — syncValues: copy value between sliders (use when the user switches mode, not on first paint).
+   * @param {{ setDefaultForMode?: boolean } | undefined} opt — setDefaultForMode: on user pick, range → 50, standard → 100 (not on first paint / storage restore).
    */
   function setMode(mode, opt) {
     const m = mode === "range" ? "range" : "standard";
-    const syncValues = !!(opt && opt.syncValues);
+    const setDefaultForMode = !!(opt && opt.setDefaultForMode);
     buttons.forEach(function (btn) {
       const on = btn.getAttribute("data-cs-pick") === m;
       btn.classList.toggle("cs-picker-row--active", on);
@@ -28,11 +28,11 @@ export function initModePicker(standardApi, rangeApi) {
       if (!id) return;
       p.hidden = id !== m;
     });
-    if (syncValues && m === "range" && rangeApi) {
-      rangeApi.setValue(Math.max(0, Math.min(100, standardApi.getValue())));
+    if (setDefaultForMode && m === "range" && rangeApi) {
+      rangeApi.setValue(50);
     }
-    if (syncValues && m === "standard" && rangeApi) {
-      standardApi.setValue(rangeApi.getValue());
+    if (setDefaultForMode && m === "standard") {
+      standardApi.setValue(100);
     }
     try {
       localStorage.setItem(MODE_STORAGE_KEY, m);
@@ -45,7 +45,7 @@ export function initModePicker(standardApi, rangeApi) {
     btn.addEventListener("click", function () {
       const pick = btn.getAttribute("data-cs-pick");
       if (pick !== "standard" && pick !== "range") return;
-      setMode(pick, { syncValues: true });
+      setMode(pick, { setDefaultForMode: true });
       if (demo) {
         demo.scrollIntoView({ behavior: "smooth", block: "start" });
       }

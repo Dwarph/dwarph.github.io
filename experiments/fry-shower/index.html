@@ -15,19 +15,26 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/apple-touch-icon.png" />
 
   <link rel="stylesheet" href="../circle-slider/circle-slider.css">
-  <link rel="stylesheet" href="fry-picker.css">
-  <title>Fry shower — Experiments</title>
+  <link rel="stylesheet" href="fry-shower.css">
+  <link rel="stylesheet" href="../../styling/experiments.css">
+  <title>Fry Shower — Experiments</title>
 </head>
 
 <body class="circle-slider-page">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div id="fp-fry-layer" class="fp-fry-layer" aria-hidden="true"></div>
   <main id="main">
-    <p><a href="../">Experiments</a></p>
-    <h1>Fry shower</h1>
+    <nav class="breadcrumb-nav" role="navigation" aria-label="Breadcrumb">
+      <a href="/" class="breadcrumb-link" aria-label="Go to homepage">Home</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <a href="../" class="breadcrumb-link">Experiments</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current" aria-current="page">Fry Shower</span>
+    </nav>
+    <h1>Fry Shower</h1>
 
     <section class="cs-demo" aria-label="Fry shower demo" tabindex="-1">
-      <div id="fry-picker" class="cs-stage" aria-label="Fry shower">
+      <div id="fry-shower" class="cs-stage" aria-label="Fry shower">
         <div class="cs-stage__fill" aria-hidden="true"></div>
         <div class="cs-control-root">
           <div class="cs-row">
@@ -81,7 +88,7 @@
     </section>
   </main>
 
-  <script type="module" src="fry-picker.js"></script>
+  <script type="module" src="fry-shower.js"></script>
 </body>
 
 </html>

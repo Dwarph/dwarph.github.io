@@ -224,4 +224,4 @@ For **live-tweak UIs** on experiments (physics, animation, layout constants), pr
 - **Stack**: React + Dialkit + Motion (peer); ship a **bundled** entry (e.g. esbuild) for static pages, plus **`dialkit/styles.css`** (or copy `node_modules/dialkit/dist/styles.css` into the experiment).
 - **Production**: set **`productionEnabled`** on `DialRoot` so the FAB/panel appears on GitHub Pages, not only in dev.
 - **Wiring**: keep a **mutable params object** in vanilla simulation code; a small React bridge **`useEffect`**-syncs `useDialKit` values into that object each frame the store updates. Use **`onAction`** for one-shot controls (e.g. clear all fries).
-- **Simpler demos**: fixed constants or a single `createDefault*Params()` in plain JS (see [Fry shower](fry-picker/) `createDefaultFrySimParams` in `fry-picker-fries.js`) when a tweak panel is not worth the bundle.
+- **Simpler demos**: fixed constants or a single `createDefault*Params()` in plain JS (see [Fry shower](fry-shower/) `createDefaultFrySimParams` in `fry-shower-fries.js`) when a tweak panel is not worth the bundle.

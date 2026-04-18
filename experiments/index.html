@@ -21,12 +21,21 @@
 <body class="experiments-page">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="experiments-wrap" id="main">
+    <nav class="breadcrumb-nav" role="navigation" aria-label="Breadcrumb">
+      <a href="/" class="breadcrumb-link" aria-label="Go to homepage">Home</a>
+      <span class="breadcrumb-separator" aria-hidden="true">/</span>
+      <span class="breadcrumb-current" aria-current="page">Experiments</span>
+    </nav>
     <h1>Experiments</h1>
-    <ul>
-      <li><a href="circle-slider/">Circle slider</a></li>
-      <li><a href="fry-picker/">Fry shower</a></li>
-    </ul>
-    <p class="back"><a href="../">Back to site</a></p>
+    <div class="exp-tree" aria-label="Experiment folders">
+      <div class="exp-tree-head">experiments/</div>
+      <div class="exp-tree-line">
+        <span class="exp-tree-glyph" aria-hidden="true">├── </span><a href="circle-slider/">circle-slider/</a>
+      </div>
+      <div class="exp-tree-line">
+        <span class="exp-tree-glyph" aria-hidden="true">└── </span><a href="fry-shower/">fry-shower/</a>
+      </div>
+    </div>
   </div>
 </body>
 

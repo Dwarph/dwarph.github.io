@@ -7,9 +7,9 @@ import {
   normalizeRuntimeConfig,
 } from "../circle-slider/circle-slider-config.js";
 import { initCircleSlider } from "../circle-slider/circle-slider.js";
-import { createDefaultFrySimParams, createFryShower } from "./fry-picker-fries.js";
+import { createDefaultFrySimParams, createFryShower } from "./fry-shower-fries.js";
 
-const root = document.getElementById("fry-picker");
+const root = document.getElementById("fry-shower");
 const layer = document.getElementById("fp-fry-layer");
 
 if (root instanceof HTMLElement && layer instanceof HTMLElement) {

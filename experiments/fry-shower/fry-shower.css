@@ -1,4 +1,4 @@
-/* Fry shower — falling fries overlay (see fry-picker-fries.js) */
+/* Fry shower — falling fries overlay (see fry-shower-fries.js) */
 
 .fp-tagline {
   margin: 0 0 1.25rem;
@@ -63,4 +63,3 @@
   padding: 0.35rem 0.75rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
-

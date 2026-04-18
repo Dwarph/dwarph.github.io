@@ -307,6 +307,23 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   /** @type {number | null} */
   let activationDelayTimer = null;
   let activated = false;
+  /** Monotonic time when the encoder last turned on — guards the first frames of soft-release diagnosis. */
+  let encoderActivatedAtMs = 0;
+  /**
+   * Distance-from-card-centre Schmitt (vs corner radius): one stable “left the card” signal for arming,
+   * without axis-aligned rect edge jitter.
+   */
+  let cardArmOutside = false;
+  /**
+   * Ring band vs track radius — stabilizes `posFail === "onRing"` when scrubbing between card and ring.
+   */
+  let ringReleaseBandLatched = false;
+  /**
+   * After a soft release, re-arm is blocked until this time — breaks release↔encode on the same frame
+   * without requiring the finger to return near the original press (extended pull-out must work again).
+   * `0` means not blocking.
+   */
+  let postSoftReleaseArmBlockUntilMs = 0;
   let lastAngle = 0;
   let lastT = 0;
   let arcCenterAngle = 0;
@@ -333,12 +350,23 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     view.setPressHaloVisible(false, { arcHandoff: true });
     view.setRadialVisible(true);
     view.applyRotations(a, arcCenterAngle);
+    encoderActivatedAtMs = performance.now();
     notifyEncoderActive(true);
   }
 
-  function isPointerOverCard(clientX, clientY) {
-    const r = card.getBoundingClientRect();
-    return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+  /** Beyond corner distance + outer: arm “outside card”; inside corner + inner: disarm (Schmitt). */
+  const CARD_ARM_RADIAL_OUT_PX = 12;
+  const CARD_ARM_RADIAL_IN_PX = 4;
+
+  function updateCardArmOutside(clientX, clientY) {
+    if (cfg.rotationOrigin !== "cardCenter" || !cfg.requireOutsideCardToActivate) return;
+    const cr = card.getBoundingClientRect();
+    const cx = cr.left + cr.width / 2;
+    const cy = cr.top + cr.height / 2;
+    const d = Math.hypot(clientX - cx, clientY - cy);
+    const rCorner = Math.hypot(cr.width / 2, cr.height / 2);
+    if (d >= rCorner + CARD_ARM_RADIAL_OUT_PX) cardArmOutside = true;
+    else if (d <= rCorner + CARD_ARM_RADIAL_IN_PX) cardArmOutside = false;
   }
 
   /**
@@ -377,6 +405,16 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     };
   }
 
+  /** While encoding, ignore soft-release until this elapses — avoids one-frame halo/radial flash after arm-up. */
+  const ENCODING_SOFT_RELEASE_GRACE_MS = 48;
+  /** Brief arming freeze after soft-release so extended finger can pull out again without a distance-to-press gate. */
+  const POST_SOFT_RELEASE_ARM_BLOCK_MS = 56;
+  /**
+   * Schmitt in/out (vs `rTrack`, px) for “on ring” — avoids `posFail` flipping when `d` jitters at one threshold.
+   */
+  const RING_RELEASE_LATCH_IN_PX = 3;
+  const RING_RELEASE_LATCH_OUT_PX = 11;
+
   /**
    * Single place for “release to pressed halo” logic (position on card + inward release direction).
    */
@@ -391,8 +429,14 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     const nearCardMax = rCardMax + cardSlopPx;
     /** @type {'tooFar' | 'onRing' | null} */
     let posFail = null;
-    if (d > nearCardMax) posFail = "tooFar";
-    else if (rTrack > nearCardMax + 4 && d >= rTrack - 3) posFail = "onRing";
+    if (d > nearCardMax) {
+      posFail = "tooFar";
+      ringReleaseBandLatched = false;
+    } else if (rTrack > nearCardMax + 4) {
+      if (d >= rTrack - RING_RELEASE_LATCH_IN_PX) ringReleaseBandLatched = true;
+      if (d < rTrack - RING_RELEASE_LATCH_OUT_PX) ringReleaseBandLatched = false;
+      if (ringReleaseBandLatched) posFail = "onRing";
+    }
     const dir = releaseDirectionDiagnosis(vx, vy, clientX, clientY, cr);
     const release = posFail == null && dir.pass;
     return {
@@ -413,6 +457,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
   function releaseEncoderNearCard() {
     clearActivationDelayTimer();
     activated = false;
+    ringReleaseBandLatched = false;
+    cardArmOutside = false;
+    postSoftReleaseArmBlockUntilMs = performance.now() + POST_SOFT_RELEASE_ARM_BLOCK_MS;
     if (bounded && slipActive) state.valueAcc = 0;
     slipActive = false;
     resetSlipSpring();
@@ -442,9 +489,12 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
 
   /** Card-centre mode: wait until the pointer has left the card before arming, so the first angle uses a stable ray. */
   function activationSatisfied(clientX, clientY) {
+    const now = performance.now();
+    if (postSoftReleaseArmBlockUntilMs > 0 && now < postSoftReleaseArmBlockUntilMs) return false;
     if (distanceFromStart(clientX, clientY) < cfg.activationRadiusPx) return false;
     if (cfg.rotationOrigin !== "cardCenter" || !cfg.requireOutsideCardToActivate) return true;
-    return !isPointerOverCard(clientX, clientY);
+    updateCardArmOutside(clientX, clientY);
+    return cardArmOutside;
   }
 
   function distanceFromStart(clientX, clientY) {
@@ -558,6 +608,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     const pid = pointerId;
     pointerId = null;
     activated = false;
+    ringReleaseBandLatched = false;
+    cardArmOutside = false;
+    postSoftReleaseArmBlockUntilMs = 0;
     /* Encoder must stay “active” until onRadialRelease runs — otherwise deferred release (stretch
      * spring) lets fry sim resume and overwrite the value card before the consumer applies the final value. */
     if (hadSlipAcc) state.valueAcc = 0;
@@ -647,6 +700,9 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     lastPointerClientY = ev.clientY;
     clearActivationDelayTimer();
     activated = false;
+    ringReleaseBandLatched = false;
+    cardArmOutside = false;
+    postSoftReleaseArmBlockUntilMs = 0;
     slipActive = false;
     resetSlipSpring();
     restoreThumbPathDefault();
@@ -705,7 +761,10 @@ export function attachVelocityUnboundedRadialBehavior(ctx, state) {
     }
 
     const releaseDiag = releaseGestureDiagnosis(lastPointerClientX, lastPointerClientY, vx, vy);
-    if (releaseDiag.release) {
+    const allowSoftRelease =
+      releaseDiag.release &&
+      performance.now() - encoderActivatedAtMs >= ENCODING_SOFT_RELEASE_GRACE_MS;
+    if (allowSoftRelease) {
       releaseEncoderNearCard();
       return;
     }

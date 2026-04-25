@@ -36,6 +36,74 @@ function renderCaseStudyContent(caseStudy, markdown) {
     `;
 }
 
+function initCaseStudyMediaLayout(rootEl) {
+    if (!rootEl) return;
+
+    var scope = rootEl.querySelector('.case-study-content');
+    if (!scope) return;
+
+    var images = scope.querySelectorAll('img[title]');
+    for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        var rawTitle = (img.getAttribute('title') || '').trim();
+        if (!rawTitle) continue;
+
+        var tokens = rawTitle
+            .split(/[\s,]+/g)
+            .map(function (t) {
+                return (t || '').trim().toLowerCase();
+            })
+            .filter(Boolean);
+
+        var allowed = {
+            wide: true,
+            narrow: true,
+            bleed: true,
+            'bleed-xl': true,
+            left: true,
+            right: true
+        };
+
+        var picked = [];
+        for (var t = 0; t < tokens.length; t++) {
+            if (allowed[tokens[t]]) picked.push(tokens[t]);
+        }
+
+        // Nothing we recognise → leave as-is (still lets authors use title as actual tooltip text).
+        if (!picked.length) continue;
+
+        var mediaNode = img.closest('a');
+        if (!mediaNode || mediaNode.querySelectorAll('img').length !== 1) {
+            mediaNode = img;
+        }
+
+        // Avoid double-wrapping if content re-inits.
+        if (mediaNode.closest && mediaNode.closest('figure.cs-media')) continue;
+
+        var figure = document.createElement('figure');
+        figure.className = 'cs-media';
+
+        for (var p = 0; p < picked.length; p++) {
+            figure.classList.add('cs-media--' + picked[p]);
+        }
+
+        var parent = mediaNode.parentNode;
+        if (!parent) continue;
+        parent.insertBefore(figure, mediaNode);
+        figure.appendChild(mediaNode);
+
+        // Title was used as layout directive, so remove it to avoid weird hover tooltips.
+        img.removeAttribute('title');
+
+        // If the media was wrapped by a paragraph, remove the paragraph wrapper for cleaner spacing.
+        if (figure.parentNode && figure.parentNode.tagName === 'P' && figure.parentNode.childNodes.length === 1) {
+            var pEl = figure.parentNode;
+            pEl.parentNode.insertBefore(figure, pEl);
+            pEl.parentNode.removeChild(pEl);
+        }
+    }
+}
+
 function getOrCreateImageLightbox() {
     var existing = document.getElementById('image-lightbox-overlay');
     if (existing) return existing;
@@ -249,6 +317,7 @@ function loadCaseStudyPage() {
                             container.innerHTML = html;
                             if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
                             if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
+                            initCaseStudyMediaLayout(container);
                             initCaseStudyImageLightbox(container);
                         },
                         function () {

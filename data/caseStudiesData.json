@@ -1,5 +1,15 @@
 [
     {
+        "key": "sidestep-jump-crouch",
+        "title": "Sidestep, Jump & Crouch",
+        "description": "Rapid prototyping + spatial design for FitXR",
+        "company": "FitXR // 2024",
+        "image": "sjc.png",
+        "imageAlt": "A FitXR player crouching low to dodge in a neon-lit virtual arcade environment.",
+        "md": "sidestep-jump-crouch.md"
+
+    },
+    {
         "key": "prosho",
         "title": "Hyperion Showcase",
         "description": "Novel xr interaction research & app design",

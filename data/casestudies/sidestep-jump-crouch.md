@@ -2,18 +2,18 @@
 
 ## Overview
 
-FitXR hadn’t shipped a new move for Box + Combat in ~2 years. i joined + designed, prototyped + shipped **3 new VR moves (sidestep, jump + crouch)** in **3 months**, as my first project at FitXR.
+FitXR hadn’t shipped a new move for Box + Combat in ~2 years. I joined + designed, prototyped + shipped **3 new VR moves (sidestep, jump + crouch)** in **3 months**, as my first project at FitXR.
 
 <div class="cs-overview">
   <table class="cs-overview-table">
     <tbody>
       <tr>
         <th scope="row">Role</th>
-        <td>Senior Product Designer. led end-to-end design + prototyping in Unity, ran the iteration loop, aligned stakeholders weekly, drove polish to ship, and monitored user feedback post-launch.</td>
+        <td>Senior Product Designer. Led end-to-end design + prototyping in Unity, ran the iteration loop, aligned stakeholders weekly, drove polish to ship, and monitored user feedback post-launch.</td>
       </tr>
       <tr>
         <th scope="row">Constraints</th>
-        <td>Mass-market VR. different bodies, different rooms, safety constraints. “feels good” matters as much as “looks cool”.</td>
+        <td>Mass-market VR. Different bodies, different rooms, safety constraints. “Feels good” matters as much as “looks cool”.</td>
       </tr>
       <tr>
         <th scope="row">Output</th>
@@ -31,7 +31,7 @@ FitXR hadn’t shipped a new move for Box + Combat in ~2 years. i joined + desig
 
 FitXR is a VR fitness app played by tens of thousands of people. Box and Combat are the most-played modes, but FitXR hadn't shipped a new move for them in 2 years. The team had attempted to ship some earlier in the year and the project had stalled.
 
-i joined and was asked to design, prototype + ship 3 new moves - Sidestep, Jump and Crouch - in 3 months - so that they were ready for release in our peak season (January).
+I joined and was asked to design, prototype + ship 3 new moves - Sidestep, Jump and Crouch - in 3 months - so that they were ready for release in our peak season (January).
 
 ---
 
@@ -49,12 +49,12 @@ To accomplish this, we made over 50 prototypes in 3 months.
 
 ## The Solution
 
-i landed on a loop i called **Design, Discard, Deliver** - with a relentless feedback loop running through all of it.
+I landed on a loop I called **Design, Discard, Deliver** - with a relentless feedback loop running through all of it.
 
 [![Design, Discard, Deliver loop diagram](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png "wide")](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png)
 
-- **Design** - get into VR fast. prototype in Unity, feel it.
-- **Discard** - if it's not working, throw it away. don't get attached.
+- **Design** - get into VR fast. Prototype in Unity, feel it.
+- **Discard** - if it's not working, throw it away. Don't get attached.
 - **Deliver** - once you find the magic, stop iterating + start polishing.
 
 The feedback loop was constant Slack updates, weekly product reviews with stakeholders, weekly internal playtests, and a couple of rounds of external playtests once prototypes were testable.
@@ -129,4 +129,4 @@ Three things I took away:
 
 ---
 
-I ended up giving this case study as a talk at a couple places. <a href="https://youtu.be/i6fCFnmGtv8?si=zC30whvvtP7HhUxU" class="talk-title-link" target="_blank" rel="noopener noreferrer">You can watch it here<span class="material-icons link-icon external" aria-hidden="true">north_east</span></a>
+I ended up giving this case study as a talk at a couple places. <a href="https://youtu.be/i6fCFnmGtv8?si=zC30whvvtP7HhUxU" class="talk-title-link" target="_blank" rel="noopener noreferrer">You can watch it here <span class="material-icons link-icon external" aria-hidden="true">north_east</span></a>

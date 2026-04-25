@@ -1,4 +1,4 @@
-[![alt text](./images/casestudies/dogracer.jpg)](./images/casestudies/dogracer.jpg)
+[![alt text](./images/casestudies/dogracer.jpg "bleed")](./images/casestudies/dogracer.jpg)
 
 ## My Role
 

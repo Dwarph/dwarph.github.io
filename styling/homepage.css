@@ -2419,6 +2419,10 @@ html.home-nav-layout-dock .nav-link {
     text-decoration: underline;
 }
 
+.case-study-section .case-study-content a.talk-title-link {
+    text-decoration: none;
+}
+
 .case-study-section .case-study-content a:hover {
     opacity: 0.7;
 }

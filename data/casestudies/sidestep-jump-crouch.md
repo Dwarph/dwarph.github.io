@@ -127,4 +127,6 @@ Three things I took away:
 - **Use your stakeholders.** Cultivate an environment where they can tell you something's bad without it being personal. They'll see the wood for the trees when you can't.
 - **Delivery is where you breathe.** Polishing the things that are working buys space for the harder problems to solve themselves.
 
-i gave a talk on this at XRCC Online and as a guest lecture at Glasgow University. [Watch it on YouTube.](https://youtu.be/i6fCFnmGtv8?si=zC30whvvtP7HhUxU)
+---
+
+I ended up giving this case study as a talk at a couple places. <a href="https://youtu.be/i6fCFnmGtv8?si=zC30whvvtP7HhUxU" class="talk-title-link" target="_blank" rel="noopener noreferrer">You can watch it here<span class="material-icons link-icon external" aria-hidden="true">north_east</span></a>

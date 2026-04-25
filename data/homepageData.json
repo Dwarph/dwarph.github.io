@@ -83,6 +83,15 @@
   ],
   "projects": [
     {
+      "title": "Circle Slider",
+      "year": 2026,
+      "tags": "UI, Interaction, Prototype",
+      "description": "A circle slider that turns circular motion into input. Stays smooth + usable thanks to velocity-based precision, skim-safe dragging (fast passes won’t interrupt input), and a tap affordance that reveals the dial.",
+      "image": "images/projects/circle-slider.png",
+      "imageAlt": "A circular slider dial with a progress arc and a knob indicator.",
+      "link": "experiments/circle-slider/"
+    },
+    {
       "title": "Morandi",
       "year": 2025,
       "tags": "AI, Vibe Coding",

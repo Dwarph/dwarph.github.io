@@ -1,13 +1,13 @@
 # Design decisions: homepage & case studies
 
-This document captures the conventions embodied in the current implementation so new work stays consistent. It is derived from the site’s code and data (`index.html`, case study HTML shells, `js/homepageGenerator.js`, `js/caseStudyPageGenerator.js`, `js/header.js`, `styling/homepage.css`, and `data/`).
+This document captures the conventions embodied in the current implementation so new work stays consistent. It is derived from the site’s code and data (`index.html`, case study HTML shells, `js/homepageGenerator.js`, `js/caseStudyPageGenerator.js`, `js/header.js`, `styling/core.css`, `styling/home.css`, `styling/case-study.css`, `styling/archive.css`, and `data/`).
 
 ---
 
 ## Visual system
 
 - **Palette**: Warm off-white background (`#FFFDEF`), deep brown text (`#372C09`). Accent highlights: pink for “Pip”, yellow for emphasis phrases, plus **company gradients** — FitXR (blue) and Ultraleap (teal/green) — used for job titles and inline company names in prose.
-- **Typography**: **Outfit** for headings and **Nunito Sans** for body. Fonts load from the HTML shell (not from CSS `@import`) to avoid duplicate requests. Typographic scale is defined in `homepage.css` (desktop defaults with a **768px** breakpoint for mobile).
+- **Typography**: **Outfit** for headings and **Nunito Sans** for body. Fonts load from the HTML shell (not from CSS `@import`) to avoid duplicate requests. Typographic scale tokens live in `core.css` (desktop defaults with a **768px** breakpoint for mobile).
 - **Icons**: **Material Icons** for link affordances — `north_east` for external links, `chevron_right` for internal navigation — so users can scan link type quickly.
 - **Layout width**: Main content uses a **~730px** max width on desktop (`clamp` horizontal padding). Case study long-form content follows the same section constraints.
 - **Spacing**: Tokenized CSS variables (`--spacing-*`, `--space-section`, `--space-block`, etc.) with **mobile-first** hierarchy: larger gaps between jobs than between cards than within cards.
@@ -47,7 +47,7 @@ This document captures the conventions embodied in the current implementation so
 - **Rendering**: **Showdown** converts Markdown to HTML; paths in markdown are rewritten so `./images/casestudies/...` and `./data/casestudies/images/...` resolve correctly when deployed.
 - **Layout**: Shared header → **breadcrumb** (`Home / Current title`) → `h1` title + italic **company line** → Markdown body inside `.case-study-content`.
 - **Intro paragraph (exception)**: For **Hyperion Showcase** (`prosho`), a fixed HTML intro is injected in JS (not from markdown) for a consistent branded lead-in; prefer moving such copy into data/markdown if more case studies need the same pattern.
-- **Styling**: Core prose styling lives under `.case-study-section .case-study-content` in `homepage.css` (headings, lists, images with **15px radius**, tables, code, horizontal rules). Case study HTML may also load `styling/markdownStyling.css` where needed for extra Markdown-specific rules.
+- **Styling**: Core prose styling lives under `.case-study-section .case-study-content` in `case-study.css` (headings, lists, images with **15px radius**, tables, code, horizontal rules). Case study HTML may also load `styling/markdownStyling.css` where needed for extra Markdown-specific rules.
 - **Loading & errors**: Container uses `aria-busy` while fetching; **retry** helpers in `utils.js` reduce flaky-network failures; failures show a centered **Try again** control. Unknown keys render a **not found** state with link back home.
 - **Document title**: Set dynamically to `Pip Turner - <case study title>` (or a not-found title).
 

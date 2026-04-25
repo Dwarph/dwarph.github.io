@@ -15,7 +15,12 @@ The **hero** is a framed photograph (fluid max width ~1200px, generous corner ra
 - FitXR gradient: `#48abe9` → `#0179e9`; Ultraleap: `#00eb86` → `#00ceca`
 - 15px radius on cards, thumbs, and markdown images; pill nav (`border-radius: 999px`)
 - Scroll-driven reveal on desktop (blur + translate); disabled on mobile and when `prefers-reduced-motion`
-- Single CSS source of truth: `styling/homepage.css` (homepage, case study, archive)
+- CSS is split by ownership:
+  - Shared core: `styling/core.css`
+  - Homepage: `styling/home.css`
+  - Case studies: `styling/case-study.css`
+  - Interaction archive: `styling/archive.css`
+  - Legacy bundle entrypoint: `styling/homepage.css` (imports the above)
 
 ## 2. Color Palette & Roles
 

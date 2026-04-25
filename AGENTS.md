@@ -32,3 +32,8 @@ When work touches **UI, layout, typography, color, motion, or product copy** in 
 - **Vague requests** — ask a short clarifying question (goal, constraints, “what does good look like?”) before committing to a solution; don’t guess the whole problem from one underspecified sentence.
 - **Ambiguous feedback** — when the user reacts to work in loose terms (“kinda broken”, “feels off”, “not right”) without specifics, ask a few targeted questions (what they expected vs saw, scope, repro) before changing code or locking onto one root cause; don’t assume a single interpretation.
 - **Questions** — when the user asks a question (not a direct “do X” task), talk it through with them first: trade-offs, options, and what you’d need to know before recommending or building something—rather than jumping straight to a single answer or implementation.
+
+## Code organization
+
+- Avoid **monolithic “grab-bag” files** that accrue unrelated responsibilities (e.g. one huge CSS/JS file spanning multiple pages/features). Prefer splitting by **ownership** (per-page/per-feature modules) with a small shared `core` for genuinely shared tokens/utilities.
+- If you need a compatibility layer, keep it as a **thin entrypoint** (e.g. a legacy file that only imports/includes the new modules) rather than continuing to add new rules to the monolith.

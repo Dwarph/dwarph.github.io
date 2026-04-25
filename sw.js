@@ -1,8 +1,12 @@
 // Service Worker for pipturner.co.uk
-const CACHE_NAME = 'pipturner-v4';
+const CACHE_NAME = 'pipturner-v5';
 const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
+  '/styling/core.css',
+  '/styling/home.css',
+  '/styling/case-study.css',
+  '/styling/archive.css',
   '/styling/homepage.css',
   '/styling/styles.css',
   '/styling/soundboard.css',

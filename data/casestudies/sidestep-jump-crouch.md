@@ -69,9 +69,9 @@ The feedback loop was constant Slack updates, weekly product reviews with stakeh
 
 The challenge with Jump was making it feel really vertical without people cracking their head on the ceiling or having their headset fall off mid-jump. Early prototypes used horizontal motion - a Wipeout-style obstacle sliding toward you. It didn't read as "jump".
 
-The unlock was vertical motion. A bottom bar + top bar with high contrast, and an interesting pattern between them. Even though the motion is only ~10cm, the upward pulse hints at what your body should do. We made the jump itself flexible - heel raise to full tuck - so it suits a lot of different body types.
+The unlock was vertical motion. A bottom bar + top bar with high contrast, and a texture between them to help emphasise depth. Even though the motion is only ~10cm, the upward pulse hints at what your body should do. We made the jump heuristic itself flexible - heel raise to full tuck - so it suits a lot of different body types.
 
-A burst that feels big but stays safe. No big hiccups.
+A burst that feels big but stays safe.
 
 [![A snapshot of the jump prototype set](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png)
 
@@ -83,13 +83,13 @@ A burst that feels big but stays safe. No big hiccups.
 
 12 prototypes. The lesson here was about not being afraid to look at your discard pile.
 
-Sidestep had the same problem as Jump - small motion, big feel - but the kicker was that players were instinctively dodging with their head, like they would in Beat Saber. We wanted them to feel like a kick-ass ninja, not a Beat Saber player.
+Sidestep had the same problem as Jump - small motion, big feel - but the kicker was that in early prototypes, players were instinctively dodging with their head, like they would in Beat Saber. We wanted them to feel like a kick-ass ninja, not a Beat Saber player.
 
 We tried solving it with affordances. Bigger arrows, thicker targets, longer walls. None of it worked. So we discarded.
 
-Then i went back through old prototypes and found prototype 6, one we'd moved past too early. Two things were quietly working in it: feet symbols on the floor + a lane visual that slid out from under them.
+Then I went back through old prototypes and found prototype 6, which was when we'd had the highest conviction in the move. Two things were quietly working in it: feet symbols on the floor + a lane visual that slid out from under them.
 
-The feet idea actually came from an old Ultraleap project on touchless touchscreens during COVID. Research showed 99.9% of people will stand exactly where you put a pair of feet on the floor. It worked here too - the feet told players to move their whole body, not just their head. The lane visual signalled that their entire point of reference was shifting.
+The feet idea actually came from an old Ultraleap project on touchless touchscreens during COVID (Touchfree). Research showed that most people will stand exactly where you put a pair of feet on the floor. It worked here too - the feet told players to move their whole body, not just their head. The lane visual signalled that their entire point of reference was shifting.
 
 We also locked in the visual language here - blue bar on the left, white fade in the middle, glow on the outside. It became the lynchpin for the next move.
 
@@ -101,11 +101,11 @@ We also locked in the visual language here - blue bar on the left, white fade in
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/sidestep-jump-crouch/Crouch.mp4"></video>
 </figure>
 
-15+ prototypes. Took us all 3 months and then some.
+15+ prototypes. We worked on this for all 3 months (and a little extra afterwards!)
 
 Crouch had to force you to drop low + dodge sideways. Long moments of tension, fast transitions. Around prototype 11 we had something that looked cool - similar art style, pulse of energy in front of you - but stakeholders + external testers all said the same thing: over-complicated, confusing, claustrophobic.
 
-So we discarded again. And we breathed - we paused on Crouch, focused on polishing Jump + Sidestep, and let the problem chug along in the background.
+So we discarded again, and took some time to breathe. We paused on Crouch, focused on polishing Jump + Sidestep, and let the problem chug along in our brains, in the background.
 
 When we came back, the answer was already in the work we'd done. Jump + Sidestep were flat, simple, motion-led. What if we applied the same restraint to Crouch?
 
@@ -117,13 +117,13 @@ It worked. You can chain Crouches together to make weaves. The bars become the t
 
 ## Impact
 
-Sidestep, Jump and Crouch shipped together into FitXR's Box and Combat workouts. Player response was strongly positive - one of my favourites was: *"Finally, my pulse is racing. Love it."*
+Sidestep, Jump and Crouch shipped together into FitXR's Box and Combat workouts. Player response was consistently, overwhelmingly positive. My standout comment is: *"FINALLY, my pulse was RACING. LOVE IT."*
 
 [![A snapshot of player feedback post-launch](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png)
 
-Three things i took away:
+Three things I took away:
 
-- **Your first idea isn't your best. Neither is your 11th.** Get in, test fast, run the loop. The more context you carry in your head, the sooner the magic shows up.
+- **Your first idea isn't your best. Neither is your 11th.** Get in, test fast, run the loop. The more context you carry in your head, the more reps you get through, the sooner the magic shows up.
 - **Use your stakeholders.** Cultivate an environment where they can tell you something's bad without it being personal. They'll see the wood for the trees when you can't.
 - **Delivery is where you breathe.** Polishing the things that are working buys space for the harder problems to solve themselves.
 

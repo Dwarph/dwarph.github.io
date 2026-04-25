@@ -36,6 +36,144 @@ function renderCaseStudyContent(caseStudy, markdown) {
     `;
 }
 
+function getOrCreateImageLightbox() {
+    var existing = document.getElementById('image-lightbox-overlay');
+    if (existing) return existing;
+
+    var overlay = document.createElement('div');
+    overlay.className = 'image-lightbox-overlay';
+    overlay.id = 'image-lightbox-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Image preview');
+    overlay.setAttribute('hidden', 'true');
+
+    overlay.innerHTML =
+        '<button type="button" class="image-lightbox-close" aria-label="Close image preview">' +
+        '<span aria-hidden="true">×</span>' +
+        '</button>' +
+        '<div class="image-lightbox-stage" role="document">' +
+        '<img class="image-lightbox-image" alt="" />' +
+        '</div>';
+
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+function initCaseStudyImageLightbox(rootEl) {
+    if (!rootEl) return;
+
+    var scope = rootEl.querySelector('.case-study-content');
+    if (!scope) return;
+
+    var overlay = getOrCreateImageLightbox();
+    var stage = overlay.querySelector('.image-lightbox-stage');
+    var imgEl = overlay.querySelector('.image-lightbox-image');
+    var closeBtn = overlay.querySelector('.image-lightbox-close');
+
+    var lastActiveEl = null;
+    var scrollYBeforeOpen = 0;
+
+    function openLightbox(fromImg) {
+        if (!fromImg || !fromImg.src) return;
+
+        lastActiveEl = document.activeElement;
+        scrollYBeforeOpen = window.scrollY || 0;
+
+        imgEl.src = fromImg.src;
+        imgEl.alt = fromImg.alt || '';
+        imgEl.removeAttribute('width');
+        imgEl.removeAttribute('height');
+
+        overlay.removeAttribute('hidden');
+        overlay.classList.add('image-lightbox-overlay--open');
+        document.documentElement.classList.add('image-lightbox-open');
+
+        // Avoid layout shift if the page already has a stable scrollbar gutter, but still
+        // prevent scroll chaining while open.
+        document.body.style.overflow = 'hidden';
+
+        closeBtn.focus();
+    }
+
+    function closeLightbox() {
+        if (overlay.hasAttribute('hidden')) return;
+
+        overlay.classList.remove('image-lightbox-overlay--open');
+        overlay.setAttribute('hidden', 'true');
+        document.documentElement.classList.remove('image-lightbox-open');
+        document.body.style.overflow = '';
+
+        // Release the image resource reference quickly (helps memory on huge images).
+        imgEl.removeAttribute('src');
+
+        try {
+            window.scrollTo(0, scrollYBeforeOpen);
+        } catch (e) {}
+
+        if (lastActiveEl && typeof lastActiveEl.focus === 'function') {
+            lastActiveEl.focus();
+        }
+        lastActiveEl = null;
+    }
+
+    function onOverlayClick(e) {
+        // Close when clicking the dimmed backdrop or the stage padding, but not the image itself.
+        if (e.target === overlay || e.target === stage) closeLightbox();
+    }
+
+    function onKeyDown(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closeLightbox();
+        }
+    }
+
+    // Ensure we only bind overlay listeners once.
+    if (!overlay.__imageLightboxBound) {
+        overlay.__imageLightboxBound = true;
+        overlay.addEventListener('click', onOverlayClick);
+        closeBtn.addEventListener('click', function () {
+            closeLightbox();
+        });
+        document.addEventListener('keydown', onKeyDown);
+
+        // Clicking the enlarged image closes too (fast “tap to dismiss”).
+        imgEl.addEventListener('click', function () {
+            closeLightbox();
+        });
+    }
+
+    var images = scope.querySelectorAll('img:not([data-no-lightbox])');
+    for (var i = 0; i < images.length; i++) {
+        (function (img) {
+            // If the image is inside a link, keep the overlay behaviour rather than navigation.
+            img.classList.add('case-study-lightbox-image');
+            img.setAttribute('role', 'button');
+            img.setAttribute('tabindex', '0');
+            img.setAttribute('aria-haspopup', 'dialog');
+
+            function handleActivate(e) {
+                // Let users drag to select text around images etc.
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                openLightbox(img);
+            }
+
+            img.addEventListener('click', handleActivate);
+            img.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openLightbox(img);
+                }
+            });
+        })(images[i]);
+    }
+}
+
 function renderCaseStudyFetchError(onRetryId) {
     return (
         '<div class="page-status page-status--error" role="alert" id="case-study-content">' +
@@ -111,6 +249,7 @@ function loadCaseStudyPage() {
                             container.innerHTML = html;
                             if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
                             if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
+                            initCaseStudyImageLightbox(container);
                         },
                         function () {
                             container.removeAttribute('aria-busy');

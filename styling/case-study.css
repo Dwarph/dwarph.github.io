@@ -1,5 +1,234 @@
 /* Case study page-specific styles */
 
+/* -------------------------------------------------------------------------- */
+/* Case study progress scroller (rail on desktop, dock on mobile)             */
+/* -------------------------------------------------------------------------- */
+
+.case-study-progress-scroller {
+    --progress: 0;
+    /* Tweakables (override these wherever you want) */
+    --cs-progress-thickness-rail: 28px;
+    --cs-progress-length-rail: 160px;
+    --cs-progress-thickness-dock: 10px;
+    --cs-progress-length-dock: clamp(140px, 46vw, 280px);
+    --cs-top-button-size: 48px;
+    --cs-top-button-gap: 10px;
+    --cs-scroller-shadow:
+        0 10px 40px rgba(55, 44, 9, 0.08),
+        0 0 0 1px rgba(55, 44, 9, 0.07),
+        0 0 0 1px rgba(255, 255, 255, 0.42) inset;
+    --cs-track: rgba(55, 44, 9, 0.14);
+    --cs-fill: rgba(55, 44, 9, 0.38);
+
+    position: fixed;
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px;
+    margin: 0;
+    background: rgba(255, 253, 239, 0.94);
+    border-radius: 999px;
+    box-shadow: var(--cs-scroller-shadow);
+    box-sizing: border-box;
+    transition: box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.case-study-progress-scroller--hidden {
+    display: none;
+}
+
+.case-study-progress-scroller:hover {
+    box-shadow:
+        0 14px 44px rgba(55, 44, 9, 0.1),
+        0 0 0 1px rgba(55, 44, 9, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.48) inset;
+}
+
+.case-study-progress-track {
+    position: relative;
+    overflow: hidden;
+    background: var(--cs-track);
+    border-radius: 999px;
+    flex: 0 0 auto;
+}
+
+.case-study-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: var(--cs-fill);
+    /* Use explicit size so the “cap” stays perfectly rounded. */
+    width: 100%;
+    height: calc(var(--progress) * 100%);
+    border-radius: 999px;
+}
+
+/* When progress is tiny, force the fill to start as a true circle (not a short pill). */
+html.home-nav-layout-rail .case-study-progress-scroller--has-progress .case-study-progress-fill {
+    min-height: var(--cs-progress-thickness-rail);
+}
+
+.case-study-progress-scroller--fitxr .case-study-progress-fill {
+    background: linear-gradient(to bottom, var(--fitxr-start), var(--fitxr-end));
+}
+
+.case-study-progress-scroller--ultraleap .case-study-progress-fill {
+    background: linear-gradient(to bottom, var(--ultraleap-start), var(--ultraleap-end));
+}
+
+.case-study-progress-top {
+    width: var(--cs-top-button-size);
+    height: var(--cs-top-button-size);
+    border-radius: 999px;
+    border: none;
+    background: rgba(255, 253, 239, 0.94);
+    box-shadow: var(--cs-scroller-shadow);
+    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    flex: 0 0 auto;
+    touch-action: manipulation;
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(8px);
+    transform: var(--cs-top-btn-transform-hidden, translateY(4px) scale(0.96));
+    transition:
+        opacity 0.18s cubic-bezier(0.2, 0, 0, 1),
+        filter 0.18s cubic-bezier(0.2, 0, 0, 1),
+        transform 0.18s cubic-bezier(0.2, 0, 0, 1),
+        background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.case-study-progress-scroller--top-visible .case-study-progress-top {
+    opacity: 1;
+    pointer-events: auto;
+    filter: blur(0);
+    transform: var(--cs-top-btn-transform-visible, translateY(0) scale(1));
+}
+
+.case-study-progress-top:hover {
+    background-color: rgba(55, 44, 9, 0.09);
+}
+
+.case-study-progress-top .material-icons {
+    font-size: var(--fs-nav);
+    line-height: 1;
+    transform: translateY(0.5px);
+}
+
+/* Desktop rail layout (default when html.home-nav-layout-rail is set) */
+html.home-nav-layout-rail .case-study-progress-scroller {
+    flex-direction: column;
+    left: clamp(12px, 2.5vw, 28px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+html.home-nav-layout-rail .case-study-progress-track {
+    width: var(--cs-progress-thickness-rail);
+    height: var(--cs-progress-length-rail);
+}
+
+html.home-nav-layout-rail .case-study-progress-top {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + var(--cs-top-button-gap));
+    --cs-top-btn-transform-hidden: translateX(-50%) translateY(4px) scale(0.96);
+    --cs-top-btn-transform-visible: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Bottom dock layout */
+html.home-nav-layout-dock .case-study-progress-scroller {
+    flex-direction: row;
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    padding: 10px 16px;
+    gap: 8px;
+    max-width: calc(100vw - 16px);
+}
+
+html.home-nav-layout-dock .case-study-progress-track {
+    width: var(--cs-progress-length-dock);
+    height: var(--cs-progress-thickness-dock);
+}
+
+html.home-nav-layout-dock .case-study-progress-fill {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: calc(var(--progress) * 100%);
+    border-radius: 999px;
+}
+
+html.home-nav-layout-dock .case-study-progress-scroller--has-progress .case-study-progress-fill {
+    min-width: var(--cs-progress-thickness-dock);
+}
+
+html.home-nav-layout-dock .case-study-progress-top {
+    position: absolute;
+    left: calc(100% + var(--cs-top-button-gap));
+    top: 50%;
+    --cs-top-btn-transform-hidden: translateY(-50%) translateY(4px) scale(0.96);
+    --cs-top-btn-transform-visible: translateY(-50%) translateY(0) scale(1);
+}
+
+html.home-nav-layout-dock #case-study-container {
+    padding-bottom: clamp(68px, 11vh, 108px);
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    /* Mobile: hide progress bar entirely; keep only the jump-to-top button. */
+    html.home-nav-layout-dock #case-study-container {
+        padding-bottom: 0;
+    }
+
+    /* Remove transforms so fixed button is viewport-relative (not scroller-relative). */
+    html.home-nav-layout-dock .case-study-progress-scroller {
+        position: static;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        transform: none !important;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .case-study-progress-track {
+        display: none;
+    }
+
+    html.home-nav-layout-dock .case-study-progress-top {
+        --cs-top-button-size: 44px;
+        position: fixed;
+        /* Symmetrical inset: use bottom safe-area for both axes. */
+        --cs-mobile-inset: max(16px, env(safe-area-inset-bottom, 0px));
+        right: var(--cs-mobile-inset);
+        bottom: var(--cs-mobile-inset);
+        left: auto;
+        top: auto;
+        transform: none;
+        --cs-top-btn-transform-hidden: translateY(6px) scale(0.96);
+        --cs-top-btn-transform-visible: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .case-study-progress-scroller,
+    .case-study-progress-top {
+        transition: none !important;
+    }
+}
+
 .case-study-page-title {
     font-family: var(--font-display);
     font-weight: 700;

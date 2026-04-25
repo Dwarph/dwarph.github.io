@@ -64,6 +64,19 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
+  // Media files are often fetched with Range requests (206 Partial Content).
+  // Attempting to cache those responses can throw and break the request.
+  if (event.request.headers && event.request.headers.has('range')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Also avoid intercepting streaming media destinations.
+  if (event.request.destination === 'video' || event.request.destination === 'audio') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   // Experiments: never intercept — always use the network (no cache reads/writes under /experiments/).
   try {
     var path = new URL(event.request.url).pathname;
@@ -163,6 +176,9 @@ self.addEventListener('fetch', function(event) {
         if (event.request.destination === 'document') {
           return caches.match('/index.html');
         }
+        return caches.match(event.request).then(function(cached) {
+          return cached || Response.error();
+        });
       });
     })
   );

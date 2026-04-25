@@ -36,6 +36,142 @@ function renderCaseStudyContent(caseStudy, markdown) {
     `;
 }
 
+function getCaseStudyCompanyKey(companyLine) {
+    var raw = (companyLine || '').split('//')[0] || '';
+    raw = raw.trim().toLowerCase();
+    if (raw.indexOf('fitxr') !== -1) return 'fitxr';
+    if (raw.indexOf('ultraleap') !== -1) return 'ultraleap';
+    return '';
+}
+
+function renderCaseStudyProgressScroller(companyLine) {
+    var companyKey = getCaseStudyCompanyKey(companyLine);
+    var companyClass = companyKey ? ' case-study-progress-scroller--' + companyKey : '';
+    return (
+        '<nav class="case-study-progress-scroller' +
+        companyClass +
+        '" role="navigation" aria-label="Reading progress" id="case-study-progress-scroller" style="--progress: 0">' +
+        '<div class="case-study-progress-track" aria-hidden="true">' +
+        '<div class="case-study-progress-fill" aria-hidden="true"></div>' +
+        '</div>' +
+        '<button type="button" class="case-study-progress-top" aria-label="Back to top" title="Back to top">' +
+        '<span class="material-icons" aria-hidden="true">arrow_upward</span>' +
+        '</button>' +
+        '</nav>'
+    );
+}
+
+/** null | 'dock' | 'rail' */
+var caseStudyScrollerLayoutMode = null;
+var CASE_STUDY_SCROLLER_RAIL_ENTER = 1080;
+var CASE_STUDY_SCROLLER_DOCK_ENTER = 1040;
+
+function syncCaseStudyScrollerLayout() {
+    var w = window.innerWidth;
+    if (w <= 768) {
+        document.documentElement.classList.add('home-nav-layout-dock');
+        document.documentElement.classList.remove('home-nav-layout-rail');
+        caseStudyScrollerLayoutMode = 'dock';
+        return;
+    }
+    if (caseStudyScrollerLayoutMode === null) {
+        caseStudyScrollerLayoutMode = w <= CASE_STUDY_SCROLLER_DOCK_ENTER ? 'dock' : 'rail';
+    } else if (caseStudyScrollerLayoutMode === 'dock' && w >= CASE_STUDY_SCROLLER_RAIL_ENTER) {
+        caseStudyScrollerLayoutMode = 'rail';
+    } else if (caseStudyScrollerLayoutMode === 'rail' && w <= CASE_STUDY_SCROLLER_DOCK_ENTER) {
+        caseStudyScrollerLayoutMode = 'dock';
+    }
+    if (caseStudyScrollerLayoutMode === 'dock') {
+        document.documentElement.classList.add('home-nav-layout-dock');
+        document.documentElement.classList.remove('home-nav-layout-rail');
+    } else {
+        document.documentElement.classList.remove('home-nav-layout-dock');
+        document.documentElement.classList.add('home-nav-layout-rail');
+    }
+}
+
+function clamp01(value) {
+    return value < 0 ? 0 : value > 1 ? 1 : value;
+}
+
+function getPageScrollProgress() {
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+    // Use layout viewport here so "bottom of page" maps to progress=1 reliably.
+    var viewportH = window.innerHeight;
+    var scrollHeight = Math.max(
+        document.documentElement.scrollHeight,
+        document.body ? document.body.scrollHeight : 0
+    );
+    var maxScroll = Math.max(0, scrollHeight - viewportH);
+    var distanceFromBottom = scrollHeight - (scrollY + viewportH);
+    if (maxScroll <= 0) return { progress: 0, maxScroll: 0 };
+    if (distanceFromBottom <= 2) return { progress: 1, maxScroll: maxScroll };
+    return { progress: clamp01(scrollY / maxScroll), maxScroll: maxScroll };
+}
+
+function initCaseStudyProgressScroller(rootEl) {
+    rootEl = rootEl || document;
+    var scroller = rootEl.querySelector('#case-study-progress-scroller');
+    if (!scroller) return;
+
+    var prefersReducedMotion =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var topRevealThreshold = 0.1;
+    var smoothing = 0.12;
+    var minScrollablePxToShow = 24;
+
+    var ticking = false;
+    var smoothProgress = parseFloat(scroller.style.getPropertyValue('--progress')) || 0;
+    function update() {
+        ticking = false;
+        syncCaseStudyScrollerLayout();
+        var metrics = getPageScrollProgress();
+        var target = metrics.progress;
+
+        // Hide on pages that don't really scroll.
+        if (!metrics.maxScroll || metrics.maxScroll < minScrollablePxToShow) {
+            scroller.classList.add('case-study-progress-scroller--hidden');
+            return;
+        }
+        scroller.classList.remove('case-study-progress-scroller--hidden');
+
+        if (smoothing > 0 && smoothing < 1) {
+            smoothProgress = smoothProgress + (target - smoothProgress) * smoothing;
+        } else {
+            smoothProgress = target;
+        }
+        var p = clamp01(smoothProgress);
+        scroller.style.setProperty('--progress', String(p));
+        // Always show a “start cap” so the bar has colour at the top of the page.
+        scroller.classList.add('case-study-progress-scroller--has-progress');
+        if (p >= topRevealThreshold) scroller.classList.add('case-study-progress-scroller--top-visible');
+        else scroller.classList.remove('case-study-progress-scroller--top-visible');
+    }
+
+    function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(update);
+    }
+
+    var topBtn = scroller.querySelector('.case-study-progress-top');
+    if (topBtn) {
+        topBtn.addEventListener('click', function () {
+            try {
+                window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+            } catch (e) {
+                window.scrollTo(0, 0);
+            }
+        });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    update();
+}
+
 function initCaseStudyMediaLayout(rootEl) {
     if (!rootEl) return;
 
@@ -313,10 +449,12 @@ function loadCaseStudyPage() {
                             document.title = 'Pip Turner - ' + caseStudy.title;
                             var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
                             html += renderBreadcrumb(caseStudy.title);
+                            html += renderCaseStudyProgressScroller(caseStudy.company);
                             html += renderCaseStudyContent(caseStudy, markdown);
                             container.innerHTML = html;
                             if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
                             if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
+                            initCaseStudyProgressScroller(container);
                             initCaseStudyMediaLayout(container);
                             initCaseStudyImageLightbox(container);
                         },

@@ -136,24 +136,26 @@ html.home-nav-scrolling .nav-link:active {
 
 .nav-link.nav-link--active {
     color: var(--text-color);
-    box-shadow: 0 2px 14px rgba(55, 44, 9, 0.12);
+    box-shadow: none;
 }
 
 .nav-link.nav-link--active .nav-icon {
-    color: var(--text-color);
+    color: var(--highlight-pip);
 }
 
 .nav-link.nav-link--active::before {
-    opacity: 1;
-    filter: blur(0px);
+    /* Keep the circle background consistent; pink is icon-only. */
+    opacity: 0;
+    filter: blur(10px);
 }
 
 .nav-link.nav-link--active:hover {
-    background-color: transparent;
+    background-color: rgba(55, 44, 9, 0.09);
+    box-shadow: none;
 }
 
 .nav-link.nav-link--active:hover::before {
-    opacity: 0.92;
+    opacity: 0;
 }
 
 /* Bottom floating dock — mid-width + mobile (class from JS; rail is wide desktop only) */

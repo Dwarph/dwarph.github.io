@@ -178,6 +178,21 @@ select:focus-visible {
     font-weight: 700;
 }
 
+.bio-company-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bio-company-link:hover {
+    opacity: 0.8;
+}
+
+.bio-company-link:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
     .gradient-fitxr {
         background: linear-gradient(to bottom, var(--fitxr-start), var(--fitxr-end));

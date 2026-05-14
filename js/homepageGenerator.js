@@ -49,8 +49,8 @@ function renderAbout(about) {
     // Apply styling
     bioText = bioText
         .replace(/Pip/g, '<span class="bio-highlight-pip">Pip</span>')
-        .replace(/Ultraleap/g, '<span class="bio-gradient-ultraleap">Ultraleap</span>')
-        .replace(/FitXR/g, '<span class="bio-gradient-fitxr">FitXR</span>')
+        .replace(/Ultraleap/g, '<a class="bio-gradient-ultraleap bio-company-link" href="#work-ultraleap">Ultraleap</a>')
+        .replace(/FitXR/g, '<a class="bio-gradient-fitxr bio-company-link" href="#work-fitxr">FitXR</a>')
         .replace(/joyful and inevitable/g, '<span class="bio-highlight-yellow">joyful and inevitable</span>');
     
     // Split by double newlines to create paragraphs
@@ -166,6 +166,7 @@ function renderWork(work) {
     for (var i = 0; i < work.length; i++) {
         var job = work[i];
         var gradientClass = getGradientClass(job.gradientColor);
+        var jobAnchorId = job.gradientColor ? ('work-' + job.gradientColor) : null;
         
         // Build case studies HTML
         var caseStudiesHtml = '';
@@ -224,7 +225,7 @@ function renderWork(work) {
         }
 
         workHtml += `
-            <div class="work-job">
+            <div class="work-job"${jobAnchorId ? ` id="${jobAnchorId}"` : ''}>
                 <div class="job-layout">
                     <div class="job-left-column">
                         <div class="job-logo-container">
@@ -586,6 +587,24 @@ function loadHomepageData() {
                             block: 'start'
                         });
                     }
+                }
+            });
+        }
+
+        // Intro company links: smooth-scroll to the relevant Work entry.
+        var companyLinks = container.querySelectorAll('.bio-company-link[href^="#"]');
+        for (var cl = 0; cl < companyLinks.length; cl++) {
+            companyLinks[cl].addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (!href || href.charAt(0) !== '#') return;
+                e.preventDefault();
+                var targetId = href.substring(1);
+                var targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         }

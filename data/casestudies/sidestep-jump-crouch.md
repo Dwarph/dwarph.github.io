@@ -9,7 +9,7 @@ FitXR hadn’t shipped a new move for Box + Combat in ~2 years. I joined + desig
     <tbody>
       <tr>
         <th scope="row">Role</th>
-        <td>Senior Product Designer. Led end-to-end design + prototyping in Unity, ran the iteration loop, aligned stakeholders weekly, drove polish to ship, and monitored user feedback post-launch.</td>
+        <td>Senior Product Designer. Ran the team, led end-to-end design + prototyping in Unity, ran the iteration loop, aligned stakeholders weekly, drove polish to ship, and monitored user feedback post-launch.</td>
       </tr>
       <tr>
         <th scope="row">Constraints</th>
@@ -21,7 +21,7 @@ FitXR hadn’t shipped a new move for Box + Combat in ~2 years. I joined + desig
       </tr>
       <tr>
         <th scope="row">Impact</th>
-        <td>Shipped into the most-played modes. strong, purely positive player sentiment (e.g. <em>“Finally, my pulse is racing. Love it.”</em>). no classes now ship without using these moves. Design of these moves is now being ported over and reused in other studios too.</td>
+        <td>Shipped into the most-played modes. strong, purely positive player sentiment (e.g. <em>“Finally, my pulse is racing. Love it.”</em>). No classes now ship without using these moves.</td>
       </tr>
     </tbody>
   </table>

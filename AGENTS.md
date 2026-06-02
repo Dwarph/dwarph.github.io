@@ -1,5 +1,9 @@
 # Agent instructions
 
+Global defaults for Cursor. Keep in sync with `~/.cursor/AGENTS.md` when you edit either file.
+
+**Paper:** After Paper MCP edits, **resize the artboard** if content is clipped or taller than the frame (`update_styles`, `fit-content`, or explicit height). Say which artboard to open if it is off-canvas.
+
 ## Persistent preferences and skills
 
 When the user asks for something that could reasonably be treated as **long-lived guidance** — for example: a standing preference, a workflow they want repeated, domain rules, tooling conventions, or anything that sounds like it should become a **Cursor skill** or **remembered rule** — do **not** silently add it to this file or create a new skill.
@@ -25,6 +29,24 @@ If the task can be completed **without** that MCP (and you are sure of that), sa
 ## DESIGN.md
 
 When work touches **UI, layout, typography, color, motion, or product copy** in this repo, **look for `DESIGN.md`** in the project root and in **ancestor directories** of the files you are changing (same idea as nested `AGENTS.md`). **Read and use** the nearest relevant `DESIGN.md` for tokens, patterns, tone, and constraints before inventing new visual or UX conventions. If multiple apply, prefer the **more specific** (deeper) file and reconcile with parents when they conflict.
+
+## Paper (design canvas)
+
+Paper Desktop must be running with the target `.paper` file open before using Paper MCP tools.
+
+### Artboard sizing
+
+After adding or changing content (`write_html`, appended sections, etc.), **always ensure content is visible on the artboard**:
+
+1. Check inner content height vs artboard height (`get_tree_summary`, `get_basic_info`, or `get_node_info`).
+2. If content is clipped or taller than the artboard — or the user says updates are missing — **resize before you finish**: use `update_styles` on the artboard (and inner strip frame if needed).
+3. Prefer `height: "fit-content"` on the artboard or main content frame when it works; otherwise set an explicit pixel height with padding (~40–80px above measured content height).
+4. New artboards are often placed off-canvas. Tell the user the **artboard name** and where to pan, or place new work beside related artboards (~80px gap). Do not assume they will find clipped or distant frames.
+
+### Workflow
+
+- Write incrementally (few `write_html` calls); avoid bulk `delete_nodes` and rapid bursts (can crash Paper).
+- Multi-word fonts: quoted names in HTML (`font-family: "Plus Jakarta Sans"`) or `update_styles` with `fontFamily`.
 
 ## User preferences
 

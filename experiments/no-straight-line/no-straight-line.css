@@ -1,0 +1,134 @@
+/* No straight line — Figma Frame 46 immersive poster */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #2996ff;
+}
+
+.nsl-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-family: "Barlow", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.nsl-back {
+  position: fixed;
+  z-index: 100;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  left: max(12px, env(safe-area-inset-left, 0px));
+  padding: 0.5rem 0.75rem;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nsl-back:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.nsl-back:focus-visible {
+  outline: 2px solid #e4fe5b;
+  outline-offset: 2px;
+}
+
+.nsl-stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: default;
+}
+
+.nsl-stage--dragging {
+  cursor: grabbing;
+}
+
+.nsl-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  width: 1080px;
+  height: 1350px;
+  background: #2996ff;
+  overflow: hidden;
+}
+
+.nsl-bg {
+  position: absolute;
+  inset: 0;
+  background: #2996ff url("./assets/bg-contours.png") center / cover no-repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.nsl-rope-canvas {
+  position: absolute;
+  inset: 0;
+  width: 1080px;
+  height: 1350px;
+  pointer-events: none;
+}
+
+.nsl-words {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.nsl-word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0.15em 0.35em;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 120px;
+  font-weight: 600;
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+  color: #fff;
+  white-space: nowrap;
+  cursor: grab;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.nsl-word:focus-visible {
+  outline: 2px solid #e4fe5b;
+  outline-offset: 4px;
+}
+
+.nsl-word--dragging,
+.nsl-word:active {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nsl-word {
+    cursor: default;
+  }
+}

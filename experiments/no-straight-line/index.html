@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Nunito+Sans:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="/assets/branding/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/branding/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/branding/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="no-straight-line.css">
+  <title>No straight line — Experiments</title>
+</head>
+
+<body class="nsl-page">
+  <a href="../" class="nsl-back">← Experiments</a>
+
+  <div id="nsl-stage" class="nsl-stage" aria-label="Drag each word; ropes connect them">
+    <div id="nsl-frame" class="nsl-frame">
+      <div class="nsl-bg" aria-hidden="true"></div>
+      <canvas id="nsl-rope-canvas" class="nsl-rope-canvas" aria-hidden="true"></canvas>
+      <div id="nsl-words" class="nsl-words"></div>
+    </div>
+  </div>
+
+  <script type="module" src="no-straight-line.js"></script>
+</body>
+
+</html>

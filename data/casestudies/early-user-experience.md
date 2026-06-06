@@ -79,23 +79,27 @@ Before the A/B test, Zoe and I user tested the designs. People understood the lo
 
 Trial-to-member conversion held steady despite a critical bug midway through the test — the extra structure wasn’t hurting commitment.
 
-### V2.5 — getting out of the way *(August–October 2025)*
+### V2.5 — optimise *(August–October 2025)*
 
-Here's what we built: a new workout every two days. Here's what users told us: the experience felt long and flat. Here's what the data confirmed: they were moving faster than we'd expected.
+V2 had raised the floor — a huge change to onboarding, and clear signal it was working. V2.5 was about **optimisation**: listening to users, reflecting on the design, and tightening what we’d built.
 
-We were getting in their way.
+Users were loud about one thing: **day gating was frustrating**. Our user-test participants hadn’t flagged it — but reviews gave us a clear signal it wasn’t worth the trade-off. We scrapped it.
 
-The call was counterintuitive. Remove the daily limit. Trust people to move at their own pace. Stop trying to control the journey and start making it worth completing.
+We doubled down on **everyone's a winner** and updated the copy to match. No more tutorial language — wording that put people in the action already. Class 1 went from “Box Foundations” to “Make Your Move.”
 
-Instead of forced pacing, we offered earned rewards: stamps for progress, new workout locations to unlock, and a social mode opened after the plan. The home screen got a redesign. One workout was cut. The whole thing got shorter and sharper.
+We upgraded the rewards. Not just more workouts — **our best environments and gloves**, the kind of thing that reflects what FitXR is actually worth playing for.
+
+A **stamp system** made the path legible: what to do today, what unlocks when you come back — not just a plan floating in the UI.
+
+We **shortened the plan**. Users shouldn’t feel stuck in beginner mode longer than they need to.
 
 [![Paths of Play V2.5 designs](./data/casestudies/images/early-ux/pop-v2-5.png "wide")](./data/casestudies/images/early-ux/pop-v2-5.png)
 
-**+29% plan completion.** Shorter path, less forced pacing — more people finished what we’d designed for them instead of dropping off mid-journey.
+**+29% plan completion.** Less friction, shorter path — more people finished instead of dropping off mid-journey.
 
-**+6% trial-to-member conversion.** Trusting people to move at their own pace didn’t hurt commitment; it helped.
+**+6% trial-to-member conversion.** Removing day gating didn’t hurt commitment; optimising the experience helped.
 
-People finished the plan in hours, not the days we’d planned for. **85%** of those who completed it went straight into the wider catalogue — the path worked as an on-ramp, not a dead end.
+People finished in hours, not the days we’d planned for — users were moving faster than we had assumed - but the plan now gave them the agency to do so.
 
 ---
 

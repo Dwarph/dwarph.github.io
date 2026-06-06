@@ -6,7 +6,7 @@ Over six months I designed, tested, and iterated a guided first-week experience 
 
 For the paywall, we needed patterns that work and a clear value proposition. For onboarding, we needed to prove a guided path worked, then build it properly.
 
-This case study focuses on both projects - through the lense of user centred design as a way to move metrics.
+This case study focuses on both projects through the lense of user centred design as a way to move metrics.
 
 <div class="cs-overview">
   <table class="cs-overview-table">
@@ -31,34 +31,30 @@ This case study focuses on both projects - through the lense of user centred des
   </table>
 </div>
 
-
+---
 
 ## Paths of Play
 
 Paths of Play was our name for the guided first-week onboarding: a sequenced set of workouts and UI changes that replaced "here's everything, good luck" with "start here, then here."
 
-I started by user testing the existing onboarding heavily: where people got lost, what they understood, and what the flow promised versus what they felt in the product. That work gave us the signal to bet on a guided path.
-
-[![User testing synthesis: session logs, themes, and recommendations](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
+[![Before launching into the project, I user tested our existing onboarding to gain conviction and signal.](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
 
 ### V1: something in their hands (March 2025)
 
 V1 tested three tenets we'd defined.
 
-Personalisation: a calibration step, tailored first workout, and a personalised plan based on their goals.
-
-Simplification: after subscribe, straight into a workout. Post-workout summaries stripped back; rewards, detailed previews, and room-blend features stayed locked until you were a more qualified player.
-
-Everyone's a winner: achievable early goals and simplified classes so people got a win before we asked for more commitment.
+- **Personalisation:** a calibration step, tailored first workout, and a personalised plan based on their goals.
+- **Simplification:** after subscribe, straight into a workout. Post-workout summaries stripped back; rewards, detailed previews, and room-blend features stayed locked until you were a more qualified player.
+- **Everyone's a winner:** achievable early goals and simplified classes so people got a win before we asked for more commitment.
 
 [![Calibration step: choose your first workout type](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>
-  <figcaption>Motion design to increase buy-in to a tailored first class.</figcaption>
+  <figcaption>V1 plan on the menu: pick your next workout from a guided path.</figcaption>
 </figure>
 
-**+9% trial-to-member conversion.** More people who tried the app actually subscribed. Strongest result this team had seen in this space for a long time.
+**+9% trial-to-member conversion.** Strongest result this team had seen in this space for a long time.
 
 **+17% playing multiple workouts on day one.** Far more new users built momentum on their first day instead of stopping after one.
 
@@ -70,11 +66,10 @@ V1 proved the guided path worked. The weak spot was return. Not enough reason to
 
 V2 doubled down on the signal. We built a kickstart plan that was impossible to miss. You always knew what to do next.
 
-[![Kickstart plan ready: personalised plan and today's goal](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png "wide")](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png)
+[![Kickstart plan ready: leaning hard into plan imagery](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png "wide")](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png)
 
 We day-gated every two days, a hook to come back, not just pacing for its own sake. We locked down more of the product so users stayed tunnel-visioned on the kickstart until they graduated. Unlock moments were designed to feel special: milestones, not permissions. Finish the plan and a celebration animation showed all your workouts merging into one collection.
 
-[![Locked home screen: kickstart plan front and centre](./data/casestudies/images/eux/popv2_locked.png "wide")](./data/casestudies/images/eux/popv2_locked.png)
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv2_kickstart_plan.mp4"></video>
@@ -85,11 +80,10 @@ Before the A/B test, Zoe and I user tested the designs. People understood the lo
 
 **+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week, not just a strong first day.
 
-Trial-to-member conversion held steady despite a critical bug midway through the test. The extra structure wasn't hurting commitment.
 
 ### V2.5: optimise (August–October 2025)
 
-V2 had already moved the numbers. V2.5 was polish: respond to reviews, tighten copy and rewards, shorten the plan.
+V2 had raised the floor for our onboarding - but now we needed to optimise.
 
 Users were loud about one thing: day gating was frustrating. Our user-test participants hadn't flagged it, but reviews gave us a clear signal it wasn't worth the trade-off. We scrapped it.
 
@@ -130,7 +124,7 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
   </figure>
 </div>
 
-**+10% paywall conversion.** The paywall had been hard to move for years. First shift came from matching what users needed at that moment, not polishing the old layout.
+**+10% paywall conversion.** The paywall had been hard to move for years; we moved it by focusing on user needs.
 
 ---
 

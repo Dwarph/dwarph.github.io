@@ -433,6 +433,7 @@ function loadHomepageData() {
             { href: '#talks', label: 'Talks', icon: HOMEPAGE_NAV_ICONS[3] },
             { href: '#contact', label: 'Contact', icon: HOMEPAGE_NAV_ICONS[4] }
         ];
+        html += '<div class="homepage-nav-shell">';
         html += '<nav class="homepage-nav" role="navigation" aria-label="Main navigation" id="homepage-section-nav">';
         for (var ni = 0; ni < navItems.length; ni++) {
             var item = navItems[ni];
@@ -453,6 +454,7 @@ function loadHomepageData() {
                 '</a>';
         }
         html += '</nav>';
+        html += '</div>';
         html += '</div>';
         html += renderAbout(data.about);
         html += renderWork(data.work);
@@ -565,6 +567,7 @@ function loadHomepageData() {
         for (var i = 0; i < navLinks.length; i++) {
             navLinks[i].addEventListener('click', function(e) {
                 e.preventDefault();
+                if (this.blur) this.blur();
                 var targetId = this.getAttribute('href').substring(1);
                 setHomepageNavActive(container, targetId);
                 /* Smooth scroll leaves short sections with the reading line still in the next block — hold clicked id */

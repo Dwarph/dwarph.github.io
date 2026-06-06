@@ -21,7 +21,7 @@ FitXR hadn’t shipped a new move for Box + Combat in ~2 years. I joined + desig
       </tr>
       <tr>
         <th scope="row">Impact</th>
-        <td>Shipped into the most-played modes. strong, purely positive player sentiment (e.g. <em>“Finally, my pulse is racing. Love it.”</em>). No classes now ship without using these moves.</td>
+        <td>Shipped into the most-played modes. Strong, purely positive player sentiment (e.g. <em>“Finally, my pulse is racing. Love it.”</em>). No classes now ship without using these moves.</td>
       </tr>
     </tbody>
   </table>
@@ -39,9 +39,9 @@ I joined and was asked to design, prototype + ship 3 new moves - Sidestep, Jump 
 
 Find moves that feel big, intuitive + fun in VR, and ship them fast.
 
-VR is one of the most human technologies out there. You can't design spatial things in Figma; you have to feel them. Full-body workouts mean designs need to work for many different bodies, in many different rooms, at very different fitness levels.
+VR design has to be felt, not mocked up in Figma. Full-body workouts mean designs need to work for many different bodies, in many different rooms, at very different fitness levels.
 
-To accomplish this, we made over 50 prototypes in 3 months.
+We made over 50 prototypes in 3 months.
 
 [![A sample of early Unity prototypes](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png "wide")](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png)
 
@@ -49,13 +49,13 @@ To accomplish this, we made over 50 prototypes in 3 months.
 
 ## The Solution
 
-I landed on a loop I called **Design, Discard, Deliver** - with a relentless feedback loop running through all of it.
+I landed on a loop I called **Design, Discard, Deliver**, with feedback running through all of it.
 
 [![Design, Discard, Deliver loop diagram](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png "wide")](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png)
 
-- **Design** - get into VR fast. Prototype in Unity, feel it.
-- **Discard** - if it's not working, throw it away. Don't get attached.
-- **Deliver** - once you find the magic, stop iterating + start polishing.
+- Design: get into VR fast. Prototype in Unity, feel it.
+- Discard: if it's not working, throw it away. Don't get attached.
+- Deliver: once you find something that works, stop iterating + start polishing.
 
 The feedback loop was constant Slack updates, weekly product reviews with stakeholders, weekly internal playtests, and a couple of rounds of external playtests once prototypes were testable.
 
@@ -67,9 +67,9 @@ The feedback loop was constant Slack updates, weekly product reviews with stakeh
 
 9 prototypes. The cleanest run of the framework we did.
 
-The challenge with Jump was making it feel really vertical without people cracking their head on the ceiling or having their headset fall off mid-jump. Early prototypes used horizontal motion - a Wipeout-style obstacle sliding toward you. It didn't read as "jump".
+The challenge with Jump was making it feel really vertical without people cracking their head on the ceiling or having their headset fall off mid-jump. Early prototypes used horizontal motion, a Wipeout-style obstacle sliding toward you. It didn't read as "jump".
 
-The unlock was vertical motion. A bottom bar + top bar with high contrast, and a texture between them to help emphasise depth. Even though the motion is only ~10cm, the upward pulse hints at what your body should do. We made the jump heuristic itself flexible - heel raise to full tuck - so it suits a lot of different body types.
+Vertical motion fixed it. A bottom bar + top bar with high contrast, and a texture between them to help emphasise depth. Even though the motion is only ~10cm, the upward pulse hints at what your body should do. We made the jump heuristic itself flexible, heel raise to full tuck, so it suits a lot of different body types.
 
 A burst that feels big but stays safe.
 
@@ -83,7 +83,7 @@ A burst that feels big but stays safe.
 
 12 prototypes. The lesson here was about not being afraid to look at your discard pile.
 
-Sidestep had the same problem as Jump - small motion, big feel - but the kicker was that in early prototypes, players were instinctively dodging with their head, like they would in Beat Saber. We wanted them to feel like a kick-ass ninja, not a Beat Saber player.
+Sidestep had the same problem as Jump, small motion, big feel. In early prototypes, players were instinctively dodging with their head, like they would in Beat Saber. We wanted them to feel like a kick-ass ninja, not a Beat Saber player.
 
 We tried solving it with affordances. Bigger arrows, thicker targets, longer walls. None of it worked. So we discarded.
 
@@ -117,15 +117,15 @@ It worked. You can chain Crouches together to make weaves. The bars become the t
 
 ## Impact
 
-Sidestep, Jump and Crouch shipped together into FitXR's Box and Combat workouts. Player response was consistently, overwhelmingly positive. My standout comment is: *"FINALLY, my pulse was RACING. LOVE IT."*
+Sidestep, Jump and Crouch shipped together into FitXR's Box and Combat workouts. Player response was positive across the board. My standout comment is: *"FINALLY, my pulse was RACING. LOVE IT."*
 
 [![A snapshot of player feedback post-launch](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png)
 
 Three things I took away:
 
-- **Your first idea isn't your best. Neither is your 11th.** Get in, test fast, run the loop. The more context you carry in your head, the more reps you get through, the sooner the magic shows up.
-- **Use your stakeholders.** Cultivate an environment where they can tell you something's bad without it being personal. They'll see the wood for the trees when you can't.
-- **Delivery is where you breathe.** Polishing the things that are working buys space for the harder problems to solve themselves.
+- Your first idea isn't your best. Neither is your 11th. Get in, test fast, run the loop. The more context you carry in your head, the more reps you get through, the sooner something clicks.
+- Stakeholders will tell you when something's bad. Make that easy, not personal. They'll see what you can't when you're too close.
+- Polishing what works buys you time for the hard problems. We paused on Crouch, shipped Jump + Sidestep, and came back to find the answer was already in the work we'd done.
 
 ---
 

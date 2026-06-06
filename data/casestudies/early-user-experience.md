@@ -41,6 +41,8 @@ For the paywall, we needed proven patterns and a clear value proposition. For on
 
 Paths of Play was our name for the guided first-week experience: a sequenced set of workouts and UI changes that replaced “here’s everything, good luck” with “start here, then here.”
 
+Before V1 shipped, we’d already run deep user testing on the **existing onboarding** — where people got lost, what they understood, and what the flow promised versus what they felt in the product. That work gave us the signal to bet on a guided path.
+
 ### V1 — something in their hands *(March 2025)*
 
 V1 tested two ideas — **personalisation** and **simplification** — with a third we were starting to explore.
@@ -61,23 +63,25 @@ One gap: that first-day engagement didn't yet lift **next-day return** (people c
 
 We rolled V1 to all English-speaking users within two weeks.
 
-### V2 — structure *(June–August 2025)*
+### V2 — doubling down *(June–August 2025)*
 
-V1 showed people would follow a path. V2 tested whether more structure would deepen that.
+V1 proved the guided path worked. The weak spot was **return** — not enough reason to come back the next day. Our suspicion: the plan wasn’t compelling enough. It blended into the rest of the app; users couldn’t see what to focus on or what came next.
 
-We added locked future workouts, one-workout-per-day pacing, a beginner starter programme, themed tracks by music and difficulty, and achievement badges on workout cards to encourage repeats. One clear route through the first week became a proper guided journey.
+V2 doubled down on the signal. We built a **kickstart plan** — premium, big, bold, obvious. You always knew what to do next.
 
-Before the A/B test, Zoe and I ran user testing on the designs. People understood locked content immediately — no explanation needed. But they missed the unlock moment. They didn’t realise they could now browse workouts outside the plan. We fixed that before we shipped.
+We **day-gated every two days** — a hook to come back, not just pacing for its own sake. We locked down more of the product so users stayed tunnel-visioned on the kickstart until they graduated. **Unlock moments** were designed to feel special — milestones, not permissions. Finish the plan and a celebration animation showed all your workouts merging into one collection.
+
+Before the A/B test, Zoe and I user tested the designs. People understood the locked model immediately. They missed one unlock beat — not realising they could browse outside the plan once it opened up — and we fixed that before ship. The sessions gave us conviction we were on the right track and that the experience was usable at a high bar.
 
 [![Paths of Play V2 designs](./data/casestudies/images/early-ux/pop-v2.png "wide")](./data/casestudies/images/early-ux/pop-v2.png)
 
-**+4% active on three or more days.** More people came back across the first week — structure was giving them a reason to return, not just a one-off start.
+**+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week — not just a strong first day.
 
 Trial-to-member conversion held steady despite a critical bug midway through the test — the extra structure wasn’t hurting commitment.
 
 ### V2.5 — getting out of the way *(August–October 2025)*
 
-Here's what we built: one workout per day. Here's what users told us: the experience felt long and flat. Here's what the data confirmed: they were moving faster than we'd expected.
+Here's what we built: a new workout every two days. Here's what users told us: the experience felt long and flat. Here's what the data confirmed: they were moving faster than we'd expected.
 
 We were getting in their way.
 

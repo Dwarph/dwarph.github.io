@@ -118,7 +118,7 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
 <div class="cs-media-row">
   <figure class="cs-media">
     <a href="./data/casestudies/images/eux/Paywall_Before.png"><img src="./data/casestudies/images/eux/Paywall_Before.png" alt=""></a>
-    <figcaption>Before: dense copy, weak hierarchy</figcaption>
+    <figcaption>Before: poor readability, weak value prop</figcaption>
   </figure>
   <figure class="cs-media">
     <a href="./data/casestudies/images/eux/Paywall_After.png"><img src="./data/casestudies/images/eux/Paywall_After.png" alt=""></a>

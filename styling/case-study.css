@@ -369,6 +369,45 @@
     box-sizing: border-box;
 }
 
+/* Side-by-side media — bleed width; stacks on mobile (after div max-width so breakout wins) */
+.case-study-section .case-study-content .cs-media-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+    width: min(1100px, calc(100vw - (var(--header-frame-side) * 2)));
+    max-width: none;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    overflow-x: visible;
+}
+
+.case-study-section .case-study-content .cs-media-row > .cs-media {
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+.case-study-section .case-study-content .cs-media-row > .cs-media > a {
+    display: block;
+    width: 100%;
+}
+
+.case-study-section .case-study-content .cs-media-row > .cs-media img {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .case-study-section .case-study-content .cs-media-row {
+        grid-template-columns: 1fr;
+        width: 100%;
+        margin-left: 0;
+        transform: none;
+    }
+}
+
 .case-study-section .case-study-content p,
 .case-study-section .case-study-content li,
 .case-study-section .case-study-content span,
@@ -489,6 +528,10 @@
 
 .case-study-section .case-study-content strong {
     font-weight: 700;
+}
+
+.case-study-section .case-study-content :is(h2, h3, h4, h5, h6) em {
+    font-style: normal;
 }
 
 .case-study-section .case-study-content em {

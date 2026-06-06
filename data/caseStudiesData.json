@@ -1,5 +1,15 @@
 [
     {
+        "key": "early-user-experience",
+        "title": "Early User Experience",
+        "description": "Hitting key metrics through user centred design",
+        "company": "FitXR // 2025",
+        "image": "eux.png",
+        "imageAlt": "Early user experience case study image",
+        "md": "early-user-experience.md"
+
+    },
+    {
         "key": "sidestep-jump-crouch",
         "title": "Sidestep, Jump & Crouch",
         "description": "Rapid prototyping + spatial design for FitXR",

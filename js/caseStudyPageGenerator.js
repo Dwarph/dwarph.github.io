@@ -36,6 +36,26 @@ function renderCaseStudyContent(caseStudy, markdown) {
     `;
 }
 
+function getCaseStudyImageDescription(img) {
+    if (!img) return '';
+    var alt = (img.getAttribute('alt') || '').trim();
+    if (alt) return alt;
+    var figure = img.closest ? img.closest('figure') : null;
+    if (!figure) return '';
+    var cap = figure.querySelector('figcaption');
+    return cap ? (cap.textContent || '').trim() : '';
+}
+
+function appendCaseStudyFigcaption(figure, img) {
+    if (!figure || !img || figure.querySelector('figcaption')) return;
+    var captionText = (img.getAttribute('alt') || '').trim();
+    if (!captionText) return;
+    var caption = document.createElement('figcaption');
+    caption.textContent = captionText;
+    figure.appendChild(caption);
+    img.setAttribute('alt', '');
+}
+
 function initCaseStudyMediaLayout(rootEl) {
     if (!rootEl) return;
 
@@ -91,6 +111,8 @@ function initCaseStudyMediaLayout(rootEl) {
         if (!parent) continue;
         parent.insertBefore(figure, mediaNode);
         figure.appendChild(mediaNode);
+
+        appendCaseStudyFigcaption(figure, img);
 
         // Title was used as layout directive, so remove it to avoid weird hover tooltips.
         img.removeAttribute('title');
@@ -149,7 +171,7 @@ function initCaseStudyImageLightbox(rootEl) {
         scrollYBeforeOpen = window.scrollY || 0;
 
         imgEl.src = fromImg.src;
-        imgEl.alt = fromImg.alt || '';
+        imgEl.alt = getCaseStudyImageDescription(fromImg);
         imgEl.removeAttribute('width');
         imgEl.removeAttribute('height');
 

@@ -60,9 +60,11 @@ Standard linked image:
 [![Descriptive alt text](./data/casestudies/images/{slug}/screen.png "wide")](./data/casestudies/images/{slug}/screen.png)
 ```
 
-- **Alt text** = what the image shows (accessibility + lightbox). Write it properly; don’t leave “alt text”.
+- **Alt text** = visible **caption** and lightbox description. Write it as a short label (the site moves it into `<figcaption>`). Don’t leave “alt text”.
 - **Link target** = same file as `src` (click opens lightbox, not navigation).
 - **Image `title`** = layout directive, **not** a hover tooltip. The site strips it after applying layout.
+
+**Captions:** Markdown images get a `<figcaption>` from their alt text at render time. For HTML figures (video, side-by-side rows), add `<figcaption>` yourself. Style: centred, slightly smaller body text below the media.
 
 **Layout tokens** (put in the image `title`, space- or comma-separated). The site reads these at render time and wraps the image in `<figure class="cs-media cs-media--…">`:
 
@@ -90,6 +92,7 @@ Markdown images don’t cover video. Use a raw `<figure>` when motion is the pro
 ```html
 <figure class="cs-media cs-media--bleed">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/{slug}/clip.mp4"></video>
+  <figcaption>Short label for what the clip shows.</figcaption>
 </figure>
 ```
 

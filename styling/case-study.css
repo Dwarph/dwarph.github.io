@@ -117,6 +117,15 @@
     width: 100%;
 }
 
+.case-study-section .case-study-content figure.cs-media figcaption {
+    margin-top: 10px;
+    font-size: 0.9em;
+    line-height: var(--lh-body);
+    color: var(--text-color);
+    opacity: 0.8;
+    text-align: center;
+}
+
 /* Media layout directives (from markdown image titles) */
 .case-study-section .case-study-content figure.cs-media--wide {
     width: 100%;

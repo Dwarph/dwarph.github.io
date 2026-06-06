@@ -105,19 +105,24 @@ People finished in hours, not the days we’d planned for — users were moving 
 
 ## The Paywall
 
-Same question. Different screen.
+Midway through Paths of Play, while engineers were heads-down shipping the guided experience, I got pulled onto a sidequest: redesign the paywall entirely. Fresh direction. Fix everything that was broken about it. Two weeks.
 
-The old subscription screen didn't know who you were. Generic copy. Generic imagery. A feature list. It was speaking to everyone, which meant it was speaking to no one. But there was a bigger problem: it didn't feel like a moment. You'd just answered questions about your goals and seen a plan built around them — then you hit a screen that felt like a form.
+### What was wrong
 
-Before touching the design, I studied how the best subscription products handle this moment — what patterns work, what they have in common. The through-line was clear. The best ones feel *special*. They treat subscribing as the start of something, not a transaction to rush through.
+The old screen gave people no obvious reason to subscribe. Value was buried — you had to work to understand what you were paying for. Copy ran full-width across a VR display built for immersion, not reading. Poor contrast made it harder still. Pricing sat in dense cards with weak hierarchy; nothing told you where to look or what mattered.
 
-The redesign tried to do the same. Two columns. Left: benefits and imagery matched to the fitness goal you'd chosen, with background imagery tailored by gender. Right: the annual plan front and centre, price shown as a weekly cost, social proof that felt believable. Cleaner copy. More confidence.
+### What we did
 
-The logic was simple. If you'd just said you want to build strength, the screen should talk about strength — and feel like a beginning, not a checkout.
+I started with deep competitor research — outside VR, in subscription products that actually convert. Not to copy layouts, but to understand what makes someone feel ready to commit: clarity over cleverness, warmth over checkout.
+
+The redesign came from a mindset of user empathy first. Split the screen so people could skim it — F-shaped reading on a display the size of a wall. Left column: clear value, tied to the fitness goal they'd already chosen, with social proof and imagery that reflected them — not a generic subscriber. Right column: the decision, stripped back. Annual Pass marked Recommended. Price shown weekly so the number felt manageable, not alarming. Softer free-trial language so subscribing didn't feel like an ambush after onboarding. Guest pass moved out of the way. Better contrast, cleaner type, a layout that felt exciting enough to lean into and trustworthy enough to believe.
+
 
 [![Paywall redesign](./data/casestudies/images/early-ux/paywall.png "wide")](./data/casestudies/images/early-ux/paywall.png)
 
-**+10% paywall conversion.** The strongest signal came from men who'd chosen strength as their goal — exactly the group the screen now spoke to.
+### The payoff
+
+**+10% paywall conversion.** A sidequest done right. The paywall had historically been impossible to shift numbers on - this was the first time we'd successfully done so - through focusing on user needs.
 
 ---
 

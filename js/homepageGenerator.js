@@ -663,6 +663,12 @@ function homepageNavNow() {
     return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
 }
 
+function homepageNavViewportHeight() {
+    return window.visualViewport && typeof window.visualViewport.height === 'number'
+        ? window.visualViewport.height
+        : window.innerHeight;
+}
+
 /**
  * Scroll position when clicking Talks: VIEWPORT_TOP_* + OVERSHOOT, then cap at maxScroll − BOTTOM_RESERVE.
  */
@@ -755,13 +761,16 @@ function setHomepageNavActive(container, sectionId) {
     }
 }
 
-function updateHomepageNavFromScroll(container) {
+function updateHomepageNavFromScroll(container, opts) {
+    opts = opts || {};
+    var forceApply = opts.forceApply === true;
+
     if (homepageNavNow() < homepageNavSpySuppressUntil) {
         return;
     }
 
     var scrollY = window.scrollY || window.pageYOffset || 0;
-    var innerHeight = window.innerHeight;
+    var innerHeight = homepageNavViewportHeight();
     var scrollHeight = Math.max(
         document.documentElement.scrollHeight,
         document.body ? document.body.scrollHeight : 0
@@ -858,8 +867,8 @@ function updateHomepageNavFromScroll(container) {
         homepageNavPendingCount = 1;
     }
 
-    // Wait for a second consecutive scroll tick before updating.
-    if (homepageNavPendingCount < 2) {
+    // Wait for a second consecutive scroll tick before updating (skipped at scroll end).
+    if (homepageNavPendingCount < 2 && !forceApply) {
         return;
     }
 
@@ -875,18 +884,28 @@ function initHomepageSectionNav(container) {
     var scrollTicking = false;
     var scrollEndTimer = null;
 
-    function cancelHomepageNavSpySuppression() {
-        // If the user starts interacting (scrolling away), we should stop holding
-        // the clicked active id; otherwise the "dark" active background can feel stuck.
+    function cancelHomepageNavSpySuppression(clearPending) {
+        // If the user starts interacting (scrolling away), stop holding the clicked active id.
         homepageNavSpySuppressUntil = 0;
-        homepageNavPendingActiveId = null;
-        homepageNavPendingCount = 0;
+        if (clearPending) {
+            homepageNavPendingActiveId = null;
+            homepageNavPendingCount = 0;
+        }
     }
 
-    // Clear click-suppression as soon as the user starts a new gesture.
-    // Passive listeners keep scroll performance good.
-    window.addEventListener('touchstart', cancelHomepageNavSpySuppression, { passive: true, capture: true });
-    window.addEventListener('wheel', cancelHomepageNavSpySuppression, { passive: true, capture: true });
+    function flushHomepageNavSpy() {
+        updateHomepageNavFromScroll(container, { forceApply: true });
+    }
+
+    // Clear click-suppression on new gestures. Don't reset debounce on wheel — Firefox/Zen
+    // emit wheel before each scroll tick, which prevented the 2-tick stabilizer from ever settling.
+    window.addEventListener('touchstart', function() {
+        cancelHomepageNavSpySuppression(true);
+    }, { passive: true, capture: true });
+    window.addEventListener('wheel', function() {
+        cancelHomepageNavSpySuppression(false);
+    }, { passive: true, capture: true });
+
     function onScroll() {
         // Helps prevent stuck `:active` styles on touch browsers.
         document.documentElement.classList.add('home-nav-scrolling');
@@ -894,6 +913,7 @@ function initHomepageSectionNav(container) {
         scrollEndTimer = setTimeout(function() {
             scrollEndTimer = null;
             document.documentElement.classList.remove('home-nav-scrolling');
+            flushHomepageNavSpy();
         }, 120);
 
         if (scrollTicking) return;
@@ -917,8 +937,15 @@ function initHomepageSectionNav(container) {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if ('onscrollend' in window) {
+        window.addEventListener('scrollend', flushHomepageNavSpy, { passive: true });
+    }
     window.addEventListener('resize', onResize);
     window.addEventListener('orientationchange', onResize);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('scroll', onScroll, { passive: true });
+        window.visualViewport.addEventListener('resize', onResize);
+    }
     syncHomepageNavLayout();
     updateHomepageNavFromScroll(container);
 }

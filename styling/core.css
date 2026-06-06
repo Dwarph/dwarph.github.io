@@ -282,6 +282,15 @@ select:focus-visible {
     border-radius: inherit;
 }
 
+/* Capture hover over the WebGL canvas (pointer-events:none) so Safari/Zen keep a stable target. */
+.homepage-header.header-distortion-active .header-distortion-mount::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: auto;
+}
+
 .header-distortion-canvas {
     display: block;
     position: absolute;

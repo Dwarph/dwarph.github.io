@@ -148,6 +148,8 @@ class DistortionSketch {
         this._prevClientY = null;
         /** Simulation influence only while pointer is inside `hitTarget`. */
         this.pointerInHeader = false;
+        /** Latest pointer sample this frame (coalesces pointermove + mousemove). */
+        this._pointerQueue = null;
 
         this.isPlaying = true;
         this._rafId = 0;
@@ -155,7 +157,7 @@ class DistortionSketch {
         this._boundRender = this.render.bind(this);
         this._setPointerFromClient = this.setPointerFromClient.bind(this);
         this._onTouchLike = this.onTouchLike.bind(this);
-        this._onPointerLeave = this.onPointerLeave.bind(this);
+        this._onPointerEnter = this.onPointerEnter.bind(this);
         this._passiveOpts = { passive: true };
 
         this.settings = {
@@ -209,11 +211,9 @@ class DistortionSketch {
     }
 
     /**
-     * Input sources (document): we still filter by `hitTarget` so distortion only runs over the header.
-     * - pointer* — real touch / pen on supporting browsers
-     * - mousemove — ALWAYS registered alongside pointer: Chrome device-mode often emits mousemove but NOT pointermove
-     *   when moving the mouse over the page, so pointer-only listeners never run.
-     * - touch* — older WebViews without Pointer Event Level 2
+     * Input on document; filter by `hitTarget` bounds. Leave detection uses coordinates on each move
+     * (not pointerleave — spurious on Safari/Zen over pointer-events:none canvas children).
+     * Samples are coalesced once per rAF to avoid pointermove+mousemove double-fire jitter.
      */
     setupPointerInput() {
         var o = this._passiveOpts;
@@ -227,8 +227,8 @@ class DistortionSketch {
         target.addEventListener('touchmove', this._onTouchLike, o);
         target.addEventListener('touchstart', this._onTouchLike, o);
         if (this.hitTarget) {
-            this.hitTarget.addEventListener('pointerleave', this._onPointerLeave);
-            this.hitTarget.addEventListener('mouseleave', this._onPointerLeave);
+            this.hitTarget.addEventListener('pointerenter', this._onPointerEnter);
+            this.hitTarget.addEventListener('mouseenter', this._onPointerEnter);
         }
     }
 
@@ -240,90 +240,89 @@ class DistortionSketch {
 
     clearPointerInteraction() {
         this.pointerInHeader = false;
+        this._pointerQueue = null;
         this.mouse.vX = 0;
         this.mouse.vY = 0;
         this._prevClientX = null;
         this._prevClientY = null;
     }
 
-    onPointerLeave() {
-        this.clearPointerInteraction();
+    queuePointerSample(clientX, clientY, establishContact) {
+        if (!this.isPointerInsideHitTarget(clientX, clientY)) {
+            this.clearPointerInteraction();
+            return;
+        }
+        this.pointerInHeader = true;
+        this._pointerQueue = {
+            clientX: clientX,
+            clientY: clientY,
+            establishContact: establishContact === true,
+        };
     }
 
     setPointerFromClient(e) {
         if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') return;
-        if (!this.isPointerInsideHitTarget(e.clientX, e.clientY)) {
-            this.clearPointerInteraction();
-            return;
-        }
-        /* pointerdown: establish contact without velocity — otherwise every tap injects a huge
-         * fake impulse (e.g. from prev 0,0 or from the last lift position). */
-        if (e.type === 'pointerdown') {
-            this.applyPointerPositionNoVelocity(e.clientX, e.clientY);
-        } else {
-            this.applyPointerPosition(e.clientX, e.clientY);
-        }
+        this.queuePointerSample(e.clientX, e.clientY, e.type === 'pointerdown');
+    }
+
+    onPointerEnter(e) {
+        if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') return;
+        if (!this.isPointerInsideHitTarget(e.clientX, e.clientY)) return;
+        /* Prime position with zero velocity so the first move after hover has a real delta. */
+        this.queuePointerSample(e.clientX, e.clientY, true);
     }
 
     onTouchLike(e) {
         var t = e.touches && e.touches.length ? e.touches[0] : e.changedTouches && e.changedTouches[0];
         if (!t) return;
-        if (!this.isPointerInsideHitTarget(t.clientX, t.clientY)) {
-            this.clearPointerInteraction();
-            return;
-        }
-        if (e.type === 'touchstart') {
-            this.applyPointerPositionNoVelocity(t.clientX, t.clientY);
-        } else {
-            this.applyPointerPosition(t.clientX, t.clientY);
-        }
+        this.queuePointerSample(t.clientX, t.clientY, e.type === 'touchstart');
     }
 
-    /**
-     * Sync pointer position and zero velocity (finger/mouse down). Distortion only reacts to movement.
-     */
-    applyPointerPositionNoVelocity(clientX, clientY) {
-        var rect = this.container.getBoundingClientRect();
-        if (rect.width < 1 || rect.height < 1) return;
-        var nx = (clientX - rect.left) / rect.width;
-        var ny = (clientY - rect.top) / rect.height;
-        this.mouse.prevX = nx;
-        this.mouse.prevY = ny;
-        this.mouse.x = nx;
-        this.mouse.y = ny;
-        this.mouse.vX = 0;
-        this.mouse.vY = 0;
-        this._prevClientX = clientX;
-        this._prevClientY = clientY;
-        this.pointerInHeader = true;
-    }
+    /** Apply the latest queued pointer sample once per frame (see updateDataTexture). */
+    flushPointerQueue() {
+        var sample = this._pointerQueue;
+        if (!sample || !this.pointerInHeader) return;
+        this._pointerQueue = null;
 
-    applyPointerPosition(clientX, clientY) {
         var rect = this.container.getBoundingClientRect();
         if (rect.width < 1 || rect.height < 1) return;
-        var nx = (clientX - rect.left) / rect.width;
-        var ny = (clientY - rect.top) / rect.height;
-        /* Skip duplicate pointermove + mousemove for the same physical move (same nx,ny). Do not
-         * use this to detect scroll: when the page scrolls, clientX/Y can stay fixed while nx,ny
-         * change — we must still run and apply velocity from client deltas below. */
+        var nx = (sample.clientX - rect.left) / rect.width;
+        var ny = (sample.clientY - rect.top) / rect.height;
+
         if (
-            Math.abs(nx - this.mouse.prevX) < 1e-7 &&
-            Math.abs(ny - this.mouse.prevY) < 1e-7
+            sample.establishContact ||
+            this._prevClientX === null ||
+            this._prevClientY === null
         ) {
-            return;
-        }
-        this.pointerInHeader = true;
-        /* Velocity from viewport deltas — not nx - prevX — or scroll moves the rect and looks like
-         * massive motion / intro shimmer restarting. */
-        if (this._prevClientX !== null && this._prevClientY !== null) {
-            this.mouse.vX = (clientX - this._prevClientX) / rect.width;
-            this.mouse.vY = (clientY - this._prevClientY) / rect.height;
-        } else {
+            this.mouse.prevX = nx;
+            this.mouse.prevY = ny;
+            this.mouse.x = nx;
+            this.mouse.y = ny;
             this.mouse.vX = 0;
             this.mouse.vY = 0;
+            this._prevClientX = sample.clientX;
+            this._prevClientY = sample.clientY;
+            return;
         }
-        this._prevClientX = clientX;
-        this._prevClientY = clientY;
+
+        var rawVX = 0;
+        var rawVY = 0;
+        if (this._prevClientX !== null && this._prevClientY !== null) {
+            /* Viewport deltas ignore scroll (rect moves, client coords do not). */
+            rawVX = (sample.clientX - this._prevClientX) / rect.width;
+            rawVY = (sample.clientY - this._prevClientY) / rect.height;
+        }
+
+        /* Blend toward new velocity — dampens Safari/Firefox dual-event micro deltas. */
+        var blend = 0.5;
+        this.mouse.vX = this.mouse.vX * (1 - blend) + rawVX * blend;
+        this.mouse.vY = this.mouse.vY * (1 - blend) + rawVY * blend;
+        var maxV = 0.32;
+        this.mouse.vX = clamp(this.mouse.vX, -maxV, maxV);
+        this.mouse.vY = clamp(this.mouse.vY, -maxV, maxV);
+
+        this._prevClientX = sample.clientX;
+        this._prevClientY = sample.clientY;
         this.mouse.prevX = nx;
         this.mouse.prevY = ny;
         this.mouse.x = nx;
@@ -440,6 +439,8 @@ class DistortionSketch {
     }
 
     updateDataTexture() {
+        this.flushPointerQueue();
+
         var data = this.texture.image.data;
         var i;
         var s = this.simulationSpeed;
@@ -536,9 +537,10 @@ class DistortionSketch {
         target.removeEventListener('touchmove', this._onTouchLike, o);
         target.removeEventListener('touchstart', this._onTouchLike, o);
         if (this.hitTarget) {
-            this.hitTarget.removeEventListener('pointerleave', this._onPointerLeave);
-            this.hitTarget.removeEventListener('mouseleave', this._onPointerLeave);
+            this.hitTarget.removeEventListener('pointerenter', this._onPointerEnter);
+            this.hitTarget.removeEventListener('mouseenter', this._onPointerEnter);
         }
+
         if (this.img) {
             this.img.removeEventListener('load', this._boundResize);
         }

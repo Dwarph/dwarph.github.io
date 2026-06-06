@@ -1,4 +1,4 @@
-[![Kickstart plan in VR: Joao's five-class onboarding path](./data/casestudies/images/eux/popv2_plan.png "bleed-xl")](./data/casestudies/images/eux/popv2_plan.png)
+[![The kickstart plan: an onboarding path for new users](./data/casestudies/images/eux/popv2_plan.png "bleed-xl")](./data/casestudies/images/eux/popv2_plan.png)
 
 ## Overview
 

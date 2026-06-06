@@ -4,14 +4,35 @@ Global defaults for Cursor. Keep in sync with `~/.cursor/AGENTS.md` when you edi
 
 **Paper:** After Paper MCP edits, **resize the artboard** if content is clipped or taller than the frame (`update_styles`, `fit-content`, or explicit height). Say which artboard to open if it is off-canvas.
 
-## Persistent preferences and skills
+## Skills
+
+### Where to install (default: global)
+
+When installing or creating Cursor skills, **default to global** unless the user asks for project-only scope:
+
+| Type | Global (default) | Project-local |
+|------|------------------|---------------|
+| Agent skill | `~/.cursor/skills/<name>/SKILL.md` | `.cursor/skills/<name>/SKILL.md` |
+| Cursor rule (`.mdc`) | `~/.cursor/rules/<name>.mdc` | `.cursor/rules/<name>.mdc` |
+
+Use project-local only when the user explicitly asks, or the skill is clearly tied to one repo's conventions (e.g. this codebase's case-study format).
+
+**Never** install in `~/.cursor/skills-cursor/` — reserved for Cursor built-in skills.
+
+When installing from an external repo (GitHub, etc.), copy `SKILL.md` into the global skills directory. If the repo ships a Cursor rule port, install that globally in `~/.cursor/rules/` too.
+
+Cursor also scans `~/.agents/skills/` as an alternate global path — either location works; you do not need both unless one fails to show up.
+
+**After installing or moving a skill**, tell the user to run **Developer: Reload Window** (`Cmd+Shift+P`) or fully quit and reopen Cursor. Skills are discovered at startup; existing chat sessions will not pick up new ones until reload.
+
+### Creating skills from conversation
 
 When the user asks for something that could reasonably be treated as **long-lived guidance** — for example: a standing preference, a workflow they want repeated, domain rules, tooling conventions, or anything that sounds like it should become a **Cursor skill** or **remembered rule** — do **not** silently add it to this file or create a new skill.
 
 Instead:
 
 1. **Recognize** that the request may warrant updating `AGENTS.md` (capture the key fact here) or **creating a new skill** (for richer, step-by-step procedures the agent should load when relevant).
-2. **Ask the user first** whether they want you to persist it, and if so, whether they prefer a short entry in `AGENTS.md` or a dedicated skill (and where, if they use a specific skills location).
+2. **Ask the user first** whether they want you to persist it, and if so, whether they prefer a short entry in `AGENTS.md` or a dedicated skill. **Default location is global** (`~/.cursor/skills/`) unless they say project-only.
 3. **Only after they confirm**, add the distilled key information to `AGENTS.md` and/or create the skill as agreed.
 
 If the user explicitly says to remember something or to add a rule, still confirm the exact wording and placement when it is ambiguous.

@@ -172,7 +172,7 @@ function renderWork(work) {
         var caseStudiesHtml = '';
         if (job.caseStudies && job.caseStudies.length > 0) {
             var caseStudiesTitle = job.company === 'Ultraleap' ? 'Case Studies & Other Work' : 'Case Studies';
-            caseStudiesHtml += '<div class="job-case-studies ' + job.gradientColor + '"><h4 class="case-studies-title">' + caseStudiesTitle + '</h4>';
+            caseStudiesHtml += '<div class="job-case-studies ' + job.gradientColor + '"><h4 class="case-studies-title scroll-reveal-chunk">' + caseStudiesTitle + '</h4>';
             for (var j = 0; j < job.caseStudies.length; j++) {
                 caseStudiesHtml += renderCaseStudy(job.caseStudies[j], isMobile);
             }
@@ -182,7 +182,7 @@ function renderWork(work) {
         // Build other work HTML
         var otherWorkHtml = '';
         if (job.otherWork && job.otherWork.length > 0) {
-            otherWorkHtml += '<div class="job-other-work ' + job.gradientColor + '"><h4 class="case-studies-title">Other Work</h4>';
+            otherWorkHtml += '<div class="job-other-work ' + job.gradientColor + '"><h4 class="case-studies-title scroll-reveal-chunk">Other Work</h4>';
             for (var k = 0; k < job.otherWork.length; k++) {
                 otherWorkHtml += renderCaseStudy(job.otherWork[k], isMobile);
             }

@@ -190,6 +190,7 @@
             '.job-case-studies > .case-study-card-link, .job-case-studies > .case-study-card, ' +
             '.job-other-work > .case-study-card-link, .job-other-work > .case-study-card'
         );
+        var caseStudyTitles = container.querySelectorAll('.case-studies-title');
         var projectsSection = container.querySelector('#projects');
         var projectCards = container.querySelectorAll('.projects-list > .project-card-link, .projects-list > .project-card');
         var talksSection = container.querySelector('#talks');
@@ -316,6 +317,13 @@
                     var cardP = fadeProgress(getProgressInViewport(card, scrollY, maxScrollY));
                     var cardUse = applyProgress(card, cardP, 'card-' + j);
                     applyScrollReveal(card, cardUse, true);
+                }
+
+                for (var ct = 0; ct < caseStudyTitles.length; ct++) {
+                    var titleEl = caseStudyTitles[ct];
+                    var titleP = fadeProgress(getProgressInViewport(titleEl, scrollY, maxScrollY));
+                    var titleUse = applyProgress(titleEl, titleP, 'case-title-' + ct);
+                    applyScrollReveal(titleEl, titleUse, true);
                 }
 
                 if (projectsSection) {

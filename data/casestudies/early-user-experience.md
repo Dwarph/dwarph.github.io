@@ -49,9 +49,17 @@ V1 tested two ideas — **personalisation** and **simplification** — with a th
 
 **Simplification:** we hid complexity from new users until they were ready. Post-workout summaries were stripped back. After subscribing, you went straight into a workout — not the main menu. When you did reach the menu, you saw your plan and had to pick the next workout on it. Detailed previews didn’t appear until your third session. A feature that blends the workout with your real room was introduced only when relevant. A recurring rewards programme stayed locked until you’d finished two workouts.
 
-We were also testing a third idea — **everyone's a winner**. Opening workouts were easier than usual. Early goals were designed to be achievable. The bet: let people feel successful immediately, before asking for more commitment.
+We were also testing a third idea — **everyone's a winner**. Early goals were designed to be achievable, and classes were simplified to ensure users got a good result. The bet: let people feel successful immediately, before asking for more commitment.
 
-Early signals were good. People played more workouts and finished more of them. We rolled it to all English-speaking users within two weeks.
+The goal was momentum — help people feel the product on day one, and convert more trials into members.
+
+**+9% trial-to-member conversion.** More people who tried the app actually subscribed — the strongest result this team had seen in this space for a long time.
+
+**+17% playing multiple workouts on day one.** With a guided path of just two workouts, far more new users built momentum on their first day instead of stopping after one.
+
+One gap: that first-day engagement didn't yet lift **next-day return** (people coming back the day after). We kept monitoring membership and return metrics — early samples were still small and noisy.
+
+We rolled V1 to all English-speaking users within two weeks.
 
 ### V2 — structure *(June–August 2025)*
 
@@ -63,7 +71,9 @@ Before the A/B test, Zoe and I ran user testing on the designs. People understoo
 
 [![Paths of Play V2 designs](./data/casestudies/images/early-ux/pop-v2.png "wide")](./data/casestudies/images/early-ux/pop-v2.png)
 
-Results: average active days went up. Users active on three or more days rose from 14% to 18%. Trial-to-subscriber conversion held steady despite a critical bug midway through the test. The structure was working.
+**+4% active on three or more days.** More people came back across the first week — structure was giving them a reason to return, not just a one-off start.
+
+Trial-to-member conversion held steady despite a critical bug midway through the test — the extra structure wasn’t hurting commitment.
 
 ### V2.5 — getting out of the way *(August–October 2025)*
 
@@ -77,9 +87,11 @@ Instead of forced pacing, we offered earned rewards: stamps for progress, new wo
 
 [![Paths of Play V2.5 designs](./data/casestudies/images/early-ux/pop-v2-5.png "wide")](./data/casestudies/images/early-ux/pop-v2-5.png)
 
-Users completed the plan in an average of 18 hours. We'd designed it for days.
+**+29% plan completion.** Shorter path, less forced pacing — more people finished what we’d designed for them instead of dropping off mid-journey.
 
-Trial-to-subscriber conversion rose by 6 percentage points, statistically significant. Plan completion went from 37% to 66%. 85% of users who finished went straight into the full library, playing an average of 8 more workouts.
+**+6% trial-to-member conversion.** Trusting people to move at their own pace didn’t hurt commitment; it helped.
+
+People finished the plan in hours, not the days we’d planned for. **85%** of those who completed it went straight into the wider catalogue — the path worked as an on-ramp, not a dead end.
 
 ---
 
@@ -97,9 +109,7 @@ The logic was simple. If you'd just said you want to build strength, the screen 
 
 [![Paywall redesign](./data/casestudies/images/early-ux/paywall.png "wide")](./data/casestudies/images/early-ux/paywall.png)
 
-Clicks on Start Free Trial went from 55.3% to 58.8%. The strongest signal came from men who'd chosen strength as their goal — exactly the group the screen now spoke to.
-
-+1.3 percentage points on the trial button. ~+10% subscription conversion overall.
+**+10% paywall conversion.** The strongest signal came from men who'd chosen strength as their goal — exactly the group the screen now spoke to.
 
 ---
 

@@ -133,10 +133,10 @@ If you'd just said you want to build strength, the paywall should talk about str
 
 ---
 
-## Takeaways I carry with me
+## Learnings
 
 Three things I took away:
 
-- My job wasn't to build a journey and expect people to follow it. It was to understand where users were trying to go, then remove what was stopping them.
-- Day gating felt considered from our side. Users found it controlling. Building something and then cutting it, when the evidence points that way, is the job.
-- V1 told us something. V2 told us something else. V2.5 came from listening to what users did with V2. You don't declare victory and move on.
+- **Follow signal, not the roadmap.** We started small, doubled down when V1 proved the guided path worked, then optimised when users outpaced the design in V2. Small bets until you have signal, then push hard.
+- **Cut what you built when live evidence says so.** Day gating felt considered from our side. Users found it controlling. User testing hadn't flagged it, but live users did.
+- **Following user needs moves metrics.** Conversion, return, plan completion, paywall: each lift came from fixing something users were struggling with, not from tuning the funnel in isolation.

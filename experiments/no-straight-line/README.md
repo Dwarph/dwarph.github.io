@@ -12,20 +12,7 @@ Interactive recreation of [Figma Frame 46](https://www.figma.com/design/p7YG1f3d
 
 ## Tuning
 
-Open **Tweak physics** at the bottom of the page, or edit `createDefaultParams()` in `no-straight-line-config.js`. Settings persist in `localStorage`.
-
-| Param | Role |
-|-------|------|
-| `ropeParticleCount` | Points per rope path (rebuilds layout when changed) |
-| `wordDamping` | Word glide after release (higher = less friction) |
-| `ropeDamping` | Interior rope point drift |
-| `wordPull` | How much rope tension tugs neighboring words |
-| `ropeStiffness` | Lower = stretchier ropes |
-| `constraintIterations` | Rope solver passes while moving |
-| `maxReleaseSpeed` | Cap throw velocity from pointer |
-| `sleepSpeed` | Below this, the scene freezes (still by default) |
-| `homeSpring` | Drift speed back toward the Figma layout (~0.4 ≈ a few seconds) |
-| `homeSnapDistance` | Snap to rest when closer than this (px) |
+Edit `createDefaultParams()` in `no-straight-line-config.js` and `createDefaultRopeParams()` in `no-straight-line-rope.js`.
 
 Ropes stretch softly while you drag. After you let go, words slowly drift home; the scene sleeps once they settle.
 

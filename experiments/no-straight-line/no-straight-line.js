@@ -10,22 +10,20 @@ import {
   catmullRomPath,
 } from "./no-straight-line-layout.js";
 import { createRopeSim } from "./no-straight-line-rope.js";
-import { loadParams } from "./no-straight-line-config.js";
-import { initTweakPanel } from "./no-straight-line-tweak-panel.js";
+import { createDefaultParams } from "./no-straight-line-config.js";
 import { ellipseNormDist } from "./no-straight-line-colliders.js";
 
 const stage = document.getElementById("nsl-stage");
 const frame = document.getElementById("nsl-frame");
 const canvas = document.getElementById("nsl-rope-canvas");
 const wordsLayer = document.getElementById("nsl-words");
-const tweakPanel = document.getElementById("nsl-tweak-panel");
 
 if (!stage || !frame || !canvas || !wordsLayer) {
   throw new Error("Missing #nsl-stage, #nsl-frame, #nsl-rope-canvas, or #nsl-words");
 }
 
 const ctx = canvas.getContext("2d");
-const params = loadParams();
+const params = createDefaultParams();
 const scene = buildSceneLayout(params.ropeParticleCount);
 const sim = createRopeSim(scene, params);
 
@@ -104,30 +102,6 @@ function drawRopes() {
     const path = new Path2D(catmullRomPath(pts));
     ctx.stroke(path);
   }
-}
-
-function cancelDrag() {
-  if (activePointerId == null) return;
-  try {
-    stage.releasePointerCapture(activePointerId);
-  } catch {
-    /* ignore */
-  }
-  bindDragWindowListeners(false);
-  stage.classList.remove("nsl-stage--dragging");
-  sim.setDragWord(null, 0, 0);
-  activePointerId = null;
-  activeWordIndex = null;
-  dragTrail = [];
-}
-
-function rebuildSceneLayout() {
-  cancelDrag();
-  Object.assign(scene, buildSceneLayout(params.ropeParticleCount));
-  sim.resetToRest();
-  sim.pinRopeEnds();
-  updateWordDOM();
-  drawRopes();
 }
 
 function hitTestWord(frameX, frameY) {
@@ -247,16 +221,3 @@ stage.addEventListener("lostpointercapture", (e) => {
 });
 
 requestAnimationFrame(tick);
-
-if (tweakPanel) {
-  initTweakPanel(tweakPanel, params, {
-    resetLayout: () => {
-      sim.resetToRest();
-      updateWordDOM();
-      drawRopes();
-    },
-    onParamChange: (key) => {
-      if (key === "ropeParticleCount") rebuildSceneLayout();
-    },
-  });
-}

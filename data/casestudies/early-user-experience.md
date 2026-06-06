@@ -138,4 +138,4 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
 
 - **Follow signal, not the roadmap.** We started small, doubled down when V1 proved the guided path worked, then optimised when users outpaced the design in V2. Small bets until you have signal, then push hard.
 - **Cut what you built when live evidence says so.** Day gating felt considered from our side. Users found it controlling. User testing hadn't flagged it, but live users did.
-- **Fix what users were stuck on.** Conversion, return, plan completion, paywall: each lift tracked a concrete user problem, not a funnel tweak in isolation.
+- **Fix what users were stuck on.** Each improvement focused on concrete user problems, not a funnel tweak in isolation.

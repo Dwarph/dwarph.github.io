@@ -4,6 +4,8 @@
 
 Over six months I designed, tested, and iterated a guided first-week experience for new subscribers: a starting point in a library of 1,000+ workouts instead of drowning in choice. While that shipped, I overhauled the paywall in a two-week sprint, borrowing patterns from subscription apps that convert.
 
+For the paywall, we needed patterns that work and a clear value proposition. For onboarding, we needed to prove a guided path worked, then build it properly.
+
 This case study focuses on both projects - through the lense of user centred design as a way to move metrics.
 
 <div class="cs-overview">
@@ -29,13 +31,7 @@ This case study focuses on both projects - through the lense of user centred des
   </table>
 </div>
 
-### The Project
 
-FitXR is a subscription VR fitness app. Before this project, new users hit a weak paywall with no clear reason to start a trial, then landed in a massive catalogue with no obvious first step. No guidance through those opening sessions. Just a wall of content.
-
-For the paywall, we needed patterns that work and a clear value proposition. For onboarding, we needed to prove a guided path worked, then build it properly.
-
----
 
 ## Paths of Play
 

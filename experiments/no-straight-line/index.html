@@ -7,27 +7,50 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Nunito+Sans:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&family=Nunito+Sans:wght@700&family=Outfit:wght@700&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="/assets/branding/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/assets/branding/favicon.svg" />
   <link rel="shortcut icon" href="/assets/branding/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/apple-touch-icon.png" />
 
+  <link rel="stylesheet" href="../../styling/experiments.css">
   <link rel="stylesheet" href="no-straight-line.css">
   <title>No straight line — Experiments</title>
 </head>
 
 <body class="nsl-page">
-  <a href="../" class="nsl-back">← Experiments</a>
+  <nav class="breadcrumb-nav" role="navigation" aria-label="Breadcrumb">
+    <a href="/" class="breadcrumb-link" aria-label="Go to homepage">Home</a>
+    <span class="breadcrumb-separator" aria-hidden="true">/</span>
+    <a href="../" class="breadcrumb-link">Experiments</a>
+    <span class="breadcrumb-separator" aria-hidden="true">/</span>
+    <h1 class="breadcrumb-current" aria-current="page">No straight line</h1>
+  </nav>
 
   <div id="nsl-stage" class="nsl-stage" aria-label="Drag each word; ropes connect them">
     <div id="nsl-frame" class="nsl-frame">
-      <div class="nsl-bg" aria-hidden="true"></div>
+      <img class="nsl-bg" src="assets/bg-contours.png" srcset="assets/bg-contours@2x.png 2x" width="1080" height="1350" alt="" aria-hidden="true" decoding="async">
       <canvas id="nsl-rope-canvas" class="nsl-rope-canvas" aria-hidden="true"></canvas>
       <div id="nsl-words" class="nsl-words"></div>
     </div>
   </div>
+
+  <aside id="nsl-tweak-panel" class="nsl-tweak-panel" aria-label="Physics tweak controls">
+    <button type="button" class="nsl-tweak-panel__toggle" data-nsl-tweak-toggle aria-expanded="false"
+      aria-controls="nsl-tweak-panel-body" id="nsl-tweak-panel-toggle">
+      Tweak physics
+      <span class="nsl-tweak-panel__chev" aria-hidden="true"></span>
+    </button>
+    <div id="nsl-tweak-panel-body" class="nsl-tweak-panel__body" data-nsl-tweak-body hidden>
+      <p class="nsl-tweak-panel__hint">Settings save to this browser automatically.</p>
+      <div data-nsl-tweak-fields></div>
+      <div class="nsl-tweak-actions">
+        <button type="button" class="nsl-tweak-btn" data-nsl-reset-layout>Reset layout</button>
+        <button type="button" class="nsl-tweak-btn nsl-tweak-btn--danger" data-nsl-reset-params>Reset all settings</button>
+      </div>
+    </div>
+  </aside>
 
   <script type="module" src="no-straight-line.js"></script>
 </body>

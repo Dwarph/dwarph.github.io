@@ -9,25 +9,30 @@ import {
   buildSceneLayout,
   catmullRomPath,
 } from "./no-straight-line-layout.js";
-import { createDefaultRopeParams, createRopeSim } from "./no-straight-line-rope.js";
+import { createRopeSim } from "./no-straight-line-rope.js";
+import { loadParams } from "./no-straight-line-config.js";
+import { initTweakPanel } from "./no-straight-line-tweak-panel.js";
+import { ellipseNormDist } from "./no-straight-line-colliders.js";
 
 const stage = document.getElementById("nsl-stage");
 const frame = document.getElementById("nsl-frame");
 const canvas = document.getElementById("nsl-rope-canvas");
 const wordsLayer = document.getElementById("nsl-words");
+const tweakPanel = document.getElementById("nsl-tweak-panel");
 
 if (!stage || !frame || !canvas || !wordsLayer) {
   throw new Error("Missing #nsl-stage, #nsl-frame, #nsl-rope-canvas, or #nsl-words");
 }
 
 const ctx = canvas.getContext("2d");
-const params = createDefaultRopeParams();
-const scene = buildSceneLayout(12);
+const params = loadParams();
+const scene = buildSceneLayout(params.ropeParticleCount);
 const sim = createRopeSim(scene, params);
 
 /** @type {HTMLElement[]} */
 const wordEls = [];
 
+const DISPLAY_SCALE = 0.8;
 let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
@@ -41,7 +46,7 @@ let dragTrail = [];
 function fitStage() {
   const vw = stage.clientWidth;
   const vh = stage.clientHeight;
-  scale = Math.min(vw / FRAME_WIDTH, vh / FRAME_HEIGHT);
+  scale = Math.min(vw / FRAME_WIDTH, vh / FRAME_HEIGHT) * DISPLAY_SCALE;
   offsetX = (vw - FRAME_WIDTH * scale) / 2;
   offsetY = (vh - FRAME_HEIGHT * scale) / 2;
   frame.style.setProperty("--nsl-scale", String(scale));
@@ -92,7 +97,7 @@ function drawRopes() {
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.strokeStyle = "#E4FE5B";
-  ctx.lineWidth = 16;
+  ctx.lineWidth = params.ropeLineWidth ?? 16;
 
   for (const rope of scene.ropes) {
     const pts = rope.particles.map((p) => ({ x: p.x, y: p.y }));
@@ -101,34 +106,82 @@ function drawRopes() {
   }
 }
 
+function cancelDrag() {
+  if (activePointerId == null) return;
+  try {
+    stage.releasePointerCapture(activePointerId);
+  } catch {
+    /* ignore */
+  }
+  bindDragWindowListeners(false);
+  stage.classList.remove("nsl-stage--dragging");
+  sim.setDragWord(null, 0, 0);
+  activePointerId = null;
+  activeWordIndex = null;
+  dragTrail = [];
+}
+
+function rebuildSceneLayout() {
+  cancelDrag();
+  Object.assign(scene, buildSceneLayout(params.ropeParticleCount));
+  sim.resetToRest();
+  sim.pinRopeEnds();
+  updateWordDOM();
+  drawRopes();
+}
+
 function hitTestWord(frameX, frameY) {
   let best = -1;
   let bestDist = Infinity;
   for (let i = 0; i < scene.words.length; i++) {
     const w = scene.words[i];
-    const d = Math.hypot(frameX - w.x, frameY - w.y);
-    const radius = w.radius;
-    if (d < radius && d < bestDist) {
-      bestDist = d;
+    const nd = ellipseNormDist(w, frameX, frameY);
+    if (nd < 1 && nd < bestDist) {
+      bestDist = nd;
       best = i;
     }
   }
   return best;
 }
 
+function wordIndexFromTarget(target) {
+  const el = target instanceof Element ? target.closest(".nsl-word") : null;
+  if (!el) return -1;
+  const idx = Number(el.dataset.wordIndex);
+  return Number.isFinite(idx) ? idx : -1;
+}
+
+function bindDragWindowListeners(on) {
+  const opt = { capture: true };
+  if (on) {
+    window.addEventListener("pointermove", onPointerMove, opt);
+    window.addEventListener("pointerup", onPointerUp, opt);
+    window.addEventListener("pointercancel", onPointerUp, opt);
+  } else {
+    window.removeEventListener("pointermove", onPointerMove, opt);
+    window.removeEventListener("pointerup", onPointerUp, opt);
+    window.removeEventListener("pointercancel", onPointerUp, opt);
+  }
+}
+
 function onPointerDown(e) {
   if (activePointerId != null) return;
+  if (e.button !== 0) return;
+
   const pt = clientToFrame(e.clientX, e.clientY);
-  const idx = hitTestWord(pt.x, pt.y);
+  let idx = wordIndexFromTarget(e.target);
+  if (idx < 0) idx = hitTestWord(pt.x, pt.y);
   if (idx < 0) return;
 
   activePointerId = e.pointerId;
   activeWordIndex = idx;
   dragTrail = [{ x: pt.x, y: pt.y, t: performance.now() }];
   sim.setDragWord(idx, pt.x, pt.y);
+  updateWordDOM();
+  drawRopes();
   stage.setPointerCapture(e.pointerId);
+  bindDragWindowListeners(true);
   stage.classList.add("nsl-stage--dragging");
-  wordEls[idx].setPointerCapture(e.pointerId);
   e.preventDefault();
 }
 
@@ -139,6 +192,8 @@ function onPointerMove(e) {
   dragTrail.push({ x: pt.x, y: pt.y, t });
   if (dragTrail.length > 8) dragTrail.shift();
   sim.setDragWord(activeWordIndex, pt.x, pt.y);
+  updateWordDOM();
+  drawRopes();
   e.preventDefault();
 }
 
@@ -156,12 +211,18 @@ function releaseVelocity() {
 
 function onPointerUp(e) {
   if (e.pointerId !== activePointerId) return;
-  stage.releasePointerCapture(e.pointerId);
-  stage.classList.remove("nsl-stage--dragging");
-  sim.setDragWord(null, 0, 0, releaseVelocity());
+  const vel = releaseVelocity();
   activePointerId = null;
   activeWordIndex = null;
   dragTrail = [];
+  try {
+    stage.releasePointerCapture(e.pointerId);
+  } catch {
+    /* ignore */
+  }
+  bindDragWindowListeners(false);
+  stage.classList.remove("nsl-stage--dragging");
+  sim.setDragWord(null, 0, 0, vel);
 }
 
 function tick(now) {
@@ -181,8 +242,21 @@ drawRopes();
 
 window.addEventListener("resize", fitStage);
 stage.addEventListener("pointerdown", onPointerDown);
-stage.addEventListener("pointermove", onPointerMove);
-stage.addEventListener("pointerup", onPointerUp);
-stage.addEventListener("pointercancel", onPointerUp);
+stage.addEventListener("lostpointercapture", (e) => {
+  if (e.pointerId === activePointerId) onPointerUp(e);
+});
 
 requestAnimationFrame(tick);
+
+if (tweakPanel) {
+  initTweakPanel(tweakPanel, params, {
+    resetLayout: () => {
+      sim.resetToRest();
+      updateWordDOM();
+      drawRopes();
+    },
+    onParamChange: (key) => {
+      if (key === "ropeParticleCount") rebuildSceneLayout();
+    },
+  });
+}

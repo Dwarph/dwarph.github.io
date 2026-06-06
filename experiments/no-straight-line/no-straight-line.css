@@ -11,7 +11,7 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #2996ff;
+  background: #fff;
 }
 
 .nsl-page {
@@ -22,31 +22,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.nsl-back {
+.nsl-page .breadcrumb-nav {
   position: fixed;
   z-index: 100;
   top: max(12px, env(safe-area-inset-top, 0px));
   left: max(12px, env(safe-area-inset-left, 0px));
-  padding: 0.5rem 0.75rem;
-  font-family: "Nunito Sans", sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 0;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.nsl-back:hover {
-  background: rgba(0, 0, 0, 0.35);
-}
-
-.nsl-back:focus-visible {
-  outline: 2px solid #e4fe5b;
-  outline-offset: 2px;
+  margin: 0;
+  max-width: calc(100% - max(24px, env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px)));
 }
 
 .nsl-stage {
@@ -69,20 +51,26 @@ body {
   height: 1350px;
   background: #2996ff;
   overflow: hidden;
+  box-shadow:
+    0 0 8px rgba(0, 0, 0, 0.06),
+    0 10px 58px rgba(0, 0, 0, 0.35);
 }
 
 .nsl-bg {
   position: absolute;
   inset: 0;
-  background: #2996ff url("./assets/bg-contours.png") center / cover no-repeat;
-  mix-blend-mode: overlay;
-  opacity: 0.85;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
   pointer-events: none;
 }
 
 .nsl-rope-canvas {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 1080px;
   height: 1350px;
   pointer-events: none;
@@ -91,6 +79,7 @@ body {
 .nsl-words {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -130,5 +119,195 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .nsl-word {
     cursor: default;
+  }
+}
+
+/* ——— Tweak panel ——— */
+.nsl-tweak-panel {
+  --exp-font-body: "Nunito Sans", sans-serif;
+  --exp-size-sm: 0.8125rem;
+  --exp-size-meta: 0.6875rem;
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 120;
+  font-family: var(--exp-font-body);
+  font-size: var(--exp-size-sm);
+  line-height: 1.4;
+  color: #111;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.nsl-tweak-panel__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.65rem 1rem;
+  padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(250, 250, 250, 0.96);
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #222;
+  cursor: pointer;
+}
+
+.nsl-tweak-panel__toggle:hover {
+  background: #f0f0f0;
+}
+
+.nsl-tweak-panel__toggle:focus-visible {
+  outline: 2px solid #e4fe5b;
+  outline-offset: -2px;
+}
+
+.nsl-tweak-panel__chev::after {
+  content: "▲";
+  display: inline-block;
+  font-size: 0.65em;
+  opacity: 0.55;
+  transition: transform 0.2s ease;
+}
+
+.nsl-tweak-panel:not(.nsl-tweak-panel--open) .nsl-tweak-panel__chev::after {
+  transform: rotate(180deg);
+}
+
+.nsl-tweak-panel__body {
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  padding: 0.75rem 1rem 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid #eee;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nsl-tweak-panel__hint {
+  margin: 0 0 0.75rem;
+  color: #444;
+}
+
+.nsl-tweak-fieldset {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+.nsl-tweak-fieldset:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.nsl-tweak-fieldset legend {
+  padding: 0;
+  font: 700 var(--exp-size-meta) / 1.2 var(--exp-font-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.nsl-tweak-field {
+  margin-top: 0.65rem;
+}
+
+.nsl-tweak-field:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.nsl-tweak-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.nsl-tweak-label {
+  font-weight: 400;
+}
+
+.nsl-tweak-label em {
+  font-weight: 400;
+  font-style: normal;
+  color: #666;
+}
+
+.nsl-tweak-help {
+  margin: 0.35rem 0 0;
+  font-size: var(--exp-size-meta);
+  line-height: 1.45;
+  color: #666;
+}
+
+.nsl-tweak-row input[type="range"] {
+  width: 100%;
+  min-width: 6rem;
+  max-width: 12rem;
+  accent-color: #111;
+}
+
+.nsl-tweak-out {
+  min-width: 3.25rem;
+  font-variant-numeric: tabular-nums;
+  color: #333;
+  text-align: right;
+}
+
+.nsl-tweak-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.nsl-tweak-btn {
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  font-weight: 700;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.nsl-tweak-btn:hover {
+  background: #f5f5f5;
+}
+
+.nsl-tweak-btn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.nsl-tweak-btn--danger {
+  border-color: #c44;
+  color: #a22;
+}
+
+.nsl-tweak-btn--danger:hover {
+  background: #fff5f5;
+}
+
+@media (max-width: 36rem) {
+  .nsl-tweak-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .nsl-tweak-row input[type="range"] {
+    max-width: none;
+  }
+
+  .nsl-tweak-out {
+    text-align: left;
   }
 }

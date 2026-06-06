@@ -3,6 +3,7 @@
  */
 
 import { FRAME_WIDTH, FRAME_HEIGHT } from "./no-straight-line-layout.js";
+import { ellipseRadiusAlong } from "./no-straight-line-colliders.js";
 
 /**
  * @typedef {object} RopeParams
@@ -15,20 +16,24 @@ import { FRAME_WIDTH, FRAME_HEIGHT } from "./no-straight-line-layout.js";
  * @property {number} ropeStiffness Segment constraint strength (lower = stretchier).
  * @property {number} maxReleaseSpeed Cap throw speed (px/s).
  * @property {number} sleepSpeed Words/ropes below this speed (px/s) count as idle.
+ * @property {number} homeSpring Pull toward Figma rest pose (low = very slow drift home).
+ * @property {number} homeSnapDistance Stop homing when within this many px of rest.
  */
 
 /** @returns {RopeParams} */
 export function createDefaultRopeParams() {
   return {
-    wordDamping: 0.984,
-    ropeDamping: 0.972,
-    wordPull: 3.2,
+    wordDamping: 0.992,
+    ropeDamping: 0.985,
+    wordPull: 2.2,
     constraintIterations: 5,
     substeps: 2,
     boundsPad: 48,
     ropeStiffness: 0.88,
     maxReleaseSpeed: 1400,
     sleepSpeed: 3,
+    homeSpring: 0.42,
+    homeSnapDistance: 2,
   };
 }
 
@@ -69,8 +74,18 @@ export function createRopeSim(scene, params) {
     }
   }
 
+  function isAwayFromHome() {
+    if (dragWordIndex != null) return false;
+    const snap = params.homeSnapDistance;
+    for (const w of scene.words) {
+      if (Math.hypot(w.restX - w.x, w.restY - w.y) > snap) return true;
+    }
+    return false;
+  }
+
   function isSceneActive() {
     if (dragWordIndex != null) return true;
+    if (isAwayFromHome()) return true;
     const min = params.sleepSpeed;
     for (const w of scene.words) {
       if (Math.hypot(w.vx, w.vy) > min) return true;
@@ -107,15 +122,23 @@ export function createRopeSim(scene, params) {
         for (let j = i + 1; j < words.length; j++) {
           const wi = words[i];
           const wj = words[j];
-          const minDist = wi.radius + wj.radius;
           let dx = wj.x - wi.x;
           let dy = wj.y - wi.y;
           let dist = Math.hypot(dx, dy);
-          if (dist >= minDist || dist < 1e-6) continue;
+          if (dist < 1e-6) {
+            dx = 1;
+            dy = 0;
+            dist = 1;
+          }
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const minDist =
+            ellipseRadiusAlong(wi, nx, ny) + ellipseRadiusAlong(wj, -nx, -ny);
+          if (dist >= minDist) continue;
 
           const overlap = minDist - dist;
-          const ux = dist < 1e-6 ? 1 : dx / dist;
-          const uy = dist < 1e-6 ? 0 : dy / dist;
+          const ux = nx;
+          const uy = ny;
           const fi = isWordFixed(i);
           const fj = isWordFixed(j);
 
@@ -195,28 +218,65 @@ export function createRopeSim(scene, params) {
     pinRopeEnds();
   }
 
+  function applyEndPull(word, particle, anchor, restLen, dt, pullScale) {
+    if (restLen <= 0) return;
+    const dx = particle.x - anchor.x;
+    const dy = particle.y - anchor.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist <= restLen) return;
+    const stretch = dist - restLen;
+    const nx = dx / dist;
+    const ny = dy / dist;
+    word.vx += nx * stretch * params.wordPull * pullScale * dt;
+    word.vy += ny * stretch * params.wordPull * pullScale * dt;
+  }
+
   function applyRopePullToWords(dt) {
+    const pullScale = isAwayFromHome() ? 0.25 : 1;
     for (let r = 0; r < scene.ropes.length; r++) {
       const rope = scene.ropes[r];
       const parts = rope.particles;
       const w0 = scene.words[r];
       const w1 = scene.words[r + 1];
-      if (dragWordIndex !== r && dragWordIndex !== r + 1) {
+
+      if (dragWordIndex !== r) {
         const p1 = parts[1];
         const anchor0 = wordAnchor(w0, "b");
-        const dx0 = p1.x - anchor0.x;
-        const dy0 = p1.y - anchor0.y;
-        w0.vx += dx0 * params.wordPull * dt;
-        w0.vy += dy0 * params.wordPull * dt;
+        applyEndPull(w0, p1, anchor0, rope.segmentLengths[0], dt, pullScale);
       }
-      if (dragWordIndex !== r + 1 && dragWordIndex !== r) {
+      if (dragWordIndex !== r + 1) {
         const pN = parts[parts.length - 2];
         const anchor1 = wordAnchor(w1, "a");
-        const dx1 = pN.x - anchor1.x;
-        const dy1 = pN.y - anchor1.y;
-        w1.vx += dx1 * params.wordPull * dt;
-        w1.vy += dy1 * params.wordPull * dt;
+        applyEndPull(w1, pN, anchor1, rope.segmentLengths[parts.length - 2], dt, pullScale);
       }
+    }
+  }
+
+  /** Exponential drift toward Figma rest — runs after rope solve so it is not cancelled. */
+  function applyHomeDrift(dt) {
+    const rate = params.homeSpring;
+    if (rate <= 0) return;
+    const snap = params.homeSnapDistance;
+    const alpha = 1 - Math.exp(-rate * dt);
+
+    for (let i = 0; i < scene.words.length; i++) {
+      if (dragWordIndex === i) continue;
+      const w = scene.words[i];
+      const dx = w.restX - w.x;
+      const dy = w.restY - w.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist <= snap) {
+        w.x = w.restX;
+        w.y = w.restY;
+        w.vx = 0;
+        w.vy = 0;
+        continue;
+      }
+      w.x += dx * alpha;
+      w.y += dy * alpha;
+      const bleed = Math.exp(-rate * dt * 1.5);
+      w.vx *= bleed;
+      w.vy *= bleed;
     }
   }
 
@@ -271,6 +331,10 @@ export function createRopeSim(scene, params) {
       solveSoftRopes(subDt);
     }
 
+    applyHomeDrift(dt);
+    pinRopeEnds();
+    satisfyRopeSegments(2);
+
     if (!isSceneActive()) {
       freezeScene();
     }
@@ -310,7 +374,7 @@ export function createRopeSim(scene, params) {
     w.vx = 0;
     w.vy = 0;
     clampWordToBounds(w);
-    solveSoftRopes(1 / 60);
+    pinRopeEnds();
   }
 
   function resetToRest() {

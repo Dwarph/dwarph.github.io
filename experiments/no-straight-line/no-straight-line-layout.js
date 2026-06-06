@@ -5,18 +5,18 @@
 export const FRAME_WIDTH = 1080;
 export const FRAME_HEIGHT = 1350;
 
-/** @typedef {{ id: string, text: string, restX: number, restY: number, collisionRadius: number }} WordDef */
+/** @typedef {{ id: string, text: string, restX: number, restY: number, collisionRadiusX: number, collisionRadiusY: number }} WordDef */
 
 /** @typedef {{ left: number, top: number, width: number, height: number, viewBoxW: number, viewBoxH: number, d: string }} RopePathDef */
 
 /** @type {WordDef[]} */
 export const WORD_DEFS = [
-  { id: "no", text: "No", restX: 174, restY: 127, collisionRadius: 88 },
-  { id: "journey", text: "journey", restX: 769.5, restY: 357, collisionRadius: 158 },
-  { id: "is", text: "is", restX: 711.5, restY: 587, collisionRadius: 72 },
-  { id: "a", text: "a", restX: 239.5, restY: 781, collisionRadius: 72 },
-  { id: "straight", text: "straight", restX: 732.5, restY: 895, collisionRadius: 168 },
-  { id: "line", text: "line", restX: 373.5, restY: 1202, collisionRadius: 118 },
+  { id: "no", text: "No", restX: 174, restY: 127, collisionRadiusX: 82, collisionRadiusY: 38 },
+  { id: "journey", text: "journey", restX: 769.5, restY: 357, collisionRadiusX: 200, collisionRadiusY: 38 },
+  { id: "is", text: "is", restX: 711.5, restY: 587, collisionRadiusX: 44, collisionRadiusY: 38 },
+  { id: "a", text: "a", restX: 239.5, restY: 781, collisionRadiusX: 34, collisionRadiusY: 38 },
+  { id: "straight", text: "straight", restX: 732.5, restY: 895, collisionRadiusX: 210, collisionRadiusY: 38 },
+  { id: "line", text: "line", restX: 373.5, restY: 1202, collisionRadiusX: 96, collisionRadiusY: 38 },
 ];
 
 /** Figma export bounds + path `d` (local viewBox units). */
@@ -129,7 +129,8 @@ export function buildSceneLayout(particleCount = 12) {
     y: w.restY,
     vx: 0,
     vy: 0,
-    radius: w.collisionRadius,
+    radiusX: w.collisionRadiusX,
+    radiusY: w.collisionRadiusY,
     anchorA: { x: 0, y: 0 },
     anchorB: { x: 0, y: 0 },
     hasAnchorA: false,

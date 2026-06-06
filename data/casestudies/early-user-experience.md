@@ -1,4 +1,4 @@
-[![Kickstart plan in VR — Joao's five-class onboarding path](./data/casestudies/images/eux/popv2_plan.png "bleed-xl")](./data/casestudies/images/eux/popv2_plan.png)
+[![Kickstart plan in VR: Joao's five-class onboarding path](./data/casestudies/images/eux/popv2_plan.png "bleed-xl")](./data/casestudies/images/eux/popv2_plan.png)
 
 ## Overview
 
@@ -43,7 +43,7 @@ Paths of Play was our name for the guided first-week onboarding: a sequenced set
 
 I started by user testing the existing onboarding heavily: where people got lost, what they understood, and what the flow promised versus what they felt in the product. That work gave us the signal to bet on a guided path.
 
-[![User testing synthesis — session logs, themes, and recommendations](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
+[![User testing synthesis: session logs, themes, and recommendations](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
 
 ### V1: something in their hands (March 2025)
 
@@ -55,7 +55,7 @@ Simplification: after subscribe, straight into a workout. Post-workout summaries
 
 Everyone's a winner: achievable early goals and simplified classes so people got a win before we asked for more commitment.
 
-[![Calibration step — choose your first workout type](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
+[![Calibration step: choose your first workout type](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>
@@ -70,22 +70,22 @@ First-day engagement didn't yet lift next-day return. We rolled V1 to all Englis
 
 ### V2: doubling down (June–August 2025)
 
-V1 proved the guided path worked. The weak spot was return. Not enough reason to come back the next day. Our suspicion: the plan wasn't compelling enough. It blended into the rest of the app; users couldn't see what to focus on or what came next.
+V1 proved the guided path worked. The weak spot was return. Not enough reason to come back the next day. The plan blended into the rest of the app; users couldn't see what to focus on or what came next.
 
 V2 doubled down on the signal. We built a kickstart plan that was impossible to miss. You always knew what to do next.
 
-[![Kickstart plan ready — personalised plan and today's goal](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png "wide")](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png)
+[![Kickstart plan ready: personalised plan and today's goal](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png "wide")](./data/casestudies/images/eux/popv2_Kickstart%20Plan%20Ready.png)
 
 We day-gated every two days, a hook to come back, not just pacing for its own sake. We locked down more of the product so users stayed tunnel-visioned on the kickstart until they graduated. Unlock moments were designed to feel special: milestones, not permissions. Finish the plan and a celebration animation showed all your workouts merging into one collection.
 
-[![Locked home screen — kickstart plan front and centre](./data/casestudies/images/eux/popv2_locked.png "wide")](./data/casestudies/images/eux/popv2_locked.png)
+[![Locked home screen: kickstart plan front and centre](./data/casestudies/images/eux/popv2_locked.png "wide")](./data/casestudies/images/eux/popv2_locked.png)
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv2_kickstart_plan.mp4"></video>
-  <figcaption>An animation saved for when you completed your plan - making you feel excited and accomplished.</figcaption>
+  <figcaption>Completing the kickstart plan: workouts merge into one collection.</figcaption>
 </figure>
 
-Before the A/B test, Zoe and I user tested the designs. People understood the locked model immediately. They missed one unlock beat, not realising they could browse outside the plan once it opened up, and we fixed that before ship. The sessions gave us conviction we were on the right track and that the experience held up in testing.
+Before the A/B test, Zoe and I user tested the designs. People understood the locked model immediately. They missed one unlock beat, not realising they could browse outside the plan once it opened up, and we fixed that before ship.
 
 **+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week, not just a strong first day.
 
@@ -93,7 +93,7 @@ Trial-to-member conversion held steady despite a critical bug midway through the
 
 ### V2.5: optimise (August–October 2025)
 
-V2 had raised the floor: a huge change to onboarding, and clear signal it was working. V2.5 was about optimisation. Listen to users, reflect on the design, tighten what we'd built.
+V2 had already moved the numbers. V2.5 was polish: respond to reviews, tighten copy and rewards, shorten the plan.
 
 Users were loud about one thing: day gating was frustrating. Our user-test participants hadn't flagged it, but reviews gave us a clear signal it wasn't worth the trade-off. We scrapped it.
 
@@ -103,7 +103,7 @@ We upgraded the rewards. Not just more workouts. Our best environments and glove
 
 A stamp system made the path legible: what to do today, what unlocks when you come back. Not just a plan floating in the UI.
 
-[![Stamp system — daily progress and unlocks at a glance](./data/casestudies/images/eux/popv25_stamps.png "wide")](./data/casestudies/images/eux/popv25_stamps.png)
+[![Stamp system: daily progress and unlocks at a glance](./data/casestudies/images/eux/popv25_stamps.png "wide")](./data/casestudies/images/eux/popv25_stamps.png)
 
 We shortened the plan. Users shouldn't feel stuck in beginner mode longer than they need to.
 
@@ -121,7 +121,7 @@ Midway through Paths of Play I got pulled onto a two-week sidequest: redesign th
 
 The old screen buried value in full-width copy and dense pricing cards, hard to read on a VR display. I looked at subscription apps outside VR that convert, then split the layout for skimming: goal-matched value on the left, a stripped-back decision on the right. Weekly price, softer trial language, clearer hierarchy.
 
-[![Paywall moodboard — competitor patterns outside VR](./data/casestudies/images/eux/Paywall%20moodboard.png "bleed-xl")](./data/casestudies/images/eux/Paywall%20moodboard.png)
+[![Paywall moodboard: competitor patterns outside VR](./data/casestudies/images/eux/Paywall%20moodboard.png "bleed-xl")](./data/casestudies/images/eux/Paywall%20moodboard.png)
 
 <div class="cs-media-row">
   <figure class="cs-media">
@@ -146,4 +146,4 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
 
 - **Follow signal, not the roadmap.** We started small, doubled down when V1 proved the guided path worked, then optimised when users outpaced the design in V2. Small bets until you have signal, then push hard.
 - **Cut what you built when live evidence says so.** Day gating felt considered from our side. Users found it controlling. User testing hadn't flagged it, but live users did.
-- **Following user needs moves metrics.** Conversion, return, plan completion, paywall: each lift came from fixing something users were struggling with, not from tuning the funnel in isolation.
+- **Fix what users were stuck on.** Conversion, return, plan completion, paywall: each lift tracked a concrete user problem, not a funnel tweak in isolation.

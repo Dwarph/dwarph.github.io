@@ -19,7 +19,7 @@ function isExternalLink(url) {
 
 // Header is now rendered using window.renderHeader from header.js
 
-/** Material Icons for homepage side nav (desktop). Sync names with Figma if they differ. */
+/** Material Icons for homepage bottom nav. Sync names with Figma if they differ. */
 var HOMEPAGE_NAV_ICONS = ['person', 'work', 'palette', 'mic', 'mail'];
 
 /**
@@ -460,10 +460,8 @@ function loadHomepageData() {
         html += renderTalks(data.talks);
         html += renderContact(data.contact);
 
-        homepageNavLayoutMode = null;
         lastHomepageNavActiveId = null;
         container.innerHTML = html;
-        syncHomepageNavLayout();
         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
         if (window.loadHeaderDistortion) {
             window.loadHeaderDistortion(container);
@@ -633,14 +631,7 @@ function loadHomepageData() {
 
 var HOMEPAGE_SECTION_IDS = ['about', 'work', 'projects', 'talks', 'contact'];
 
-/** null | 'dock' | 'rail' — hysteresis avoids dock/rail flipping at one breakpoint while resizing */
-var homepageNavLayoutMode = null;
 var lastHomepageNavActiveId = null;
-
-/** Widen past this → dock becomes rail (must be > DOCK_ENTER for hysteresis). */
-var HOME_NAV_RAIL_ENTER = 1080;
-/** Narrow past this → rail becomes dock; must match initial `w <= 1040` branch or mid-width stays stuck in rail. */
-var HOME_NAV_DOCK_ENTER = 1040;
 
 /** After in-page nav click, ignore spy until smooth scroll settles (spy line can sit in Contact below short Talks) */
 var homepageNavSpySuppressUntil = 0;
@@ -716,31 +707,6 @@ function scrollTalksLeavingRoomForContact(talksEl, prefersReducedMotion) {
         top: targetTop,
         behavior: prefersReducedMotion ? 'auto' : 'smooth'
     });
-}
-
-function syncHomepageNavLayout() {
-    var w = window.innerWidth;
-    /* Mobile: same bottom floating icon nav as mid-width dock (no inline text nav). */
-    if (w <= 768) {
-        document.documentElement.classList.add('home-nav-layout-dock');
-        document.documentElement.classList.remove('home-nav-layout-rail');
-        homepageNavLayoutMode = 'dock';
-        return;
-    }
-    if (homepageNavLayoutMode === null) {
-        homepageNavLayoutMode = w <= 1040 ? 'dock' : 'rail';
-    } else if (homepageNavLayoutMode === 'dock' && w >= HOME_NAV_RAIL_ENTER) {
-        homepageNavLayoutMode = 'rail';
-    } else if (homepageNavLayoutMode === 'rail' && w <= HOME_NAV_DOCK_ENTER) {
-        homepageNavLayoutMode = 'dock';
-    }
-    if (homepageNavLayoutMode === 'dock') {
-        document.documentElement.classList.add('home-nav-layout-dock');
-        document.documentElement.classList.remove('home-nav-layout-rail');
-    } else {
-        document.documentElement.classList.remove('home-nav-layout-dock');
-        document.documentElement.classList.add('home-nav-layout-rail');
-    }
 }
 
 function setHomepageNavActive(container, sectionId) {
@@ -926,7 +892,6 @@ function initHomepageSectionNav(container) {
 
     var resizeDebounceTimer = null;
     function onResize() {
-        syncHomepageNavLayout();
         if (resizeDebounceTimer) {
             clearTimeout(resizeDebounceTimer);
         }
@@ -946,7 +911,6 @@ function initHomepageSectionNav(container) {
         window.visualViewport.addEventListener('scroll', onScroll, { passive: true });
         window.visualViewport.addEventListener('resize', onResize);
     }
-    syncHomepageNavLayout();
     updateHomepageNavFromScroll(container);
 }
 

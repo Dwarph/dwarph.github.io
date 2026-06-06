@@ -6,22 +6,29 @@
     gap: 0;
 }
 
-/* Desktop: fixed left “rail” (icons); JS can switch to bottom dock on smaller widths */
+/* Bottom floating dock — horizontal, centered on viewport bottom */
+#homepage-container {
+    padding-bottom: clamp(56px, 8vh, 84px);
+    box-sizing: border-box;
+}
+
 .homepage-nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    padding: 14px 10px;
+    gap: 6px;
+    padding: 8px 12px;
     margin: 0;
-    flex-wrap: nowrap;
     position: fixed;
-    left: clamp(12px, 2.5vw, 28px);
-    top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(12px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
     z-index: 150;
-    max-width: none;
+    max-width: calc(100vw - 16px);
     background: rgba(255, 253, 239, 0.94);
     border: none;
     border-radius: 999px;
@@ -41,11 +48,8 @@
 }
 
 .homepage-header-nav-wrapper .homepage-nav {
-    max-width: none;
     margin-left: 0;
     margin-right: 0;
-    padding-left: 10px;
-    padding-right: 10px;
     box-sizing: border-box;
 }
 
@@ -53,8 +57,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     padding: 0;
     background-color: transparent;
@@ -67,7 +71,7 @@
     color: var(--text-color);
     text-decoration: none;
     touch-action: manipulation;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     transition:
         background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
         color 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -158,50 +162,18 @@ html.home-nav-scrolling .nav-link:active {
     opacity: 0;
 }
 
-/* Bottom floating dock — mid-width + mobile (class from JS; rail is wide desktop only) */
-html.home-nav-layout-dock #homepage-container {
-    padding-left: 0;
-    padding-bottom: clamp(68px, 11vh, 108px);
-    box-sizing: border-box;
-}
-
-html.home-nav-layout-dock .homepage-nav {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    left: 50%;
-    right: auto;
-    top: auto;
-    bottom: max(16px, env(safe-area-inset-bottom, 0px));
-    transform: translateX(-50%);
-    max-width: calc(100vw - 16px);
-    box-sizing: border-box;
-}
-
-html.home-nav-layout-dock .homepage-header-nav-wrapper .homepage-nav {
-    padding-left: 16px;
-    padding-right: 16px;
-}
-
-html.home-nav-layout-dock .nav-link {
-    flex: 0 0 auto;
-}
-
 @media (max-width: 768px) {
-    html.home-nav-layout-dock #homepage-container {
-        padding-bottom: max(88px, calc(env(safe-area-inset-bottom, 0px) + 76px));
+    #homepage-container {
+        padding-bottom: max(72px, calc(env(safe-area-inset-bottom, 0px) + 64px));
     }
 
-    html.home-nav-layout-dock .homepage-nav {
-        gap: 4px;
-        padding: 7px 8px;
+    .homepage-nav {
+        gap: 3px;
+        padding: 6px 8px;
         max-width: calc(100vw - 12px);
     }
 
-    html.home-nav-layout-dock .nav-link {
+    .nav-link {
         width: 40px;
         height: 40px;
     }
@@ -350,14 +322,6 @@ html.home-nav-layout-dock .nav-link {
             transform: none !important;
             filter: none !important;
         }
-    }
-}
-
-/* Wide desktop: left-rail gutter (paired with html.home-nav-layout-rail from JS) */
-@media (min-width: 769px) {
-    html.home-nav-layout-rail #homepage-container {
-        padding-left: clamp(52px, 6vw, 96px);
-        padding-right: clamp(52px, 6vw, 96px);
     }
 }
 

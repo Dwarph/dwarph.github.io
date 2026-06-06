@@ -35,13 +35,15 @@ This case study focuses on both projects through the lense of user centred desig
 
 ## Paths of Play
 
-Paths of Play was our name for the guided first-week onboarding: a sequenced set of workouts and UI changes that replaced "here's everything, good luck" with "start here, then here."
+Paths of Play was our name for our solution to our onboarding problem: a guided, first-week onboarding. Made up of a sequenced set of workouts and UI changes, it replaces "here's everything, good luck" with "start here, then here."
 
-[![Before launching into the project, I user tested our existing onboarding to gain conviction and signal.](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
+Before launching into the project, I user tested our existing onboarding to gain conviction and signal.
 
-### V1: something in their hands (March 2025)
+[![User testing outcomes](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
 
-V1 tested three tenets we'd defined.
+### V1: Mine for Gold (March 2025)
+
+We wanted to move quick with V1, and test three tenets we'd defined.
 
 - **Personalisation:** a calibration step, tailored first workout, and a personalised plan based on their goals.
 - **Simplification:** after subscribe, straight into a workout. Post-workout summaries stripped back; rewards, detailed previews, and room-blend features stayed locked until you were a more qualified player.
@@ -60,7 +62,7 @@ V1 tested three tenets we'd defined.
 
 First-day engagement didn't yet lift next-day return. We rolled V1 to all English-speaking users within two weeks.
 
-### V2: doubling down (June–August 2025)
+### V2: Doubling Down (June–August 2025)
 
 V1 proved the guided path worked. The weak spot was return. Not enough reason to come back the next day. The plan blended into the rest of the app; users couldn't see what to focus on or what came next.
 
@@ -81,7 +83,7 @@ Before the A/B test, Zoe and I user tested the designs. People understood the lo
 **+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week, not just a strong first day.
 
 
-### V2.5: optimise (August–October 2025)
+### V2.5: Optimise (August–October 2025)
 
 V2 had raised the floor for our onboarding - but now we needed to optimise.
 

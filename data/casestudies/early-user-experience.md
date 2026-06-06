@@ -49,7 +49,7 @@ We wanted to move quick with V1, and test three tenets we'd defined.
 - **Simplification:** after subscribe, straight into a workout. Post-workout summaries stripped back; rewards, detailed previews, and room-blend features stayed locked until you were a more qualified player.
 - **Everyone's a winner:** achievable early goals and simplified classes so people got a win before we asked for more commitment.
 
-[![Calibration step: choose your first workout type](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
+[![Calibration step: build ownership of your plan](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>

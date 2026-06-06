@@ -53,7 +53,7 @@ We wanted to move quick with V1, and test three tenets we'd defined.
 
 <figure class="cs-media cs-media--wide">
   <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>
-  <figcaption>V1 plan on the menu: pick your next workout from a guided path.</figcaption>
+  <figcaption>Motion design to build trust and excitement about your first class</figcaption>
 </figure>
 
 **+9% trial-to-member conversion.** Strongest result this team had seen in this space for a long time.

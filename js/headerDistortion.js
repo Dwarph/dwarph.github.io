@@ -42,19 +42,36 @@ export const MOBILE_DISTORTION_PRESET = Object.assign({}, DISTORTION_PRESET, {
 });
 
 /**
- * Simulation speed multiplier (1 = default). Higher = faster settling and snappier hover.
+ * Simulation speed multiplier (1 = default). Affects hover trails and pointer momentum after the intro settles.
  * Optional runtime override: `window.__HEADER_DISTORTION_SPEED` (same range, checked at init).
  */
 export const HEADER_DISTORTION_SPEED = 1;
 
+/**
+ * Load-in shimmer decay only (1 = default). Higher = faster intro settle; does not change hover feel.
+ * Optional runtime override: `window.__HEADER_DISTORTION_INTRO_SPEED` (same range, checked at init).
+ */
+export const HEADER_DISTORTION_INTRO_SPEED = 3;
+
+/** Per-channel displacement below this ends the intro phase. */
+const INTRO_SETTLED_THRESHOLD = 1.5;
+
+function resolveSpeedMultiplier(value, windowKey, fallback) {
+    if (typeof value === 'number' && !isNaN(value)) {
+        return clamp(value, 0.25, 4);
+    }
+    if (typeof window !== 'undefined' && typeof window[windowKey] === 'number') {
+        return clamp(window[windowKey], 0.25, 4);
+    }
+    return clamp(fallback, 0.25, 4);
+}
+
 function resolveSimulationSpeed(override) {
-    if (typeof override === 'number' && !isNaN(override)) {
-        return clamp(override, 0.25, 4);
-    }
-    if (typeof window !== 'undefined' && typeof window.__HEADER_DISTORTION_SPEED === 'number') {
-        return clamp(window.__HEADER_DISTORTION_SPEED, 0.25, 4);
-    }
-    return clamp(HEADER_DISTORTION_SPEED, 0.25, 4);
+    return resolveSpeedMultiplier(override, '__HEADER_DISTORTION_SPEED', HEADER_DISTORTION_SPEED);
+}
+
+function resolveIntroSpeed(override) {
+    return resolveSpeedMultiplier(override, '__HEADER_DISTORTION_INTRO_SPEED', HEADER_DISTORTION_INTRO_SPEED);
 }
 
 const CONTROLS_STORAGE_KEY = 'pipHeaderDistortionControls';
@@ -173,6 +190,8 @@ class DistortionSketch {
         /** When true, start from a flat field (no random “intro” shimmer). Used off the homepage. */
         this.skipIntro = options.skipIntro === true;
         this.simulationSpeed = resolveSimulationSpeed(options.simulationSpeed);
+        this.introSpeed = resolveIntroSpeed(options.introSpeed);
+        this.introActive = !this.skipIntro;
 
         this.size = 0;
         this.texture = null;
@@ -443,12 +462,22 @@ class DistortionSketch {
 
         var data = this.texture.image.data;
         var i;
-        var s = this.simulationSpeed;
-        var relPow = Math.pow(this.settings.relaxation, s);
-        var velPow = Math.pow(0.9, s);
+        var decaySpeed = this.introActive ? this.introSpeed : this.simulationSpeed;
+        var relPow = Math.pow(this.settings.relaxation, decaySpeed);
+        var velPow = Math.pow(0.9, this.simulationSpeed);
+        var maxDisp = 0;
         for (i = 0; i < data.length; i += 4) {
             data[i] *= relPow;
             data[i + 1] *= relPow;
+            if (this.introActive) {
+                var ax = Math.abs(data[i]);
+                var ay = Math.abs(data[i + 1]);
+                if (ax > maxDisp) maxDisp = ax;
+                if (ay > maxDisp) maxDisp = ay;
+            }
+        }
+        if (this.introActive && maxDisp < INTRO_SETTLED_THRESHOLD) {
+            this.introActive = false;
         }
 
         if (this.pointerInHeader) {

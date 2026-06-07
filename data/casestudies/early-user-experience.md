@@ -115,16 +115,19 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
 
 [![Paywall moodboard: competitor patterns outside VR](./data/casestudies/images/eux/Paywall%20moodboard.png "bleed-xl")](./data/casestudies/images/eux/Paywall%20moodboard.png)
 
-<div class="cs-media-row">
-  <figure class="cs-media">
-    <a href="./data/casestudies/images/eux/Paywall_Before.png"><img src="./data/casestudies/images/eux/Paywall_Before.png" alt=""></a>
-    <figcaption>Before: poor readability, weak value prop</figcaption>
-  </figure>
-  <figure class="cs-media">
-    <a href="./data/casestudies/images/eux/Paywall_After.png"><img src="./data/casestudies/images/eux/Paywall_After.png" alt=""></a>
-    <figcaption>After: value on the left, decision on the right</figcaption>
-  </figure>
-</div>
+<figure class="cs-media cs-media--compare cs-media--bleed-xl">
+  <div class="cs-compare">
+    <img class="cs-compare__img cs-compare__img--before"
+         src="./data/casestudies/images/eux/Paywall_Before.png"
+         alt="Before: poor readability, weak value prop"
+         data-no-lightbox>
+    <img class="cs-compare__img cs-compare__img--after"
+         src="./data/casestudies/images/eux/Paywall_After.png"
+         alt="After: value on the left, decision on the right"
+         data-no-lightbox>
+  </div>
+  <figcaption>Drag to compare the paywall before and after redesign</figcaption>
+</figure>
 
 **+10% paywall conversion.** The paywall had been hard to move for years; we moved it by focusing on user needs.
 

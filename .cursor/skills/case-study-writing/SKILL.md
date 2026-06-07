@@ -100,6 +100,31 @@ Add `cs-media--wide`, `cs-media--bleed`, or `cs-media--bleed-xl` on the figure t
 
 Supported formats: whatever the browser plays (`.mp4` in existing case studies).
 
+### Compare slider (HTML)
+
+Use when two **same-aspect** stills are best compared in place (before/after redesign), not side-by-side. Prefer `cs-media-row` when both screens need to be read fully at once without interaction.
+
+```html
+<figure class="cs-media cs-media--compare cs-media--bleed-xl">
+  <div class="cs-compare">
+    <img class="cs-compare__img cs-compare__img--before"
+         src="./data/casestudies/images/{slug}/before.png"
+         alt="Before: short label"
+         data-no-lightbox>
+    <img class="cs-compare__img cs-compare__img--after"
+         src="./data/casestudies/images/{slug}/after.png"
+         alt="After: short label"
+         data-no-lightbox>
+  </div>
+  <figcaption>Drag to compare …</figcaption>
+</figure>
+```
+
+- Put **`data-no-lightbox`** on both inner images — the slider is the interaction; lightbox would conflict with drag.
+- Alt text on each image becomes the corner **Before** / **After** context; add a single `<figcaption>` for the combined caption.
+- Match width tokens to neighbours (`wide`, `bleed`, `bleed-xl`).
+- On first scroll into view, the slider plays a one-time sweep (0% → 85% → 15% → 50%) so readers discover both images; skipped when `prefers-reduced-motion: reduce` (starts at 50%).
+
 ### Formats
 
 - **PNG / JPG / WebP** for stills. PNG for UI and prototypes; JPG for photos if file size matters.

@@ -402,6 +402,9 @@ function loadCaseStudyPage() {
                     initCaseStudyContentImages(container);
                     initCaseStudyVideos(container);
                     initCaseStudyImageLightbox(container);
+                    if (typeof window.initCaseStudyCompare === 'function') {
+                        window.initCaseStudyCompare(container);
+                    }
                 },
                 function () {
                     container.removeAttribute('aria-busy');

@@ -1,4 +1,4 @@
-[![The kickstart plan: an onboarding path for new users](./data/casestudies/images/eux/popv2_plan.png "bleed-xl")](./data/casestudies/images/eux/popv2_plan.png)
+[![The kickstart plan: an onboarding path for new users](./data/casestudies/images/eux/popv2_kickstartplan.png "bleed-xl")](./data/casestudies/images/eux/popv2_kickstartplan.png)
 
 ## Overview
 

@@ -1,4 +1,4 @@
-[![Sidestep, Jump & Crouch - in-game header](./data/casestudies/images/sidestep-jump-crouch/header.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/header.png)
+[![](./data/casestudies/images/sidestep-jump-crouch/header.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/header.png)
 
 ## Overview
 
@@ -43,7 +43,7 @@ VR design has to be felt, not mocked up in Figma. Full-body workouts mean design
 
 We made over 50 prototypes in 3 months.
 
-[![A sample of early Unity prototypes](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png "wide")](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png)
+[![A sample of some of our prototypes](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png "wide")](./data/casestudies/images/sidestep-jump-crouch/prototype-examples.png)
 
 ---
 
@@ -51,7 +51,7 @@ We made over 50 prototypes in 3 months.
 
 I landed on a loop I called **Design, Discard, Deliver**, with feedback running through all of it.
 
-[![Design, Discard, Deliver loop diagram](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png "wide")](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png)
+[![Design, Discard, Deliver](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png "wide")](./data/casestudies/images/sidestep-jump-crouch/design-discard-deliver.png)
 
 - Design: get into VR fast. Prototype in Unity, feel it.
 - Discard: if it's not working, throw it away. Don't get attached.
@@ -73,7 +73,7 @@ Vertical motion fixed it. A bottom bar + top bar with high contrast, and a textu
 
 A burst that feels big but stays safe.
 
-[![A snapshot of the jump prototype set](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png)
+[![Jump prototypes](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/jump-prototypes.png)
 
 ### Sidestep - rummaging through the trash
 
@@ -93,7 +93,7 @@ The feet idea actually came from an old Ultraleap project on touchless touchscre
 
 We also locked in the visual language here - blue bar on the left, white fade in the middle, glow on the outside. It became the lynchpin for the next move.
 
-[![A snapshot of the sidestep prototype set](./data/casestudies/images/sidestep-jump-crouch/sidestep-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/sidestep-prototypes.png)
+[![Sidestep prototypes](./data/casestudies/images/sidestep-jump-crouch/sidestep-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/sidestep-prototypes.png)
 
 ### Crouch - the beast
 
@@ -111,7 +111,7 @@ When we came back, the answer was already in the work we'd done. Jump + Sidestep
 
 It worked. You can chain Crouches together to make weaves. The bars become the transition. There's an almost-Matrix moment where you move past them. The simpler we made it, the better it got.
 
-[![A snapshot of the crouch prototype set](./data/casestudies/images/sidestep-jump-crouch/crouch-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/crouch-prototypes.png)
+[![Crouch prototypes](./data/casestudies/images/sidestep-jump-crouch/crouch-prototypes.png "wide")](./data/casestudies/images/sidestep-jump-crouch/crouch-prototypes.png)
 
 ---
 
@@ -119,7 +119,7 @@ It worked. You can chain Crouches together to make weaves. The bars become the t
 
 Sidestep, Jump and Crouch shipped together into FitXR's Box and Combat workouts. Player response was positive across the board. My standout comment is: *"FINALLY, my pulse was RACING. LOVE IT."*
 
-[![A snapshot of player feedback post-launch](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png)
+[![Player feedback post-launch](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png "bleed-xl")](./data/casestudies/images/sidestep-jump-crouch/user-feedback.png)
 
 Three things I took away:
 

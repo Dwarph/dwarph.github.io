@@ -6,13 +6,13 @@
 
     var DEFAULTS = {
         bounceDurationMs: 500,
-        bounceDepth: 0.1,
-        bounceBounciness: 0.65,
-        pulseStrength: 0.85,
-        pulseRadius: 0.22,
-        pulseDurationMs: 420,
-        pulseAtCompress: 1,
-        pulseHoldMs: 40,
+        bounceDepth: 0.18,
+        bounceBounciness: 1,
+        pulseStrength: 0.15,
+        pulseRadius: 1,
+        pulseDurationMs: 2475,
+        pulseAt: 0.6,
+        pulseHoldMs: 90,
     };
 
     /** @type {typeof DEFAULTS} Mutable — tweak in panel or browser console. */
@@ -44,7 +44,7 @@
         if (typeof stored.bounceDurationMs === 'number') {
             merged.bounceDurationMs = clamp(stored.bounceDurationMs, 150, 1200);
         }
-        if (typeof stored.bounceDepth === 'number') merged.bounceDepth = clamp(stored.bounceDepth, 0.02, 0.35);
+        if (typeof stored.bounceDepth === 'number') merged.bounceDepth = clamp(stored.bounceDepth, 0, 0.6);
         if (typeof stored.bounceBounciness === 'number') {
             merged.bounceBounciness = clamp(stored.bounceBounciness, 0, 1);
         }
@@ -52,16 +52,19 @@
             merged.pulseStrength = clamp(stored.pulseStrength, 0.1, 2.5);
         }
         if (typeof stored.pulseRadius === 'number') {
-            merged.pulseRadius = clamp(stored.pulseRadius, 0.08, 0.45);
+            merged.pulseRadius = clamp(stored.pulseRadius, 0.15, 1);
         }
         if (typeof stored.pulseDurationMs === 'number') {
-            merged.pulseDurationMs = clamp(stored.pulseDurationMs, 100, 1200);
+            merged.pulseDurationMs = clamp(stored.pulseDurationMs, 100, 4000);
         }
-        if (typeof stored.pulseAtCompress === 'number') {
-            merged.pulseAtCompress = clamp(stored.pulseAtCompress, 0.92, 1);
+        if (typeof stored.pulseAt === 'number' && Number.isFinite(stored.pulseAt)) {
+            merged.pulseAt = clamp(stored.pulseAt, 0, 1);
+        } else if (typeof stored.pulseAtCompress === 'number') {
+            var compressPoint = clamp(stored.pulseAtCompress, 0.92, 1);
+            merged.pulseAt = clamp(0.2 + ((compressPoint - 0.92) / 0.08) * 0.16, 0, 1);
         }
         if (typeof stored.pulseHoldMs === 'number') {
-            merged.pulseHoldMs = clamp(stored.pulseHoldMs, 0, 80);
+            merged.pulseHoldMs = clamp(stored.pulseHoldMs, 0, 250);
         }
 
         return merged;
@@ -71,32 +74,49 @@
         if (key === 'bounceDurationMs' || key === 'pulseDurationMs' || key === 'pulseHoldMs') {
             return String(Math.round(value));
         }
+        if (key === 'pulseAt') {
+            return Math.round(value * 100) + '%';
+        }
         return Number(value).toFixed(2);
     }
 
-    function readProfileScale(profileImage) {
-        var transform = getComputedStyle(profileImage).transform;
-        if (!transform || transform === 'none') return 1;
-
-        var parts;
-        if (transform.indexOf('matrix3d(') === 0) {
-            parts = transform.slice(9, -1).split(',').map(Number);
-            return Math.hypot(parts[0], parts[1]) || 1;
+    function configToClipboardText() {
+        var keys = Object.keys(DEFAULTS);
+        var out = {};
+        var i;
+        for (i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            out[key] = window.pipProfileAnimConfig[key];
         }
-        if (transform.indexOf('matrix(') === 0) {
-            parts = transform.slice(7, -1).split(',').map(Number);
-            return Math.hypot(parts[0], parts[1]) || 1;
-        }
-        return 1;
+        return JSON.stringify(out, null, 2);
     }
 
-    function getCompressProgress(scale, dipScale) {
-        var range = 1 - dipScale;
-        if (range <= 0.001) return 1;
-        return clamp((1 - scale) / range, 0, 1);
+    function copyTextToClipboard(text) {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                if (document.execCommand('copy')) {
+                    resolve();
+                } else {
+                    reject(new Error('copy failed'));
+                }
+            } catch (err) {
+                reject(err);
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        });
     }
 
-    /** 0 = gentle settle, 1 = strong overshoot on the settle curve. */
     function bounceSettleCurve(bounciness) {
         var y1 = 1 + bounciness * 0.95;
         return 'cubic-bezier(0.34, ' + y1.toFixed(3) + ', 0.64, 1)';
@@ -110,9 +130,13 @@
         if (mountRect.width < 1 || mountRect.height < 1) return null;
 
         var profileRect = profileImage.getBoundingClientRect();
+        var halfW = profileRect.width * 0.5;
+        var halfH = profileRect.height * 0.5;
         return {
-            x: clamp((profileRect.left + profileRect.width * 0.5 - mountRect.left) / mountRect.width, 0, 1),
-            y: clamp((profileRect.top + profileRect.height * 0.5 - mountRect.top) / mountRect.height, 0, 1),
+            x: clamp((profileRect.left + halfW - mountRect.left) / mountRect.width, 0, 1),
+            y: clamp((profileRect.top + halfH - mountRect.top) / mountRect.height, 0, 1),
+            /* Grid-x units (0–1 × size): profile occludes the sim until the ring clears this radius. */
+            radius: clamp(halfW / mountRect.width, 0, 1),
         };
     }
 
@@ -127,6 +151,7 @@
             duration: cfg.pulseDurationMs,
             strength: cfg.pulseStrength,
             radius: cfg.pulseRadius,
+            startRadius: center.radius,
         });
     }
 
@@ -230,14 +255,14 @@
         }
 
         addRow(fieldset, 'bounceDurationMs', 'Duration (ms)', 150, 1200, 10);
-        addRow(fieldset, 'bounceDepth', 'Compress depth', 0.02, 0.35, 0.01);
+        addRow(fieldset, 'bounceDepth', 'Compress depth', 0, 0.6, 0.01);
         addRow(fieldset, 'bounceBounciness', 'Settle bounce', 0, 1, 0.01);
 
         addRow(pulseFieldset, 'pulseStrength', 'Strength', 0.1, 2.5, 0.05);
-        addRow(pulseFieldset, 'pulseRadius', 'Radius', 0.08, 0.45, 0.01);
-        addRow(pulseFieldset, 'pulseDurationMs', 'Duration (ms)', 100, 1200, 10);
-        addRow(pulseFieldset, 'pulseAtCompress', 'At compress', 0.92, 1, 0.01);
-        addRow(pulseFieldset, 'pulseHoldMs', 'Hold at min (ms)', 0, 80, 1);
+        addRow(pulseFieldset, 'pulseRadius', 'Reach', 0.15, 1, 0.01);
+        addRow(pulseFieldset, 'pulseDurationMs', 'Duration (ms)', 100, 4000, 25);
+        addRow(pulseFieldset, 'pulseAt', 'At bounce time', 0, 1, 0.01);
+        addRow(pulseFieldset, 'pulseHoldMs', 'Hold at min (ms)', 0, 250, 5);
 
         var actions = document.createElement('div');
         actions.className = 'pip-profile-controls__actions';
@@ -264,7 +289,29 @@
             }
         });
 
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'pip-profile-controls__btn pip-profile-controls__btn--reset';
+        copy.textContent = 'Copy values';
+        copy.addEventListener('click', function () {
+            var label = copy.textContent;
+            copyTextToClipboard(configToClipboardText())
+                .then(function () {
+                    copy.textContent = 'Copied!';
+                    window.setTimeout(function () {
+                        copy.textContent = label;
+                    }, 1500);
+                })
+                .catch(function () {
+                    copy.textContent = 'Copy failed';
+                    window.setTimeout(function () {
+                        copy.textContent = label;
+                    }, 1500);
+                });
+        });
+
         actions.appendChild(preview);
+        actions.appendChild(copy);
         actions.appendChild(reset);
 
         panel.appendChild(fieldset);
@@ -310,6 +357,12 @@
         if (!header || !profileImage || !pipSpans.length) return;
 
         var bounceAnim = null;
+        var pulseTimer = null;
+        var bounceStartedAt = 0;
+        var holdTimer = null;
+        var bounceActive = false;
+        var pulseFired = false;
+        var bounceGeneration = 0;
 
         var config = mergeConfig(readStored());
         Object.assign(window.pipProfileAnimConfig, config);
@@ -317,34 +370,120 @@
         profileImage.classList.add('profile-image--pip-linked');
         header.classList.add('pip-profile-tweaks-enabled');
 
-        function finishBounce() {
+        function clearPulseTimer() {
+            if (pulseTimer != null) {
+                clearTimeout(pulseTimer);
+                pulseTimer = null;
+            }
+        }
+
+        function getPulseAtMs() {
+            var cfg = window.pipProfileAnimConfig;
+            var ms = cfg.pulseAt * cfg.bounceDurationMs;
+            return Number.isFinite(ms) ? Math.max(0, ms) : DEFAULTS.pulseAt * DEFAULTS.bounceDurationMs;
+        }
+
+        function firePulseIfNeeded() {
+            if (pulseFired || !bounceActive) return;
+
+            var sketch = header && header.__distortionSketch;
+            if (!sketch || typeof sketch.pulseAtNormalized !== 'function') return;
+            if (!getProfilePulseCenter(header, profileImage)) return;
+
+            pulseFired = true;
+            clearPulseTimer();
+            triggerDistortionPulse(header, profileImage, window.pipProfileAnimConfig);
+        }
+
+        function schedulePulseOnTimeline(gen) {
+            clearPulseTimer();
+            if (!bounceActive || pulseFired) return;
+
+            var pulseAtMs = getPulseAtMs();
+            var delay = pulseAtMs - (performance.now() - bounceStartedAt);
+
+            if (delay <= 0) {
+                firePulseIfNeeded();
+                return;
+            }
+
+            pulseTimer = setTimeout(function () {
+                if (gen !== bounceGeneration) return;
+                firePulseIfNeeded();
+            }, delay);
+        }
+
+        function finishBounce(gen) {
+            if (gen !== bounceGeneration) return;
+
+            if (!pulseFired && bounceActive) {
+                if (performance.now() - bounceStartedAt >= getPulseAtMs()) {
+                    firePulseIfNeeded();
+                }
+            }
+            clearPulseTimer();
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+            }
+            bounceActive = false;
+            bounceStartedAt = 0;
             header.classList.remove('is-pip-bouncing');
             profileImage.style.removeProperty('transform');
         }
 
+        function applyConfigPatch(patch) {
+            Object.assign(
+                window.pipProfileAnimConfig,
+                mergeConfig(Object.assign({}, window.pipProfileAnimConfig, patch))
+            );
+            writeStored(window.pipProfileAnimConfig);
+            if (!bounceActive) return;
+
+            var timingChanged =
+                patch.pulseAt !== undefined || patch.bounceDurationMs !== undefined;
+            if (!timingChanged) return;
+
+            if (pulseFired) {
+                var elapsed = performance.now() - bounceStartedAt;
+                if (elapsed < getPulseAtMs()) {
+                    pulseFired = false;
+                }
+            }
+
+            if (!pulseFired) {
+                schedulePulseOnTimeline(bounceGeneration);
+            }
+        }
+
         function triggerPipBounce() {
+            bounceGeneration += 1;
+            var gen = bounceGeneration;
+
             var cfg = window.pipProfileAnimConfig;
-            var dipScale = Math.max(0.5, 1 - cfg.bounceDepth);
+            var dipScale = Math.max(0.32, 1 - cfg.bounceDepth);
             var compressMs = Math.round(cfg.bounceDurationMs * 0.28);
             var holdMs = Math.round(cfg.pulseHoldMs);
             var settleMs = Math.max(1, cfg.bounceDurationMs - compressMs - holdMs);
-            var pulsed = false;
             var settleStarted = false;
-            var pulseWatchId = 0;
 
             if (bounceAnim) {
                 bounceAnim.cancel();
                 bounceAnim = null;
             }
-
-            function firePulseIfNeeded() {
-                if (pulsed) return;
-                pulsed = true;
-                triggerDistortionPulse(header, profileImage, cfg);
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
             }
+            clearPulseTimer();
+            pulseFired = false;
+            bounceStartedAt = performance.now();
+            bounceActive = true;
+            header.classList.add('is-pip-bouncing');
+            schedulePulseOnTimeline(gen);
 
             function startSettle() {
-                if (settleStarted) return;
+                if (settleStarted || gen !== bounceGeneration) return;
                 settleStarted = true;
 
                 var settle = profileImage.animate(
@@ -356,38 +495,27 @@
                     }
                 );
 
-                settle.onfinish = finishBounce;
-                settle.oncancel = finishBounce;
+                settle.onfinish = function () {
+                    finishBounce(gen);
+                };
+                settle.oncancel = function () {
+                    finishBounce(gen);
+                };
                 bounceAnim = settle;
             }
 
             function beginSettleAfterHold() {
+                if (gen !== bounceGeneration) return;
                 if (holdMs > 0) {
-                    setTimeout(startSettle, holdMs);
+                    holdTimer = setTimeout(function () {
+                        if (gen !== bounceGeneration) return;
+                        holdTimer = null;
+                        startSettle();
+                    }, holdMs);
                 } else {
                     startSettle();
                 }
             }
-
-            function watchCompressForPulse(compressAnim) {
-                function frame() {
-                    if (pulsed || compressAnim.playState === 'cancelled') return;
-
-                    var progress = getCompressProgress(readProfileScale(profileImage), dipScale);
-                    if (progress >= cfg.pulseAtCompress) {
-                        firePulseIfNeeded();
-                        return;
-                    }
-
-                    if (compressAnim.playState === 'running') {
-                        pulseWatchId = requestAnimationFrame(frame);
-                    }
-                }
-
-                pulseWatchId = requestAnimationFrame(frame);
-            }
-
-            header.classList.add('is-pip-bouncing');
 
             var compress = profileImage.animate(
                 [{ transform: 'scale(1)' }, { transform: 'scale(' + dipScale + ')' }],
@@ -398,31 +526,16 @@
                 }
             );
 
-            watchCompressForPulse(compress);
-
             compress.onfinish = function () {
-                if (pulseWatchId) {
-                    cancelAnimationFrame(pulseWatchId);
-                    pulseWatchId = 0;
-                }
-                firePulseIfNeeded();
+                if (gen !== bounceGeneration) return;
                 beginSettleAfterHold();
             };
 
             compress.oncancel = function () {
-                if (pulseWatchId) {
-                    cancelAnimationFrame(pulseWatchId);
-                    pulseWatchId = 0;
-                }
-                finishBounce();
+                finishBounce(gen);
             };
 
             bounceAnim = compress;
-        }
-
-        function applyConfigPatch(patch) {
-            Object.assign(window.pipProfileAnimConfig, mergeConfig(Object.assign({}, window.pipProfileAnimConfig, patch)));
-            writeStored(window.pipProfileAnimConfig);
         }
 
         buildPipProfilePanel(header, triggerPipBounce, applyConfigPatch);

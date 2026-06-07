@@ -514,20 +514,49 @@ class DistortionSketch {
     }
 
     /**
+     * Furthest screen-space distance from (nx, ny) to a canvas corner, in grid cells.
+     * @param {number} nx
+     * @param {number} ny
+     */
+    computePulseMaxReach(nx, ny) {
+        var aspect = this.height / this.width;
+        var corners = [
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [1, 1],
+        ];
+        var maxD = 0;
+        var i;
+        for (i = 0; i < corners.length; i++) {
+            var dx = corners[i][0] - nx;
+            var dy = corners[i][1] - ny;
+            var d = Math.hypot(dx, dy * aspect) * this.size;
+            if (d > maxD) maxD = d;
+        }
+        return maxD;
+    }
+
+    /**
      * Outward radial pulse at normalized mount coords (0–1).
      * @param {number} nx
      * @param {number} ny
-     * @param {{ duration?: number, strength?: number, radius?: number }} [opts]
+     * @param {{ duration?: number, strength?: number, radius?: number, startRadius?: number }} [opts]
+     *   radius = reach fraction (1 = full canvas); startRadius = occluder radius (0–1 grid-x units) so the ring begins at the profile edge
      */
     pulseAtNormalized(nx, ny, opts) {
         opts = opts || {};
+        var nxClamped = clamp(nx, 0, 1);
+        var nyClamped = clamp(ny, 0, 1);
         this.pulses.push({
-            x: clamp(nx, 0, 1),
-            y: clamp(ny, 0, 1),
+            x: nxClamped,
+            y: nyClamped,
             start: performance.now(),
             duration: opts.duration != null ? Math.max(100, opts.duration) : 420,
             strength: opts.strength != null ? opts.strength : 1,
-            radius: opts.radius != null ? opts.radius : 0.22,
+            maxReach: this.computePulseMaxReach(nxClamped, nyClamped),
+            reach: opts.radius != null ? clamp(opts.radius, 0.15, 1) : 1,
+            startRadius: opts.startRadius != null ? clamp(opts.startRadius, 0, 1) : 0,
         });
     }
 
@@ -554,34 +583,40 @@ class DistortionSketch {
 
             var gridX = pulse.x * this.size;
             var gridY = (1 - pulse.y) * this.size;
-            var maxR = pulse.radius * this.size;
-            var amp = pulse.strength * baseStrength;
-            var fade = 1 - t * t;
+            var maxR = pulse.maxReach * pulse.reach;
+            var startR = (pulse.startRadius || 0) * this.size;
+            var travelRange = Math.max(0, maxR - startR);
+            var amp = pulse.strength * baseStrength * 0.5;
+            var fade = Math.pow(1 - t, 2.4);
             var ii;
             var j;
 
-            /* Center burst — strongest at the start (icon at minimum scale). */
-            var burstT = Math.min(t / 0.22, 1);
-            var burstAmp = amp * (1 - burstT) * 0.75;
-            var burstR = maxR * 0.35;
+            /* Ease-out travel — visible movement from frame one (smoothstep starts too slow). */
+            var travel = 1 - Math.pow(1 - t, 2.2);
+            var waveFront = startR + travelRange * travel;
+
+            /* Soft local nudge at the wave front (not the hidden center). */
+            var burstT = Math.min(t / 0.12, 1);
+            var burstAmp = amp * (1 - burstT) * 0.32;
+            var burstR = Math.max(this.size * 0.028, startR > 0 ? this.size * 0.018 : this.size * 0.035);
 
             for (ii = 0; ii < this.size; ii++) {
                 for (j = 0; j < this.size; j++) {
                     var dxB = ii - gridX;
                     var dyB = j - gridY;
                     var distB = screenDist(dxB, dyB);
-                    if (distB > burstR || distB < 0.001) continue;
-                    var fallB = 1 - distB / burstR;
+                    var burstDelta = Math.abs(distB - waveFront);
+                    if (burstDelta > burstR || distB < 0.001) continue;
+                    var fallB = 1 - burstDelta / burstR;
                     var idxB = 4 * (ii + this.size * j);
                     data[idxB] += (dxB / distB) * burstAmp * fallB * fallB;
                     data[idxB + 1] -= (dyB * aspect / distB) * burstAmp * fallB * fallB;
                 }
             }
 
-            /* Expanding ring. */
-            var waveFront = maxR * (0.12 + 0.88 * t);
-            var ringHalf = maxR * 0.13;
-            var ringAmp = amp * fade;
+            /* Expanding ring — eases out and loses energy as it travels. */
+            var ringHalf = Math.max(this.size * 0.01, maxR * 0.022);
+            var ringAmp = amp * fade * (0.85 + startR / this.size * 0.3) * (1 - travel * 0.72);
 
             for (ii = 0; ii < this.size; ii++) {
                 for (j = 0; j < this.size; j++) {

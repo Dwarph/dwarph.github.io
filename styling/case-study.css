@@ -1,5 +1,9 @@
 /* Case study page-specific styles */
 
+#case-study-container > .breadcrumb-nav:first-child {
+    padding-top: var(--spacing-lg);
+}
+
 .case-study-page-title {
     font-family: var(--font-display);
     font-weight: 700;

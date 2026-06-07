@@ -52,7 +52,7 @@ We wanted to move quick with V1, and test three tenets we'd defined.
 [![Calibration step: build ownership of your plan](./data/casestudies/images/eux/popv1_calibration.png "wide")](./data/casestudies/images/eux/popv1_calibration.png)
 
 <figure class="cs-media cs-media--wide">
-  <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/eux/popv1_PickingWorkout.mp4"></video>
   <figcaption>Motion design to build trust and excitement about your first class</figcaption>
 </figure>
 
@@ -74,7 +74,7 @@ We day-gated every two days, a hook to come back, not just pacing for its own sa
 
 
 <figure class="cs-media cs-media--wide">
-  <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/eux/popv2_kickstart_plan.mp4"></video>
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/eux/popv2_kickstart_plan.mp4"></video>
   <figcaption>Completing the kickstart plan: workouts merge into one collection.</figcaption>
 </figure>
 

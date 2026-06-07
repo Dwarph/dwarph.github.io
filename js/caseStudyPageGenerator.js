@@ -150,6 +150,74 @@ function getOrCreateImageLightbox() {
     return overlay;
 }
 
+function initCaseStudyVideos(rootEl) {
+    if (!rootEl) return;
+
+    var scope = rootEl.querySelector('.case-study-content');
+    if (!scope) return;
+
+    var videos = scope.querySelectorAll('video');
+    if (!videos.length) return;
+
+    var reduced =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    for (var i = 0; i < videos.length; i++) {
+        var video = videos[i];
+        video.removeAttribute('autoplay');
+        video.setAttribute('preload', 'none');
+        video.pause();
+        if (reduced) {
+            video.removeAttribute('loop');
+        }
+    }
+
+    if (reduced || typeof IntersectionObserver !== 'function') return;
+
+    var observer = new IntersectionObserver(
+        function (entries) {
+            for (var e = 0; e < entries.length; e++) {
+                var entry = entries[e];
+                var video = entry.target;
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
+                    if (video.getAttribute('preload') === 'none') {
+                        video.setAttribute('preload', 'metadata');
+                    }
+                    var playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(function () {});
+                    }
+                } else {
+                    video.pause();
+                }
+            }
+        },
+        { rootMargin: '120px 0px', threshold: [0, 0.2, 0.5] }
+    );
+
+    for (var v = 0; v < videos.length; v++) {
+        observer.observe(videos[v]);
+    }
+}
+
+function initCaseStudyContentImages(rootEl) {
+    if (!rootEl) return;
+
+    var scope = rootEl.querySelector('.case-study-content');
+    if (!scope) return;
+
+    var images = scope.querySelectorAll('img');
+    for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        if (!img.getAttribute('loading')) {
+            img.setAttribute('loading', i === 0 ? 'eager' : 'lazy');
+        }
+        if (!img.getAttribute('decoding')) {
+            img.setAttribute('decoding', 'async');
+        }
+    }
+}
+
 function initCaseStudyImageLightbox(rootEl) {
     if (!rootEl) return;
 
@@ -275,9 +343,8 @@ function renderCaseStudyFetchError(onRetryId) {
     );
 }
 
-function renderCaseStudyNotFound(homepageData) {
-    var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
-    html += renderBreadcrumb('Not found');
+function renderCaseStudyNotFound() {
+    var html = renderBreadcrumb('Not found');
     html +=
         '<section class="homepage-section case-study-section" id="case-study-content">' +
         '<h1 class="case-study-page-title">Case study not found</h1>' +
@@ -306,53 +373,35 @@ function loadCaseStudyPage() {
         '<div class="sr-only" role="status" aria-live="polite" aria-label="Loading case study">Loading</div>';
 
     window.fetchJsonWithRetry(
-        'data/homepageData.json',
-        function (homepageData) {
-            window.fetchJsonWithRetry(
-                'data/caseStudiesData.json',
-                function (caseStudies) {
-                    var caseStudy = null;
-                    for (var i = 0; i < caseStudies.length; i++) {
-                        if (caseStudies[i].key === caseStudyKey) {
-                            caseStudy = caseStudies[i];
-                            break;
-                        }
-                    }
+        'data/caseStudiesData.json',
+        function (caseStudies) {
+            var caseStudy = null;
+            for (var i = 0; i < caseStudies.length; i++) {
+                if (caseStudies[i].key === caseStudyKey) {
+                    caseStudy = caseStudies[i];
+                    break;
+                }
+            }
 
-                    if (!caseStudy) {
-                        container.removeAttribute('aria-busy');
-                        document.title = 'Pip Turner — Case study not found';
-                        container.innerHTML = renderCaseStudyNotFound(homepageData);
-                        if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
-                        if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
-                        return;
-                    }
+            if (!caseStudy) {
+                container.removeAttribute('aria-busy');
+                document.title = 'Pip Turner — Case study not found';
+                container.innerHTML = renderCaseStudyNotFound();
+                return;
+            }
 
-                    window.fetchTextWithRetry(
-                        'data/casestudies/' + caseStudyKey + '.md',
-                        function (markdown) {
-                            container.removeAttribute('aria-busy');
-                            document.title = 'Pip Turner - ' + caseStudy.title;
-                            var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
-                            html += renderBreadcrumb(caseStudy.title);
-                            html += renderCaseStudyContent(caseStudy, markdown);
-                            container.innerHTML = html;
-                            if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
-                            if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
-                            initCaseStudyMediaLayout(container);
-                            initCaseStudyImageLightbox(container);
-                        },
-                        function () {
-                            container.removeAttribute('aria-busy');
-                            container.innerHTML = renderCaseStudyFetchError('case-study-retry');
-                            var btn = document.getElementById('case-study-retry');
-                            if (btn) {
-                                btn.addEventListener('click', function () {
-                                    loadCaseStudyPage();
-                                });
-                            }
-                        }
-                    );
+            window.fetchTextWithRetry(
+                'data/casestudies/' + caseStudyKey + '.md',
+                function (markdown) {
+                    container.removeAttribute('aria-busy');
+                    document.title = 'Pip Turner - ' + caseStudy.title;
+                    var html = renderBreadcrumb(caseStudy.title);
+                    html += renderCaseStudyContent(caseStudy, markdown);
+                    container.innerHTML = html;
+                    initCaseStudyMediaLayout(container);
+                    initCaseStudyContentImages(container);
+                    initCaseStudyVideos(container);
+                    initCaseStudyImageLightbox(container);
                 },
                 function () {
                     container.removeAttribute('aria-busy');

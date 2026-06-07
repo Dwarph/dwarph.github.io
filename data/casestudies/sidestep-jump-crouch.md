@@ -62,7 +62,7 @@ The feedback loop was constant Slack updates, weekly product reviews with stakeh
 ### Jump - the quick win
 
 <figure class="cs-media cs-media--bleed">
-  <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/sidestep-jump-crouch/jump.mp4"></video>
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/sidestep-jump-crouch/jump.mp4"></video>
 </figure>
 
 9 prototypes. The cleanest run of the framework we did.
@@ -78,7 +78,7 @@ A burst that feels big but stays safe.
 ### Sidestep - rummaging through the trash
 
 <figure class="cs-media cs-media--bleed">
-  <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/sidestep-jump-crouch/sidestep.mp4"></video>
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/sidestep-jump-crouch/sidestep.mp4"></video>
 </figure>
 
 12 prototypes. The lesson here was about not being afraid to look at your discard pile.
@@ -98,7 +98,7 @@ We also locked in the visual language here - blue bar on the left, white fade in
 ### Crouch - the beast
 
 <figure class="cs-media cs-media--bleed">
-  <video autoplay loop muted playsinline preload="metadata" src="./data/casestudies/images/sidestep-jump-crouch/Crouch.mp4"></video>
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/sidestep-jump-crouch/Crouch.mp4"></video>
 </figure>
 
 15+ prototypes. We worked on this for all 3 months (and a little extra afterwards!)

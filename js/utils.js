@@ -127,3 +127,17 @@ window.loadHeaderDistortion = function (root) {
         });
 };
 
+/**
+ * Footer link back to the homepage on subpages (case studies, archive, etc.).
+ * @returns {string}
+ */
+window.renderReturnHomeLink = function () {
+    return (
+        '<nav class="subpage-return-home" aria-label="Return home">' +
+        '<a href="index.html" class="subpage-return-home__link" aria-label="Return home">' +
+        '<span class="material-icons subpage-return-home__icon" aria-hidden="true">chevron_left</span>' +
+        'Return home' +
+        '</a>' +
+        '</nav>'
+    );
+};

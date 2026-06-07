@@ -349,8 +349,8 @@ function renderCaseStudyNotFound() {
         '<section class="homepage-section case-study-section" id="case-study-content">' +
         '<h1 class="case-study-page-title">Case study not found</h1>' +
         '<p class="case-study-page-company">This page does not exist or has been moved.</p>' +
-        '<p class="about-bio-paragraph"><a href="index.html">Return to homepage</a></p>' +
         '</section>';
+    html += typeof window.renderReturnHomeLink === 'function' ? window.renderReturnHomeLink() : '';
     return html;
 }
 
@@ -397,6 +397,9 @@ function loadCaseStudyPage() {
                     document.title = 'Pip Turner - ' + caseStudy.title;
                     var html = renderBreadcrumb(caseStudy.title);
                     html += renderCaseStudyContent(caseStudy, markdown);
+                    if (typeof window.renderReturnHomeLink === 'function') {
+                        html += window.renderReturnHomeLink();
+                    }
                     container.innerHTML = html;
                     initCaseStudyMediaLayout(container);
                     initCaseStudyContentImages(container);

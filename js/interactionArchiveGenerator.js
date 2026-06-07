@@ -319,6 +319,10 @@ function loadArchiveData() {
                 </section>
             `;
 
+            if (typeof window.renderReturnHomeLink === 'function') {
+                html += window.renderReturnHomeLink();
+            }
+
             container.innerHTML = html;
 
             function renderProjects() {

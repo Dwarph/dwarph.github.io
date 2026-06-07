@@ -527,9 +527,7 @@
     width: 3px;
     margin-left: -1.5px;
     background: var(--highlight-pip);
-    box-shadow:
-        0 0 0 1px rgba(255, 253, 239, 0.55),
-        0 0 18px rgba(255, 140, 168, 0.55);
+    box-shadow: 0 0 18px rgba(255, 140, 168, 0.55);
 }
 
 .case-study-section .case-study-content .cs-compare__handle-grip {

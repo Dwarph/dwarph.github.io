@@ -303,6 +303,224 @@ html.home-nav-scrolling .nav-link:active {
     font-variation-settings: 'YTLC' 500, 'wdth' 100;
 }
 
+.about-bio .bio-highlight-pip {
+    cursor: pointer;
+}
+
+.homepage-header .profile-image.profile-image--pip-linked {
+    transform-origin: center center;
+}
+
+.homepage-header.is-pip-bouncing .profile-image.profile-image--pip-linked {
+    transition: none !important;
+}
+
+/* Pip profile animation tweak panel (bottom-left of header) */
+.pip-profile-controls {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    font-family: var(--font-display);
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.pip-profile-controls__panel,
+.pip-profile-controls__trigger {
+    pointer-events: auto;
+}
+
+.pip-profile-controls__panel {
+    position: absolute;
+    left: var(--header-distortion-inset);
+    bottom: calc(
+        var(--header-distortion-inset) + var(--header-distortion-trigger-size) + var(--header-distortion-trigger-gap)
+    );
+    width: min(320px, calc(100% - 2 * var(--header-distortion-inset)));
+    max-height: calc(
+        100% - var(--header-distortion-inset) -
+            (var(--header-distortion-inset) + var(--header-distortion-trigger-size) + var(--header-distortion-trigger-gap))
+    );
+    box-sizing: border-box;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: pan-y;
+    padding: 12px;
+    background: rgba(255, 253, 239, 0.96);
+    border: 1px solid rgba(55, 44, 9, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(55, 44, 9, 0.12);
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease,
+        visibility 0s linear 0.14s;
+}
+
+.pip-profile-controls--open .pip-profile-controls__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease,
+        visibility 0s linear 0s;
+}
+
+.pip-profile-controls__trigger {
+    position: absolute;
+    left: var(--header-distortion-inset);
+    bottom: var(--header-distortion-inset);
+    width: var(--header-distortion-trigger-size);
+    height: var(--header-distortion-trigger-size);
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid rgba(55, 44, 9, 0.15);
+    border-radius: 50%;
+    background: rgba(255, 253, 239, 0.92);
+    box-shadow: 0 2px 12px rgba(55, 44, 9, 0.08);
+    color: var(--highlight-pip);
+    transition:
+        transform 0.16s cubic-bezier(0.33, 1, 0.68, 1),
+        box-shadow 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease;
+}
+
+.pip-profile-controls__trigger:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 18px rgba(55, 44, 9, 0.14);
+    background: rgba(255, 253, 239, 1);
+    border-color: rgba(55, 44, 9, 0.22);
+}
+
+.pip-profile-controls__trigger:active {
+    transform: scale(1.02);
+    box-shadow: 0 2px 10px rgba(55, 44, 9, 0.1);
+    transition-duration: 0.08s;
+}
+
+.pip-profile-controls__trigger-icon {
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.pip-profile-controls__trigger-icon--close {
+    display: none;
+}
+
+.pip-profile-controls__trigger[aria-expanded='true'] .pip-profile-controls__trigger-icon--open {
+    display: none;
+}
+
+.pip-profile-controls__trigger[aria-expanded='true'] .pip-profile-controls__trigger-icon--close {
+    display: block;
+}
+
+.pip-profile-controls__fieldset {
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.pip-profile-controls__legend {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: rgba(55, 44, 9, 0.55);
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.pip-profile-controls__row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pip-profile-controls__label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    color: var(--text-color);
+}
+
+.pip-profile-controls__range {
+    width: 100%;
+    margin: 0;
+    accent-color: var(--highlight-pip);
+}
+
+.pip-profile-controls__value {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    color: rgba(55, 44, 9, 0.65);
+    min-width: 2.75rem;
+    text-align: right;
+}
+
+.pip-profile-controls__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.pip-profile-controls__btn {
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 44, 9, 0.15);
+    background: rgba(255, 253, 239, 1);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.pip-profile-controls__btn:hover {
+    border-color: rgba(55, 44, 9, 0.25);
+    background: #fff;
+}
+
+.pip-profile-controls__btn--reset {
+    color: rgba(55, 44, 9, 0.72);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pip-profile-controls__panel,
+    .pip-profile-controls--open .pip-profile-controls__panel {
+        transition: none;
+        transform: none;
+    }
+
+    .pip-profile-controls__trigger {
+        transition: none;
+    }
+
+    .pip-profile-controls__trigger:hover,
+    .pip-profile-controls__trigger:active {
+        transform: none;
+    }
+}
+
 .cv-download-link {
     font-weight: 700;
     font-size: var(--fs-body);

@@ -465,6 +465,7 @@ function loadHomepageData() {
         lastHomepageNavActiveId = null;
         container.innerHTML = html;
         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+        if (window.initBioPipProfileInteraction) window.initBioPipProfileInteraction(container);
         if (window.loadHeaderDistortion) {
             window.loadHeaderDistortion(container);
         }

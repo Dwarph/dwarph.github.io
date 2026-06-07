@@ -193,6 +193,9 @@ class DistortionSketch {
         this.introSpeed = resolveIntroSpeed(options.introSpeed);
         this.introActive = !this.skipIntro;
 
+        /** @type {Array<{x:number,y:number,start:number,duration:number,strength:number,radius:number}>} */
+        this.pulses = [];
+
         this.size = 0;
         this.texture = null;
         this.material = null;
@@ -506,7 +509,94 @@ class DistortionSketch {
 
         this.mouse.vX *= velPow;
         this.mouse.vY *= velPow;
+        this.applyPulses();
         this.texture.needsUpdate = true;
+    }
+
+    /**
+     * Outward radial pulse at normalized mount coords (0–1).
+     * @param {number} nx
+     * @param {number} ny
+     * @param {{ duration?: number, strength?: number, radius?: number }} [opts]
+     */
+    pulseAtNormalized(nx, ny, opts) {
+        opts = opts || {};
+        this.pulses.push({
+            x: clamp(nx, 0, 1),
+            y: clamp(ny, 0, 1),
+            start: performance.now(),
+            duration: opts.duration != null ? Math.max(100, opts.duration) : 420,
+            strength: opts.strength != null ? opts.strength : 1,
+            radius: opts.radius != null ? opts.radius : 0.22,
+        });
+    }
+
+    applyPulses() {
+        if (!this.pulses.length || !this.texture) return;
+
+        var data = this.texture.image.data;
+        var aspect = this.height / this.width;
+        var now = performance.now();
+        var baseStrength = this.settings.strength * 100;
+
+        /** Circular in screen space — grid x spans width, grid y spans height. */
+        function screenDist(dx, dy) {
+            return Math.hypot(dx, dy * aspect);
+        }
+
+        for (var p = this.pulses.length - 1; p >= 0; p--) {
+            var pulse = this.pulses[p];
+            var t = (now - pulse.start) / pulse.duration;
+            if (t >= 1) {
+                this.pulses.splice(p, 1);
+                continue;
+            }
+
+            var gridX = pulse.x * this.size;
+            var gridY = (1 - pulse.y) * this.size;
+            var maxR = pulse.radius * this.size;
+            var amp = pulse.strength * baseStrength;
+            var fade = 1 - t * t;
+            var ii;
+            var j;
+
+            /* Center burst — strongest at the start (icon at minimum scale). */
+            var burstT = Math.min(t / 0.22, 1);
+            var burstAmp = amp * (1 - burstT) * 0.75;
+            var burstR = maxR * 0.35;
+
+            for (ii = 0; ii < this.size; ii++) {
+                for (j = 0; j < this.size; j++) {
+                    var dxB = ii - gridX;
+                    var dyB = j - gridY;
+                    var distB = screenDist(dxB, dyB);
+                    if (distB > burstR || distB < 0.001) continue;
+                    var fallB = 1 - distB / burstR;
+                    var idxB = 4 * (ii + this.size * j);
+                    data[idxB] += (dxB / distB) * burstAmp * fallB * fallB;
+                    data[idxB + 1] -= (dyB * aspect / distB) * burstAmp * fallB * fallB;
+                }
+            }
+
+            /* Expanding ring. */
+            var waveFront = maxR * (0.12 + 0.88 * t);
+            var ringHalf = maxR * 0.13;
+            var ringAmp = amp * fade;
+
+            for (ii = 0; ii < this.size; ii++) {
+                for (j = 0; j < this.size; j++) {
+                    var dx = ii - gridX;
+                    var dy = j - gridY;
+                    var dist = screenDist(dx, dy);
+                    var ringDelta = Math.abs(dist - waveFront);
+                    if (ringDelta > ringHalf) continue;
+                    var ringPower = (1 - ringDelta / ringHalf) * ringAmp;
+                    var index = 4 * (ii + this.size * j);
+                    data[index] += (dx / dist) * ringPower;
+                    data[index + 1] -= (dy * aspect / dist) * ringPower;
+                }
+            }
+        }
     }
 
     /**
@@ -920,6 +1010,7 @@ export function initHeaderDistortion(root) {
                     var sketchLegacy = new DistortionSketch(
                         Object.assign({ dom: mount, hitTarget: header }, sketchOpts)
                     );
+                    header.__distortionSketch = sketchLegacy;
                     buildDistortionPanel(header, sketchLegacy);
                     sketchLegacy.render();
                     header.classList.add('header-distortion-active');
@@ -943,6 +1034,7 @@ export function initHeaderDistortion(root) {
         .then(function () {
             try {
                 var sketch = new DistortionSketch(Object.assign({ dom: mount, hitTarget: header }, sketchOpts));
+                header.__distortionSketch = sketch;
                 buildDistortionPanel(header, sketch);
                 sketch.render();
                 header.classList.add('header-distortion-active');

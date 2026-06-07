@@ -1,8 +1,6 @@
 // Mobile detection is now in utils.js
 
 
-// Header is now rendered using window.renderHeader from header.js
-
 function renderProjectCard(project, isMobile, videoCache) {
     if (isMobile === undefined) {
         isMobile = window.mobileCheck();
@@ -300,18 +298,14 @@ function loadArchiveData() {
     }
 
     window.fetchJsonWithRetry(
-        'data/homepageData.json',
-        function (homepageData) {
-            window.fetchJsonWithRetry(
-                'data/projectsData.json',
-                function (data) {
-                    container.removeAttribute('aria-busy');
+        'data/projectsData.json',
+        function (data) {
+            container.removeAttribute('aria-busy');
 
-                    var isMobile = window.mobileCheck();
-                    var projects = data;
+            var isMobile = window.mobileCheck();
+            var projects = data;
 
-                    var html = window.renderHeader(homepageData.header, { homeLink: 'index.html' });
-                    html += `
+            var html = `
                 <nav class="breadcrumb-nav" role="navigation" aria-label="Breadcrumb">
                     <a href="index.html" class="breadcrumb-link">Home</a>
                     <span class="breadcrumb-separator" aria-hidden="true">/</span>
@@ -325,46 +319,41 @@ function loadArchiveData() {
                 </section>
             `;
 
-                    container.innerHTML = html;
-                    if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
-                    if (window.loadHeaderDistortion) window.loadHeaderDistortion(container);
+            container.innerHTML = html;
 
-                    function renderProjects() {
-                        var grid = document.getElementById('archive-projects-grid');
-                        if (!grid) return;
+            function renderProjects() {
+                var grid = document.getElementById('archive-projects-grid');
+                if (!grid) return;
 
-                        grid.innerHTML = '';
+                grid.innerHTML = '';
 
-                        var sortedProjects = projects.slice().sort(function (a, b) {
-                            if (b.year !== a.year) {
-                                return b.year - a.year;
-                            }
-                            if (b.featured !== a.featured) {
-                                return b.featured ? 1 : -1;
-                            }
-                            return 0;
-                        });
-
-                        if (sortedProjects.length === 0) {
-                            grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
-                            return;
-                        }
-
-                        for (var i = 0; i < sortedProjects.length; i++) {
-                            grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, null);
-                        }
-
-                        requestAnimationFrame(function () {
-                            setTimeout(function () {
-                                loadVideosSequentially(sortedProjects, isMobile);
-                            }, 100);
-                        });
+                var sortedProjects = projects.slice().sort(function (a, b) {
+                    if (b.year !== a.year) {
+                        return b.year - a.year;
                     }
+                    if (b.featured !== a.featured) {
+                        return b.featured ? 1 : -1;
+                    }
+                    return 0;
+                });
 
-                    renderProjects();
-                },
-                showArchiveError
-            );
+                if (sortedProjects.length === 0) {
+                    grid.innerHTML = '<p class="archive-empty-message">No projects found.</p>';
+                    return;
+                }
+
+                for (var i = 0; i < sortedProjects.length; i++) {
+                    grid.innerHTML += renderProjectCard(sortedProjects[i], isMobile, null);
+                }
+
+                requestAnimationFrame(function () {
+                    setTimeout(function () {
+                        loadVideosSequentially(sortedProjects, isMobile);
+                    }, 100);
+                });
+            }
+
+            renderProjects();
         },
         showArchiveError
     );

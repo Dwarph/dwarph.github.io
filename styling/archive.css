@@ -1,5 +1,9 @@
 /* Interaction archive page-specific styles */
 
+#archive-container > .breadcrumb-nav:first-child {
+    padding-top: var(--spacing-lg);
+}
+
 .archive-section {
     padding-top: var(--spacing-xl);
 }

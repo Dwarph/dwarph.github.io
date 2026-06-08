@@ -95,6 +95,14 @@
         profileImage.classList.add('profile-image--pip-linked');
         profileImage.draggable = false;
 
+        var pressTarget = profileImage.closest('.profile-image-press-target');
+        if (!pressTarget) {
+            pressTarget = document.createElement('div');
+            pressTarget.className = 'profile-image-press-target';
+            profileImage.parentNode.insertBefore(pressTarget, profileImage);
+            pressTarget.appendChild(profileImage);
+        }
+
         function bumpGeneration() {
             bounceGeneration += 1;
             return bounceGeneration;
@@ -282,7 +290,7 @@
             profileImage.style.removeProperty('transform');
 
             try {
-                profileImage.setPointerCapture(e.pointerId);
+                pressTarget.setPointerCapture(e.pointerId);
             } catch (err) {
                 /* ignore */
             }
@@ -303,8 +311,8 @@
             runSettle(gen, timing.dipScale, timing.settleMs);
 
             try {
-                if (profileImage.hasPointerCapture && profileImage.hasPointerCapture(e.pointerId)) {
-                    profileImage.releasePointerCapture(e.pointerId);
+                if (pressTarget.hasPointerCapture && pressTarget.hasPointerCapture(e.pointerId)) {
+                    pressTarget.releasePointerCapture(e.pointerId);
                 }
             } catch (err) {
                 /* ignore */
@@ -315,12 +323,11 @@
             pipSpans[i].addEventListener('click', triggerPipBounce);
         }
 
-        profileImage.addEventListener('pointerdown', onProfileImagePointerDown);
-        profileImage.addEventListener('pointerup', onProfileImagePointerUp);
-        profileImage.addEventListener('pointercancel', onProfileImagePointerUp);
-        profileImage.addEventListener('contextmenu', blockImageDefaultMenu);
-        profileImage.addEventListener('dragstart', blockImageDefaultMenu);
-        /* Android Chrome: contextmenu alone is not enough — must cancel touchstart default. */
-        profileImage.addEventListener('touchstart', blockImageDefaultMenu, { passive: false });
+        pressTarget.addEventListener('pointerdown', onProfileImagePointerDown);
+        pressTarget.addEventListener('pointerup', onProfileImagePointerUp);
+        pressTarget.addEventListener('pointercancel', onProfileImagePointerUp);
+        pressTarget.addEventListener('contextmenu', blockImageDefaultMenu);
+        pressTarget.addEventListener('dragstart', blockImageDefaultMenu);
+        pressTarget.addEventListener('touchstart', blockImageDefaultMenu, { passive: false });
     };
 })();

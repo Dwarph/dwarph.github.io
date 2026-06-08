@@ -9,9 +9,23 @@
         pulseStrength: 0.15,
         pulseRadius: 1,
         pulseDurationMs: 2475,
+        pulseDurationMsMobile: 1400,
         pulseAt: 0.6,
         pulseHoldMs: 90,
     };
+
+    var mobileLayoutQuery =
+        typeof window !== 'undefined' && window.matchMedia
+            ? window.matchMedia('(max-width: 768px)')
+            : null;
+
+    function isMobileLayout() {
+        return mobileLayoutQuery ? mobileLayoutQuery.matches : false;
+    }
+
+    function getPulseDurationMs() {
+        return isMobileLayout() ? CONFIG.pulseDurationMsMobile : CONFIG.pulseDurationMs;
+    }
 
     function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -47,7 +61,7 @@
         if (!center) return;
 
         sketch.pulseAtNormalized(center.x, center.y, {
-            duration: CONFIG.pulseDurationMs,
+            duration: getPulseDurationMs(),
             strength: CONFIG.pulseStrength,
             radius: CONFIG.pulseRadius,
             startRadius: center.radius,

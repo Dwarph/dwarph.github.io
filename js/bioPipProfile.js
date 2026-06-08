@@ -1,5 +1,5 @@
 /**
- * Bio "Pip" highlight → header profile image bounce on click + distortion pulse.
+ * Bio "Pip" highlight + profile image press → header bounce + distortion pulse.
  */
 (function () {
     var CONFIG = {
@@ -68,12 +68,20 @@
         });
     }
 
+    function getBounceTiming() {
+        var dipScale = Math.max(0.32, 1 - CONFIG.bounceDepth);
+        var compressMs = Math.round(CONFIG.bounceDurationMs * 0.28);
+        var holdMs = Math.round(CONFIG.pulseHoldMs);
+        var settleMs = Math.max(1, CONFIG.bounceDurationMs - compressMs - holdMs);
+        return { dipScale: dipScale, compressMs: compressMs, holdMs: holdMs, settleMs: settleMs };
+    }
+
     window.initBioPipProfileInteraction = function (container) {
         container = container || document;
         var header = container.querySelector('.homepage-header');
         var profileImage = header && header.querySelector('.profile-image');
         var pipSpans = container.querySelectorAll('.bio-highlight-pip');
-        if (!header || !profileImage || !pipSpans.length) return;
+        if (!header || !profileImage) return;
 
         var bounceAnim = null;
         var pulseTimer = null;
@@ -82,8 +90,27 @@
         var bounceActive = false;
         var pulseFired = false;
         var bounceGeneration = 0;
+        var imagePressActive = false;
 
         profileImage.classList.add('profile-image--pip-linked');
+        profileImage.draggable = false;
+
+        function bumpGeneration() {
+            bounceGeneration += 1;
+            return bounceGeneration;
+        }
+
+        function cancelActiveAnimation() {
+            if (bounceAnim) {
+                bounceAnim.cancel();
+                bounceAnim = null;
+            }
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+            }
+            clearPulseTimer();
+        }
 
         function clearPulseTimer() {
             if (pulseTimer != null) {
@@ -103,6 +130,12 @@
             if (!sketch || typeof sketch.pulseAtNormalized !== 'function') return;
             if (!getProfilePulseCenter(header, profileImage)) return;
 
+            pulseFired = true;
+            clearPulseTimer();
+            triggerDistortionPulse(header, profileImage);
+        }
+
+        function firePulseNow() {
             pulseFired = true;
             clearPulseTimer();
             triggerDistortionPulse(header, profileImage);
@@ -139,31 +172,65 @@
                 clearTimeout(holdTimer);
                 holdTimer = null;
             }
+            imagePressActive = false;
             bounceActive = false;
             bounceStartedAt = 0;
             header.classList.remove('is-pip-bouncing');
             profileImage.style.removeProperty('transform');
         }
 
-        function triggerPipBounce() {
-            bounceGeneration += 1;
-            var gen = bounceGeneration;
+        function runSettle(gen, dipScale, settleMs) {
+            profileImage.style.transform = 'scale(' + dipScale + ')';
 
-            var dipScale = Math.max(0.32, 1 - CONFIG.bounceDepth);
-            var compressMs = Math.round(CONFIG.bounceDurationMs * 0.28);
-            var holdMs = Math.round(CONFIG.pulseHoldMs);
-            var settleMs = Math.max(1, CONFIG.bounceDurationMs - compressMs - holdMs);
+            var settle = profileImage.animate(
+                [{ transform: 'scale(' + dipScale + ')' }, { transform: 'scale(1)' }],
+                {
+                    duration: settleMs,
+                    easing: bounceSettleCurve(CONFIG.bounceBounciness),
+                    fill: 'forwards',
+                }
+            );
+
+            settle.onfinish = function () {
+                finishBounce(gen);
+            };
+            settle.oncancel = function () {
+                finishBounce(gen);
+            };
+            bounceAnim = settle;
+        }
+
+        function runCompress(gen, timing, onComplete) {
+            var compress = profileImage.animate(
+                [{ transform: 'scale(1)' }, { transform: 'scale(' + timing.dipScale + ')' }],
+                {
+                    duration: timing.compressMs,
+                    easing: 'cubic-bezier(0.55, 0, 1, 0.45)',
+                    fill: 'forwards',
+                }
+            );
+
+            compress.onfinish = function () {
+                if (gen !== bounceGeneration) return;
+                bounceAnim = null;
+                if (onComplete) onComplete();
+            };
+
+            compress.oncancel = function () {
+                if (gen !== bounceGeneration) return;
+                bounceAnim = null;
+            };
+
+            bounceAnim = compress;
+        }
+
+        function triggerPipBounce() {
+            var gen = bumpGeneration();
+            var timing = getBounceTiming();
             var settleStarted = false;
 
-            if (bounceAnim) {
-                bounceAnim.cancel();
-                bounceAnim = null;
-            }
-            if (holdTimer) {
-                clearTimeout(holdTimer);
-                holdTimer = null;
-            }
-            clearPulseTimer();
+            cancelActiveAnimation();
+            imagePressActive = false;
             pulseFired = false;
             bounceStartedAt = performance.now();
             bounceActive = true;
@@ -173,61 +240,76 @@
             function startSettle() {
                 if (settleStarted || gen !== bounceGeneration) return;
                 settleStarted = true;
-
-                var settle = profileImage.animate(
-                    [{ transform: 'scale(' + dipScale + ')' }, { transform: 'scale(1)' }],
-                    {
-                        duration: settleMs,
-                        easing: bounceSettleCurve(CONFIG.bounceBounciness),
-                        fill: 'forwards',
-                    }
-                );
-
-                settle.onfinish = function () {
-                    finishBounce(gen);
-                };
-                settle.oncancel = function () {
-                    finishBounce(gen);
-                };
-                bounceAnim = settle;
+                runSettle(gen, timing.dipScale, timing.settleMs);
             }
 
             function beginSettleAfterHold() {
                 if (gen !== bounceGeneration) return;
-                if (holdMs > 0) {
+                if (timing.holdMs > 0) {
                     holdTimer = setTimeout(function () {
                         if (gen !== bounceGeneration) return;
                         holdTimer = null;
                         startSettle();
-                    }, holdMs);
+                    }, timing.holdMs);
                 } else {
                     startSettle();
                 }
             }
 
-            var compress = profileImage.animate(
-                [{ transform: 'scale(1)' }, { transform: 'scale(' + dipScale + ')' }],
-                {
-                    duration: compressMs,
-                    easing: 'cubic-bezier(0.55, 0, 1, 0.45)',
-                    fill: 'forwards',
+            runCompress(gen, timing, beginSettleAfterHold);
+        }
+
+        function onProfileImagePointerDown(e) {
+            if (imagePressActive) return;
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+            var gen = bumpGeneration();
+            var timing = getBounceTiming();
+
+            cancelActiveAnimation();
+            imagePressActive = true;
+            pulseFired = false;
+            bounceStartedAt = performance.now();
+            bounceActive = true;
+            header.classList.add('is-pip-bouncing');
+            profileImage.style.removeProperty('transform');
+
+            try {
+                profileImage.setPointerCapture(e.pointerId);
+            } catch (err) {
+                /* ignore */
+            }
+
+            runCompress(gen, timing, null);
+        }
+
+        function onProfileImagePointerUp(e) {
+            if (!imagePressActive) return;
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+            var gen = bounceGeneration;
+            var timing = getBounceTiming();
+
+            imagePressActive = false;
+            cancelActiveAnimation();
+            firePulseNow();
+            runSettle(gen, timing.dipScale, timing.settleMs);
+
+            try {
+                if (profileImage.hasPointerCapture && profileImage.hasPointerCapture(e.pointerId)) {
+                    profileImage.releasePointerCapture(e.pointerId);
                 }
-            );
-
-            compress.onfinish = function () {
-                if (gen !== bounceGeneration) return;
-                beginSettleAfterHold();
-            };
-
-            compress.oncancel = function () {
-                finishBounce(gen);
-            };
-
-            bounceAnim = compress;
+            } catch (err) {
+                /* ignore */
+            }
         }
 
         for (var i = 0; i < pipSpans.length; i++) {
             pipSpans[i].addEventListener('click', triggerPipBounce);
         }
+
+        profileImage.addEventListener('pointerdown', onProfileImagePointerDown);
+        profileImage.addEventListener('pointerup', onProfileImagePointerUp);
+        profileImage.addEventListener('pointercancel', onProfileImagePointerUp);
     };
 })();

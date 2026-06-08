@@ -311,5 +311,8 @@
         profileImage.addEventListener('pointerdown', onProfileImagePointerDown);
         profileImage.addEventListener('pointerup', onProfileImagePointerUp);
         profileImage.addEventListener('pointercancel', onProfileImagePointerUp);
+        profileImage.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
     };
 })();

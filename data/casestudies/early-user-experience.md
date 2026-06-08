@@ -41,7 +41,7 @@ Before launching into the project, I user tested our existing onboarding to gain
 
 [![User testing outcomes](./data/casestudies/images/eux/popv1_usertesting.png "bleed-xl")](./data/casestudies/images/eux/popv1_usertesting.png)
 
-### V1: Mine for Gold (March 2025)
+### V1: Mine for Gold
 
 We wanted to move quick with V1, and test three tenets we'd defined.
 
@@ -62,7 +62,7 @@ We wanted to move quick with V1, and test three tenets we'd defined.
 
 First-day engagement didn't yet lift next-day return. We rolled V1 to all English-speaking users within two weeks.
 
-### V2: Doubling Down (June–August 2025)
+### V2: Doubling Down
 
 V1 proved the guided path worked. The weak spot was return. Not enough reason to come back the next day. The plan blended into the rest of the app; users couldn't see what to focus on or what came next.
 
@@ -83,7 +83,7 @@ Before the A/B test, Zoe and I user tested the designs. People understood the lo
 **+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week, not just a strong first day.
 
 
-### V2.5: Optimise (August–October 2025)
+### V2.5: Optimise
 
 V2 had raised the floor for our onboarding - but now we needed to optimise.
 

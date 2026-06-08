@@ -259,9 +259,16 @@
             runCompress(gen, timing, beginSettleAfterHold);
         }
 
+        function blockImageDefaultMenu(e) {
+            e.preventDefault();
+        }
+
         function onProfileImagePointerDown(e) {
             if (imagePressActive) return;
             if (e.pointerType === 'mouse' && e.button !== 0) return;
+            if (e.pointerType === 'touch') {
+                e.preventDefault();
+            }
 
             var gen = bumpGeneration();
             var timing = getBounceTiming();
@@ -311,8 +318,9 @@
         profileImage.addEventListener('pointerdown', onProfileImagePointerDown);
         profileImage.addEventListener('pointerup', onProfileImagePointerUp);
         profileImage.addEventListener('pointercancel', onProfileImagePointerUp);
-        profileImage.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-        });
+        profileImage.addEventListener('contextmenu', blockImageDefaultMenu);
+        profileImage.addEventListener('dragstart', blockImageDefaultMenu);
+        /* Android Chrome: contextmenu alone is not enough — must cancel touchstart default. */
+        profileImage.addEventListener('touchstart', blockImageDefaultMenu, { passive: false });
     };
 })();

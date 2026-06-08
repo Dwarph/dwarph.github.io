@@ -310,7 +310,7 @@ html.home-nav-scrolling .nav-link:active {
 .homepage-header .profile-image.profile-image--pip-linked {
     transform-origin: center center;
     cursor: pointer;
-    touch-action: none;
+    touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;

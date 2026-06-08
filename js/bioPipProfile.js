@@ -36,14 +36,14 @@
         return 'cubic-bezier(0.34, ' + y1.toFixed(3) + ', 0.64, 1)';
     }
 
-    function getProfilePulseCenter(header, profileImage) {
+    function getProfilePulseCenter(header, visualTarget) {
         var mount = header.querySelector('.header-distortion-mount');
-        if (!mount || !profileImage) return null;
+        if (!mount || !visualTarget) return null;
 
         var mountRect = mount.getBoundingClientRect();
         if (mountRect.width < 1 || mountRect.height < 1) return null;
 
-        var profileRect = profileImage.getBoundingClientRect();
+        var profileRect = visualTarget.getBoundingClientRect();
         var halfW = profileRect.width * 0.5;
         var halfH = profileRect.height * 0.5;
         return {
@@ -53,11 +53,11 @@
         };
     }
 
-    function triggerDistortionPulse(header, profileImage) {
+    function triggerDistortionPulse(header, visualTarget) {
         var sketch = header && header.__distortionSketch;
         if (!sketch || typeof sketch.pulseAtNormalized !== 'function') return;
 
-        var center = getProfilePulseCenter(header, profileImage);
+        var center = getProfilePulseCenter(header, visualTarget);
         if (!center) return;
 
         sketch.pulseAtNormalized(center.x, center.y, {
@@ -79,9 +79,10 @@
     window.initBioPipProfileInteraction = function (container) {
         container = container || document;
         var header = container.querySelector('.homepage-header');
+        var pressTarget = header && header.querySelector('.profile-image-press-target');
         var profileImage = header && header.querySelector('.profile-image');
         var pipSpans = container.querySelectorAll('.bio-highlight-pip');
-        if (!header || !profileImage) return;
+        if (!header || (!profileImage && !pressTarget)) return;
 
         var bounceAnim = null;
         var pulseTimer = null;
@@ -92,16 +93,56 @@
         var bounceGeneration = 0;
         var imagePressActive = false;
 
-        profileImage.classList.add('profile-image--pip-linked');
-        profileImage.draggable = false;
+        var visualTarget = pressTarget;
 
-        var pressTarget = profileImage.closest('.profile-image-press-target');
-        if (!pressTarget) {
+        if (!pressTarget && profileImage) {
             pressTarget = document.createElement('div');
             pressTarget.className = 'profile-image-press-target';
+            pressTarget.setAttribute('role', 'img');
+            pressTarget.setAttribute(
+                'aria-label',
+                profileImage.getAttribute('alt') || 'Profile picture'
+            );
             profileImage.parentNode.insertBefore(pressTarget, profileImage);
             pressTarget.appendChild(profileImage);
+            visualTarget = pressTarget;
         }
+
+        if (profileImage) {
+            profileImage.classList.add('profile-image--decorative');
+            profileImage.setAttribute('aria-hidden', 'true');
+            profileImage.setAttribute('tabindex', '-1');
+            profileImage.draggable = false;
+
+            function syncPressTargetBackground() {
+                var imageUrl = profileImage.currentSrc || profileImage.getAttribute('src');
+                if (imageUrl) {
+                    pressTarget.style.backgroundImage = 'url("' + imageUrl.replace(/"/g, '%22') + '")';
+                }
+            }
+
+            function revealPressTarget() {
+                syncPressTargetBackground();
+                pressTarget.classList.add('header-image-ready');
+                if (profileImage.parentNode) {
+                    profileImage.remove();
+                }
+            }
+
+            if (profileImage.classList.contains('header-image-ready')) {
+                revealPressTarget();
+            } else if (profileImage.complete && profileImage.naturalWidth > 0) {
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(revealPressTarget);
+                });
+            } else {
+                profileImage.addEventListener('load', revealPressTarget);
+                profileImage.addEventListener('error', revealPressTarget);
+            }
+        }
+
+        pressTarget.classList.add('profile-image-press-target--pip-linked');
+        visualTarget = pressTarget;
 
         function bumpGeneration() {
             bounceGeneration += 1;
@@ -136,17 +177,17 @@
 
             var sketch = header && header.__distortionSketch;
             if (!sketch || typeof sketch.pulseAtNormalized !== 'function') return;
-            if (!getProfilePulseCenter(header, profileImage)) return;
+            if (!getProfilePulseCenter(header, visualTarget)) return;
 
             pulseFired = true;
             clearPulseTimer();
-            triggerDistortionPulse(header, profileImage);
+            triggerDistortionPulse(header, visualTarget);
         }
 
         function firePulseNow() {
             pulseFired = true;
             clearPulseTimer();
-            triggerDistortionPulse(header, profileImage);
+            triggerDistortionPulse(header, visualTarget);
         }
 
         function schedulePulseOnTimeline(gen) {
@@ -184,13 +225,13 @@
             bounceActive = false;
             bounceStartedAt = 0;
             header.classList.remove('is-pip-bouncing');
-            profileImage.style.removeProperty('transform');
+            visualTarget.style.removeProperty('transform');
         }
 
         function runSettle(gen, dipScale, settleMs) {
-            profileImage.style.transform = 'scale(' + dipScale + ')';
+            visualTarget.style.transform = 'scale(' + dipScale + ')';
 
-            var settle = profileImage.animate(
+            var settle = visualTarget.animate(
                 [{ transform: 'scale(' + dipScale + ')' }, { transform: 'scale(1)' }],
                 {
                     duration: settleMs,
@@ -209,7 +250,7 @@
         }
 
         function runCompress(gen, timing, onComplete) {
-            var compress = profileImage.animate(
+            var compress = visualTarget.animate(
                 [{ transform: 'scale(1)' }, { transform: 'scale(' + timing.dipScale + ')' }],
                 {
                     duration: timing.compressMs,
@@ -287,7 +328,7 @@
             bounceStartedAt = performance.now();
             bounceActive = true;
             header.classList.add('is-pip-bouncing');
-            profileImage.style.removeProperty('transform');
+            visualTarget.style.removeProperty('transform');
 
             try {
                 pressTarget.setPointerCapture(e.pointerId);
@@ -328,6 +369,7 @@
         pressTarget.addEventListener('pointercancel', onProfileImagePointerUp);
         pressTarget.addEventListener('contextmenu', blockImageDefaultMenu);
         pressTarget.addEventListener('dragstart', blockImageDefaultMenu);
+        pressTarget.addEventListener('selectstart', blockImageDefaultMenu);
         pressTarget.addEventListener('touchstart', blockImageDefaultMenu, { passive: false });
     };
 })();

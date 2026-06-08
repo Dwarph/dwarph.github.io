@@ -308,26 +308,57 @@ html.home-nav-scrolling .nav-link:active {
 }
 
 .homepage-header .profile-image-press-target {
+    position: relative;
     display: inline-flex;
     flex-shrink: 0;
+    width: 186px;
+    height: 186px;
+    max-width: 100%;
+    border-radius: 999px;
+    background-color: #5e3168;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     cursor: pointer;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 
-.homepage-header .profile-image-press-target .profile-image.profile-image--pip-linked {
+.homepage-header .profile-image-press-target.header-image-ready {
+    opacity: 1;
+}
+
+.homepage-header .profile-image-press-target--pip-linked {
     transform-origin: center center;
-    pointer-events: none;
-    -webkit-user-drag: none;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
 }
 
-.homepage-header.is-pip-bouncing .profile-image.profile-image--pip-linked {
+.homepage-header .profile-image-press-target .profile-image--decorative {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.homepage-header.is-pip-bouncing .profile-image-press-target--pip-linked {
     transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .homepage-header .profile-image-press-target {
+        opacity: 1;
+        transition: none;
+    }
 }
 
 .cv-download-link {

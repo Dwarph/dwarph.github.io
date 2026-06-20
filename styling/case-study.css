@@ -755,6 +755,11 @@
     .case-study-section .case-study-content .cs-boxout {
         --cs-boxout-bleed: 0px;
         --cs-boxout-pad: var(--spacing-xl);
+        width: calc(100% + (2 * var(--mobile-padding-horizontal)));
+        max-width: calc(100% + (2 * var(--mobile-padding-horizontal)));
+        margin-left: calc(-1 * var(--mobile-padding-horizontal));
+        margin-right: calc(-1 * var(--mobile-padding-horizontal));
+        padding: var(--cs-boxout-pad) var(--mobile-padding-horizontal);
     }
 }
 

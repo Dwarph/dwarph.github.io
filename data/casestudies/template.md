@@ -27,3 +27,16 @@ blahblahblah
 ## Impact
 
 blahblahblah
+
+<!--
+Hero stat example (section-end metric):
+
+#### Results
+
+<aside class="cs-hero-stat">
+  <p class="cs-hero-stat__value">+10%</p>
+  <p class="cs-hero-stat__label">Metric name</p>
+</aside>
+
+One sentence on user meaning or context.
+-->

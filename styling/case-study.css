@@ -637,6 +637,70 @@
     margin: 12px 0;
 }
 
+/* Hero stat — value + label only; explanations live in body copy below */
+.case-study-section .case-study-content h4 + .cs-hero-stat-group,
+.case-study-section .case-study-content h4 + .cs-hero-stat {
+    margin-top: 0;
+}
+
+.case-study-section .case-study-content .cs-hero-stat-group {
+    display: grid;
+    gap: var(--spacing-lg);
+    margin: 0 0 var(--spacing-lg) 0;
+}
+
+.case-study-section .case-study-content .cs-hero-stat-group--2 {
+    grid-template-columns: repeat(2, 1fr);
+    --fs-hero-stat: clamp(2rem, 6.5vw, 3.25rem);
+}
+
+.case-study-section .case-study-content .cs-hero-stat-group--3 {
+    grid-template-columns: repeat(3, 1fr);
+    --fs-hero-stat: clamp(2rem, 6.5vw, 3.25rem);
+}
+
+.case-study-section .case-study-content .cs-hero-stat {
+    margin: 0 0 var(--spacing-lg) 0;
+    min-width: 0;
+}
+
+.case-study-section .case-study-content .cs-hero-stat-group .cs-hero-stat {
+    margin: 0;
+}
+
+.case-study-section .case-study-content .cs-hero-stat__value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-hero-stat);
+    line-height: var(--lh-display);
+    color: var(--highlight-pip);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.case-study-section .case-study-content .cs-hero-stat__label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+    line-height: var(--lh-body);
+    color: var(--text-color);
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .case-study-section .case-study-content .cs-hero-stat-group--2 {
+        --fs-hero-stat: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .case-study-section .case-study-content .cs-hero-stat-group--3 {
+        --fs-hero-stat: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .case-study-section .case-study-content .cs-hero-stat-group .cs-hero-stat__label {
+        font-size: 0.8125rem;
+        line-height: 1.3;
+    }
+}
+
 /* Overview table: subtle row dividers (no outer border) */
 .case-study-section .case-study-content .cs-overview {
     margin: var(--spacing-lg) 0 var(--space-block);

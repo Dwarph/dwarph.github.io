@@ -125,6 +125,49 @@ Use when two **same-aspect** stills are best compared in place (before/after red
 - Match width tokens to neighbours (`wide`, `bleed`, `bleed-xl`).
 - On first scroll into view, the slider plays a one-time sweep (0% → 85% → 15% → 50%) so readers discover both images; skipped when `prefers-reduced-motion: reduce` (starts at 50%).
 
+### Hero stat (HTML)
+
+Use at the **end of a section** (version payoff, paywall result, impact recap) when a metric should land harder than body bold. Typographic only — no box. Precede with a subheading (`#### Results` for version/paywall sections; `#### Impact` for a recap before learnings).
+
+**Single stat:**
+
+```markdown
+#### Results
+
+<aside class="cs-hero-stat">
+  <p class="cs-hero-stat__value">+4%</p>
+  <p class="cs-hero-stat__label">Active on three or more days</p>
+</aside>
+
+The kickstart plan gave people a reason to return across the first week, not just a strong first day.
+```
+
+**Two or three stats** (equal weight, side-by-side on desktop and mobile; max 3 per row):
+
+```markdown
+#### Results
+
+<div class="cs-hero-stat-group cs-hero-stat-group--2">
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+9%</p>
+    <p class="cs-hero-stat__label">Trial-to-member conversion</p>
+  </aside>
+  <aside class="cs-hero-stat">…</aside>
+</div>
+
+Strongest result this team had seen in this space for a long time.
+
+Far more new users built momentum on their first day instead of stopping after one.
+```
+
+Use `cs-hero-stat-group--3` for three-up recap strips (e.g. `#### Impact` under **Impact and Learnings**).
+
+- **Value** — the number only (`+9%`, not the metric name).
+- **Label** — what it measures.
+- **Explanation** — one short body paragraph **below** the hero stat block (not inside it). For multi-stat rows, use one paragraph per stat in the same order.
+- Place the subheading + stats **after** the section narrative; any closing honest gap or rollout note can follow **below** the explanation paragraphs.
+- Overview table **Impact** row stays plain prose — hero stats are for section endings in the body.
+
 ### Formats
 
 - **PNG / JPG / WebP** for stills. PNG for UI and prototypes; JPG for photos if file size matters.
@@ -187,12 +230,14 @@ When you were pulled onto something mid-flight:
 
 ## Metrics
 
-When you have experiment or analytics lifts:
+When you have experiment or analytics lifts at **section endings**, use **hero stat** HTML (see **Hero stat** under Media). Precede with `#### Results` (or `#### Impact` for a closing recap). One value per block; explanation in body paragraphs below.
 
-- **One headline +X% (or single number) per stat** — bold the metric line.
-- One short sentence tying it to **user meaning** (more people subscribed, more came back day 2, more finished the plan).
+- **Value** — headline `+X%` (or single number) only.
+- **Label** — metric name, not duplicated in the value line.
+- **Explanation** — one short paragraph **below** the stat block tying it to **user meaning** (more people subscribed, more came back day 2, more finished the plan).
 - **No** before/after stacks or multiple percentage points on the same line.
-- Note **historical context** when it matters (“strongest result this team had seen”, “paywall had been hard to move for years”).
+- Note **historical context** in the explanation paragraph when it matters (“strongest result this team had seen”, “paywall had been hard to move for years”).
+- Up to **three equal stats** per `cs-hero-stat-group` row.
 
 When you don’t have clean percentages:
 
@@ -225,7 +270,7 @@ Avoid: “three key takeaways” throat-clearing unless you like the rhythm; num
 - [ ] Constraints row = real limits, not principles
 - [ ] Timeline reflects actual effort split (including sidequests)
 - [ ] Body structure matches the project (iteration vs framework vs both)
-- [ ] Metrics: one bold headline per stat; user meaning attached; no contradictions with overview
+- [ ] Metrics: hero stat blocks at section ends; one value per block; user meaning in explain; no contradictions with overview
 - [ ] Narrative sections read as story, not changelog
 - [ ] Images/videos use correct paths, alt text, and layout tokens (see **Media**)
 - [ ] Final prose pass on the full file (see **Before you write**)

@@ -1,4 +1,4 @@
-[![The kickstart plan: an onboarding path for new users](./data/casestudies/images/eux/popv2_kickstartplan.png "bleed-xl")](./data/casestudies/images/eux/popv2_kickstartplan.png)
+[![The kickstart plan: an onboarding path focused on making new users feel awesome.](./data/casestudies/images/eux/popv2_kickstartplan.png "bleed-xl")](./data/casestudies/images/eux/popv2_kickstartplan.png)
 
 ## Overview
 
@@ -56,9 +56,20 @@ We wanted to move quick with V1, and test three tenets we'd defined.
   <figcaption>Motion design to build trust and excitement about your first class</figcaption>
 </figure>
 
-**+9% trial-to-member conversion.** Strongest result this team had seen in this space for a long time.
+#### Results
 
-**+17% playing multiple workouts on day one.** Far more new users built momentum on their first day instead of stopping after one.
+<div class="cs-hero-stat-group cs-hero-stat-group--2">
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+9%</p>
+    <p class="cs-hero-stat__label">Trial-to-member conversion</p>
+  </aside>
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+17%</p>
+    <p class="cs-hero-stat__label">Playing multiple workouts on day one</p>
+  </aside>
+</div>
+
+The trial to member conversion movement was the strongest result this team had seen in this space for a long time. Combined with the increase of users playing multiple workouts on day one showed that far more new users were now building momentum on their first day instead of stopping after one.
 
 First-day engagement didn't yet lift next-day return. We rolled V1 to all English-speaking users within two weeks.
 
@@ -80,7 +91,14 @@ We day-gated every two days, a hook to come back, not just pacing for its own sa
 
 Before the A/B test, Zoe and I user tested the designs. People understood the locked model immediately. They missed one unlock beat, not realising they could browse outside the plan once it opened up, and we fixed that before ship.
 
-**+4% active on three or more days.** The kickstart plan gave people a reason to return across the first week, not just a strong first day.
+#### Results
+
+<aside class="cs-hero-stat">
+  <p class="cs-hero-stat__value">+4%</p>
+  <p class="cs-hero-stat__label">Active on three or more days</p>
+</aside>
+
+The kickstart plan gave people a reason to return across the first week, not just a strong first day.
 
 
 ### V2.5: Optimise
@@ -104,9 +122,20 @@ A stamp system made the path legible: what to do today, what unlocks when you co
 
 We shortened the plan. Users shouldn't feel stuck in beginner mode longer than they need to.
 
-**+29% plan completion.** Less friction, shorter path. More people finished instead of dropping off mid-journey.
+#### Results
 
-**+6% trial-to-member conversion.** Removing day gating didn't hurt commitment; optimising the experience helped.
+<div class="cs-hero-stat-group cs-hero-stat-group--2">
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+29%</p>
+    <p class="cs-hero-stat__label">Plan completion</p>
+  </aside>
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+6%</p>
+    <p class="cs-hero-stat__label">Trial-to-member conversion</p>
+  </aside>
+</div>
+
+Less friction, shorter path. More people finished instead of dropping off mid-journey - showing that we'd found the right way to incentivise people through their kickstart plan, in a way that left them wanting more. 
 
 People finished in hours, not the days we'd planned for. Users were moving faster than we'd assumed, and the shorter plan gave them room to do that.
 
@@ -134,15 +163,33 @@ The old screen buried value in full-width copy and dense pricing cards, hard to 
   <figcaption>Drag to compare the paywall before and after redesign</figcaption>
 </figure>
 
-**+10% paywall conversion.** The paywall had been hard to move for years; we moved it by focusing on user needs.
+### Results
+
+<aside class="cs-hero-stat">
+  <p class="cs-hero-stat__value">+10%</p>
+  <p class="cs-hero-stat__label">Paywall conversion</p>
+</aside>
+
+The paywall had been hard to move for years; we moved it by focusing on user needs.
 
 ---
 
-## Impact and Learnings
+## Impact + Learnings
 
-**+30% users completing at least one workout.**
-**+16% new user conversion.**
-**+10% paywall conversion.**
+<div class="cs-hero-stat-group cs-hero-stat-group--3">
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+30%</p>
+    <p class="cs-hero-stat__label">Users completing at least one workout</p>
+  </aside>
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+16%</p>
+    <p class="cs-hero-stat__label">New user conversion</p>
+  </aside>
+  <aside class="cs-hero-stat">
+    <p class="cs-hero-stat__value">+10%</p>
+    <p class="cs-hero-stat__label">Paywall conversion</p>
+  </aside>
+</div>
 
 - **Follow signal, not the roadmap.** We started small, doubled down when V1 proved the guided path worked, then optimised when users outpaced the design in V2. Small bets until you have signal, then push hard.
 - **Cut what you built when live evidence says so.** Day gating felt considered from our side. Users found it controlling. User testing hadn't flagged it, but live users did.

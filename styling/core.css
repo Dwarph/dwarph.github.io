@@ -61,6 +61,7 @@
     --fs-body: 1.5rem;
     --fs-ui: 1.125rem;
     --fs-nav: 1.5rem;
+    --fs-hero-stat: clamp(2.5rem, 8vw, 4rem);
     --lh-display: 1;
     --lh-body: 1.4;
 }
@@ -78,6 +79,7 @@
         --fs-body: 1rem;
         --fs-ui: 1rem;
         --fs-nav: 1.25rem;
+        --fs-hero-stat: clamp(1.75rem, 7vw, 2.5rem);
     }
 }
 

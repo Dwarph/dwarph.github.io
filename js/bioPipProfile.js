@@ -10,8 +10,6 @@
         pulseRadius: 1,
         pulseDurationMs: 2475,
         pulseDurationMsMobile: 1400,
-        pulseAt: 0.6,
-        pulseHoldMs: 90,
     };
 
     var mobileLayoutQuery =
@@ -71,9 +69,8 @@
     function getBounceTiming() {
         var dipScale = Math.max(0.32, 1 - CONFIG.bounceDepth);
         var compressMs = Math.round(CONFIG.bounceDurationMs * 0.28);
-        var holdMs = Math.round(CONFIG.pulseHoldMs);
-        var settleMs = Math.max(1, CONFIG.bounceDurationMs - compressMs - holdMs);
-        return { dipScale: dipScale, compressMs: compressMs, holdMs: holdMs, settleMs: settleMs };
+        var settleMs = Math.max(1, CONFIG.bounceDurationMs - compressMs);
+        return { dipScale: dipScale, compressMs: compressMs, settleMs: settleMs };
     }
 
     window.initBioPipProfileInteraction = function (container) {
@@ -85,13 +82,9 @@
         if (!header || (!profileImage && !pressTarget)) return;
 
         var bounceAnim = null;
-        var pulseTimer = null;
-        var bounceStartedAt = 0;
-        var holdTimer = null;
-        var bounceActive = false;
-        var pulseFired = false;
         var bounceGeneration = 0;
-        var imagePressActive = false;
+        var pressActive = false;
+        var pressCaptureTarget = null;
 
         var visualTarget = pressTarget;
 
@@ -154,76 +147,17 @@
                 bounceAnim.cancel();
                 bounceAnim = null;
             }
-            if (holdTimer) {
-                clearTimeout(holdTimer);
-                holdTimer = null;
-            }
-            clearPulseTimer();
-        }
-
-        function clearPulseTimer() {
-            if (pulseTimer != null) {
-                clearTimeout(pulseTimer);
-                pulseTimer = null;
-            }
-        }
-
-        function getPulseAtMs() {
-            return CONFIG.pulseAt * CONFIG.bounceDurationMs;
-        }
-
-        function firePulseIfNeeded() {
-            if (pulseFired || !bounceActive) return;
-
-            var sketch = header && header.__distortionSketch;
-            if (!sketch || typeof sketch.pulseAtNormalized !== 'function') return;
-            if (!getProfilePulseCenter(header, visualTarget)) return;
-
-            pulseFired = true;
-            clearPulseTimer();
-            triggerDistortionPulse(header, visualTarget);
         }
 
         function firePulseNow() {
-            pulseFired = true;
-            clearPulseTimer();
             triggerDistortionPulse(header, visualTarget);
-        }
-
-        function schedulePulseOnTimeline(gen) {
-            clearPulseTimer();
-            if (!bounceActive || pulseFired) return;
-
-            var pulseAtMs = getPulseAtMs();
-            var delay = pulseAtMs - (performance.now() - bounceStartedAt);
-
-            if (delay <= 0) {
-                firePulseIfNeeded();
-                return;
-            }
-
-            pulseTimer = setTimeout(function () {
-                if (gen !== bounceGeneration) return;
-                firePulseIfNeeded();
-            }, delay);
         }
 
         function finishBounce(gen) {
             if (gen !== bounceGeneration) return;
 
-            if (!pulseFired && bounceActive) {
-                if (performance.now() - bounceStartedAt >= getPulseAtMs()) {
-                    firePulseIfNeeded();
-                }
-            }
-            clearPulseTimer();
-            if (holdTimer) {
-                clearTimeout(holdTimer);
-                holdTimer = null;
-            }
-            imagePressActive = false;
-            bounceActive = false;
-            bounceStartedAt = 0;
+            pressActive = false;
+            pressCaptureTarget = null;
             header.classList.remove('is-pip-bouncing');
             visualTarget.style.removeProperty('transform');
         }
@@ -249,7 +183,7 @@
             bounceAnim = settle;
         }
 
-        function runCompress(gen, timing, onComplete) {
+        function runCompress(gen, timing) {
             var compress = visualTarget.animate(
                 [{ transform: 'scale(1)' }, { transform: 'scale(' + timing.dipScale + ')' }],
                 {
@@ -262,7 +196,6 @@
             compress.onfinish = function () {
                 if (gen !== bounceGeneration) return;
                 bounceAnim = null;
-                if (onComplete) onComplete();
             };
 
             compress.oncancel = function () {
@@ -273,47 +206,8 @@
             bounceAnim = compress;
         }
 
-        function triggerPipBounce() {
-            var gen = bumpGeneration();
-            var timing = getBounceTiming();
-            var settleStarted = false;
-
-            cancelActiveAnimation();
-            imagePressActive = false;
-            pulseFired = false;
-            bounceStartedAt = performance.now();
-            bounceActive = true;
-            header.classList.add('is-pip-bouncing');
-            schedulePulseOnTimeline(gen);
-
-            function startSettle() {
-                if (settleStarted || gen !== bounceGeneration) return;
-                settleStarted = true;
-                runSettle(gen, timing.dipScale, timing.settleMs);
-            }
-
-            function beginSettleAfterHold() {
-                if (gen !== bounceGeneration) return;
-                if (timing.holdMs > 0) {
-                    holdTimer = setTimeout(function () {
-                        if (gen !== bounceGeneration) return;
-                        holdTimer = null;
-                        startSettle();
-                    }, timing.holdMs);
-                } else {
-                    startSettle();
-                }
-            }
-
-            runCompress(gen, timing, beginSettleAfterHold);
-        }
-
-        function blockImageDefaultMenu(e) {
-            e.preventDefault();
-        }
-
-        function onProfileImagePointerDown(e) {
-            if (imagePressActive) return;
+        function beginPress(e, captureTarget) {
+            if (pressActive) return;
             if (e.pointerType === 'mouse' && e.button !== 0) return;
             if (e.pointerType === 'touch') {
                 e.preventDefault();
@@ -323,45 +217,65 @@
             var timing = getBounceTiming();
 
             cancelActiveAnimation();
-            imagePressActive = true;
-            pulseFired = false;
-            bounceStartedAt = performance.now();
-            bounceActive = true;
+            pressActive = true;
+            pressCaptureTarget = captureTarget;
             header.classList.add('is-pip-bouncing');
             visualTarget.style.removeProperty('transform');
 
             try {
-                pressTarget.setPointerCapture(e.pointerId);
+                captureTarget.setPointerCapture(e.pointerId);
             } catch (err) {
                 /* ignore */
             }
 
-            runCompress(gen, timing, null);
+            runCompress(gen, timing);
         }
 
-        function onProfileImagePointerUp(e) {
-            if (!imagePressActive) return;
+        function endPress(e) {
+            if (!pressActive) return;
             if (e.pointerType === 'mouse' && e.button !== 0) return;
 
             var gen = bounceGeneration;
             var timing = getBounceTiming();
+            var captureTarget = pressCaptureTarget;
 
-            imagePressActive = false;
+            pressActive = false;
+            pressCaptureTarget = null;
             cancelActiveAnimation();
             firePulseNow();
             runSettle(gen, timing.dipScale, timing.settleMs);
 
-            try {
-                if (pressTarget.hasPointerCapture && pressTarget.hasPointerCapture(e.pointerId)) {
-                    pressTarget.releasePointerCapture(e.pointerId);
+            if (captureTarget) {
+                try {
+                    if (captureTarget.hasPointerCapture && captureTarget.hasPointerCapture(e.pointerId)) {
+                        captureTarget.releasePointerCapture(e.pointerId);
+                    }
+                } catch (err) {
+                    /* ignore */
                 }
-            } catch (err) {
-                /* ignore */
             }
         }
 
+        function blockImageDefaultMenu(e) {
+            e.preventDefault();
+        }
+
+        function onProfileImagePointerDown(e) {
+            beginPress(e, pressTarget);
+        }
+
+        function onProfileImagePointerUp(e) {
+            endPress(e);
+        }
+
         for (var i = 0; i < pipSpans.length; i++) {
-            pipSpans[i].addEventListener('click', triggerPipBounce);
+            (function (pipSpan) {
+                pipSpan.addEventListener('pointerdown', function (e) {
+                    beginPress(e, pipSpan);
+                });
+                pipSpan.addEventListener('pointerup', endPress);
+                pipSpan.addEventListener('pointercancel', endPress);
+            })(pipSpans[i]);
         }
 
         pressTarget.addEventListener('pointerdown', onProfileImagePointerDown);

@@ -303,10 +303,6 @@ html.home-nav-scrolling .nav-link:active {
     font-variation-settings: 'YTLC' 500, 'wdth' 100;
 }
 
-.about-bio .bio-highlight-pip {
-    cursor: pointer;
-}
-
 .homepage-header .profile-image-press-target {
     position: relative;
     display: inline-flex;

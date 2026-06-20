@@ -183,7 +183,8 @@ select:focus-visible {
     cursor: pointer;
 }
 
-.bio-company-link:hover {
+.bio-company-link:hover,
+.bio-highlight-pip:hover {
     opacity: 0.8;
 }
 
@@ -230,6 +231,8 @@ select:focus-visible {
 .bio-highlight-pip {
     color: var(--highlight-pip);
     font-weight: 700;
+    display: inline-block;
+    cursor: pointer;
 }
 
 .bio-highlight-yellow {

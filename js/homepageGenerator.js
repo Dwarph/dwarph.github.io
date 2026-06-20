@@ -51,7 +51,7 @@ function renderAbout(about) {
         .replace(/Pip/g, '<span class="bio-highlight-pip">Pip</span>')
         .replace(/Ultraleap/g, '<a class="bio-gradient-ultraleap bio-company-link" href="#work-ultraleap">Ultraleap</a>')
         .replace(/FitXR/g, '<a class="bio-gradient-fitxr bio-company-link" href="#work-fitxr">FitXR</a>')
-        .replace(/joyful and inevitable/g, '<span class="bio-highlight-yellow">joyful and inevitable</span>');
+        .replace(/joyful and inevitable/g, '<span class="bio-highlight-yellow bio-joyful-trigger" role="button" tabindex="0" aria-label="Joyful surprise">joyful and inevitable</span>');
     
     // Split by double newlines to create paragraphs
     var paragraphs = bioText.split(/\n\n+/);
@@ -466,6 +466,7 @@ function loadHomepageData() {
         container.innerHTML = html;
         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
         if (window.initBioPipProfileInteraction) window.initBioPipProfileInteraction(container);
+        if (window.initBioJoyfulDoodles) window.initBioJoyfulDoodles(container);
         if (window.loadHeaderDistortion) {
             window.loadHeaderDistortion(container);
         }

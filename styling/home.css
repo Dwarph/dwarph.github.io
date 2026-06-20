@@ -1196,3 +1196,305 @@ html.home-nav-scrolling .nav-link:active {
     }
 }
 
+/* Joyful doodle easter egg — "joyful and inevitable" trigger */
+.bio-highlight-yellow.bio-joyful-trigger {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.bio-highlight-yellow.bio-joyful-trigger:hover {
+    opacity: 0.85;
+}
+
+.bio-highlight-yellow.bio-joyful-trigger:active {
+    transform: scale(0.98);
+}
+
+.bio-highlight-yellow.bio-joyful-trigger:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+#bio-joyful-doodle-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 50;
+}
+
+.bio-joyful-doodle {
+    position: absolute;
+    color: var(--highlight-yellow);
+    will-change: transform, opacity;
+    pointer-events: none;
+    transform-origin: center center;
+}
+
+.bio-joyful-doodle__clip {
+    overflow: hidden;
+    clip-path: circle(0% at 50% 50%);
+    -webkit-clip-path: circle(0% at 50% 50%);
+}
+
+.bio-joyful-doodle svg {
+    display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bio-joyful-doodle__clip {
+        clip-path: none !important;
+        -webkit-clip-path: none !important;
+    }
+}
+
+/* Joyful doodle tweak panel (disabled) */
+.bio-joyful-controls {
+    display: none !important;
+    position: fixed;
+    left: 16px;
+    bottom: max(72px, calc(env(safe-area-inset-bottom, 0px) + 64px));
+    z-index: 140;
+    font-family: var(--font-display);
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.bio-joyful-controls__panel,
+.bio-joyful-controls__trigger {
+    pointer-events: auto;
+}
+
+.bio-joyful-controls__panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(44px + 10px);
+    width: min(300px, calc(100vw - 32px));
+    max-height: min(70vh, 520px);
+    box-sizing: border-box;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: pan-y;
+    padding: 12px;
+    background: rgba(255, 253, 239, 0.96);
+    border: 1px solid rgba(55, 44, 9, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(55, 44, 9, 0.12);
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease,
+        visibility 0s linear 0.14s;
+}
+
+.bio-joyful-controls--open .bio-joyful-controls__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+        opacity 0.14s ease,
+        transform 0.14s ease,
+        visibility 0s linear 0s;
+}
+
+.bio-joyful-controls__legend {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    color: var(--text-color);
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+.bio-joyful-controls__fieldset {
+    border: 0;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+.bio-joyful-controls__group-legend {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(55, 44, 9, 0.55);
+    margin: 0 0 6px;
+    padding: 0;
+}
+
+.bio-joyful-controls__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) 2.75rem;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.bio-joyful-controls__row--modified {
+    border-left: 2px solid var(--highlight-yellow);
+    padding-left: 6px;
+    margin-left: -8px;
+}
+
+.bio-joyful-controls__label {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: var(--text-color);
+}
+
+.bio-joyful-controls__range {
+    width: 100%;
+    accent-color: var(--highlight-yellow);
+}
+
+.bio-joyful-controls__range--modified {
+    accent-color: #c44;
+}
+
+.bio-joyful-controls__value {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: rgba(55, 44, 9, 0.65);
+}
+
+.bio-joyful-controls__value--modified {
+    color: #c44;
+    font-weight: 700;
+}
+
+.bio-joyful-controls__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(55, 44, 9, 0.1);
+}
+
+.bio-joyful-controls__btn {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(55, 44, 9, 0.15);
+    background: rgba(255, 253, 239, 1);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.bio-joyful-controls__btn:hover {
+    border-color: rgba(55, 44, 9, 0.25);
+    background: #fff;
+}
+
+.bio-joyful-controls__btn:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+.bio-joyful-controls__btn--reset {
+    margin-left: auto;
+}
+
+.bio-joyful-controls__trigger {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid rgba(55, 44, 9, 0.15);
+    border-radius: 50%;
+    background: rgba(255, 253, 239, 0.92);
+    box-shadow: 0 2px 12px rgba(55, 44, 9, 0.08);
+    color: var(--text-color);
+    transition:
+        transform 0.16s cubic-bezier(0.33, 1, 0.68, 1),
+        box-shadow 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease;
+}
+
+.bio-joyful-controls__trigger:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 18px rgba(55, 44, 9, 0.14);
+    background: rgba(255, 253, 239, 1);
+    border-color: rgba(55, 44, 9, 0.22);
+}
+
+.bio-joyful-controls__trigger:active {
+    transform: scale(1.02);
+}
+
+.bio-joyful-controls__trigger-icon {
+    display: block;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    object-fit: contain;
+}
+
+.bio-joyful-controls__trigger-icon--close {
+    display: none;
+}
+
+.bio-joyful-controls__trigger[aria-expanded='true'] .bio-joyful-controls__trigger-icon--settings {
+    display: none;
+}
+
+.bio-joyful-controls__trigger[aria-expanded='true'] .bio-joyful-controls__trigger-icon--close {
+    display: block;
+}
+
+.bio-joyful-controls--dirty .bio-joyful-controls__trigger::after {
+    content: attr(data-modified-count);
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--highlight-yellow);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bio-joyful-controls__panel,
+    .bio-joyful-controls--open .bio-joyful-controls__panel,
+    .bio-joyful-controls__trigger {
+        transition: none;
+        transform: none;
+    }
+
+    .bio-joyful-controls__trigger:hover,
+    .bio-joyful-controls__trigger:active {
+        transform: none;
+    }
+}

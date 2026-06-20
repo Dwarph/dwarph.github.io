@@ -49,8 +49,8 @@ function renderAbout(about) {
     // Apply styling
     bioText = bioText
         .replace(/Pip/g, '<span class="bio-highlight-pip">Pip</span>')
-        .replace(/Ultraleap/g, '<a class="bio-gradient-ultraleap bio-company-link" href="#work-ultraleap">Ultraleap</a>')
-        .replace(/FitXR/g, '<a class="bio-gradient-fitxr bio-company-link" href="#work-fitxr">FitXR</a>')
+        .replace(/Ultraleap/g, '<a class="bio-company-link" href="#work-ultraleap"><span class="bio-gradient-ultraleap">Ultraleap</span></a>')
+        .replace(/FitXR/g, '<a class="bio-company-link" href="#work-fitxr"><span class="bio-gradient-fitxr">FitXR</span></a>')
         .replace(/joyful and inevitable/g, '<span class="bio-highlight-yellow bio-joyful-trigger" role="button" tabindex="0" aria-label="Joyful surprise">joyful and inevitable</span>');
     
     // Split by double newlines to create paragraphs
@@ -604,6 +604,14 @@ function loadHomepageData() {
                 var targetId = href.substring(1);
                 var targetElement = document.getElementById(targetId);
                 if (targetElement) {
+                    setHomepageNavActive(container, 'work');
+                    homepageNavSpySuppressUntil =
+                        homepageNavNow() + (prefersReducedMotion ? 50 : 950);
+                    if (history.replaceState) {
+                        history.replaceState(null, '', href);
+                    } else {
+                        window.location.hash = href;
+                    }
                     scrollToWorkJobCompany(targetElement, prefersReducedMotion);
                 }
             });
@@ -665,13 +673,20 @@ function homepageNavViewportHeight() {
 /**
  * Scroll position when clicking Talks: VIEWPORT_TOP_* + OVERSHOOT, then cap at maxScroll − BOTTOM_RESERVE.
  */
+function isElementVisible(el) {
+    if (!el) return false;
+    if (el.offsetParent !== null) return true;
+    var rects = el.getClientRects();
+    return rects.length > 0 && rects[0].width > 0 && rects[0].height > 0;
+}
+
 function getJobCompanyHeading(jobEl) {
     if (!jobEl) return null;
-    var isMobile = window.mobileCheck && window.mobileCheck();
-    if (isMobile) {
-        return jobEl.querySelector('.job-info-mobile .job-company');
-    }
-    return jobEl.querySelector('.job-info-desktop .job-company');
+    var mobileHeading = jobEl.querySelector('.job-info-mobile .job-company');
+    var desktopHeading = jobEl.querySelector('.job-info-desktop .job-company');
+    if (isElementVisible(mobileHeading)) return mobileHeading;
+    if (isElementVisible(desktopHeading)) return desktopHeading;
+    return mobileHeading || desktopHeading || jobEl.querySelector('.job-company');
 }
 
 function scrollToWorkJobCompany(jobEl, prefersReducedMotion) {
@@ -684,9 +699,13 @@ function scrollToWorkJobCompany(jobEl, prefersReducedMotion) {
         });
         return;
     }
-    titleEl.scrollIntoView({
-        behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        block: 'start'
+    var rect = titleEl.getBoundingClientRect();
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+    var marginTop = parseFloat(getComputedStyle(titleEl).scrollMarginTop) || 0;
+    var targetTop = Math.max(0, rect.top + scrollY - marginTop);
+    window.scrollTo({
+        top: targetTop,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
     });
 }
 

@@ -183,6 +183,13 @@ select:focus-visible {
 .bio-company-link {
     text-decoration: none;
     cursor: pointer;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bio-company-link > .bio-gradient-fitxr,
+.bio-company-link > .bio-gradient-ultraleap {
+    display: inline;
 }
 
 .bio-company-link:hover,

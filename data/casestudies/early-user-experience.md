@@ -87,6 +87,8 @@ Before the A/B test, Zoe and I user tested the designs. People understood the lo
 
 V2 had raised the floor for our onboarding - but now we needed to optimise.
 
+[![Stamp system: daily progress and unlocks at a glance](./data/casestudies/images/eux/popv25_stamps.png "wide")](./data/casestudies/images/eux/popv25_stamps.png)
+
 Users were loud about one thing: day gating was frustrating. Our user-test participants hadn't flagged it, but reviews gave us a clear signal it wasn't worth the trade-off. We scrapped it.
 
 We doubled down on everyone's a winner and updated the copy to match. No more tutorial language. Wording that put people in the action already. Class 1 went from "Box Foundations" to "Make Your Move."
@@ -95,7 +97,10 @@ We upgraded the rewards. Not just more workouts. Our best environments and glove
 
 A stamp system made the path legible: what to do today, what unlocks when you come back. Not just a plan floating in the UI.
 
-[![Stamp system: daily progress and unlocks at a glance](./data/casestudies/images/eux/popv25_stamps.png "wide")](./data/casestudies/images/eux/popv25_stamps.png)
+<figure class="cs-media cs-media--wide">
+  <video loop muted playsinline preload="none" src="./data/casestudies/images/eux/stamps.mp4"></video>
+  <figcaption>Motion design for the stamp system</figcaption>
+</figure>
 
 We shortened the plan. Users shouldn't feel stuck in beginner mode longer than they need to.
 

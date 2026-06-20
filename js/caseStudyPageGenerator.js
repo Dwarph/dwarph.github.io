@@ -56,6 +56,53 @@ function appendCaseStudyFigcaption(figure, img) {
     img.setAttribute('alt', '');
 }
 
+function initCaseStudyBoxouts(rootEl) {
+    if (!rootEl) return;
+
+    var scope = rootEl.querySelector('.case-study-content');
+    if (!scope) return;
+
+    var headings = Array.prototype.slice.call(scope.querySelectorAll('h2, h3, h4'));
+
+    // Deepest headings first so a nested [boxout] can wrap before its parent section.
+    headings.sort(function (a, b) {
+        return parseInt(b.tagName.slice(1), 10) - parseInt(a.tagName.slice(1), 10);
+    });
+
+    for (var i = 0; i < headings.length; i++) {
+        var heading = headings[i];
+        if (!heading.parentNode) continue;
+        if (heading.closest('.cs-boxout')) continue;
+
+        var rawTitle = heading.textContent || '';
+        if (!/\[boxout\]/i.test(rawTitle)) continue;
+
+        heading.textContent = rawTitle.replace(/\s*\[boxout\]\s*/gi, ' ').replace(/\s+/g, ' ').trim();
+
+        var level = parseInt(heading.tagName.slice(1), 10);
+        var nodes = [heading];
+        var sibling = heading.nextElementSibling;
+
+        while (sibling) {
+            if (sibling.tagName === 'HR') break;
+            if (/^H[1-4]$/.test(sibling.tagName)) {
+                var siblingLevel = parseInt(sibling.tagName.slice(1), 10);
+                if (siblingLevel <= level) break;
+            }
+            var next = sibling.nextElementSibling;
+            nodes.push(sibling);
+            sibling = next;
+        }
+
+        var boxout = document.createElement('section');
+        boxout.className = 'cs-boxout';
+        heading.parentNode.insertBefore(boxout, heading);
+        for (var n = 0; n < nodes.length; n++) {
+            boxout.appendChild(nodes[n]);
+        }
+    }
+}
+
 function initCaseStudyMediaLayout(rootEl) {
     if (!rootEl) return;
 
@@ -401,6 +448,7 @@ function loadCaseStudyPage() {
                         html += window.renderReturnHomeLink();
                     }
                     container.innerHTML = html;
+                    initCaseStudyBoxouts(container);
                     initCaseStudyMediaLayout(container);
                     initCaseStudyContentImages(container);
                     initCaseStudyVideos(container);

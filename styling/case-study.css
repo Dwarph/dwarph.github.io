@@ -639,7 +639,8 @@
 
 /* Hero stat — value + label only; explanations live in body copy below */
 .case-study-section .case-study-content h4 + .cs-hero-stat-group,
-.case-study-section .case-study-content h4 + .cs-hero-stat {
+.case-study-section .case-study-content h4 + .cs-hero-stat,
+.case-study-section .case-study-content h3 + .cs-hero-stat {
     margin-top: 0;
 }
 
@@ -698,6 +699,62 @@
     .case-study-section .case-study-content .cs-hero-stat-group .cs-hero-stat__label {
         font-size: 0.8125rem;
         line-height: 1.3;
+    }
+}
+
+/* Magazine-style boxout — content aligns with column; bg bleeds via ::before */
+.case-study-section .case-study-content .cs-boxout {
+    --cs-boxout-bleed: clamp(1.75rem, 5vw, 3rem);
+    --cs-boxout-pad: clamp(1.5rem, 4vw, 2.5rem);
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: var(--space-block) 0;
+    padding: var(--cs-boxout-pad) 0;
+    box-sizing: border-box;
+}
+
+.case-study-section .case-study-content .cs-boxout::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--cs-boxout-bleed));
+    right: calc(-1 * var(--cs-boxout-bleed));
+    border-radius: clamp(18px, 2.5vw, 22px);
+    background: #ffffff;
+    box-shadow: 0 10px 44px rgba(55, 44, 9, 0.08);
+}
+
+.case-study-section .case-study-content .cs-boxout > :first-child {
+    margin-top: 0;
+}
+
+.case-study-section .case-study-content .cs-boxout > :last-child {
+    margin-bottom: 0;
+}
+
+.case-study-section .case-study-content .cs-boxout h2 {
+    margin-top: 0;
+}
+
+.case-study-section .case-study-content .cs-boxout figure.cs-media--compare {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.case-study-section .case-study-content .cs-boxout img {
+    width: 100%;
+    max-width: 100%;
+    margin: var(--spacing-lg) 0;
+}
+
+@media (max-width: 768px) {
+    .case-study-section .case-study-content .cs-boxout {
+        --cs-boxout-bleed: 0px;
+        --cs-boxout-pad: var(--spacing-xl);
     }
 }
 

@@ -168,6 +168,24 @@ Use `cs-hero-stat-group--3` for three-up recap strips (e.g. `#### Impact` under 
 - Place the subheading + stats **after** the section narrative; any closing honest gap or rollout note can follow **below** the explanation paragraphs.
 - Overview table **Impact** row stays plain prose — hero stats are for section endings in the body.
 
+### Boxout (heading marker)
+
+Use for a **magazine-style panel** (white background bleeding past the column) when a section should feel like a sidebar or inset — e.g. a sidequest that sits inside a longer narrative.
+
+Add `[boxout]` to the section heading in markdown. Everything from that heading until the next heading of the **same or higher level** (or a `---` rule) is wrapped in `<section class="cs-boxout">`. The marker is stripped from the rendered title.
+
+```markdown
+## The Paywall [boxout]
+
+Midway through Paths of Play I got pulled onto a two-week sidequest…
+
+### Results
+
+<aside class="cs-hero-stat">…</aside>
+```
+
+Works on `##`, `###`, or `####` headings. Do not wrap the section in manual `<section class="cs-boxout">` HTML — use the marker instead so body copy stays markdown.
+
 ### Formats
 
 - **PNG / JPG / WebP** for stills. PNG for UI and prototypes; JPG for photos if file size matters.

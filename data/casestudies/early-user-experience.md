@@ -139,17 +139,15 @@ Less friction, shorter path. More people finished instead of dropping off mid-jo
 
 People finished in hours, not the days we'd planned for. Users were moving faster than we'd assumed, and the shorter plan gave them room to do that.
 
----
-
-## The Paywall
+## The Paywall [boxout]
 
 Midway through Paths of Play I got pulled onto a two-week sidequest: redesign the paywall.
 
 The old screen buried value in full-width copy and dense pricing cards, hard to read on a VR display. I looked at subscription apps outside VR that convert, then split the layout for skimming: goal-matched value on the left, a stripped-back decision on the right. Weekly price, softer trial language, clearer hierarchy.
 
-[![Paywall moodboard: competitor patterns outside VR](./data/casestudies/images/eux/Paywall%20moodboard.png "bleed-xl")](./data/casestudies/images/eux/Paywall%20moodboard.png)
+[![Paywall moodboard: competitor patterns outside VR](./data/casestudies/images/eux/Paywall%20moodboard.png)](./data/casestudies/images/eux/Paywall%20moodboard.png)
 
-<figure class="cs-media cs-media--compare cs-media--bleed-xl">
+<figure class="cs-media cs-media--compare cs-media--wide">
   <div class="cs-compare">
     <img class="cs-compare__img cs-compare__img--before"
          src="./data/casestudies/images/eux/Paywall_Before.png"

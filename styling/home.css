@@ -512,6 +512,11 @@ html.home-nav-scrolling .nav-link:active {
     gap: 0;
 }
 
+/* Bio company links (#work-fitxr, #work-ultraleap): leave room above the job title */
+.work-job[id^="work-"] .job-company {
+    scroll-margin-top: var(--space-block);
+}
+
 .job-info {
     display: flex;
     flex-direction: column;

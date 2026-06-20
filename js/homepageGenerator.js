@@ -603,10 +603,7 @@ function loadHomepageData() {
                 var targetId = href.substring(1);
                 var targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: prefersReducedMotion ? 'auto' : 'smooth',
-                        block: 'start'
-                    });
+                    scrollToWorkJobCompany(targetElement, prefersReducedMotion);
                 }
             });
         }
@@ -667,6 +664,31 @@ function homepageNavViewportHeight() {
 /**
  * Scroll position when clicking Talks: VIEWPORT_TOP_* + OVERSHOOT, then cap at maxScroll − BOTTOM_RESERVE.
  */
+function getJobCompanyHeading(jobEl) {
+    if (!jobEl) return null;
+    var isMobile = window.mobileCheck && window.mobileCheck();
+    if (isMobile) {
+        return jobEl.querySelector('.job-info-mobile .job-company');
+    }
+    return jobEl.querySelector('.job-info-desktop .job-company');
+}
+
+function scrollToWorkJobCompany(jobEl, prefersReducedMotion) {
+    if (!jobEl) return;
+    var titleEl = getJobCompanyHeading(jobEl);
+    if (!titleEl) {
+        jobEl.scrollIntoView({
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+            block: 'start'
+        });
+        return;
+    }
+    titleEl.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+    });
+}
+
 function scrollTalksLeavingRoomForContact(talksEl, prefersReducedMotion) {
     if (!talksEl) return;
 

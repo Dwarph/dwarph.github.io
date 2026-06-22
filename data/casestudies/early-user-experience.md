@@ -89,7 +89,7 @@ We day-gated every two days, a hook to come back, not just pacing for its own sa
   <figcaption>Completing the kickstart plan: workouts merge into one collection.</figcaption>
 </figure>
 
-Before the A/B test, Zoe and I user tested the designs. People understood the locked model immediately. They missed one unlock beat, not realising they could browse outside the plan once it opened up, and we fixed that before ship.
+Before the A/B test, We user tested the designs. People understood the locked model immediately. They missed one unlock beat, not realising they could browse outside the plan once it opened up, and we fixed that before ship.
 
 #### Results
 

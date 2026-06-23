@@ -78,7 +78,7 @@
         var header = container.querySelector('.homepage-header');
         var pressTarget = header && header.querySelector('.profile-image-press-target');
         var profileImage = header && header.querySelector('.profile-image');
-        var pipSpans = container.querySelectorAll('.bio-highlight-pip');
+        var pipSpans = container.querySelectorAll('[data-bio-action="pip"]');
         if (!header || (!profileImage && !pressTarget)) return;
 
         var bounceAnim = null;

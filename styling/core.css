@@ -6,6 +6,7 @@
     --text-color: #372C09;
     --highlight-pip: #ff8ca8;
     --highlight-yellow: #ffc405;
+    --bio-highlight-press-scale: 0.95;
 
     /* FitXR Gradient */
     --fitxr-start: #48abe9;
@@ -180,27 +181,47 @@ select:focus-visible {
     font-weight: 700;
 }
 
-.bio-company-link {
+/* Clickable bio highlights (about section) — shared press/hover/focus */
+.bio-interactive-highlight {
+    display: inline-block;
+    font-weight: 700;
     text-decoration: none;
     cursor: pointer;
     color: inherit;
     -webkit-tap-highlight-color: transparent;
+    transform-origin: center center;
 }
 
-.bio-company-link > .bio-gradient-fitxr,
-.bio-company-link > .bio-gradient-ultraleap {
-    display: inline;
+.bio-interactive-highlight:hover {
+    opacity: 0.85;
 }
 
-.bio-company-link:hover,
-.bio-highlight-pip:hover {
-    opacity: 0.8;
+.bio-interactive-highlight:active,
+.bio-interactive-highlight.bio-interactive-highlight--pressed {
+    transform: scale(
+        var(--bio-highlight-press-scale-x, 1),
+        var(--bio-highlight-press-scale-y, var(--bio-highlight-press-scale, 0.98))
+    );
 }
 
-.bio-company-link:focus-visible {
+.bio-interactive-highlight:focus-visible {
     outline: 3px solid var(--highlight-yellow);
     outline-offset: 2px;
     border-radius: 4px;
+}
+
+.bio-interactive-highlight--pip {
+    color: var(--highlight-pip);
+}
+
+.bio-interactive-highlight--yellow {
+    color: var(--highlight-yellow);
+}
+
+.bio-interactive-highlight--fitxr,
+.bio-interactive-highlight--ultraleap {
+    background: none;
+    color: var(--text-color);
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
@@ -235,18 +256,22 @@ select:focus-visible {
         color: transparent;
         -webkit-text-fill-color: transparent;
     }
-}
 
-.bio-highlight-pip {
-    color: var(--highlight-pip);
-    font-weight: 700;
-    display: inline-block;
-    cursor: pointer;
-}
+    .bio-interactive-highlight--fitxr {
+        background: linear-gradient(to bottom, var(--fitxr-start), var(--fitxr-end));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+    }
 
-.bio-highlight-yellow {
-    color: var(--highlight-yellow);
-    font-weight: 700;
+    .bio-interactive-highlight--ultraleap {
+        background: linear-gradient(to bottom, var(--ultraleap-start), var(--ultraleap-end));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+    }
 }
 
 /* Shared header (all pages) */

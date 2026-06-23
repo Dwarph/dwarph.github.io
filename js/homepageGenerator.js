@@ -42,16 +42,76 @@ var HOMEPAGE_TALKS_SCROLL_OVERSHOOT_PX = 96;
  */
 var HOMEPAGE_TALKS_BOTTOM_RESERVE_PX = 140;
 
+/**
+ * Shared markup for clickable bio highlights (colour variant + click action).
+ * @param {string} text
+ * @param {{ variant: string, action: string, href?: string, ariaLabel?: string }} config
+ */
+function renderBioInteractiveHighlight(text, config) {
+    var classes =
+        'bio-interactive-highlight bio-interactive-highlight--' + config.variant;
+    if (config.action === 'joyful') {
+        classes += ' bio-joyful-trigger';
+    }
+    if (config.href) {
+        return (
+            '<a class="' +
+            classes +
+            '" href="' +
+            config.href +
+            '" data-bio-action="' +
+            config.action +
+            '">' +
+            text +
+            '</a>'
+        );
+    }
+    var attrs =
+        ' class="' +
+        classes +
+        '" role="button" tabindex="0" data-bio-action="' +
+        config.action +
+        '"';
+    if (config.ariaLabel) {
+        attrs += ' aria-label="' + config.ariaLabel + '"';
+    }
+    return '<span' + attrs + '>' + text + '</span>';
+}
+
 function renderAbout(about) {
     // Split bio text to handle styling for "Pip", "Ultraleap", "FitXR", and "joyful and inevitable"
     var bioText = about.bio;
     
     // Apply styling
     bioText = bioText
-        .replace(/Pip/g, '<span class="bio-highlight-pip">Pip</span>')
-        .replace(/Ultraleap/g, '<a class="bio-company-link" href="#work-ultraleap"><span class="bio-gradient-ultraleap">Ultraleap</span></a>')
-        .replace(/FitXR/g, '<a class="bio-company-link" href="#work-fitxr"><span class="bio-gradient-fitxr">FitXR</span></a>')
-        .replace(/joyful and inevitable/g, '<span class="bio-highlight-yellow bio-joyful-trigger" role="button" tabindex="0" aria-label="Joyful surprise">joyful and inevitable</span>');
+        .replace(
+            /Pip/g,
+            renderBioInteractiveHighlight('Pip', { variant: 'pip', action: 'pip' })
+        )
+        .replace(
+            /Ultraleap/g,
+            renderBioInteractiveHighlight('Ultraleap', {
+                variant: 'ultraleap',
+                action: 'company',
+                href: '#work-ultraleap',
+            })
+        )
+        .replace(
+            /FitXR/g,
+            renderBioInteractiveHighlight('FitXR', {
+                variant: 'fitxr',
+                action: 'company',
+                href: '#work-fitxr',
+            })
+        )
+        .replace(
+            /joyful and inevitable/g,
+            renderBioInteractiveHighlight('joyful and inevitable', {
+                variant: 'yellow',
+                action: 'joyful',
+                ariaLabel: 'Joyful surprise',
+            })
+        );
     
     // Split by double newlines to create paragraphs
     var paragraphs = bioText.split(/\n\n+/);
@@ -465,6 +525,9 @@ function loadHomepageData() {
         lastHomepageNavActiveId = null;
         container.innerHTML = html;
         if (window.initHeaderImageReveal) window.initHeaderImageReveal(container);
+        if (window.initBioInteractiveHighlightPress) {
+            window.initBioInteractiveHighlightPress(container);
+        }
         if (window.initBioPipProfileInteraction) window.initBioPipProfileInteraction(container);
         if (window.initBioJoyfulDoodles) window.initBioJoyfulDoodles(container);
         if (window.loadHeaderDistortion) {
@@ -595,7 +658,9 @@ function loadHomepageData() {
         }
 
         // Intro company links: smooth-scroll to the relevant Work entry.
-        var companyLinks = container.querySelectorAll('.bio-company-link[href^="#"]');
+        var companyLinks = container.querySelectorAll(
+            '.bio-interactive-highlight[data-bio-action="company"][href^="#"]'
+        );
         for (var cl = 0; cl < companyLinks.length; cl++) {
             companyLinks[cl].addEventListener('click', function(e) {
                 var href = this.getAttribute('href');

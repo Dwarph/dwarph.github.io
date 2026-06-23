@@ -1197,25 +1197,6 @@ html.home-nav-scrolling .nav-link:active {
 }
 
 /* Joyful doodle easter egg — "joyful and inevitable" trigger */
-.bio-highlight-yellow.bio-joyful-trigger {
-    cursor: pointer;
-    display: inline-block;
-}
-
-.bio-highlight-yellow.bio-joyful-trigger:hover {
-    opacity: 0.85;
-}
-
-.bio-highlight-yellow.bio-joyful-trigger:active {
-    transform: scale(0.98);
-}
-
-.bio-highlight-yellow.bio-joyful-trigger:focus-visible {
-    outline: 3px solid var(--highlight-yellow);
-    outline-offset: 2px;
-    border-radius: 4px;
-}
-
 #bio-joyful-doodle-layer {
     position: absolute;
     top: 0;

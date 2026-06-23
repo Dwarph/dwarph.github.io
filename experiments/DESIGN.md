@@ -2,7 +2,7 @@
 
 ## 1. Visual Theme & Atmosphere
 
-The experiments area is a **minimal, monochrome lab surface**: pure white (`#ffffff`) with **black typography** and **underlined links** so the focus stays on prototypes, not chrome. The tone is **clinical but friendly** — enough structure (Outfit for titles, subtle cards, soft shadows) to feel designed, without a separate “brand rainbow.” Accent color is effectively **absent**; hierarchy comes from **weight, size, and ink density** (`#000` → `#111` → `#444` → `#666`).
+The experiments area is a **minimal, monochrome lab surface**: pure white (`#ffffff`) with **black typography** and **underlined links** so the focus stays on prototypes, not chrome. The tone is **clinical but friendly** — enough structure (Outfit for titles, subtle cards, soft shadows) to feel designed, without a separate “brand rainbow.” Accent color is effectively **absent from chrome**; hierarchy comes from **weight, size, and ink density** (`#000` → `#111` → `#444` → `#666`). Individual demos may carry their own color and type inside the **stage** (e.g. a full-bleed poster or physics canvas) — that richness belongs to the experiment, not the surrounding page.
 
 Typography pairs **Outfit** (geometric, confident headings) with **Nunito Sans** (readable UI and body). The **Circle slider** experiment layers a **Paper-style mobile shell** (max width ~390px for the picker) over a **full-width demo stage** where the control can breathe. Motion is **purposeful**: radial track and press halo use **blur + opacity** choreography; **`prefers-reduced-motion`** strips blur and collapses transition durations.
 
@@ -115,8 +115,15 @@ Defined on **`.circle-slider-page`** (and mirrored on **`.experiments-page`** fo
 - **Buttons**: inherit panel font size, **700** weight; white / `#ccc` border / **6px** radius; danger variant **red** border and text as above.
 - **Debug `<pre>`**: monospace stack, **`--exp-size-meta`**, `#f4f4f4` background, `#ddd` border, **6px** radius.
 
-### Experiments index list
-- **Max-width** `40rem` wrapper; list **padding-left** `1.25rem`; item spacing **0.35rem**; “Back” block **margin-top** `2rem`.
+### Breadcrumbs (shared on experiment pages)
+- **Breadcrumb nav** at top of index and each experiment page (`.breadcrumb-nav` in `styling/experiments.css`)
+- Outfit links at body scale; current page **opacity 0.7**; on circle-slider / no-straight-line the current item may be an **`h1.breadcrumb-current`**
+- Styled for `.experiments-page`, `.circle-slider-page`, and `.nsl-page` — black underlined links, same ink rules as the rest of the sub-site
+
+### Experiments index (`exp-tree`)
+- **Max-width** `40rem` wrapper (`.experiments-wrap`)
+- **Monospace folder tree** (`.exp-tree`): `experiments/` head line + `├──` / `└──` glyphs linking to each experiment folder
+- Font: `ui-monospace` stack at `0.9375rem`; links underlined black; page **h1** uses `--exp-size-title` + Outfit 700
 
 ## 5. Layout Principles
 
@@ -131,7 +138,7 @@ Defined on **`.circle-slider-page`** (and mirrored on **`.experiments-page`** fo
 
 ### Whitespace philosophy
 - **Prototype-first**: generous **viewport min-heights** on mode panels (**`min(72vh, 640px)`** for both standard and range) so the demo feels like an **app screen**, not a documentation block.
-- **Index stays compact** — single column, small H1, short list; frictionless return to the main site.
+- **Index stays compact** — single column, small H1, short folder tree; frictionless return to the main site via breadcrumbs.
 
 ### Border radius scale
 - **~7px** — value card (precise from design export)
@@ -161,8 +168,16 @@ Defined on **`.circle-slider-page`** (and mirrored on **`.experiments-page`** fo
 - Respect **`prefers-reduced-motion`** when adding animation (match existing blur-off + instant-ish transitions pattern).
 - Honor **safe-area** on bottom-fixed UI (`env(safe-area-inset-bottom)`).
 
+### No straight line (chrome vs demo stage)
+- **Chrome** follows the same monochrome lab rules as other experiments: white page, black underlined breadcrumb (fixed top-left, safe-area aware), no brand accents in the shell.
+- **Demo stage** (`.nsl-stage`): full-viewport immersive poster — `overflow: hidden`, pannable canvas, rope physics. Typography inside the poster uses **Barlow** (experiment content, not sub-site chrome). Color and illustration live **in the experiment**, not around it — same philosophy as circle-slider putting visual interest in the encoder, not the page frame.
+
+### Per-experiment tooling notes
+- **fry-shower**: exp tokens for chrome; physics overlay (`fp-fry-layer`) with brown-tinted toast copy in the demo layer only.
+- **circle-slider**: **custom HTML tweak panel** (`circle-slider-tweak-panel.js`), not Dialkit — treat as legacy when adding new demos.
+
 ### Don't
-- Don’t introduce **saturated brand accents** without updating this document — the sub-site reads as **monochrome**.
+- Don’t introduce **saturated brand accents in experiment chrome** (breadcrumbs, index, tweak sheets) without updating this document — the sub-site shell stays **monochrome**.
 - Don’t use **pure decoration** that competes with the **demo control** (the encoder is the hero).
 - Don’t **`position: fixed`** the whole page for scroll lock — use the **html/body overflow** pattern already used to avoid **horizontal jump** when scrollbars disappear.
 - Don’t shrink the **“How many?”** prompt with **vw-based** type on small screens — fixed size keeps **layout stable**.
@@ -202,7 +217,7 @@ Defined on **`.circle-slider-page`** (and mirrored on **`.experiments-page`** fo
 - Danger: text `#aa2222`, border `#cc4444`
 
 ### Example component prompts
-- “Add an experiment index row: **Nunito** **1rem** black text, link **underlined** `#000`, list indent **1.25rem**; page **h1** uses **`--exp-size-title`** + **Outfit 700**.”
+- “Add an experiment index row in the **exp-tree**: monospace `├──` glyph + underlined `#000` link; page **h1** uses **`--exp-size-title`** + **Outfit 700**; breadcrumb `Home / Experiments / …` at top.”
 - “Create a **picker row** button: white background, **10px** radius, **1px** `#eee` border, shadow `0 2px 10px rgba(0,0,0,0.04)`, **16px 14px** padding; **Outfit** **`--exp-size-label`** **700** title + **Nunito** **`--exp-size-sm`** description `#666`; active state **2px black outline**, **2px** offset.”
 - “Build the **value card**: **101px** wide, **10.802px** padding, **7.021px** radius, **Outfit** **700** **`--exp-size-value`** tabular number, shadow `0 5.401px 19.444px rgba(0,0,0,0.16)`.”
 - “Style a **bottom sheet**: panel **`font-size: var(--exp-size-sm)`**; toggle **`font: inherit`**, **`font-weight: 700`**, **uppercase**, **#222**, `#fafafa` bg, top border `#e8e8e8`; sheet shadow `0 -4px 24px rgba(0,0,0,0.08)`.”
@@ -225,3 +240,4 @@ For **live-tweak UIs** on experiments (physics, animation, layout constants), pr
 - **Production**: set **`productionEnabled`** on `DialRoot` so the FAB/panel appears on GitHub Pages, not only in dev.
 - **Wiring**: keep a **mutable params object** in vanilla simulation code; a small React bridge **`useEffect`**-syncs `useDialKit` values into that object each frame the store updates. Use **`onAction`** for one-shot controls (e.g. clear all fries).
 - **Simpler demos**: fixed constants or a single `createDefault*Params()` in plain JS (see [Fry shower](fry-shower/) `createDefaultFrySimParams` in `fry-shower-fries.js`) when a tweak panel is not worth the bundle.
+- **Legacy exception**: [circle-slider](circle-slider/) ships a **custom bottom tweak sheet** (`circle-slider-tweak-panel.js`) styled per §4 above — do not migrate it unless explicitly requested; use Dialkit for new experiments instead.

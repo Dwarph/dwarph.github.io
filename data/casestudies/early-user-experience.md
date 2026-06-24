@@ -189,6 +189,8 @@ The paywall had been hard to move for years; we moved it by focusing on user nee
   </aside>
 </div>
 
-- **Follow signal, not the roadmap.** We started small, doubled down when V1 proved the guided path worked, then optimised when users outpaced the design in V2. Small bets until you have signal, then push hard.
-- **Cut what you built when live evidence says so.** Day gating felt considered from our side. Users found it controlling. User testing hadn't flagged it, but live users did.
-- **Fix what users were stuck on.** Each improvement focused on concrete user problems, not a funnel tweak in isolation.
+**Day one and day seven are different problems.** V1 moved trial conversion and stacked workouts on day one, but return didn't budge until we made the kickstart impossible to miss. We'd planned for a first week, but out users finished in hours. Shortening the path and scrapping day gates was us catching up to how fast subscribers actually moved.
+
+**Tutorial language kills momentum; action language keeps people in the workout.** Renaming "Box Foundations" to "Make Your Move" mattered as much as simplifying the class. "Everyone's a winner" had to land in the copy, not just the difficulty curve.
+
+**Look for inspiration everywhere** VR isn't mature enough to be your only reference. Subscription apps outside the headset already had paywall patterns worth stealing: readable hierarchy, conversion-focused layout.

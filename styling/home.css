@@ -8,6 +8,7 @@
 
 /* Bottom floating dock — horizontal, centered on viewport bottom */
 #homepage-container {
+    position: relative;
     padding-bottom: clamp(56px, 8vh, 84px);
     box-sizing: border-box;
 }
@@ -1199,12 +1200,12 @@ html.home-nav-scrolling .nav-link:active {
 /* Joyful doodle easter egg — "joyful and inevitable" trigger */
 #bio-joyful-doodle-layer {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    inset: 0;
     pointer-events: none;
     overflow: visible;
     z-index: 50;
+    /* Paint bleed past layer box without changing layout size (world-space edge trail). */
+    clip-path: inset(-80px -80px -80px -80px);
 }
 
 .bio-joyful-doodle {

@@ -189,6 +189,7 @@ select:focus-visible {
     cursor: pointer;
     color: inherit;
     -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
     transform-origin: center center;
 }
 

@@ -93,9 +93,18 @@
 
         for (var i = 0; i < highlights.length; i++) {
             (function (el) {
+                var lastPointerType = 'mouse';
+
                 el.addEventListener('pointerdown', function (e) {
+                    lastPointerType = e.pointerType || 'mouse';
                     if (e.pointerType === 'mouse' && e.button !== 0) return;
                     el.classList.add(PRESSED_CLASS);
+                });
+                el.addEventListener('focus', function () {
+                    /* Touch focus scrolls the page and can grow the visual viewport on Android. */
+                    if (lastPointerType === 'touch') {
+                        el.blur();
+                    }
                 });
                 el.addEventListener('pointerup', function () {
                     el.classList.remove(PRESSED_CLASS);

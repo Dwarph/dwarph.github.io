@@ -190,47 +190,64 @@
             .replace(/fill\s*=\s*["']#ffc405["']/gi, 'fill="currentColor"');
     }
 
-    function getScrollX() {
-        return window.pageXOffset || document.documentElement.scrollLeft || 0;
+    function getLayerRoot() {
+        return document.getElementById('homepage-container');
     }
 
-    function getScrollY() {
-        return window.pageYOffset || document.documentElement.scrollTop || 0;
+    function getLayerBounds() {
+        var root = getLayerRoot();
+        if (!root) return null;
+        return {
+            width: root.clientWidth,
+            height: root.clientHeight,
+        };
     }
 
-    function clientToPageX(x) {
-        return x + getScrollX();
+    function clientToLayer(clientX, clientY) {
+        var root = getLayerRoot();
+        if (!root) {
+            return { x: clientX, y: clientY };
+        }
+        var rect = root.getBoundingClientRect();
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top,
+        };
     }
 
-    function clientToPageY(y) {
-        return y + getScrollY();
+    function getMaxDoodleBleedPx() {
+        return CONFIG.baseSizePx * CONFIG.scaleMax * 0.62;
     }
 
-    function syncLayerSize() {
-        if (!layerEl) return;
-        var docHeight = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            document.documentElement.clientHeight
+    function isWithinLayer(x, y, radius, allowEdgeBleed) {
+        var bounds = getLayerBounds();
+        if (!bounds) return false;
+        var margin = CONFIG.viewportMarginPx;
+        var edgeBleed = allowEdgeBleed ? getMaxDoodleBleedPx() : 0;
+        return (
+            x >= margin + radius - edgeBleed &&
+            x <= bounds.width - margin - radius + edgeBleed &&
+            y >= margin + radius &&
+            y <= bounds.height - margin - radius
         );
-        layerEl.style.height = docHeight + 'px';
     }
 
     function ensureLayer() {
-        if (layerEl && layerEl.parentNode) {
-            syncLayerSize();
+        var root = getLayerRoot();
+        if (!root) return null;
+
+        if (layerEl && layerEl.parentNode === root) {
             return layerEl;
         }
+
         layerEl = document.getElementById('bio-joyful-doodle-layer');
-        if (layerEl) {
-            syncLayerSize();
-            return layerEl;
+        if (!layerEl) {
+            layerEl = document.createElement('div');
+            layerEl.id = 'bio-joyful-doodle-layer';
+            layerEl.setAttribute('aria-hidden', 'true');
         }
-        layerEl = document.createElement('div');
-        layerEl.id = 'bio-joyful-doodle-layer';
-        layerEl.setAttribute('aria-hidden', 'true');
-        document.body.appendChild(layerEl);
-        syncLayerSize();
+
+        root.appendChild(layerEl);
         return layerEl;
     }
 
@@ -278,34 +295,6 @@
         return CONFIG.baseSizePx * scale * 0.55;
     }
 
-    function isWithinPage(x, y, radius) {
-        var margin = CONFIG.viewportMarginPx;
-        var maxW = Math.max(
-            document.documentElement.scrollWidth,
-            document.body.scrollWidth,
-            document.documentElement.clientWidth
-        );
-        var maxH = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            document.documentElement.clientHeight
-        );
-        return (
-            x >= margin + radius &&
-            x <= maxW - margin - radius &&
-            y >= margin + radius &&
-            y <= maxH - margin - radius
-        );
-    }
-
-    function getPageWidth() {
-        return Math.max(
-            document.documentElement.scrollWidth,
-            document.body.scrollWidth,
-            document.documentElement.clientWidth
-        );
-    }
-
     function getTrailStrip(contentEl) {
         if (!contentEl) return null;
 
@@ -331,14 +320,19 @@
 
         var height = bottom - top;
         var margin = CONFIG.viewportMarginPx;
-        var pageW = getPageWidth();
+        var bounds = getLayerBounds();
+        if (!bounds) return null;
+
+        var layerTop = clientToLayer(0, top).y;
+        var layerBottom = clientToLayer(0, bottom).y;
+        var edgeBleed = getMaxDoodleBleedPx();
 
         return {
-            left: margin,
-            right: pageW - margin,
-            top: clientToPageY(top),
-            bottom: clientToPageY(bottom),
-            midY: clientToPageY(top + height * 0.5),
+            left: margin - edgeBleed,
+            right: bounds.width - margin + edgeBleed,
+            top: layerTop,
+            bottom: layerBottom,
+            midY: layerTop + height * 0.5,
             height: height,
         };
     }
@@ -388,8 +382,15 @@
 
             tryX = clamp(tryX, xMin, xMax);
 
-            if (!isWithinPage(tryX, tryY, radius)) {
-                if (force) return { x: tryX, y: tryY, scale: scale };
+            if (!isWithinLayer(tryX, tryY, radius, true)) {
+                if (force) {
+                    var bounds = getLayerBounds();
+                    if (!bounds) return null;
+                    tryX = clamp(tryX, strip.left, strip.right);
+                    var margin = CONFIG.viewportMarginPx;
+                    tryY = clamp(tryY, margin + radius, bounds.height - margin - radius);
+                    return { x: tryX, y: tryY, scale: scale };
+                }
                 continue;
             }
             if (!force && !isTrailPointClear(tryX, tryY, radius, placed)) continue;
@@ -785,6 +786,8 @@
             if (rect.width < 1 && rect.height < 1) return;
 
             var layer = ensureLayer();
+            if (!layer || session !== spawnSession) return;
+
             fadeOutPreviousSessions(layer, session);
             spawnDoodlesNow(originEl, cache, layer, session);
         });

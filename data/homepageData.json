@@ -180,6 +180,11 @@
         "icon": "icons/github.svg"
       },
       {
+        "name": "Instagram",
+        "link": "https://www.instagram.com/pipturner97/",
+        "icon": "icons/instagram.svg"
+      },
+      {
         "name": "Bluesky",
         "link": "https://bsky.app/profile/pipturner.co.uk",
         "icon": "icons/bluesky.svg"

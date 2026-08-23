@@ -330,6 +330,10 @@ select:focus-visible {
 }
 
 .header-distortion-canvas {
+    /* No border-radius here on purpose: Gecko (Zen/Firefox) composites this canvas
+       above the frame and ignores border-radius / clip-path / mask on it and on every
+       ancestor, and even paints over a DOM overlay. The corners are rounded inside the
+       fragment shader instead - see FRAGMENT_SHADER in js/headerDistortion.js. */
     display: block;
     position: absolute;
     left: 0;

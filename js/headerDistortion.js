@@ -16,15 +16,30 @@ void main() {
 }
 `;
 
+/* uRadius rounds the corners in-shader. Gecko (Zen/Firefox) composites this canvas
+ * above the header and ignores border-radius, clip-path and mask on the canvas and all
+ * of its ancestors - it even paints over a DOM overlay - so the frame's rounded corners
+ * have to be cut into the canvas' own pixels. They are alpha'd out rather than filled
+ * with the page colour: the canvas also composites over the header's box-shadow, and an
+ * opaque fill would erase the shadow around the corners. */
 const FRAGMENT_SHADER = `
 uniform sampler2D uDataTexture;
 uniform sampler2D uTexture;
 uniform vec4 resolution;
+uniform float uRadius;
 varying vec2 vUv;
+
 void main() {
 	vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
 	vec4 offset = texture2D(uDataTexture, vUv);
-	gl_FragColor = texture2D(uTexture, newUV - 0.02 * offset.rg);
+	vec4 color = texture2D(uTexture, newUV - 0.02 * offset.rg);
+
+	vec2 halfSize = resolution.xy * 0.5;
+	vec2 q = abs(vUv * resolution.xy - halfSize) - (halfSize - vec2(uRadius));
+	float dist = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - uRadius;
+	float inside = 1.0 - smoothstep(-1.0, 1.0, dist);
+
+	gl_FragColor = vec4(color.rgb, color.a * inside);
 }
 `;
 
@@ -136,10 +151,17 @@ class DistortionSketch {
         this._mobileProfile = options.mobileProfile === true;
 
         var useAa = options.antialias !== false;
-        this.renderer = new THREE.WebGLRenderer({ antialias: useAa, alpha: false });
+        /* alpha (unpremultiplied) so the shader can cut transparent rounded corners.
+         * Gecko composites this canvas over the header's box-shadow, so filling the
+         * corners with an opaque page colour would erase the frame's shadow there. */
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: useAa,
+            alpha: true,
+            premultipliedAlpha: false,
+        });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.pixelRatioCap));
         this.renderer.setSize(this.width, this.height);
-        this.renderer.setClearColor(0xfffdef, 1);
+        this.renderer.setClearColor(0xfffdef, 0);
         this.renderer.toneMapping = THREE.NoToneMapping;
         this.renderer.outputEncoding = THREE.LinearEncoding;
         this.renderer.physicallyCorrectLights = false;
@@ -394,6 +416,16 @@ class DistortionSketch {
         this.material.uniforms.resolution.value.z = a1;
         this.material.uniforms.resolution.value.w = a2;
 
+        /* Frame radius is responsive (clamp() + a mobile override), so re-read it on
+         * every resize rather than caching it at build time. */
+        var radius = 0;
+        try {
+            radius = parseFloat(window.getComputedStyle(this.container).borderTopLeftRadius);
+        } catch (e) {
+            radius = 0;
+        }
+        this.material.uniforms.uRadius.value = isFinite(radius) ? radius : 0;
+
         /* Do not call regenerateGrid() here. Mobile browsers fire resize/ResizeObserver when the
          * URL bar shows or hides while scrolling; resetting the data texture looked like the
          * effect restarting. Grid is simulation resolution, not canvas size — only regenerate
@@ -447,6 +479,7 @@ class DistortionSketch {
             side: THREE.DoubleSide,
             uniforms: {
                 resolution: { value: new THREE.Vector4() },
+                uRadius: { value: 0 },
                 uTexture: { value: texture },
                 uDataTexture: { value: this.texture },
             },

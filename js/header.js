@@ -16,8 +16,8 @@ window.renderHeader = function(header, options) {
     // Always use the EXACT same structure for consistency across all pages
     // This ensures spacing is identical everywhere
     var profileImageHtml = isHomepage ? 
-        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="256" height="256" loading="eager" decoding="async" fetchpriority="high" />` :
-        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="256" height="256" loading="eager" decoding="async" fetchpriority="high" /></a>`;
+        `<img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="372" height="372" loading="eager" decoding="async" fetchpriority="high" />` :
+        `<a href="${homeLink}" aria-label="Go to homepage"><img class="profile-image" src="${header.profileImage}" alt="Profile picture" width="372" height="372" loading="eager" decoding="async" fetchpriority="high" /></a>`;
     
     // Subpages: name/role link home. Homepage: static text (no meaningless tab stop).
     var nameRoleHtml = isHomepage

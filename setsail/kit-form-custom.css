@@ -1,0 +1,131 @@
+/* Set Sail — beta signup form styling.
+ *
+ * This is NOT loaded by index.html — Kit hosts and serves form CSS itself.
+ * Pasted into the Kit form builder's "Custom CSS" box for this form
+ * (data-uid 67e3e29dba, embedded in ../index.html) under
+ * General styles > Custom CSS, then Save & Published from there.
+ * Kept here only so the styling survives if the Kit form is ever rebuilt.
+ *
+ * Every selector is wrapped in :global(...) — Kit runs custom CSS through a
+ * scoping compiler that silently drops any selector not wrapped this way
+ * (confirmed by inspecting the live page's parsed CSSOM: an earlier,
+ * unwrapped version of this file was present in the delivered stylesheet's
+ * raw text but produced zero matching CSS rules). See:
+ * https://help.kit.com/en/articles/4306103-troubleshooting-form-styling
+ *
+ * .formkit-fields is forced to row/column directly rather than relying on
+ * Kit's own container-width bucket system (a `min-width` attribute Kit's JS
+ * sets on .formkit-form in steps of 400/500/600/700/800px) — that system
+ * doesn't line up cleanly with this form's ~400px width and produced
+ * inconsistent stacking on resize.
+ */
+
+:global(.formkit-form) {
+  font-family: 'Nunito Sans', system-ui, sans-serif !important;
+}
+
+:global(.formkit-fields) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+:global(.formkit-field) {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+
+:global(.formkit-input) {
+  width: 100% !important;
+  height: 48px !important;
+  padding: 0 20px !important;
+  border: 1.5px solid rgba(55, 44, 9, 0.16) !important;
+  border-radius: 999px !important;
+  background: #FFFDEF !important;
+  color: #372C09 !important;
+  font: 400 15px/1 'Nunito Sans', sans-serif !important;
+  box-shadow: none !important;
+}
+:global(.formkit-input)::placeholder { color: #6E6248; }
+:global(.formkit-input):focus {
+  outline: 2px solid #FFC405 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45) !important;
+  border-color: rgba(55, 44, 9, 0.16) !important;
+}
+
+:global(.formkit-submit),
+:global([data-element="submit"]) {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 24px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  background: #A8D8F5 !important;
+  color: #372C09 !important;
+  font: 600 16px/1 'Nunito Sans', sans-serif !important;
+  border: none !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+  transition: opacity 140ms cubic-bezier(0.3,0.9,0.4,1), transform 200ms cubic-bezier(0.3,0.9,0.4,1);
+}
+:global(.formkit-submit) > span,
+:global([data-element="submit"]) > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+:global(.formkit-submit):hover,
+:global([data-element="submit"]):hover { opacity: 0.9; }
+:global(.formkit-submit):active,
+:global([data-element="submit"]):active { opacity: 0.82; transform: scale(0.97); }
+:global(.formkit-submit):focus-visible,
+:global([data-element="submit"]):focus-visible {
+  outline: 2px solid #FFC405 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45) !important;
+}
+
+:global(.formkit-guarantee) {
+  font: 500 13px/18px 'Nunito Sans', sans-serif !important;
+  color: #6E6248 !important;
+}
+
+:global(.formkit-alert-success) {
+  background: rgba(168, 216, 245, 0.18) !important;
+  border: 1px solid rgba(35, 151, 221, 0.3) !important;
+  color: #372C09 !important;
+  border-radius: 12px !important;
+  font: 600 15px/22px 'Nunito Sans', sans-serif !important;
+}
+:global(.formkit-alert-error) {
+  background: rgba(232, 180, 168, 0.25) !important;
+  border: 1px solid rgba(214, 144, 128, 0.4) !important;
+  color: #372C09 !important;
+  border-radius: 12px !important;
+  font: 500 14px/20px 'Nunito Sans', sans-serif !important;
+}
+
+:global(.formkit-powered-by-convertkit-container) {
+  margin-top: 20px !important;
+}
+
+@media (max-width: 480px) {
+  :global(.formkit-fields) { flex-direction: column !important; }
+  :global(.formkit-field),
+  :global(.formkit-submit),
+  :global([data-element="submit"]) {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+}

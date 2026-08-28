@@ -46,6 +46,19 @@ body {
   color: var(--on-surface-muted);
 }
 
+.ss-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  background: rgba(168, 216, 245, 0.22);
+  color: var(--on-surface);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font: 600 16px/1 var(--font-body);
+}
+.ss-soon-icon { width: 20px; height: 20px; flex: none; color: #1F6F9F; }
+
 .ss-signup {
   width: 100%;
   max-width: 400px;

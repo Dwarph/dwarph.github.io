@@ -45,6 +45,19 @@ chips.forEach((chip) => {
   });
 });
 
+const ERROR_ICON =
+  '<svg viewBox="0 -960 960 960" fill="currentColor"><path d="M508.5-291.5Q520-303 520-320t-11.5-28.5Q497-360 480-360t-28.5 11.5Q440-337 440-320t11.5 28.5Q463-280 480-280t28.5-11.5ZM440-440h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>';
+
+function showError(message) {
+  const existing = form.querySelector('.ss-error');
+  if (existing) existing.remove();
+
+  const error = document.createElement('div');
+  error.className = 'ss-error';
+  error.innerHTML = ERROR_ICON + `<span>${message}</span>`;
+  form.appendChild(error);
+}
+
 function showConfirmed() {
   const fieldGroup = form.querySelector('.ss-field-group');
   const note = form.querySelector('.ss-note');
@@ -54,7 +67,7 @@ function showConfirmed() {
   confirm.className = 'ss-confirm';
   confirm.innerHTML =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>' +
-    "<span>Welcome aboard! We'll write when it's time to Set Sail.</span>";
+    "<span>Welcome aboard!</span>";
   fieldGroup.replaceWith(confirm);
   if (note) note.remove();
   form.querySelectorAll('.ss-chip').forEach((chip) => (chip.disabled = true));
@@ -73,9 +86,20 @@ try {
   // localStorage can throw in some private-browsing contexts — fine to skip.
 }
 
+const emailInput = form.querySelector('input[type="email"]');
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (selected.size === 0) return; // belt and suspenders alongside the disabled button
+
+  if (!emailInput.checkValidity()) {
+    showError(
+      emailInput.validity.valueMissing
+        ? 'Please enter your email address.'
+        : "That doesn't look like a valid email address."
+    );
+    return;
+  }
 
   const existingError = form.querySelector('.ss-error');
   if (existingError) existingError.remove();
@@ -94,9 +118,6 @@ form.addEventListener('submit', (e) => {
       showConfirmed();
     })
     .catch(() => {
-      const error = document.createElement('p');
-      error.className = 'ss-error';
-      error.textContent = "Couldn't reach the server — check your connection and try again.";
-      form.appendChild(error);
+      showError("Couldn't reach the server — check your connection and try again.");
     });
 });

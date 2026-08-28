@@ -49,4 +49,117 @@ body {
   width: 100%;
   max-width: 400px;
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.ss-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ss-chip {
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  background: #EDE4C8;
+  color: var(--on-surface);
+  font: 600 14px/1 var(--font-body);
+  transition: background 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
+    color 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
+    transform 200ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+.ss-chip:hover { background: #E3D8B4; }
+.ss-chip:active { transform: scale(0.97); }
+.ss-chip[aria-pressed="true"] { background: #A8D8F5; }
+.ss-chip[aria-pressed="true"]:hover { background: #7FC6F0; }
+.ss-chip-icon { width: 18px; height: 18px; flex: none; }
+
+.ss-field-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.ss-field-group input[type="email"] {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 20px;
+  border: 1.5px solid rgba(55, 44, 9, 0.16);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--on-surface);
+  font: 400 15px/1 var(--font-body);
+}
+.ss-field-group input[type="email"]::placeholder { color: var(--on-surface-muted); }
+.ss-field-group input[type="email"]:focus-visible {
+  outline: 2px solid #FFC405;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+}
+@media (max-width: 480px) {
+  .ss-field-group { flex-direction: column; }
+}
+
+.ss-btn {
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: #A8D8F5;
+  color: var(--on-surface);
+  font: 600 16px/1 var(--font-body);
+  white-space: nowrap;
+  transition: opacity 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
+    transform 200ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+.ss-btn:hover { opacity: 0.9; }
+.ss-btn:active { opacity: 0.82; transform: scale(0.97); }
+.ss-btn:focus-visible {
+  outline: 2px solid #FFC405;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+}
+
+.ss-note {
+  margin: 0;
+  font: 500 13px/18px var(--font-body);
+  color: var(--on-surface-muted);
+}
+
+.ss-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: rgba(168, 216, 245, 0.18);
+  border: 1px solid rgba(35, 151, 221, 0.3);
+  color: var(--on-surface);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font: 600 15px/22px var(--font-body);
+  opacity: 0;
+  transform: translateY(4px);
+  animation: ssConfirmIn 320ms cubic-bezier(0.3, 0.9, 0.4, 1) forwards;
+}
+@keyframes ssConfirmIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.ss-confirm svg { flex: none; width: 20px; height: 20px; color: #1F6F9F; }
+
+.ss-error {
+  margin: 0;
+  font: 500 13px/18px var(--font-body);
+  color: #8F2E10;
 }

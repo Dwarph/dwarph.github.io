@@ -137,9 +137,13 @@ body {
 }
 .ss-field-group input[type="email"]::placeholder { color: var(--on-surface-muted); }
 .ss-field-group input[type="email"]:focus-visible {
-  outline: 2px solid #FFC405;
+  outline: 2px solid #2397DD;
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+}
+body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 @media (max-width: 480px) {
   .ss-field-group { flex-direction: column; }
@@ -162,7 +166,7 @@ body {
 .ss-btn:hover { opacity: 0.9; }
 .ss-btn:active { opacity: 0.82; transform: scale(0.97); }
 .ss-btn:focus-visible {
-  outline: 2px solid #FFC405;
+  outline: 2px solid #2397DD;
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
 }

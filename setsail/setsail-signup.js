@@ -4,6 +4,18 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwatlC_HaCgLyom9YK5H
 
 const SIGNED_UP_KEY = 'ss_signed_up';
 
+// :focus-visible alone isn't enough for the email field: browsers treat
+// text-editable elements as always "focus-visible" even after a mouse
+// click (the reasoning being you might start typing), unlike buttons where
+// a click already correctly suppresses the ring. Track the most recent
+// input modality and suppress the ring for the mouse case ourselves.
+document.addEventListener('mousedown', () => {
+  document.body.classList.add('ss-mouse-user');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') document.body.classList.remove('ss-mouse-user');
+});
+
 const form = document.getElementById('signupForm');
 const platformsField = document.getElementById('platformsField');
 const submitBtn = form.querySelector('.ss-btn');

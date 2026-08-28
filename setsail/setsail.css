@@ -17,6 +17,7 @@ body {
   font-family: var(--font-body);
   font-variation-settings: 'YTLC' 500, 'wdth' 100;
   -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
 }
 
 .ss-hero {

@@ -33,7 +33,7 @@ function showConfirmed() {
   confirm.className = 'ss-confirm';
   confirm.innerHTML =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>' +
-    "<span>You're aboard — we'll write when it's time to set sail.</span>";
+    "<span>Welcome aboard! We'll write when it's time to Set Sail.</span>";
   fieldGroup.replaceWith(confirm);
   if (note) note.remove();
   form.querySelectorAll('.ss-chip').forEach((chip) => (chip.disabled = true));

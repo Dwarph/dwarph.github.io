@@ -6,12 +6,32 @@ const SIGNED_UP_KEY = 'ss_signed_up';
 
 const form = document.getElementById('signupForm');
 const platformsField = document.getElementById('platformsField');
+const submitBtn = form.querySelector('.ss-btn');
 const chips = form.querySelectorAll('.ss-chip');
 
 const selected = new Set();
 
+// Click-origin fill: size and position the ::before circle so it grows
+// from wherever the chip was clicked and reaches exactly far enough to
+// cover the chip, regardless of click position. Keyboard activation
+// (Enter/Space) fires a click with detail === 0 and no real pointer
+// position, so those default to the chip's center instead.
+function setRippleOrigin(chip, event) {
+  const rect = chip.getBoundingClientRect();
+  const fromKeyboard = event.detail === 0;
+  const x = fromKeyboard ? rect.width / 2 : event.clientX - rect.left;
+  const y = fromKeyboard ? rect.height / 2 : event.clientY - rect.top;
+  const dx = Math.max(x, rect.width - x);
+  const dy = Math.max(y, rect.height - y);
+  const r = Math.sqrt(dx * dx + dy * dy);
+  chip.style.setProperty('--rx', `${x}px`);
+  chip.style.setProperty('--ry', `${y}px`);
+  chip.style.setProperty('--ripple-r', `${r}px`);
+}
+
 chips.forEach((chip) => {
-  chip.addEventListener('click', () => {
+  chip.addEventListener('click', (event) => {
+    setRippleOrigin(chip, event);
     const platform = chip.dataset.platform;
     const isOn = chip.getAttribute('aria-pressed') === 'true';
     chip.setAttribute('aria-pressed', String(!isOn));
@@ -21,6 +41,7 @@ chips.forEach((chip) => {
       selected.add(platform);
     }
     platformsField.value = [...selected].join(',');
+    submitBtn.disabled = selected.size === 0;
   });
 });
 
@@ -54,6 +75,7 @@ try {
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  if (selected.size === 0) return; // belt and suspenders alongside the disabled button
 
   const existingError = form.querySelector('.ss-error');
   if (existingError) existingError.remove();

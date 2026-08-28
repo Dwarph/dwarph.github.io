@@ -78,6 +78,9 @@ body {
 .ss-chip {
   appearance: none;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -88,13 +91,32 @@ body {
   color: var(--on-surface);
   font: 600 14px/1 var(--font-body);
   transition: background 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
-    color 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
     transform 200ms cubic-bezier(0.3, 0.9, 0.4, 1);
 }
 .ss-chip:hover { background: #E3D8B4; }
 .ss-chip:active { transform: scale(0.97); }
-.ss-chip[aria-pressed="true"] { background: #A8D8F5; }
-.ss-chip[aria-pressed="true"]:hover { background: #7FC6F0; }
+.ss-chip:disabled { opacity: 0.45; cursor: default; }
+
+/* Click-origin fill — grows from the point that was clicked rather than
+   flooding the whole chip. --rx/--ry/--ripple-r are set in JS from the
+   click position and the distance to the chip's furthest corner, so the
+   circle is always exactly big enough to cover the chip regardless of
+   where it was clicked. Matches Porthole's shared/ripple.css technique. */
+.ss-chip::before {
+  content: '';
+  position: absolute;
+  left: var(--rx, 50%);
+  top: var(--ry, 50%);
+  width: calc(2 * var(--ripple-r, 60px));
+  height: calc(2 * var(--ripple-r, 60px));
+  border-radius: 50%;
+  background: #A8D8F5;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 200ms cubic-bezier(0.3, 0.9, 0.4, 1);
+  z-index: -1;
+}
+.ss-chip[aria-pressed="true"]::before { transform: translate(-50%, -50%) scale(1); }
+
 .ss-chip-icon { width: 18px; height: 18px; flex: none; }
 
 .ss-field-group {
@@ -143,6 +165,11 @@ body {
   outline: 2px solid #FFC405;
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+}
+.ss-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
 }
 
 .ss-note {

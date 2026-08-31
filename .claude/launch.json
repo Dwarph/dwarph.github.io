@@ -5,7 +5,7 @@
       "name": "site",
       "runtimeExecutable": "node",
       "runtimeArgs": [
-        "/private/tmp/claude-501/-Users-pip-Documents-GitHub-dwarph-github-io/7ebae3bd-b197-4a1c-ba3c-f9dffbba8125/scratchpad/static-server.js"
+        "/private/tmp/claude-501/-Users-pip-Documents-GitHub-Porthole/9e1de483-850e-4acc-8132-a6e2c83340bd/scratchpad/static-server.js"
       ],
       "port": 8000
     }

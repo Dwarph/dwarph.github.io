@@ -229,7 +229,7 @@ ${sections}
 
 /* Main ------------------------------------------------------------------- */
 
-const md = readFileSync(MARKDOWN_PATH, 'utf8');
+const md = readFileSync(MARKDOWN_PATH, 'utf8').replace(/\r\n?/g, '\n');
 const parsed = parseMarkdown(md);
 
 if (!parsed.releases.length) {

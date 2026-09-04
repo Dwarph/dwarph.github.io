@@ -2,6 +2,32 @@
 
 Everything new since we first set sail.
 
+## Quick Record, Taskbar Icons, And Smaller Recordings (v0.8.0)
+4 September 2026
+
+- Added: Quick Record: start a take from anywhere, without going to Set Sail.
+- Added: A menu bar icon on macOS, and a taskbar icon on Windows.
+- Added: On Windows, Set Sail can now launch automatically at login and run like a proper background service.
+- Added: A confirmed region can now be moved and edge-resized, not just corner-resized.
+- Added: Messages worth interrupting a recording for now appear on the status bar.
+- Changed: MP4 recordings are much smaller.
+- Changed: Improved the webcam bubble's grow/shrink animation performance on Windows.
+- Changed: The Quality setting is now High / Medium / Low, was High / Balanced / Small, with a line under it saying what each one caps the picture at.
+- Changed: The Region capture mode is now called Area, matching the "Select area…" / "Record area" language already used throughout that flow.
+- Changed: Deleting a take on Land ahoy now says so in words, not just in colour.
+- Fixed: On Windows, switching modes or leaving a recording's preview no longer stalls the cursor for a moment.
+- Fixed: Turning the webcam off during a recording now shows it shrinking away in the recorded file, not just on your own screen.
+- Fixed: The window picker's thumbnails no longer flash when you open Pick Window
+- Fixed: With Show Set Sail while recording on, a screen or area take's first frames no longer catch the countdown's fading "1".
+- Fixed: The camera and microphone now follow along when the hardware changes, not just at the moment a stream first opens.
+- Fixed: The screen picker and the idle screen's preview no longer show Set Sail's own window sitting on top of the desktop they're previewing — both now leave Set Sail's window out of the capture, the same way its actual recordings already did.
+- Fixed: Improved support for scaled displays on Windows.
+- Fixed: Windows no longer draws its yellow capture border over your recordings.
+- Fixed: The webcam bubble's resize handles and close button no longer end up in your recordings.
+- Fixed: The webcam, microphone and system-audio chips no longer go blank while an area recording is getting ready.
+- Fixed: Esc now cancels a region selection immediately, without a click first.
+- Removed: Colour correction, the Settings screen that let you dial in a levels correction for recordings coming out washed out on an HDR display, added in 0.6.0.
+
 ## This Changelog! (v0.7.0)
 31 August 2026
 

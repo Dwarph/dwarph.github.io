@@ -1,7 +1,7 @@
 :root {
-  --surface: #FFFDEF;
-  --on-surface: #372C09;
-  --on-surface-muted: #6E6248;
+  --surface: #FAFAF7;
+  --on-surface: #1C1C1A;
+  --on-surface-muted: #5F5F5C;
   --font-display: 'Outfit', system-ui, sans-serif;
   --font-body: 'Nunito Sans', system-ui, sans-serif;
 }
@@ -11,6 +11,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
 
 body {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: var(--surface);
   color: var(--on-surface);
@@ -44,6 +45,46 @@ body {
   margin: 0;
   font: 400 18px / 28px var(--font-body);
   color: var(--on-surface-muted);
+}
+
+.ss-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  background: rgba(168, 216, 245, 0.22);
+  color: var(--on-surface);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font: 600 16px/1 var(--font-body);
+}
+.ss-soon-icon { width: 20px; height: 20px; flex: none; color: #1F6F9F; }
+
+/* The hero keeps `margin: auto`, so it stays optically centred and soaks up
+   the free space; this footer is left sitting on the bottom edge. */
+.ss-foot {
+  flex: none;
+  padding: 24px;
+  text-align: center;
+}
+
+/* A quiet text link, not a second pill — the hero already has one, and the
+   changelog is a side road off it rather than a rival to the main message.
+   #1F6F9F is the same accent the badge's icon and the changelog footer's
+   links use. */
+.ss-link {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  color: #1F6F9F;
+  font: 600 15px/1 var(--font-body);
+  text-decoration: none;
+}
+.ss-link:hover { text-decoration: underline; }
+.ss-link:focus-visible {
+  outline: 2px solid #2397DD;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
 }
 
 .ss-signup {
@@ -87,13 +128,13 @@ body {
   border: none;
   border-radius: 12px;
   padding: 10px 16px;
-  background: #EDE4C8;
+  background: #E6E2D9;
   color: var(--on-surface);
   font: 600 14px/1 var(--font-body);
   transition: background 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
     transform 200ms cubic-bezier(0.3, 0.9, 0.4, 1);
 }
-.ss-chip:hover { background: #E3D8B4; }
+.ss-chip:hover { background: #DAD6CD; }
 .ss-chip:active { transform: scale(0.97); }
 .ss-chip:disabled { opacity: 0.45; cursor: default; }
 
@@ -130,7 +171,7 @@ body {
   min-width: 0;
   height: 48px;
   padding: 0 20px;
-  border: 1.5px solid rgba(55, 44, 9, 0.16);
+  border: 1.5px solid rgb(28 28 26 / 0.16);
   border-radius: 999px;
   background: var(--surface);
   color: var(--on-surface);
@@ -140,7 +181,7 @@ body {
 .ss-field-group input[type="email"]:focus-visible {
   outline: 2px solid #2397DD;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
 }
 body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   outline: none;
@@ -181,7 +222,7 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
 .ss-btn:focus-visible {
   outline: 2px solid #2397DD;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
 }
 .ss-btn:disabled {
   opacity: 0.45;
@@ -357,14 +398,14 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   align-items: center;
   gap: 10px;
   width: 100%;
-  background: rgba(232, 180, 168, 0.25);
-  border: 1px solid rgba(214, 144, 128, 0.4);
+  background: rgb(250 108 140 / 0.20);
+  border: 1px solid rgb(227 87 121 / 0.26);
   color: var(--on-surface);
   padding: 12px 18px;
   border-radius: 12px;
   font: 600 14px/20px var(--font-body);
 }
-.ss-error svg { flex: none; width: 20px; height: 20px; color: #8F2E10; }
+.ss-error svg { flex: none; width: 20px; height: 20px; color: #7D1C0D; }
 
 /* Not an error and nothing was just accomplished — a plain informational
    notice you land on, not a celebratory or alarming one, so it gets its own

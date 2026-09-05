@@ -1,0 +1,245 @@
+/*
+ * The changelog page.
+ *
+ * Loaded after ../setsail.css, which supplies the tokens, the type, the body
+ * colour, and .ss-btn (reused below for the CTA). Everything here is either
+ * an override of the hero's single-screen layout or a rule the hero never
+ * needed.
+ *
+ * Format follows zen-browser.app/release-notes: a version header, then a flat
+ * list where each entry is one sentence carrying its own category label in a
+ * fixed gutter — rather than entries grouped under Added/Fixed headings.
+ */
+
+/*
+ * setsail.css centres the hero with `html, body { height: 100% }` and
+ * `body { display: flex }`, plus `.ss-hero { margin: auto }`. A page that
+ * scrolls has to undo both or it fights the viewport.
+ */
+html,
+body {
+  height: auto;
+}
+
+body {
+  display: block;
+}
+
+.cl-page {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.cl-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+/* The mark and the CTA share the top line — the page's only two navigation
+   controls, so they read as one bar rather than as two things stacked with the
+   title wedged between them. Both ends stay put down to the narrowest phone:
+   at 320px the row still has ~100px of slack. */
+.cl-head-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* The mark links home. It is the only other navigation on the page besides
+   the CTA beside it. */
+.cl-home {
+  display: inline-flex;
+  border-radius: 999px;
+}
+
+.cl-home svg {
+  display: block;
+}
+
+.cl-lead {
+  max-width: 60ch;
+}
+
+/* .ss-btn is written for a <button>; as an <a> it needs its own centring —
+   an inline anchor doesn't get one from height alone. */
+.cl-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: none;
+  text-decoration: none;
+}
+
+/* currentColor, same reasoning as the About screen's site-chip: inventing a
+   token for one 16px glyph isn't worth it. U+FE0E forces the text glyph —
+   bare U+2197 can resolve to the emoji presentation and arrive as a picture. */
+.cl-cta-go {
+  color: currentColor;
+}
+
+/* Releases ---------------------------------------------------------------- */
+
+.cl-release {
+  padding: 40px 0 32px;
+}
+
+.cl-release:last-of-type {
+  padding-bottom: 0;
+}
+
+.cl-release + .cl-release {
+  border-top: 1.5px solid rgb(28 28 26 / 0.16);
+}
+
+.cl-release h2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  margin: 0;
+  font: 800 28px/1.2 var(--font-display);
+  letter-spacing: -0.5px;
+}
+
+/* The number sits with its title, not off on its own — this is the release's
+   name, and the version is a subordinate detail of the same heading rather
+   than a separate fact filed under "meta" with the date.
+   Display font and a filled badge, not body text: a page you're scanning
+   for "which one was v0.5.0 again" needs the version to read as a shape, the
+   same way the title does, not as a caption you have to stop and read. */
+.cl-version {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #E6E2D9;
+  color: var(--on-surface);
+  font: 700 15px/1.4 var(--font-display);
+  letter-spacing: -0.2px;
+}
+
+.cl-meta {
+  margin: 6px 0 24px;
+  font: 500 13px/18px var(--font-body);
+  color: var(--on-surface-muted);
+}
+
+/* Entries ----------------------------------------------------------------- */
+
+.cl-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cl-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+/*
+ * A fixed gutter, so the sentences all start on the same line down the page
+ * however long the category name is. Bare coloured text, not a filled pill —
+ * the colour alone is the signal, and every category clears 4.5:1 against
+ * the page's cream in its own right (unlike a pale pill fill, which needed
+ * the darker text rung to compensate).
+ */
+.cl-tag {
+  flex: none;
+  width: 76px;
+  color: var(--on-surface);
+  font: 700 13px/16px var(--font-body);
+  letter-spacing: 0.2px;
+}
+
+.cl-tag[data-tag='Added'] {
+  color: #1F6F9F;
+}
+
+.cl-tag[data-tag='Fixed'] {
+  color: #7D1C0D;
+}
+
+.cl-tag[data-tag='Removed'] {
+  color: #7D1C0D;
+}
+
+.cl-tag[data-tag='Security'] {
+  color: #8A6708;
+}
+
+/* Changed and Deprecated stay on --on-surface — the default above — rather
+   than inventing a colour for two categories that turn up rarely and carry
+   no particular urgency of their own. */
+
+.cl-text {
+  font: 400 16px/26px var(--font-body);
+  color: var(--on-surface);
+}
+
+/* Footer ------------------------------------------------------------------ */
+
+.cl-foot {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1.5px solid rgb(28 28 26 / 0.16);
+  font: 500 13px/18px var(--font-body);
+  color: var(--on-surface-muted);
+}
+
+.cl-foot a {
+  color: #1F6F9F;
+  text-decoration: none;
+}
+
+.cl-foot a:hover {
+  text-decoration: underline;
+}
+
+/* Focus ------------------------------------------------------------------- */
+
+/*
+ * One rule for every focusable thing on the page that isn't .ss-btn (which
+ * already carries its own focus-visible from setsail.css) — just the mark and
+ * the footer's two links.
+ */
+.cl-home:focus-visible,
+.cl-foot a:focus-visible {
+  outline: 2px solid #2397DD;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
+}
+
+@media (max-width: 480px) {
+  .cl-page {
+    padding: 40px 20px 72px;
+  }
+
+  /*
+   * The gutter costs more than it earns at this width — a 76px tag next to a
+   * wrapping sentence leaves the sentence about twenty characters wide.
+   */
+  .cl-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .cl-entries {
+    gap: 20px;
+  }
+}

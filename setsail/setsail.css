@@ -161,6 +161,7 @@ body {
 .ss-chip-icon { width: 18px; height: 18px; flex: none; }
 
 .ss-field-group {
+  position: relative;
   display: flex;
   gap: 8px;
   width: 100%;
@@ -188,11 +189,23 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
 }
 @media (max-width: 480px) {
   .ss-field-group { flex-direction: column; }
+  /* flex:1's flex-basis:0 applies to the main axis, which is now vertical —
+     left alone it overrides height:48px and collapses the field down to its
+     min-content height instead. */
+  .ss-field-group input[type="email"] { flex: none; }
+  /* .ss-btn-wrap stretches to the full row width here (the column's cross
+     axis is horizontal), but its content-sized button doesn't follow along
+     on its own — tell it to match, so it's still full-width like the field
+     above it instead of shrinking back to its content size. */
+  .ss-btn-wrap { width: 100%; }
+  .ss-btn-wrap .ss-btn { width: 100%; }
 }
 
 .ss-btn {
   appearance: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
   border: none;
   height: 48px;
   padding: 0 24px;
@@ -214,8 +227,60 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
 .ss-btn:disabled {
   opacity: 0.45;
   cursor: default;
-  pointer-events: none;
 }
+/* No pointer-events:none here — the native disabled attribute already
+   blocks clicks/keyboard activation on its own, and suppressing pointer
+   events would also suppress :hover, which the tooltip below relies on. */
+
+.ss-btn-wrap {
+  position: relative;
+  flex: none;
+}
+
+.ss-btn-tooltip {
+  /* left:0 + right:0 (rather than a fixed width) sizes this to exactly
+     match .ss-btn-wrap's own width — i.e. the button's width — so it can
+     never spill wider than its anchor and overlap the email field next to
+     it, at any viewport width. Sitting below the button rather than above
+     it sidesteps that field entirely, whether it's beside the button (row
+     layout) or stacked right above it (column layout, an 8px gap away). */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+  background: var(--on-surface);
+  color: var(--surface);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font: 500 13px/1.5 var(--font-body);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 140ms cubic-bezier(0.3, 0.9, 0.4, 1),
+    transform 140ms cubic-bezier(0.3, 0.9, 0.4, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+.ss-btn-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 50%;
+  margin-right: -6px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: var(--on-surface);
+  border-top: 0;
+}
+.ss-btn:disabled:hover ~ .ss-btn-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Once confirmed, the button is disabled for an unrelated reason
+   (submission already happened) — the "why is this disabled" tooltip no
+   longer applies. */
+.ss-field-group.ss-confirming .ss-btn-tooltip { display: none; }
 
 .ss-note {
   margin: 0;
@@ -223,25 +288,98 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   color: var(--on-surface-muted);
 }
 
-.ss-confirm {
+/* Confirmation: the email field fades in place while the submit button
+   grows leftward to fill the row — its right edge stays put (it was already
+   flush with the field-group's right edge in the normal flex layout) and
+   only the left edge sweeps out, rather than the whole row re-flowing.
+   --ss-btn-start-width is set from the button's own measured width right
+   before this class is added, so the grow starts from its true rendered
+   size instead of a guessed one. */
+.ss-field-group.ss-confirming { height: 48px; }
+.ss-field-group.ss-confirming input[type="email"] {
+  position: absolute;
+  inset: 0;
+  animation: ssFieldFadeOut 300ms cubic-bezier(0.3, 0.9, 0.4, 1) forwards;
+}
+@keyframes ssFieldFadeOut {
+  to { opacity: 0; }
+}
+/* .ss-btn-wrap is only a positioning context for the tooltip in the normal
+   state — drop that here so .ss-btn's position:absolute below resolves
+   against .ss-field-group instead, letting it grow across the full row
+   rather than being boxed into the wrap's own (button-sized) width. */
+.ss-field-group.ss-confirming .ss-btn-wrap { position: static; }
+.ss-field-group.ss-confirming .ss-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--ss-btn-start-width, 152px);
+  animation: ssBtnGrow 420ms cubic-bezier(0.3, 0.9, 0.4, 1) 260ms forwards;
+}
+@keyframes ssBtnGrow {
+  to { width: 100%; }
+}
+.ss-field-group.ss-confirming .ss-btn:disabled { opacity: 1; }
+
+.ss-btn-label {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  background: rgba(168, 216, 245, 0.18);
-  border: 1px solid rgba(35, 151, 221, 0.3);
+  justify-content: center;
+  gap: 8px;
+  padding: 0 24px;
+  font: 600 16px/1 var(--font-body);
   color: var(--on-surface);
-  padding: 14px 20px;
-  border-radius: 12px;
-  font: 600 15px/22px var(--font-body);
+  white-space: nowrap;
+}
+.ss-btn-label-old {
+  animation: ssLabelExit 240ms cubic-bezier(0.3, 0.9, 0.4, 1) 520ms forwards;
+}
+.ss-btn-label-new {
+  transform: translateY(100%);
   opacity: 0;
-  transform: translateY(4px);
-  animation: ssConfirmIn 320ms cubic-bezier(0.3, 0.9, 0.4, 1) forwards;
+  animation: ssLabelEnter 260ms cubic-bezier(0.3, 0.9, 0.4, 1) 680ms forwards;
 }
-@keyframes ssConfirmIn {
-  to { opacity: 1; transform: translateY(0); }
+@keyframes ssLabelExit {
+  to { transform: translateY(-100%); opacity: 0; }
 }
-.ss-confirm svg { flex: none; width: 20px; height: 20px; color: #1F6F9F; }
+@keyframes ssLabelEnter {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.ss-confirm-badge {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.5);
+  opacity: 0;
+  animation: ssBadgePop 320ms cubic-bezier(0.3, 0.9, 0.4, 1) 760ms forwards;
+}
+.ss-confirm-check {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #A8D8F5;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: ssCheckDraw 300ms ease-out 980ms forwards;
+}
+@keyframes ssBadgePop {
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes ssCheckDraw {
+  to { stroke-dashoffset: 0; }
+}
 
 .ss-error {
   display: flex;
@@ -256,3 +394,21 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   font: 600 14px/20px var(--font-body);
 }
 .ss-error svg { flex: none; width: 20px; height: 20px; color: #7D1C0D; }
+
+/* Not an error and nothing was just accomplished — a plain informational
+   notice you land on, not a celebratory or alarming one, so it gets its own
+   calm, neutral treatment rather than reusing .ss-error's coral or the
+   confirmation's animated button-grow. */
+.ss-closed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: rgba(168, 216, 245, 0.18);
+  border: 1px solid rgba(35, 151, 221, 0.3);
+  color: var(--on-surface);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font: 600 15px/22px var(--font-body);
+}
+.ss-closed svg { flex: none; width: 20px; height: 20px; color: #1F6F9F; }

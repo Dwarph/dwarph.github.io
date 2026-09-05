@@ -203,15 +203,17 @@ function renderPage({ h1, lead, releases }) {
 <body>
   <main class="cl-page">
     <header class="cl-head">
-      <a class="cl-home" href="../">
-        ${MARK}
-      </a>
+      <div class="cl-head-top">
+        <a class="cl-home" href="../">
+          ${MARK}
+        </a>
+        <a class="ss-btn cl-cta" href="${APP_URL}">
+          Get Set Sail
+          <span class="cl-cta-go" aria-hidden="true">&#8599;&#65038;</span>
+        </a>
+      </div>
       <h1 class="ss-title">${escapeHtml(h1)}</h1>
       <p class="ss-lead cl-lead">${inline(lead)}</p>
-      <a class="ss-btn cl-cta" href="${APP_URL}">
-        Get Set Sail
-        <span class="cl-cta-go" aria-hidden="true">&#8599;&#65038;</span>
-      </a>
     </header>
 
 ${sections}

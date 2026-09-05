@@ -42,8 +42,20 @@ body {
   margin-bottom: 48px;
 }
 
+/* The mark and the CTA share the top line — the page's only two navigation
+   controls, so they read as one bar rather than as two things stacked with the
+   title wedged between them. Both ends stay put down to the narrowest phone:
+   at 320px the row still has ~100px of slack. */
+.cl-head-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 /* The mark links home. It is the only other navigation on the page besides
-   the CTA below. */
+   the CTA beside it. */
 .cl-home {
   display: inline-flex;
   border-radius: 999px;
@@ -64,7 +76,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
+  flex: none;
   text-decoration: none;
 }
 
@@ -86,7 +98,7 @@ body {
 }
 
 .cl-release + .cl-release {
-  border-top: 1.5px solid rgba(55, 44, 9, 0.16);
+  border-top: 1.5px solid rgb(28 28 26 / 0.16);
 }
 
 .cl-release h2 {
@@ -110,7 +122,7 @@ body {
   align-items: center;
   padding: 3px 10px;
   border-radius: 999px;
-  background: #EDE4C8;
+  background: #E6E2D9;
   color: var(--on-surface);
   font: 700 15px/1.4 var(--font-display);
   letter-spacing: -0.2px;
@@ -159,15 +171,15 @@ body {
 }
 
 .cl-tag[data-tag='Fixed'] {
-  color: #8F2E10;
+  color: #7D1C0D;
 }
 
 .cl-tag[data-tag='Removed'] {
-  color: #8F2E10;
+  color: #7D1C0D;
 }
 
 .cl-tag[data-tag='Security'] {
-  color: #B5860A;
+  color: #8A6708;
 }
 
 /* Changed and Deprecated stay on --on-surface — the default above — rather
@@ -184,7 +196,7 @@ body {
 .cl-foot {
   margin-top: 56px;
   padding-top: 24px;
-  border-top: 1.5px solid rgba(55, 44, 9, 0.16);
+  border-top: 1.5px solid rgb(28 28 26 / 0.16);
   font: 500 13px/18px var(--font-body);
   color: var(--on-surface-muted);
 }
@@ -209,7 +221,7 @@ body {
 .cl-foot a:focus-visible {
   outline: 2px solid #2397DD;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(55, 44, 9, 0.45);
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
 }
 
 @media (max-width: 480px) {

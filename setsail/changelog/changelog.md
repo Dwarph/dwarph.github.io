@@ -2,6 +2,12 @@
 
 Everything new since we first set sail.
 
+
+## Quiet Windows Startup (v0.8.1)
+4 September 2026
+
+- Changed: On Windows startup, Set Sail opens to the taskbar, and doesn't show its window.
+
 ## Quick Record, Taskbar Icons, And Smaller Recordings (v0.8.0)
 4 September 2026
 
@@ -28,10 +34,12 @@ Everything new since we first set sail.
 - Fixed: Esc now cancels a region selection immediately, without a click first.
 - Removed: Colour correction, the Settings screen that let you dial in a levels correction for recordings coming out washed out on an HDR display, added in 0.6.0.
 
+
 ## This Changelog! (v0.7.0)
 31 August 2026
 
 - Added: Set Sail can now tell you what's new.
+
 
 ## HDR Colour Correction (v0.6.0)
 31 August 2026
@@ -44,10 +52,12 @@ Everything new since we first set sail.
 - Fixed: The webcam bubble stays where you put it when you toggle the camera off and on.
 - Fixed: The webcam button no longer starts spinning forever when the camera is already on.
 
+
 ## Audio and Display Fixes (v0.5.1)
 30 August 2026
 
 - Fixed: A recording on a machine whose sound device runs at 96kHz no longer fails outright, losing the take.
+
 
 ## Bubble Animations and Windows Polish (v0.5.0)
 30 August 2026
@@ -61,6 +71,7 @@ Everything new since we first set sail.
 - Changed: The bubble's handles slide out from its edge rather than fading in where they sit, and tuck back behind it on the way out.
 - Changed: The taskbar icon no longer sits on a blue square on Windows.
 
+
 ## Smarter Recording Resolution (v0.4.0)
 28 August 2026
 
@@ -70,6 +81,7 @@ Everything new since we first set sail.
 - Fixed: Full screen on the recording preview now fills the screen, instead of only filling the Set Sail window.
 - Fixed: The Set sail button now says what it's doing while the app starts up.
 
+
 ## A Native Windows Title Bar (v0.3.1)
 27 August 2026
 
@@ -78,6 +90,7 @@ Everything new since we first set sail.
 - Fixed: Opening About no longer flashes a scrollbar on Windows.
 - Changed: The title bar on Windows is now custom + beautiful :)
 - Changed: Toasts now sit at the bottom of the window, level with the button below them, instead of floating somewhere above it.
+
 
 ## Multi-Monitor Reliability (v0.3.0)
 25 August 2026

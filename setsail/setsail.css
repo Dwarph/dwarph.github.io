@@ -11,6 +11,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
 
 body {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: var(--surface);
   color: var(--on-surface);
@@ -58,6 +59,33 @@ body {
   font: 600 16px/1 var(--font-body);
 }
 .ss-soon-icon { width: 20px; height: 20px; flex: none; color: #1F6F9F; }
+
+/* The hero keeps `margin: auto`, so it stays optically centred and soaks up
+   the free space; this footer is left sitting on the bottom edge. */
+.ss-foot {
+  flex: none;
+  padding: 24px;
+  text-align: center;
+}
+
+/* A quiet text link, not a second pill — the hero already has one, and the
+   changelog is a side road off it rather than a rival to the main message.
+   #1F6F9F is the same accent the badge's icon and the changelog footer's
+   links use. */
+.ss-link {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  color: #1F6F9F;
+  font: 600 15px/1 var(--font-body);
+  text-decoration: none;
+}
+.ss-link:hover { text-decoration: underline; }
+.ss-link:focus-visible {
+  outline: 2px solid #2397DD;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
+}
 
 .ss-signup {
   width: 100%;

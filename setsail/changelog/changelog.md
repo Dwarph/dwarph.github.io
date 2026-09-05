@@ -26,7 +26,7 @@ Everything new since we first set sail.
 - Fixed: The window picker's thumbnails no longer flash when you open Pick Window
 - Fixed: With Show Set Sail while recording on, a screen or area take's first frames no longer catch the countdown's fading "1".
 - Fixed: The camera and microphone now follow along when the hardware changes, not just at the moment a stream first opens.
-- Fixed: The screen picker and the idle screen's preview no longer show Set Sail's own window sitting on top of the desktop they're previewing — both now leave Set Sail's window out of the capture, the same way its actual recordings already did.
+- Fixed: The screen picker and the idle screen's preview no longer show Set Sail's own window sitting on top of the desktop they're previewing. Both now leave Set Sail's window out of the capture, the same way its actual recordings already did.
 - Fixed: Improved support for scaled displays on Windows.
 - Fixed: Windows no longer draws its yellow capture border over your recordings.
 - Fixed: The webcam bubble's resize handles and close button no longer end up in your recordings.

@@ -120,8 +120,30 @@ function parseMarkdown(md) {
 
 /* Rendering ------------------------------------------------------------------ */
 
+/*
+ * Em dashes are normalised out of every string that reaches the page, rather
+ * than being fixed in changelog.md once: a release's section is synced in from
+ * the Porthole repo's CHANGELOG.md, which currently holds 132 of them, so a
+ * one-off find-and-replace here would last exactly until the next release.
+ *
+ * This is the single choke point that catches them. Every piece of text on the
+ * page runs through it — headings, dates, category names — and inline() calls
+ * it before doing anything else, so entry text is covered too.
+ *
+ * The pattern eats the surrounding whitespace rather than swapping the
+ * character alone, so a spaced "a — b" and an unspaced "a—b" both land on
+ * "a - b" instead of "a  -  b" and "a-b".
+ */
+let emDashCount = 0;
+
+const noEmDash = (s) =>
+  s.replace(/\s*—\s*/g, () => {
+    emDashCount++;
+    return ' - ';
+  });
+
 const escapeHtml = (s) =>
-  s
+  noEmDash(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -182,7 +204,7 @@ function renderPage({ h1, lead, releases }) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Everything that has changed in Set Sail, the lightweight screen recorder for macOS and Windows.">
-  <meta property="og:title" content="Set Sail — Changelog">
+  <meta property="og:title" content="Set Sail - Changelog">
   <meta property="og:description" content="Everything that has changed in Set Sail, newest first.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${SITE_URL}">
@@ -197,7 +219,7 @@ function renderPage({ h1, lead, releases }) {
 
   <link rel="stylesheet" href="../setsail.css">
   <link rel="stylesheet" href="changelog.css">
-  <title>Set Sail — Changelog</title>
+  <title>Set Sail - Changelog</title>
 </head>
 
 <body>
@@ -254,3 +276,6 @@ writeFileSync(OUT_PATH, renderPage(parsed));
 const entryCount = parsed.releases.reduce((n, r) => n + r.entries.length, 0);
 console.log(`Wrote ${OUT_PATH}`);
 console.log(`  ${parsed.releases.length} releases, ${entryCount} entries, from ${path.basename(MARKDOWN_PATH)}.`);
+if (emDashCount) {
+  console.log(`  Normalised ${emDashCount} em dash${emDashCount === 1 ? '' : 'es'} to " - ".`);
+}

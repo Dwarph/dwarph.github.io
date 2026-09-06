@@ -56,6 +56,18 @@ const APP_URL = 'https://pipturner.co.uk/setsail';
 
 /* Parsing -------------------------------------------------------------------- */
 
+/* Keep a Changelog's order. Entries are sorted into it at build time so the
+ * markdown can be written in whatever order things were done, and a release
+ * still reads Added → Changed → Deprecated → Removed → Fixed → Security.
+ * Anything unrecognised keeps its place after the known categories rather than
+ * being dropped, and is reported so a typo surfaces instead of silently
+ * landing at the end. */
+const CATEGORY_ORDER = ['Added', 'Changed', 'Deprecated', 'Removed', 'Fixed', 'Security'];
+const categoryRank = (name) => {
+  const i = CATEGORY_ORDER.indexOf(name);
+  return i === -1 ? CATEGORY_ORDER.length : i;
+};
+
 const RELEASE_RE = /^## (.+?)\s+\(v(\d+\.\d+\.\d+)\)\s*$/;
 const BULLET_RE = /^- ([A-Za-z]+):\s*(.+)$/;
 
@@ -173,11 +185,14 @@ const MARK = `<svg class="ss-mark" viewBox="0 0 128 128" width="48" height="48" 
       </svg>`;
 
 function renderRelease(release) {
-  const entries = release.entries
+  const ordered = [...release.entries].sort(
+    (a, b) => categoryRank(a.category) - categoryRank(b.category),
+  );
+  const entries = ordered
     .map(
       (entry, i) =>
         `        <li class="cl-row${
-          i > 0 && entry.category !== release.entries[i - 1].category
+          i > 0 && entry.category !== ordered[i - 1].category
             ? ' cl-row--turn'
             : ''
         }">\n` +
@@ -277,6 +292,19 @@ for (const release of parsed.releases) {
   if (!release.date) bad.push(`  v${release.version} ("${release.title}") has no date line under its heading.`);
   if (!release.entries.length) bad.push(`  v${release.version} ("${release.title}") has no "- Category: ..." bullets.`);
 }
+
+/* Not fatal — an unrecognised category still renders, it just sorts after the
+   known ones. Reported so "Fixes:" or "added:" gets noticed rather than
+   quietly collecting at the bottom of a release. */
+const unknown = new Map();
+for (const release of parsed.releases) {
+  for (const entry of release.entries) {
+    if (categoryRank(entry.category) === CATEGORY_ORDER.length) {
+      if (!unknown.has(entry.category)) unknown.set(entry.category, []);
+      unknown.get(entry.category).push(`v${release.version}`);
+    }
+  }
+}
 if (bad.length) {
   console.error(`Refusing to write:\n\n${bad.join('\n')}\n`);
   process.exit(1);
@@ -287,6 +315,9 @@ writeFileSync(OUT_PATH, renderPage(parsed));
 const entryCount = parsed.releases.reduce((n, r) => n + r.entries.length, 0);
 console.log(`Wrote ${OUT_PATH}`);
 console.log(`  ${parsed.releases.length} releases, ${entryCount} entries, from ${path.basename(MARKDOWN_PATH)}.`);
+for (const [name, versions] of unknown) {
+  console.warn(`  Unknown category "${name}" in ${[...new Set(versions)].join(', ')} — sorted last. Expected one of: ${CATEGORY_ORDER.join(', ')}.`);
+}
 if (emDashCount) {
   console.log(`  Normalised ${emDashCount} em dash${emDashCount === 1 ? '' : 'es'} to " - ".`);
 }

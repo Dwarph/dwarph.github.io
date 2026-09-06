@@ -128,6 +128,10 @@
           <span class="cl-text">Deleting a take on Land ahoy now says so in words, not just in colour.</span>
         </li>
         <li class="cl-row cl-row--turn">
+          <span class="cl-tag" data-tag="Removed">Removed</span>
+          <span class="cl-text">Colour correction, the Settings screen that let you dial in a levels correction for recordings coming out washed out on an HDR display, added in 0.6.0.</span>
+        </li>
+        <li class="cl-row cl-row--turn">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">On Windows, switching modes or leaving a recording's preview no longer stalls the cursor for a moment.</span>
         </li>
@@ -170,10 +174,6 @@
         <li class="cl-row">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">Esc now cancels a region selection immediately, without a click first.</span>
-        </li>
-        <li class="cl-row cl-row--turn">
-          <span class="cl-tag" data-tag="Removed">Removed</span>
-          <span class="cl-text">Colour correction, the Settings screen that let you dial in a levels correction for recordings coming out washed out on an HDR display, added in 0.6.0.</span>
         </li>
         </ul>
       </section>
@@ -252,22 +252,6 @@
         <p class="cl-meta">30 August 2026</p>
         <ul class="cl-entries">
         <li class="cl-row">
-          <span class="cl-tag" data-tag="Fixed">Fixed</span>
-          <span class="cl-text">Dragging a bubble's corner grip no longer reverses direction part-way through.</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Fixed">Fixed</span>
-          <span class="cl-text">The microphone no longer boosts the room when nobody is talking.</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Fixed">Fixed</span>
-          <span class="cl-text">A change in microphone level part-way through a take no longer arrives as a jump.</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Fixed">Fixed</span>
-          <span class="cl-text">Clicking or dragging Set Sail's window when it wasn't focused no longer hangs for half a second.</span>
-        </li>
-        <li class="cl-row cl-row--turn">
           <span class="cl-tag" data-tag="Added">Added</span>
           <span class="cl-text">The webcam button now spins when the camera is still opening.</span>
         </li>
@@ -282,6 +266,22 @@
         <li class="cl-row">
           <span class="cl-tag" data-tag="Changed">Changed</span>
           <span class="cl-text">The taskbar icon no longer sits on a blue square on Windows.</span>
+        </li>
+        <li class="cl-row cl-row--turn">
+          <span class="cl-tag" data-tag="Fixed">Fixed</span>
+          <span class="cl-text">Dragging a bubble's corner grip no longer reverses direction part-way through.</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Fixed">Fixed</span>
+          <span class="cl-text">The microphone no longer boosts the room when nobody is talking.</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Fixed">Fixed</span>
+          <span class="cl-text">A change in microphone level part-way through a take no longer arrives as a jump.</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Fixed">Fixed</span>
+          <span class="cl-text">Clicking or dragging Set Sail's window when it wasn't focused no longer hangs for half a second.</span>
         </li>
         </ul>
       </section>
@@ -324,6 +324,14 @@
         <p class="cl-meta">27 August 2026</p>
         <ul class="cl-entries">
         <li class="cl-row">
+          <span class="cl-tag" data-tag="Changed">Changed</span>
+          <span class="cl-text">The title bar on Windows is now custom + beautiful :)</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Changed">Changed</span>
+          <span class="cl-text">Toasts now sit at the bottom of the window, level with the button below them, instead of floating somewhere above it.</span>
+        </li>
+        <li class="cl-row cl-row--turn">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">MP4 recording now has a final software H.264 fallback.</span>
         </li>
@@ -334,14 +342,6 @@
         <li class="cl-row">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">Opening About no longer flashes a scrollbar on Windows.</span>
-        </li>
-        <li class="cl-row cl-row--turn">
-          <span class="cl-tag" data-tag="Changed">Changed</span>
-          <span class="cl-text">The title bar on Windows is now custom + beautiful :)</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Changed">Changed</span>
-          <span class="cl-text">Toasts now sit at the bottom of the window, level with the button below them, instead of floating somewhere above it.</span>
         </li>
         </ul>
       </section>
@@ -354,6 +354,18 @@
         <p class="cl-meta">25 August 2026</p>
         <ul class="cl-entries">
         <li class="cl-row">
+          <span class="cl-tag" data-tag="Changed">Changed</span>
+          <span class="cl-text">The recording status bar now appears on the screen being recorded, rather than always on the main one</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Changed">Changed</span>
+          <span class="cl-text">Set Sail's window now opens on the screen you're working on, instead of always on the main display.</span>
+        </li>
+        <li class="cl-row">
+          <span class="cl-tag" data-tag="Changed">Changed</span>
+          <span class="cl-text">Set Sail now notices monitors being plugged in, unplugged, or rearranged.</span>
+        </li>
+        <li class="cl-row cl-row--turn">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">Dragging the camera bubble between screens no longer jitters or throws it to the wrong side.</span>
         </li>
@@ -372,18 +384,6 @@
         <li class="cl-row">
           <span class="cl-tag" data-tag="Fixed">Fixed</span>
           <span class="cl-text">The camera bubble no longer swallows clicks after an interrupted drag.</span>
-        </li>
-        <li class="cl-row cl-row--turn">
-          <span class="cl-tag" data-tag="Changed">Changed</span>
-          <span class="cl-text">The recording status bar now appears on the screen being recorded, rather than always on the main one</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Changed">Changed</span>
-          <span class="cl-text">Set Sail's window now opens on the screen you're working on, instead of always on the main display.</span>
-        </li>
-        <li class="cl-row">
-          <span class="cl-tag" data-tag="Changed">Changed</span>
-          <span class="cl-text">Set Sail now notices monitors being plugged in, unplugged, or rearranged.</span>
         </li>
         </ul>
       </section>

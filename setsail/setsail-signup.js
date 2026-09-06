@@ -174,7 +174,6 @@ function showConfirmed() {
     '<span class="ss-btn-label ss-btn-label-old">Join the beta</span>' +
     '<span class="ss-btn-label ss-btn-label-new">' +
     '<span class="ss-confirm-badge">' +
-    '<span class="ss-confirm-ring"></span>' +
     '<svg class="ss-confirm-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>' +
     '</span>' +
     '<span>Welcome aboard!</span>' +

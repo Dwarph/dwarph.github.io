@@ -3,21 +3,42 @@
 // This is NOT loaded by index.html — it runs on Google's infrastructure as
 // an Apps Script Web App, deployed from the Google Sheet that collects
 // signups. Kept here only so it survives if the Sheet/script is ever
-// rebuilt. To (re)deploy:
+// rebuilt.
 //
-//   1. Create a Google Sheet. Headers are written automatically on first
-//      write (Timestamp, Email, Platforms, Status, LastSent) — an existing
-//      3-column sheet is migrated in place, no manual edit needed.
-//   2. Extensions > Apps Script, replace the placeholder code with this file.
-//   3. Fill in TESTFLIGHT_URL and MSSTORE_URL below, and DIGEST_TO.
-//   4. Deploy > New deployment > type "Web app" > Execute as "Me",
-//      Who has access "Anyone". Copy the /exec URL.
-//   5. Paste that URL into setsail/setsail-signup.js as SCRIPT_URL.
-//   6. Add two time-driven triggers (Triggers > Add trigger):
+// The project is two files: this one and apps-script-email.gs. Apps Script
+// shares one global scope across a project's files, so the split is purely
+// for readability and the file names don't matter.
+//
+// UPDATING THE LIVE DEPLOYMENT (the usual case):
+//
+//   1. Back the Sheet up first (File > Make a copy). ensureHeaders()
+//      rewrites row 1 on the next write.
+//   2. Sheet > Extensions > Apps Script. Paste this file over the existing
+//      one, and add apps-script-email.gs as a second script file.
+//   3. Run runTests() from the editor. It sends nothing, but it is the
+//      cheapest way to trigger the authorisation prompt: this version uses
+//      GmailApp where the old one used only MailApp, which is a broader
+//      scope, so Google WILL ask to re-authorise even though the script is
+//      already deployed. Expect the "hasn't verified this app" screen.
+//   4. Deploy > Manage deployments > pencil icon > Version: "New version"
+//      > Deploy.
+//
+//      NOT "New deployment" - that mints a *different* /exec URL and the
+//      live form keeps posting to the old one, so signups would silently
+//      carry on hitting the previous version. Editing the existing
+//      deployment keeps the URL in setsail-signup.js valid.
+//   5. Add two time-driven triggers (Triggers > Add trigger):
 //        drainPending  - hourly
 //        dailyDigest   - daily, ~9am
-//   7. Once the Windows Store listing clears certification, set MSSTORE_URL
+//   6. Once the Windows Store listing clears certification, set MSSTORE_URL
 //      and run notifyWindowsStoreLive() once, by hand, from the editor.
+//
+// FIRST-TIME SETUP (only if the Sheet/script is being rebuilt): create a
+// Sheet, add both files under Extensions > Apps Script, fill in the config
+// below, then Deploy > New deployment > "Web app", Execute as "Me", Who has
+// access "Anyone", and paste the /exec URL into setsail/setsail-signup.js as
+// SCRIPT_URL. Headers are written automatically on the first write, and an
+// existing 3-column sheet is migrated in place.
 //
 // setsail-signup.js posts with `mode: 'no-cors'`, so the response body of a
 // *submission* is never read by the page — the JSON below is for anyone

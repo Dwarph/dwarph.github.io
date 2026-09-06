@@ -243,3 +243,72 @@ body {
     gap: 20px;
   }
 }
+
+/* --- Header: a band of the landing page's ocean ---------------------------
+ *
+ * Enough of the landing page to read as the same product, without turning a
+ * scrolling document into a hero. The header sits on the same cream plate the
+ * landing page uses, straddling the band's bottom edge so the two zones are
+ * tied together rather than stacked.
+ *
+ * The knobs stay as custom properties: --cl-plate-w drives the artwork's crop
+ * as well as the column, so widening the plate keeps the boat in its gutter
+ * instead of silently breaking the constant.
+ */
+:root {
+  --cl-plate-w: 800px;      /* plate width; the boat's crop follows it */
+  --cl-band-h: 240px;       /* how deep the water is */
+  --cl-plate-top: 64px;     /* pushes the plate down, deepening the straddle */
+  --cl-plate-radius: 26px;
+  --cl-band-fade: 0px;      /* 0 = hard edge; larger softens it into the cream */
+}
+
+/* Absolute rather than fixed: this page scrolls, and the band belongs to the
+   top of the document, not to the viewport. */
+.cl-sea {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--cl-band-h);
+  z-index: 0;
+  background-color: #1C6A7B;
+  background-image: url('../assets/ocean.webp');
+  background-repeat: no-repeat;
+  /* Same solve as the landing page, re-derived for this column and tied to the
+     plate width so the boat keeps its gutter when the plate changes:
+       gutter centre = 0.75W + plateWidth/4
+       artwork width = centre / 0.7559   (the boat sits at 75.59% across it)
+     0.33076 is (1/4)/0.7559. At that width the artwork's left edge falls flush
+     with the viewport's, hence `left`. */
+  background-size: calc(99.22vw + var(--cl-plate-w) * 0.33076) auto;
+  background-position: left center;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--cl-band-fade)), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--cl-band-fade)), transparent 100%);
+}
+
+.cl-page {
+  position: relative;
+  z-index: 1;
+  max-width: calc(var(--cl-plate-w) + 48px);
+  padding-top: var(--cl-plate-top);
+}
+
+.cl-head {
+  padding: 32px clamp(20px, 4vw, 32px) 28px;
+  border-radius: var(--cl-plate-radius);
+  background: var(--surface);
+  box-shadow: 0 22px 60px rgb(4 22 27 / 0.30);
+}
+
+/* Narrow: the plate is the full width of the column, so there is no gutter for
+   the boat to sit in. The band stays as texture and the boat is left wherever
+   the crop puts it - behind the plate, which is opaque.
+   The cutoff tracks the plate: at 800px wide the gutter does not open until
+   about 920px of viewport, and below that the boat clips both the plate's edge
+   and the screen's. */
+@media (max-width: 919px) {
+  :root { --cl-band-h: 200px; }
+  .cl-sea {
+    background-size: cover;
+    background-position: center;
+  }
+}

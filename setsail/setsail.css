@@ -471,7 +471,7 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   max-width: min(516px, 85vw);
   padding: 40px clamp(20px, 5vw, 32px) 36px;
   border-radius: 26px;
-  background: rgb(250 250 247 / 0.95);
+  background: var(--surface);
   box-shadow: 0 22px 60px rgb(4 22 27 / 0.30);
 }
 

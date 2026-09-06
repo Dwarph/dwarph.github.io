@@ -55,9 +55,20 @@ var RESEND_COOLDOWN_MS = 60 * 60 * 1000;
 // external group's public link. MSSTORE_URL: Partner Center > Product
 // identity > URL.
 var TESTFLIGHT_URL = 'https://testflight.apple.com/join/4W2dFvxB';
-// Still in certification. Fill from Partner Center > Product identity > URL
-// once it passes; until then buildConfirmation() omits the Windows section
-// rather than linking somewhere that 404s.
+// Product ID 9MXCL0SRB1M9 is allocated, but the listing is still in
+// certification and the URL currently returns HTTP 410, so this stays empty
+// on purpose: buildConfirmation() says the build is in review rather than
+// handing someone a dead link.
+//
+// When it goes live, swap the empty string for:
+//   'https://apps.microsoft.com/detail/9MXCL0SRB1M9'
+// then run notifyWindowsStoreLive() once. Verify it loads signed-out first,
+// since a publisher sees their own listing before the public does.
+//
+// The share button's ?cid=DevShareMCLPCS is deliberately dropped. It tags
+// the traffic as a developer share, which is not what an email is, and the
+// listing resolves without it. Add a campaign tag of your own if you ever
+// want to tell email installs apart from the rest.
 var MSSTORE_URL    = '';
 
 // support@pipturner.co.uk is a real mailbox, but not a Gmail one, so it is

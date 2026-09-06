@@ -412,3 +412,73 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   font: 600 15px/22px var(--font-body);
 }
 .ss-closed svg { flex: none; width: 20px; height: 20px; color: #1F6F9F; }
+
+/* --- Landing page: the ocean ----------------------------------------------
+ *
+ * Two paintings, swapped rather than one reused. They cannot be the same file:
+ * the gutter rule below needs an aspect at or under ~1.6 for its cover floor
+ * not to override it, and a phone wants ~0.5. Forcing the landscape art onto a
+ * phone puts the boat at 13% of screen width and behind the card.
+ *
+ * Scoped to .ss-landing throughout, because this stylesheet is shared with the
+ * changelog, which reuses .ss-btn and would otherwise inherit the plate.
+ */
+.ss-landing {
+  /* Shows for one paint before the artwork lands, and behind it if a very tall
+     window ever outruns the crop. It is the painting's own mean colour. */
+  background-color: #1C6A7B;
+}
+
+.ss-sea {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: #1C6A7B;
+  background-image: url('assets/ocean.webp');
+  background-repeat: no-repeat;
+  /* The boat sits at 75.59% across the painting, and the gutter between the
+     card and the window edge is centred on 75vw + 129px (129 being a quarter
+     of the 516px card). Rendering the artwork at (that centre / 0.7559) wide
+     therefore lands the boat exactly in the gutter — and at that width the
+     artwork's left edge falls flush with the viewport's, which is why the
+     position below is simply `left`.
+     The max() is a floor at `cover`: go under it and the artwork stops filling
+     the window, leaving flat colour down the side. */
+  background-size: max(calc(99.22vw + 170.7px), 100vw, 133.33vh) auto;
+  background-position: left center;
+}
+
+/* Phones get the portrait painting, which has the boat drawn low so it lands
+   in the gutter beneath the card with no positioning at all — there is no
+   vertical travel to correct with on a portrait viewport anyway.
+   Landscape windows under 900px stay on the rule above; the portrait art would
+   put the boat below the fold. */
+@media (max-width: 899px) and (orientation: portrait) {
+  .ss-sea {
+    background-image: url('assets/ocean-portrait.webp');
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+/* The hero becomes a plate. Cream text on open water measures 3.0–3.4:1 in the
+   lighter patches, and the scrim strong enough to fix that (0.63) flattens the
+   painting — so the copy keeps the page's own palette on its own ground, and
+   the artwork is left exactly as painted. */
+.ss-landing .ss-hero {
+  position: relative;
+  z-index: 1;
+  max-width: min(516px, 85vw);
+  padding: 40px clamp(20px, 5vw, 32px) 36px;
+  border-radius: 26px;
+  background: rgb(250 250 247 / 0.95);
+  box-shadow: 0 22px 60px rgb(4 22 27 / 0.30);
+}
+
+/* The footer sits on the water, where the #1F6F9F link is unreadable. */
+.ss-landing .ss-foot {
+  position: relative;
+  z-index: 1;
+}
+.ss-landing .ss-link { color: #EDE8CC; }
+.ss-landing .ss-link:focus-visible { outline-color: #EDE8CC; }

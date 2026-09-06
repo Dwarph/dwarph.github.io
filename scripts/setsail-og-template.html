@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Rendered at 1200x630 - the size link unfurlers crop to. Type, colours and
+     the cream-on-water treatment all come from setsail.css; the scrim strength
+     is the one measured to clear AA over the lightest patches of the painting. */
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background: #1C6A7B url('__OCEAN__') center / cover no-repeat;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Weighted to the left so the copy is legible and the boat's side of the
+     picture stays as painted. */
+  .scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg,
+      rgb(6 32 38 / 0.74) 0%,
+      rgb(6 32 38 / 0.64) 40%,
+      rgb(6 32 38 / 0.18) 72%,
+      rgb(6 32 38 / 0) 100%);
+  }
+  .card {
+    position: absolute;
+    left: 84px; top: 50%; transform: translateY(-50%);
+    max-width: 640px;
+    color: #EDE8CC;
+  }
+  /* Mark and wordmark on one line. Optical rather than box centring: Outfit's
+     caps sit high in the line box, so centring the circle on the box leaves it
+     looking low - the nudge lifts it onto the cap height instead. */
+  .brand { display: flex; align-items: center; gap: 26px; }
+  .mark { flex: none; margin-top: -6px; }
+  h1 {
+    font: 800 96px/1.05 'Outfit', system-ui, sans-serif;
+    letter-spacing: -2.5px;
+  }
+  p {
+    margin-top: 18px;
+    font: 400 34px/1.35 'Nunito Sans', system-ui, sans-serif;
+    color: rgb(237 232 204 / 0.9);
+    max-width: 560px;
+  }
+</style>
+</head>
+<body>
+  <div class="scrim"></div>
+  <div class="card">
+    <div class="brand">
+    <svg class="mark" viewBox="0 0 128 128" width="92" height="92" role="img" aria-label="Set Sail">
+      <defs><clipPath id="c"><rect x="22" y="-11" width="106" height="134" rx="53"/></clipPath></defs>
+      <circle cx="64" cy="64" r="51.83" fill="#372C09"/>
+      <g clip-path="url(#c)">
+        <path d="M20.9178 98.1501C38.1476 78.6284 58.2814 53.3357 60.2346 12.0816C60.3562 9.51319 63.4028 8.16243 65.2447 9.95652C98.4063 42.2571 92.4024 77.6525 89.3727 99.9166C89.1975 101.204 88.2149 102.238 86.9375 102.476C63.3015 106.875 52.0229 108.497 22.6036 103.066C20.3208 102.644 19.3816 99.8905 20.9178 98.1501Z" fill="#EDE8CC"/>
+      </g>
+      <path d="M65.9688 86.6969C47.2937 84.8465 47.9105 78.6782 27.5554 78.6782C27.5554 78.6782 17.4137 78.6782 6.65336 86.6969C10.6432 94.5211 14.8112 100.318 24.4861 108.566C37.9217 118.836 48.9865 122.617 65.9688 122.215C81.9223 121.836 94.9729 115.5 104.482 107.82C109.332 104.476 120.484 91.7349 123.218 82.451C115.644 78.6782 109.593 78.6782 109.593 78.6782C91.8432 76.4595 85.5368 88.6359 65.9688 86.6969Z" fill="#2397DD"/>
+    </svg>
+    <h1>Set Sail</h1>
+    </div>
+    <p>A delightful screen recorder for macOS and Windows.</p>
+  </div>
+</body>
+</html>

@@ -312,3 +312,11 @@ body {
     background-position: center;
   }
 }
+
+/* Where the category changes - Added to Fixed, Fixed to Removed - open a gap
+   so a long release reads as a few groups rather than one wall. build.mjs
+   marks the first row of each run, because CSS has no way to ask whether the
+   previous sibling carried a different tag. */
+.cl-row--turn {
+  margin-top: 22px;
+}

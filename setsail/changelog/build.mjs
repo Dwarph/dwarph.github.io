@@ -51,6 +51,7 @@ const MARKDOWN_PATH = path.join(here, 'changelog.md');
 const OUT_PATH = path.join(here, 'index.html');
 
 const SITE_URL = 'https://pipturner.co.uk/setsail/changelog';
+const OG_IMAGE = 'https://pipturner.co.uk/setsail/assets/og.jpg';
 const APP_URL = 'https://pipturner.co.uk/setsail';
 
 /* Parsing -------------------------------------------------------------------- */
@@ -174,8 +175,12 @@ const MARK = `<svg class="ss-mark" viewBox="0 0 128 128" width="48" height="48" 
 function renderRelease(release) {
   const entries = release.entries
     .map(
-      (entry) =>
-        `        <li class="cl-row">\n` +
+      (entry, i) =>
+        `        <li class="cl-row${
+          i > 0 && entry.category !== release.entries[i - 1].category
+            ? ' cl-row--turn'
+            : ''
+        }">\n` +
         `          <span class="cl-tag" data-tag="${escapeHtml(entry.category)}">${escapeHtml(entry.category)}</span>\n` +
         `          <span class="cl-text">${inline(entry.text)}</span>\n` +
         `        </li>`,
@@ -208,7 +213,11 @@ function renderPage({ h1, lead, releases }) {
   <meta property="og:description" content="Everything that has changed in Set Sail, newest first.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${SITE_URL}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="${OG_IMAGE}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A tiny sailing boat alone on a wide teal sea, beside the Set Sail name.">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -223,6 +232,8 @@ function renderPage({ h1, lead, releases }) {
 </head>
 
 <body>
+  <div class="cl-sea" aria-hidden="true"></div>
+
   <main class="cl-page">
     <header class="cl-head">
       <div class="cl-head-top">

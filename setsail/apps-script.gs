@@ -14,8 +14,10 @@
 //      Who has access "Anyone". Copy the /exec URL.
 //   5. Paste that URL into setsail/setsail-signup.js as SCRIPT_URL.
 //   6. Add two time-driven triggers (Triggers > Add trigger):
-//        drainPending  — hourly
-//        dailyDigest   — daily, ~9am
+//        drainPending  - hourly
+//        dailyDigest   - daily, ~9am
+//   7. Once the Windows Store listing clears certification, set MSSTORE_URL
+//      and run notifyWindowsStoreLive() once, by hand, from the editor.
 //
 // setsail-signup.js posts with `mode: 'no-cors'`, so the response body of a
 // *submission* is never read by the page — the JSON below is for anyone
@@ -52,9 +54,18 @@ var RESEND_COOLDOWN_MS = 60 * 60 * 1000;
 // Fill these in. TESTFLIGHT_URL: App Store Connect > TestFlight > the
 // external group's public link. MSSTORE_URL: Partner Center > Product
 // identity > URL.
-var TESTFLIGHT_URL = 'https://testflight.apple.com/join/XXXXXXXX';
-var MSSTORE_URL    = 'https://apps.microsoft.com/detail/XXXXXXXXXXXX';
+var TESTFLIGHT_URL = 'https://testflight.apple.com/join/4W2dFvxB';
+// Still in certification. Fill from Partner Center > Product identity > URL
+// once it passes; until then buildConfirmation() omits the Windows section
+// rather than linking somewhere that 404s.
+var MSSTORE_URL    = '';
 
+// support@pipturner.co.uk is a real mailbox, but not a Gmail one, so it is
+// only usable as a From address if it has been added under Gmail's
+// "Send mail as" (which needs that provider's SMTP details). sendMail()
+// checks rather than assumes: unverified, mail goes out as the script
+// account and this address is still used for Reply-To, so replies land in
+// the right inbox either way.
 var FROM_EMAIL     = 'support@pipturner.co.uk';
 var FROM_NAME      = 'Set Sail';
 var REPLY_TO       = 'support@pipturner.co.uk';
@@ -68,6 +79,14 @@ var LOGO_URL       = 'https://pipturner.co.uk/setsail/assets/email-logo.png';
 
 // Column layout. Status/LastSent were added after launch; ensureHeaders()
 // migrates older 3-column sheets on the next write.
+//
+// Status is one of:
+//   sent          confirmation delivered, with every link the person asked for
+//   sent-partial  delivered, but Windows was requested while MSSTORE_URL was
+//                 still empty, so that half of the email had nothing to click.
+//                 notifyWindowsStoreLive() clears these once the listing is up.
+//   pending       not sent yet (mail quota spent, or a send threw).
+//                 drainPending() retries hourly.
 var COL_TIMESTAMP = 0;
 var COL_EMAIL     = 1;
 var COL_PLATFORMS = 2;
@@ -146,7 +165,11 @@ function deliverConfirmation(sheet, rowNumber, email, platforms) {
   try {
     var mail = buildConfirmation(platforms);
     sendMail(email, mail.subject, mail.htmlBody, mail.plainBody);
-    setRowStatus(sheet, rowNumber, 'sent', new Date());
+    // A Windows signup sent while MSSTORE_URL is still empty got an email
+    // with nothing to click. Mark it so notifyWindowsStoreLive() can find
+    // exactly those people once the listing clears certification, rather
+    // than mailing the whole list again.
+    setRowStatus(sheet, rowNumber, isPartial(platforms) ? 'sent-partial' : 'sent', new Date());
     return true;
   } catch (err) {
     // Leave it pending so drainPending() retries rather than dropping it.
@@ -154,6 +177,38 @@ function deliverConfirmation(sheet, rowNumber, email, platforms) {
     console.error('Confirmation send failed for row ' + rowNumber + ': ' + err);
     return false;
   }
+}
+
+// True when the email we can send right now is missing a link the person
+// actually asked for. Only Windows can be in this state, and only while
+// MSSTORE_URL is empty.
+function isPartial(platforms) {
+  return !MSSTORE_URL && normalizePlatforms(platforms).win;
+}
+
+// Run this by hand, once, after filling in MSSTORE_URL. Re-sends the
+// confirmation to everyone who signed up for Windows while the Store
+// listing was still in certification, and only to them.
+function notifyWindowsStoreLive() {
+  if (!MSSTORE_URL) {
+    throw new Error('MSSTORE_URL is still empty. Fill it in first, or this re-sends the same incomplete email.');
+  }
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  ensureHeaders(sheet);
+  var rows = getDataRows(sheet);
+  var sent = 0;
+
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][COL_STATUS]) !== 'sent-partial') continue;
+    if (MailApp.getRemainingDailyQuota() <= SEND_QUOTA_RESERVE) break;
+    var email = String(rows[i][COL_EMAIL]).trim();
+    if (!email) continue;
+    if (deliverConfirmation(sheet, i + 2, email, String(rows[i][COL_PLATFORMS] || ''))) {
+      sent++;
+    }
+  }
+  Logger.log('Re-sent to ' + sent + ' Windows signup(s).');
+  return sent;
 }
 
 function setRowStatus(sheet, rowNumber, status, sentAt) {
@@ -189,6 +244,7 @@ function dailyDigest() {
   var rows = getDataRows(sheet);
   var today = countToday(rows);
   var pending = rows.filter(function (r) { return String(r[COL_STATUS]) === 'pending'; }).length;
+  var partial = rows.filter(function (r) { return String(r[COL_STATUS]) === 'sent-partial'; }).length;
 
   var todaysRows = rows.filter(function (r) { return isToday(r[COL_TIMESTAMP]); });
   var lines = todaysRows.map(function (r) {
@@ -200,6 +256,10 @@ function dailyDigest() {
     'New today: ' + today + '\n' +
     'Total: ' + rows.length + '\n' +
     'Awaiting send: ' + pending + '\n' +
+    (partial
+      ? 'Waiting on the Windows Store listing: ' + partial +
+        ' (run notifyWindowsStoreLive() once MSSTORE_URL is set)\n'
+      : '') +
     'Mail quota left today: ' + MailApp.getRemainingDailyQuota() + '\n\n' +
     (lines.length ? 'Today:\n' + lines.join('\n') + '\n' : 'No new signups today.\n');
 
@@ -229,12 +289,13 @@ function jsonResponse(obj) {
 // later (Brevo's free tier is 300/day, SES is 50k/day for pennies) is a
 // change to this function alone.
 function sendMail(to, subject, htmlBody, plainBody) {
-  var options = { htmlBody: htmlBody, name: FROM_NAME };
-  // Passing an unverified `from` throws, so only set it once Gmail knows
-  // the alias. Until then mail goes out as the account address, which works.
+  // Reply-To is set unconditionally: support@ is a real mailbox whether or
+  // not Gmail can send *as* it, so replies should reach it either way.
+  var options = { htmlBody: htmlBody, name: FROM_NAME, replyTo: REPLY_TO };
+  // `from` is different: passing an address Gmail hasn't verified throws,
+  // so it only goes on once the alias actually exists.
   if (FROM_EMAIL && GmailApp.getAliases().indexOf(FROM_EMAIL) !== -1) {
     options.from = FROM_EMAIL;
-    options.replyTo = REPLY_TO;
   }
   GmailApp.sendEmail(to, subject, plainBody, options);
 }

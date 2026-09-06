@@ -81,23 +81,31 @@ function buildConfirmation(platformsRaw) {
     lead + '</p></td></tr>');
 
   if (p.mac) html.push(platformBlock('On macOS', [
-    'Install TestFlight from the Mac App Store — it’s Apple’s free app for running betas.',
+    'Install TestFlight from the Mac App Store. It’s Apple’s free app for running betas.',
     'Open the invite below and choose Accept.',
     'Install Set Sail from TestFlight, and you’re away.'
   ], TESTFLIGHT_URL, 'Open the TestFlight invite',
-    'TestFlight builds expire after 90 days — it’ll nudge you when a fresh one lands.'));
+    'TestFlight builds expire after 90 days. It’ll nudge you when a fresh one lands.'));
 
-  if (p.win) html.push(platformBlock('On Windows', [
-    'Open the link below — it’ll hand off to the Microsoft Store app.',
-    'Hit Get to install.'
-  ], MSSTORE_URL, 'Open in the Microsoft Store', ''));
+  if (p.win) {
+    html.push(MSSTORE_URL
+      ? platformBlock('On Windows', [
+          'Open the link below. It’ll hand off to the Microsoft Store app.',
+          'Hit Get to install.'
+        ], MSSTORE_URL, 'Open in the Microsoft Store', '')
+      // No link yet, so say so rather than shipping a dead button. Anyone
+      // who lands here gets a follow-up once MSSTORE_URL is filled in.
+      : pendingBlock('On Windows',
+          'The Windows build is still going through review on the Microsoft Store. ' +
+          'I’ll email you the moment it’s through.'));
+  }
 
   html.push('<tr><td style="padding-top:32px;border-top:1px solid ' + C_HAIRLINE + ';">' +
     '<p style="margin:0 0 12px;font-family:' + F_BODY + ';font-size:15px;line-height:24px;color:' + C_MUTED + ';">' +
-    'Hit a snag, or spotted something odd? Just reply to this email — it comes straight to me.</p>' +
+    'Hit a snag, or spotted something odd? Just reply to this email. It comes straight to me.</p>' +
     '<p style="margin:0 0 12px;font-family:' + F_BODY + ';font-size:15px;line-height:24px;color:' + C_MUTED + ';">' +
     'Curious what’s changed? <a href="' + CHANGELOG_URL + '" style="color:' + C_ACCENT + ';text-decoration:underline;">Read the changelog</a>.</p>' +
-    '<p style="margin:0;font-family:' + F_BODY + ';font-size:15px;line-height:24px;color:' + C_INK + ';">— Pip</p>' +
+    '<p style="margin:0;font-family:' + F_BODY + ';font-size:15px;line-height:24px;color:' + C_INK + ';">Pip</p>' +
     '</td></tr>');
 
   html.push('<tr><td style="padding-top:24px;">' +
@@ -109,7 +117,7 @@ function buildConfirmation(platformsRaw) {
   html.push('</table></td></tr></table></div>');
 
   return {
-    subject: 'Welcome aboard — your Set Sail beta invite',
+    subject: 'Welcome aboard! Your Set Sail beta invite',
     htmlBody: html.join(''),
     plainBody: buildPlain(p, lead)
   };
@@ -120,7 +128,10 @@ function buildConfirmation(platformsRaw) {
 function platformBlock(label, steps, url, cta, note) {
   var out = [];
   out.push('<tr><td style="padding-top:30px;">');
-  out.push('<p style="margin:0 0 10px;font-family:' + F_BODY + ';font-size:12px;line-height:1;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:' + C_MUTED + ';">' +
+  // Porthole's Label token: Nunito Sans 500, 14/20, +0.1px tracking. Sentence
+  // case, so no text-transform and none of the wide letter-spacing that an
+  // all-caps eyebrow would need.
+  out.push('<p style="margin:0 0 10px;font-family:' + F_BODY + ';font-size:14px;line-height:20px;font-weight:500;letter-spacing:0.1px;color:' + C_MUTED + ';">' +
     label + '</p>');
 
   out.push('<ol style="margin:0 0 18px;padding-left:20px;font-family:' + F_BODY + ';font-size:16px;line-height:26px;color:' + C_INK + ';">');
@@ -143,38 +154,53 @@ function platformBlock(label, steps, url, cta, note) {
   return out.join('');
 }
 
-// Not an afterthought — some clients show only this.
+// A section with something to say but nothing to click yet.
+function pendingBlock(label, message) {
+  return '<tr><td style="padding-top:30px;">' +
+    '<p style="margin:0 0 10px;font-family:' + F_BODY + ';font-size:14px;line-height:20px;font-weight:500;letter-spacing:0.1px;color:' + C_MUTED + ';">' +
+    label + '</p>' +
+    '<p style="margin:0;font-family:' + F_BODY + ';font-size:16px;line-height:26px;color:' + C_INK + ';">' +
+    message + '</p>' +
+    '</td></tr>';
+}
+
+// Not an afterthought, some clients show only this.
 function buildPlain(p, lead) {
   var out = ['Welcome aboard!', '', lead, ''];
 
   if (p.mac) {
-    out.push('ON MACOS');
-    out.push('1. Install TestFlight from the Mac App Store - it\'s Apple\'s free app for running betas.');
+    out.push('On macOS');
+    out.push('1. Install TestFlight from the Mac App Store. It\'s Apple\'s free app for running betas.');
     out.push('2. Open the invite below and choose Accept.');
     out.push('3. Install Set Sail from TestFlight, and you\'re away.');
     out.push('');
     out.push(TESTFLIGHT_URL);
     out.push('');
-    out.push('TestFlight builds expire after 90 days - it\'ll nudge you when a fresh one lands.');
+    out.push('TestFlight builds expire after 90 days. It\'ll nudge you when a fresh one lands.');
     out.push('');
   }
 
   if (p.win) {
-    out.push('ON WINDOWS');
-    out.push('1. Open the link below - it\'ll hand off to the Microsoft Store app.');
-    out.push('2. Hit Get to install.');
-    out.push('');
-    out.push(MSSTORE_URL);
+    out.push('On Windows');
+    if (MSSTORE_URL) {
+      out.push('1. Open the link below. It\'ll hand off to the Microsoft Store app.');
+      out.push('2. Hit Get to install.');
+      out.push('');
+      out.push(MSSTORE_URL);
+    } else {
+      out.push('The Windows build is still going through review on the Microsoft Store.');
+      out.push('I\'ll email you the moment it\'s through.');
+    }
     out.push('');
   }
 
-  out.push('Hit a snag, or spotted something odd? Just reply to this email - it comes straight to me.');
+  out.push('Hit a snag, or spotted something odd? Just reply to this email. It comes straight to me.');
   out.push('');
   out.push('Curious what\'s changed? ' + CHANGELOG_URL);
   out.push('');
-  out.push('- Pip');
+  out.push('Pip');
   out.push('');
-  out.push('You\'re getting this because you signed up for the Set Sail beta at ' + SITE_URL + ' - want out? Reply and say so.');
+  out.push('You\'re getting this because you signed up for the Set Sail beta at ' + SITE_URL + '. Want out? Reply and say so.');
   return out.join('\n');
 }
 
@@ -191,12 +217,28 @@ function runTests() {
 
     if (!mail.subject) failures.push(input + ': empty subject');
     if (!mail.htmlBody || !mail.plainBody) failures.push(input + ': empty body');
+
     if (p.mac && mail.htmlBody.indexOf(TESTFLIGHT_URL) === -1) failures.push(input + ': missing TestFlight link');
-    if (p.win && mail.htmlBody.indexOf(MSSTORE_URL) === -1) failures.push(input + ': missing Store link');
-    if (!p.mac && mail.htmlBody.indexOf(TESTFLIGHT_URL) !== -1) failures.push(input + ': unexpected TestFlight link');
-    if (!p.win && mail.htmlBody.indexOf(MSSTORE_URL) !== -1) failures.push(input + ': unexpected Store link');
     if (p.mac && mail.plainBody.indexOf(TESTFLIGHT_URL) === -1) failures.push(input + ': plain missing TestFlight link');
-    if (p.win && mail.plainBody.indexOf(MSSTORE_URL) === -1) failures.push(input + ': plain missing Store link');
+    if (!p.mac && mail.htmlBody.indexOf(TESTFLIGHT_URL) !== -1) failures.push(input + ': unexpected TestFlight link');
+
+    // Guarded on MSSTORE_URL being set: indexOf('') matches at 0, so an
+    // unguarded check would pass no matter what the email actually said.
+    if (MSSTORE_URL) {
+      if (p.win && mail.htmlBody.indexOf(MSSTORE_URL) === -1) failures.push(input + ': missing Store link');
+      if (p.win && mail.plainBody.indexOf(MSSTORE_URL) === -1) failures.push(input + ': plain missing Store link');
+      if (!p.win && mail.htmlBody.indexOf(MSSTORE_URL) !== -1) failures.push(input + ': unexpected Store link');
+    } else if (p.win) {
+      // No link yet: the Windows section must still explain itself rather
+      // than leaving a heading with nothing under it.
+      if (mail.htmlBody.indexOf('still going through review') === -1) failures.push(input + ': missing Windows pending note');
+      if (mail.plainBody.indexOf('still going through review') === -1) failures.push(input + ': plain missing Windows pending note');
+    }
+
+    // House style, enforced the same way the changelog build does it.
+    ['subject', 'htmlBody', 'plainBody'].forEach(function (part) {
+      if (mail[part].indexOf('—') !== -1) failures.push(input + ': em dash in ' + part);
+    });
 
     Logger.log('--- "' + input + '" -> mac:' + p.mac + ' win:' + p.win +
       ' | html ' + mail.htmlBody.length + ' chars, plain ' + mail.plainBody.length + ' chars');

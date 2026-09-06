@@ -11,23 +11,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../setsail.css">
-  <link rel="stylesheet" href="explore.css">
+  <script>
+    /* The portfolio at this origin registers a cache-first service worker, and
+       it happily serves its own cached pages and assets for /setsail/explore/
+       - which is how a freshly exported image kept coming back as the old one.
+       This page is a local scratch tool, so it just evicts the worker. */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(rs => {
+        const had = rs.length > 0;
+        return Promise.all(rs.map(r => r.unregister()))
+          .then(() => caches.keys())
+          .then(ks => Promise.all(ks.map(k => caches.delete(k))))
+          .then(() => { if (had) location.reload(); });
+      }).catch(() => {});
+    }
+  </script>
+  <link rel="stylesheet" href="../setsail.css?v=1788636473">
+  <link rel="stylesheet" href="explore.css?v=1788723981">
 </head>
 
 <body data-variant="plate">
 
-  <!-- Full-bleed sea: variants "window" and "overboard" -->
+
   <div class="sea sea--bleed" aria-hidden="true"></div>
-  <!-- Bottom band: variant "tide" -->
-  <div class="sea sea--tide" aria-hidden="true"></div>
+  <div class="sea sea--banner" role="img" aria-label="A small boat on an open sea"></div>
 
   <main class="ss-hero">
     <!-- In every variant but "split" this is display:contents, so the hero
          column lays out exactly as it does in production. -->
     <div class="ss-crest">
-      <div class="sea sea-porthole" role="img" aria-label="Set Sail"></div>
-      <div class="sea sea-plate" aria-hidden="true"></div>
+      <div class="sea sea--porthole" role="img" aria-label="A small boat on an open sea"></div>
+      <div class="sea sea--plate" role="img" aria-label="A small boat on an open sea"></div>
 
       <svg class="ss-mark" viewBox="0 0 128 128" width="56" height="56" role="img" aria-label="Set Sail">
         <defs><clipPath id="ss-clip"><rect x="22" y="-11" width="106" height="134" rx="53" /></clipPath></defs>
@@ -76,18 +90,44 @@
     <a class="ss-link" href="#">Changelog</a>
   </footer>
 
+  <button class="xp-restore" id="xpRestore" title="Show controls (H)" aria-label="Show controls">&#9679;</button>
+
+  <div class="xp-offsets" id="xpOffsets" hidden>
+    <h3>Image offset</h3>
+    <div class="xp-bp" id="xpBp"></div>
+    <div class="xp-modes" id="xpModes"></div>
+    <div class="xp-bp" style="margin-bottom:2px">Master</div>
+    <div class="xp-masters" id="xpMasters"></div>
+    <label>
+      <span class="xp-lab">Zoom<span id="vZoom"></span></span>
+      <input type="range" id="oZoom" min="20" max="260" step="1">
+    </label>
+    <label>
+      <span class="xp-lab">X<span id="vX"></span></span>
+      <input type="range" id="oX" min="0" max="100" step="1">
+    </label>
+    <label>
+      <span class="xp-lab">Y<span id="vY"></span></span>
+      <input type="range" id="oY" min="0" max="100" step="1">
+    </label>
+    <div class="xp-out" id="xpOut"></div>
+    <button class="xp-copy" id="xpCopy">Copy CSS</button>
+  </div>
+
   <div class="xp-bar" id="xpBar">
     <div class="xp-row xp-variants" id="xpVariants"></div>
     <div class="xp-row">
+      <label class="xp-zoom">Size <input type="range" id="xpSize" min="480" max="1600" step="20" value="1120"><span id="xpSizeVal"></span></label>
       <label class="xp-toggle"><input type="checkbox" id="xpDrift"> Drift</label>
-      <label class="xp-toggle"><input type="checkbox" id="xpScrim" checked> Scrim</label>
-      <label class="xp-toggle"><input type="checkbox" id="xpHard"> Hard edge</label>
-      <label class="xp-zoom">Zoom <input type="range" id="xpZoom" min="100" max="900" step="10" value="250"></label>
+      <span class="xp-toggle" id="xpFix"></span>
+      <label class="xp-toggle"><input type="checkbox" id="xpOffset"> Offset boat</label>
+      <label class="xp-toggle"><input type="checkbox" id="xpMark"> Show icon</label>
+      <button class="xp-hide" id="xpHide" title="Hide controls (H)">Hide UI</button>
       <span class="xp-note" id="xpNote"></span>
     </div>
   </div>
 
-  <script src="explore.js"></script>
+  <script src="explore.js?v=1788723981"></script>
 </body>
 
 </html>

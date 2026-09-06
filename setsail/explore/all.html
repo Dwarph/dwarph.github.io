@@ -7,7 +7,7 @@
 <title>Set Sail - six ways to use the illustration</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { --w: 1280px; --h: 800px; --scale: 0.42; }
+  :root { --w: 1280px; --h: 800px; --scale: 0.40; }
   body.mobile { --w: 390px; --h: 844px; --scale: 0.62; }
   * { box-sizing: border-box; }
   body { margin: 0; padding: 28px 24px 64px; background: #F4F3EE; color: #1C1C1A;
@@ -27,14 +27,14 @@
                  transform: scale(var(--scale)); transform-origin: 0 0; }
   .meta { display: flex; align-items: baseline; gap: 8px; margin: 12px 2px 0; }
   .n { font: 800 15px/1 'Outfit', sans-serif; }
-  .verdict { margin: 6px 2px 0; font-size: 13px; line-height: 1.5; color: #5F5F5C; max-width: 46ch; }
+  .verdict { margin: 6px 2px 0; font-size: 13px; line-height: 1.5; color: #5F5F5C; max-width: 52ch; }
   a.open { margin-left: auto; font-size: 12px; color: #1F6F9F; text-decoration: none; }
   a.open:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<h1>Six ways to use the illustration</h1>
-<p class="sub">Live renders of the real hero markup and the real <code>setsail.css</code>, not mockups. Click any title to open it full size and play with the zoom, drift and scrim controls.</p>
+<h1>Open water, six ways to stay legible</h1>
+<p class="sub">The ocean keeps its original colour in all of these &mdash; legibility comes from the plate, not from washing the artwork out. Toggle desktop/mobile to see the offset behave differently at one column. Every card is live; open one for the full switcher.</p>
 <div class="bar">
   <button id="bD" aria-pressed="true">Desktop 1280&times;800</button>
   <button id="bM" aria-pressed="false">Mobile 390&times;844</button>
@@ -42,22 +42,23 @@
 <div class="grid" id="grid"></div>
 <script>
 const V = [
-  ['plate','1 Plate','Contained crop above the wordmark. Nothing else about the page changes.'],
-  ['porthole','2 Porthole','The illustration becomes the mark. Trades a legible identity glyph for a mood object.'],
-  ['tide','3 Tide','A band on the bottom edge, masked so the sea recedes into the cream rather than stopping at a hard line.'],
-  ['window','4 Window','Full bleed with the content on a card. Reads like every other SaaS sign-up.'],
-  ['overboard','5 Overboard','Full bleed with the content on the water. Boldest, and the only one that changes the palette.'],
-  ['split','6 Split','Sea across the top behind the wordmark, form on cream below.'],
+  ['water','plate-cream',0,'Plate &mdash; cream','Page palette inside the plate, ocean completely untouched. 16:1 text, no scrim anywhere.'],
+  ['water','plate-frost',0,'Plate &mdash; frosted','Stays in the dark palette. ~5:1 over the worst pixel, ocean sharp outside the plate.'],
+  ['water','plate-dark',0,'Plate &mdash; solid','Same, without depending on backdrop-filter.'],
+  ['water','plate-cream',1,'Plate + offset boat','Wide: content moves left, boat takes the water it vacates. One column: content packs to the top, boat sits in the open lower half.'],
+  ['water','frost',0,'No plate &mdash; frosted pool','The edgeless version: soft dark pane behind the copy, no card.'],
+  ['water','raw',0,'Raw','Artwork with nothing over it. Fails AA where type crosses light water &mdash; here for comparison.'],
 ];
 const grid = document.getElementById('grid');
-for (const [id, name, note] of V) {
+V.forEach(([id, fix, off, name, note], i) => {
+  const qs = `bare=1&mark=1&fix=${fix}${off ? '&offset=1' : ''}&cb=${Date.now()}${i}`;
   const c = document.createElement('div');
   c.className = 'card';
-  c.innerHTML = `<div class="shot"><iframe loading="lazy" src="index.html?bare=1#${id}"></iframe></div>
-    <div class="meta"><span class="n">${name}</span><a class="open" href="index.html#${id}" target="_blank">open &#8599;</a></div>
+  c.innerHTML = `<div class="shot"><iframe loading="lazy" src="index.html?${qs}#${id}"></iframe></div>
+    <div class="meta"><span class="n">${name}</span><a class="open" href="index.html?${qs.replace('bare=1&','')}#${id}" target="_blank">open &#8599;</a></div>
     <p class="verdict">${note}</p>`;
   grid.appendChild(c);
-}
+});
 const bD = document.getElementById('bD'), bM = document.getElementById('bM');
 function mode(isMobile) {
   document.body.classList.toggle('mobile', isMobile);

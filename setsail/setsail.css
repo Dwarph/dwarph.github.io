@@ -427,11 +427,35 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
   /* Shows for one paint before the artwork lands, and behind it if a very tall
      window ever outruns the crop. It is the painting's own mean colour. */
   background-color: #1C6A7B;
+
+  /* `vh` is the viewport with the browser's URL bar retracted, so on a phone
+     the page is laid out about a bar's height taller than the fold you can
+     actually see, and the footer's changelog link lands under the bar. Worse,
+     that overflow makes the page scrollable, and scrolling is what retracts
+     the bar: .ss-sea then grows with it and the painting re-crops under your
+     thumb. `svh` is the fold with the bar showing, so the link stays on
+     screen, there is nothing to scroll, and the bar never moves.
+     `height: auto` is here to undo the `height: 100%` on html/body above,
+     which would otherwise pin the body back to the taller viewport and leave
+     min-height with nothing to do. */
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .ss-sea {
   position: fixed;
-  inset: 0;
+  /* Deliberately the *large* viewport rather than `inset: 0`, which tracks the
+     live one: where a URL bar does still retract (landscape phones, where the
+     hero is taller than the window), an edge-to-edge fixed box is resized
+     mid-scroll and `cover` re-crops the painting as you go. Pinned to the tall
+     viewport it is cropped by a constant amount instead — the boat stays put,
+     and no bare strip of #1C6A7B is ever exposed along the bottom. */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
   z-index: 0;
   background-color: #1C6A7B;
   background-image: url('assets/ocean.webp');

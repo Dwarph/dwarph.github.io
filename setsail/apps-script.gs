@@ -30,6 +30,11 @@
 //   5. Add two time-driven triggers (Triggers > Add trigger):
 //        drainPending  - hourly
 //        dailyDigest   - daily, ~9am
+//
+//      Then run dailyDigest() once by hand. It reports the window since the
+//      last digest, and on the first run there is no mark stored, so that
+//      run sweeps the previous DIGEST_FALLBACK_DAYS and catches up on
+//      anything the old same-day digest never mentioned.
 //   6. Once the Windows Store listing clears certification, set MSSTORE_URL
 //      and run notifyWindowsStoreLive() once, by hand, from the editor.
 //
@@ -70,6 +75,12 @@
 var DAILY_LIMIT = 1000;              // abuse ceiling on rows/day, not a mail cap
 var SEND_QUOTA_RESERVE = 5;          // leave headroom so the digest can always send
 var RESEND_COOLDOWN_MS = 60 * 60 * 1000;
+
+// The digest reports a window rather than a calendar day — see dailyDigest().
+// The mark is a Script Property, so it survives redeploys; the fallback is
+// what the first run uses before any mark exists.
+var DIGEST_MARK_KEY = 'setsail.lastDigestAt';
+var DIGEST_FALLBACK_DAYS = 7;
 
 // --- Config -----------------------------------------------------------
 // Fill these in. TESTFLIGHT_URL: App Store Connect > TestFlight > the
@@ -271,21 +282,30 @@ function drainPending() {
 // Daily trigger. Replaces the old per-signup notification, which doubled
 // every send — with a confirmation now going to the signup too, that would
 // have halved the effective daily ceiling to 50.
+//
+// Reports everything since the *previous digest*, not everything from
+// today. The trigger fires at ~9am, so a digest counting today's rows was
+// only ever counting the few hours since midnight — reporting 0 new almost
+// every morning while the previous day's signups went out unmentioned, and
+// then fell outside the next day's window too.
 function dailyDigest() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var rows = getDataRows(sheet);
-  var today = countToday(rows);
+  var since = getDigestMark();
+  var now = new Date();
+
   var pending = rows.filter(function (r) { return String(r[COL_STATUS]) === 'pending'; }).length;
   var partial = rows.filter(function (r) { return String(r[COL_STATUS]) === 'sent-partial'; }).length;
 
-  var todaysRows = rows.filter(function (r) { return isToday(r[COL_TIMESTAMP]); });
-  var lines = todaysRows.map(function (r) {
-    return '  ' + r[COL_EMAIL] + (r[COL_PLATFORMS] ? '  (' + r[COL_PLATFORMS] + ')' : '') +
+  var newRows = rows.filter(function (r) { return isBetween(r[COL_TIMESTAMP], since, now); });
+  var lines = newRows.map(function (r) {
+    return '  ' + formatStamp(r[COL_TIMESTAMP]) + '  ' + r[COL_EMAIL] +
+      (r[COL_PLATFORMS] ? '  (' + r[COL_PLATFORMS] + ')' : '') +
       '  [' + (r[COL_STATUS] || '?') + ']';
   });
 
   var body = 'Set Sail beta signups\n\n' +
-    'New today: ' + today + '\n' +
+    'New since ' + formatStamp(since) + ': ' + newRows.length + '\n' +
     'Total: ' + rows.length + '\n' +
     'Awaiting send: ' + pending + '\n' +
     (partial
@@ -293,9 +313,35 @@ function dailyDigest() {
         ' (run notifyWindowsStoreLive() once MSSTORE_URL is set)\n'
       : '') +
     'Mail quota left today: ' + MailApp.getRemainingDailyQuota() + '\n\n' +
-    (lines.length ? 'Today:\n' + lines.join('\n') + '\n' : 'No new signups today.\n');
+    (lines.length ? 'New signups:\n' + lines.join('\n') + '\n' : 'No new signups in this window.\n');
 
-  MailApp.sendEmail(DIGEST_TO, 'Set Sail signups — ' + today + ' new', body);
+  MailApp.sendEmail(DIGEST_TO, 'Set Sail signups — ' + newRows.length + ' new', body);
+
+  // Only after the send: if sendEmail throws, the window stays open and the
+  // next run covers it rather than the signups vanishing into a gap.
+  setDigestMark(now);
+}
+
+// Where the last digest got to. Stored rather than derived from the clock,
+// so a trigger that misses a day covers two on the next run instead of
+// dropping one.
+function getDigestMark() {
+  var stored = PropertiesService.getScriptProperties().getProperty(DIGEST_MARK_KEY);
+  var parsed = stored ? new Date(stored) : null;
+  if (parsed && !isNaN(parsed.getTime())) return parsed;
+  // Nothing stored: the first run after this fix, or the property was
+  // cleared. Sweep the last week rather than the last day, so that run
+  // catches up on whatever the old same-day digest never mentioned.
+  return new Date(now_() - DIGEST_FALLBACK_DAYS * 24 * 60 * 60 * 1000);
+}
+
+function setDigestMark(when) {
+  PropertiesService.getScriptProperties().setProperty(DIGEST_MARK_KEY, when.toISOString());
+}
+
+// Seam for the tests, which need a fixed "now" to assert windows against.
+function now_() {
+  return Date.now();
 }
 
 // Read-only status check the page polls on load to decide whether to show
@@ -366,4 +412,17 @@ function isToday(value) {
 
 function countToday(rows) {
   return rows.filter(function (row) { return isToday(row[COL_TIMESTAMP]); }).length;
+}
+
+// Half-open [since, until): a row landing at exactly the moment a digest ran
+// belongs to the next one, so it is reported once and only once.
+function isBetween(value, since, until) {
+  if (!(value instanceof Date)) return false;
+  var t = value.getTime();
+  return t >= since.getTime() && t < until.getTime();
+}
+
+function formatStamp(value) {
+  if (!(value instanceof Date)) return String(value);
+  return Utilities.formatDate(value, Session.getScriptTimeZone(), 'EEE d MMM, HH:mm');
 }

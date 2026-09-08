@@ -248,6 +248,33 @@ function runTests() {
   var fallback = normalizePlatforms('Linux');
   if (!fallback.mac || !fallback.win) failures.push('Linux: fallback should include both platforms');
 
+  // The digest window. The bug this guards against: a 9am run reporting
+  // "today", so yesterday's signups fell between two digests and were
+  // never mentioned by either.
+  var nineAm = new Date(2026, 8, 8, 9, 0, 0);      // Tue 8 Sep, 09:00
+  var prevNineAm = new Date(2026, 8, 7, 9, 0, 0);  // Mon 7 Sep, 09:00
+
+  var windowCases = [
+    [new Date(2026, 8, 7, 14, 30, 0), true,  'yesterday afternoon'],
+    [new Date(2026, 8, 7, 23, 59, 0), true,  'yesterday just before midnight'],
+    [new Date(2026, 8, 8, 2, 0, 0),   true,  'overnight'],
+    [new Date(2026, 8, 7, 8, 59, 0),  false, 'before the previous digest'],
+    [new Date(2026, 8, 8, 9, 30, 0),  false, 'after this digest, so next time'],
+    [prevNineAm,                      true,  'exactly at the previous mark'],
+    [nineAm,                          false, 'exactly at this mark'],
+    ['not a date',                    false, 'non-Date cell']
+  ];
+
+  windowCases.forEach(function (c) {
+    if (isBetween(c[0], prevNineAm, nineAm) !== c[1]) {
+      failures.push('window: ' + c[2] + ' should be ' + (c[1] ? 'in' : 'out'));
+    }
+  });
+
+  // The fallback has to reach back past yesterday, or the first run after
+  // this fix repeats the very gap it exists to close.
+  if (DIGEST_FALLBACK_DAYS < 2) failures.push('window: fallback must cover more than one day');
+
   if (failures.length) {
     Logger.log('FAILED (' + failures.length + '):\n  ' + failures.join('\n  '));
     throw new Error(failures.length + ' test failure(s) — see the log.');

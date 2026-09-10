@@ -2,6 +2,25 @@
 
 Everything new since we first set sail.
 
+## Quick Toggles, Copy + Drag Videos, Overhauled Settings (v0.10.0)
+10 September 2026
+
+- Added: Copy or drag a finished recording straight off the Land ahoy screen.
+- Added: Turn the webcam, microphone and system audio on or off from the Quick Record bar.
+- Fixed: The preview of what you're about to record stays up to date.
+- Fixed: Clicking Set Sail's icon in the Windows notification area now opens the app.
+- Fixed: Double-clicking the recording bar no longer flings it to the bottom of the screen.
+- Fixed: The start controls no longer jump the last stretch when you leave Area mode.
+- Fixed: Choosing Area from Quick Record no longer brings up the Set Sail window.
+- Fixed: Quick Record starts sooner on Windows.
+- Changed: Settings is no longer one long list.
+- Changed: Light, dark and system now sit in the Settings header, as three small icons in the top right, instead of as a row in the list.
+- Changed: The webcam's shadow controls only appear when the shadow is on.
+- Changed: Clearer wording on the "Show Set Sail UI while recording" setting.
+- Changed: The recording bar's mic and system-audio meters are easier to read.
+- Changed: The Quick Record bar shows that your recording is getting ready.
+- Removed: The hint under Launch at startup on Windows, which only repeated the label.
+
 ## A New Look (v0.9.0)
 5 September 2026
 

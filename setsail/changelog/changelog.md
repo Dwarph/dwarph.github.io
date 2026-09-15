@@ -2,6 +2,17 @@
 
 Everything new since we first set sail.
 
+## Feedback + Audio Levels (v0.11.0)
+15 September 2026
+
+- Added: Send a bug report or a feature request without leaving the app.
+- Added: Optional crash reports and usage stats, to help fix and improve Set Sail.
+- Added: Set your microphone and system audio levels before you record.
+- Fixed: Slider values in Settings are readable in dark mode when the bar fills in behind them.
+- Fixed: Dragging the volume slider on a finished recording's preview no longer starts dragging the file out of the app.
+- Fixed: With background blur on, your webcam no longer appears before the blur does.
+- Removed: The Enhance microphone switch, and the processing behind it.
+
 ## Quick Toggles, Copy + Drag Videos, Overhauled Settings (v0.10.0)
 10 September 2026
 

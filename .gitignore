@@ -2,6 +2,9 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# Claude Code worktrees — local scratch checkouts, not part of the site
+.claude/worktrees/
+
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
 

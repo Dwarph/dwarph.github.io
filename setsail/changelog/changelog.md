@@ -2,6 +2,11 @@
 
 Everything new since we first set sail.
 
+## Quick Record Fix (v0.11.1)
+16 September 2026
+
+- Fixed: Turning the camera, microphone, or system audio on from the Quick Record bar could get left out of the recording it started.
+
 ## Feedback + Audio Levels (v0.11.0)
 15 September 2026
 

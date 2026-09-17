@@ -2,6 +2,15 @@
 
 Everything new since we first set sail.
 
+## Transcripts + New Player (v0.12.0)
+17 September 2026
+
+- Added: Transcripts.
+- Changed: The recording preview has its own player controls.
+- Changed: The window on macOS now wears Set Sail's own title bar, the way it already did on Windows: a plain band in the app's colour, no title, and the traffic lights where they have always been.
+- Changed: The window can no longer be resized by dragging it.
+- Fixed: Flipping the camera, microphone, or system audio chip mid-recording did not persist after the take ended.
+
 ## Quick Record Fix (v0.11.1)
 16 September 2026
 

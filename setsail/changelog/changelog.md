@@ -2,6 +2,11 @@
 
 Everything new since we first set sail.
 
+## Steadier Transcript Progress (v0.12.1)
+17 September 2026
+
+- Fixed: The transcript progress bar no longer stalls at 95% on a long take.
+
 ## Transcripts + New Player (v0.12.0)
 17 September 2026
 

@@ -137,12 +137,12 @@
       "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow.",
       "image": "images/projects/pomodoro.webp",
       "imageAlt": "A yellow Playdate console held in two hands, running the Pomodoro timer.",
-      "link": "https://youtu.be/Su6LcItc0CY?si=9LizB3P5GsdHwVEH",
+      "link": "https://dwarph.itch.io/pomodoro",
       "banner": {
         "brand": "#372C09",
         "ink": "#FFC405",
         "mediaRole": "thumb",
-        "cta": "Watch"
+        "cta": "Download"
       }
     },
     {

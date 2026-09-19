@@ -1459,6 +1459,23 @@ a.project-banner-link:hover .pb-cta {
     }
 }
 
+/* Narrow phones: the copy and the CTA stop fitting side by side - below about
+   this width the text column drops under ~200px - so the pill moves to its own
+   row at the bottom of the card instead of squeezing the lead. */
+@media (max-width: 400px) {
+    .pb-body {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .pb-cta {
+        margin-top: var(--spacing-md);
+        align-self: flex-end;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .nav-link,
     .cv-download-link,

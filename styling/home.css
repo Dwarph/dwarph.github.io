@@ -1350,6 +1350,8 @@ a.project-banner-link:hover .pb-cta {
     .project-banner {
         display: flex;
         flex-direction: column;
+        /* stretch, not the desktop rule's center: the band spans the full card */
+        align-items: stretch;
         justify-content: flex-end;
         aspect-ratio: auto;
         min-height: 400px;

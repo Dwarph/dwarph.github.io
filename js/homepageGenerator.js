@@ -365,25 +365,21 @@ function renderProjectBanner(project) {
         '<span class="pb-art"><img src="' + project.image + '" alt="" aria-hidden="true" /></span>' +
         '</span>';
 
-    var contentHtml =
-        '<div class="project-content">' +
-        '<p class="project-meta">' + project.year +
-        (project.tags ? ' &middot; ' + project.tags : '') + '</p>' +
-        '<p class="project-description">' + project.description + '</p>' +
-        '</div>';
+    // Everything lives on the card now - meta and lead are both in the overlay -
+    // so there is no block beneath the banner at any width.
 
     var styleAttr = ' style="--brand: ' + brand + '; --ink: ' + ink + ';"';
 
     if (!project.link) {
         return '<div class="project-banner-link scroll-reveal-chunk"' + styleAttr +
             ' role="article" aria-label="' + project.title + '">' +
-            bannerHtml + contentHtml + '</div>';
+            bannerHtml + '</div>';
     }
 
     var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
     return '<a href="' + project.link + '" class="project-banner-link scroll-reveal-chunk"' + styleAttr +
         targetAttr + ' aria-label="View project: ' + project.title + '">' +
-        bannerHtml + contentHtml + '</a>';
+        bannerHtml + '</a>';
 }
 
 function renderProjectRow(project) {

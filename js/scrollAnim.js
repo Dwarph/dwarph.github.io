@@ -194,6 +194,13 @@
 
         var enableFade = computeEnableFade();
 
+        // CSS holds the pre-reveal state only while this class is absent, so the two
+        // can never disagree: whenever the fade is off, nothing is left blurred.
+        function syncAnimClass() {
+            document.documentElement.classList.toggle('scroll-anim-off', !enableFade);
+        }
+        syncAnimClass();
+
         var aboutSection = container.querySelector('#about');
         var workSection = container.querySelector('#work');
         var workJobs = container.querySelectorAll('.work-job');
@@ -434,16 +441,28 @@
             resizeDebounceTimer = setTimeout(function () {
                 resizeDebounceTimer = null;
 
-                // A resize can cross the 768px breakpoint, which flips whether CSS is
-                // holding the pre-reveal state. Re-decide before updating.
+                // A resize can cross the 768px breakpoint, which flips whether the fade
+                // should run at all. Re-decide before updating.
                 var wasEnabled = enableFade;
                 enableFade = computeEnableFade();
-                if (wasEnabled && !enableFade) {
+
+                if (wasEnabled === enableFade) {
+                    requestAnimationFrame(function () { update(1000 / 60); });
+                    return;
+                }
+
+                if (!enableFade) {
+                    syncAnimClass();
                     resetAllScrollRevealChunks(container);
                     return;
                 }
 
-                requestAnimationFrame(function () { update(1000 / 60); });
+                // Drop the class and write the inline values in the same frame, so the
+                // bare CSS pre-reveal state is never painted on its own.
+                requestAnimationFrame(function () {
+                    syncAnimClass();
+                    update(1000 / 60);
+                });
             }, 120);
         });
     };

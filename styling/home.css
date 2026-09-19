@@ -1385,7 +1385,9 @@ a.project-banner-link:hover .pb-cta {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        gap: var(--spacing-sm);
+        /* minimum gutter between the copy and the CTA - the copy wraps before
+           it gets close to the pill */
+        gap: var(--spacing-2xl);
         padding: 96px var(--spacing-md) var(--spacing-md);
         /* fallback for browsers without color-mix() */
         background: linear-gradient(to top,

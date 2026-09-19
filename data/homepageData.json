@@ -87,7 +87,7 @@
       "year": 2026,
       "tags": "macOS, Windows",
       "lead": "A delightful screen recorder for macOS and Windows.",
-      "description": "A delightful screen recorder for macOS and Windows. Local transcription with Whisper, a built-in player, and quick record. Currently in free beta.",
+      "description": "A delightful screen recorder for macOS and Windows. Currently in free beta.",
       "image": "images/projects/setsail.webp",
       "imageAlt": "A tiny sailing boat alone on a wide teal sea.",
       "link": "setsail/",
@@ -103,7 +103,7 @@
       "tier": "minor",
       "year": 2026,
       "tags": "UI, Interaction, Prototype",
-      "description": "A circle slider that turns circular motion into input. Stays smooth + usable thanks to velocity-based precision, skim-safe dragging (fast passes won’t interrupt input), and a tap affordance that reveals the dial.",
+      "description": "A circle slider that turns circular motion into input. Uses velocity-based motion detection.",
       "image": "images/projects/circle-slider.png",
       "imageAlt": "A circular slider dial with a progress arc and a knob indicator.",
       "link": "experiments/circle-slider/"
@@ -123,7 +123,7 @@
       "tier": "minor",
       "year": 2024,
       "tags": "XR, Unity, Meta Quest",
-      "description": "An XRHACK24 submission. Extract fossils from your wall, build a personal museum, and learn about the prehistoric era in this mixed reality prototype for the quest. Made with Julia Ronneberger & Rory Clark",
+      "description": "An XRHACK24 submission. Extract fossils from your wall & learn about the prehistoric era in this MR prototype. Made with Julia Ronneberger & Rory Clark",
       "image": "images/projects/DinoDig.webp",
       "imageAlt": "Dino Dig project image",
       "link": "https://youtu.be/u-T4H_T__Ww?si=_7fS0uYFP2NDQgtx"

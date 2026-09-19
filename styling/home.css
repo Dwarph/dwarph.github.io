@@ -944,7 +944,8 @@ html.home-nav-scrolling .nav-link:active {
     opacity: 0.92;
 }
 
-.pb-meta {
+.pb-meta,
+.pb-desc {
     display: none;
 }
 
@@ -1344,40 +1345,53 @@ a.project-banner-link:hover .pb-cta {
     }
 
     /* majors: composed panel -> image banner with the title overlaid */
+    /* The banner becomes the whole card: image up top, a brand-coloured band at
+       the bottom carrying name, meta, description and CTA. It grows with the
+       copy rather than holding a fixed ratio. */
     .project-banner {
-        display: block;
-        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        aspect-ratio: auto;
+        min-height: 340px;
         padding: 0;
-        aspect-ratio: 3 / 2;
     }
 
     .project-banner--thumb .pb-bg {
         display: block;
     }
 
+    /* Bottom-up, tinted with the project's own brand colour so the overlay can
+       keep the same --ink type and CTA the composed panel uses on desktop. */
     .project-banner .pb-scrim,
     .project-banner--thumb .pb-scrim {
         display: block;
+        /* fallback for browsers without color-mix() */
         background: linear-gradient(to top,
-                rgba(12, 10, 4, 0.85) 0%,
-                rgba(12, 10, 4, 0.4) 40%,
-                rgba(12, 10, 4, 0) 72%);
+                rgba(12, 10, 4, 0.88) 0%,
+                rgba(12, 10, 4, 0.45) 40%,
+                rgba(12, 10, 4, 0) 74%);
+        background: linear-gradient(to top,
+                var(--brand) 0%,
+                color-mix(in srgb, var(--brand) 82%, transparent) 38%,
+                transparent 74%);
     }
 
     .pb-art {
         display: none;
     }
 
+    /* Solid brand fill so the copy stays legible however long it runs; the
+       scrim above it fades that colour up into the artwork. */
     .pb-body {
-        position: absolute;
-        left: var(--spacing-md);
-        right: var(--spacing-md);
-        bottom: var(--spacing-md);
+        position: static;
+        z-index: 2;
+        flex: 0 0 auto;
         display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: var(--spacing-sm);
-        color: var(--bg-color);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--spacing-md);
+        background: var(--brand);
     }
 
     .pb-name {
@@ -1398,17 +1412,23 @@ a.project-banner-link:hover .pb-cta {
         opacity: 0.92;
     }
 
-    .pb-cta {
-        margin-top: 0;
-        flex-shrink: 0;
-        padding: 7px 13px;
-        background: var(--bg-color);
-        color: var(--text-color);
-        box-shadow: 0 3px 12px rgba(55, 44, 9, 0.22);
+    .pb-desc {
+        display: block;
+        font-family: var(--font-body);
+        font-size: var(--fs-ui);
+        line-height: var(--lh-body);
+        margin: var(--spacing-sm) 0 0;
     }
 
-    /* the overlay already carries year + tags, so drop the repeat underneath */
-    .project-banner-link .project-content .project-meta {
+    /* keeps the desktop --ink fill: it now sits on the solid brand band */
+    .pb-cta {
+        margin-top: var(--spacing-md);
+        flex-shrink: 0;
+        padding: 7px 13px;
+    }
+
+    /* the overlay carries all of it now, so the block beneath the banner goes */
+    .project-banner-link .project-content {
         display: none;
     }
 

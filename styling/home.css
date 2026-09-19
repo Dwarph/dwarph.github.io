@@ -1415,8 +1415,7 @@ a.project-banner-link:hover .pb-cta {
     }
 
     /* the overlay already carries year + tags, so drop the repeat underneath */
-    .project-banner-link .project-content .project-year,
-    .project-banner-link .project-content .project-tags {
+    .project-banner-link .project-content .project-meta {
         display: none;
     }
 

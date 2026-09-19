@@ -367,8 +367,8 @@ function renderProjectBanner(project) {
 
     var contentHtml =
         '<div class="project-content">' +
-        '<p class="project-year">' + project.year + '</p>' +
-        (project.tags ? '<p class="project-tags">' + project.tags + '</p>' : '') +
+        '<p class="project-meta">' + project.year +
+        (project.tags ? ' &middot; ' + project.tags : '') + '</p>' +
         '<p class="project-description">' + project.description + '</p>' +
         '</div>';
 

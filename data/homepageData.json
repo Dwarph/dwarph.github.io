@@ -82,7 +82,25 @@
   ],
   "projects": [
     {
+      "title": "Set Sail",
+      "tier": "major",
+      "year": 2026,
+      "tags": "macOS, Windows",
+      "lead": "A delightful screen recorder for macOS and Windows.",
+      "description": "A delightful screen recorder for macOS and Windows. Local transcription with Whisper, a built-in player, and quick record. Currently in free beta.",
+      "image": "images/projects/setsail.webp",
+      "imageAlt": "A tiny sailing boat alone on a wide teal sea.",
+      "link": "setsail/",
+      "banner": {
+        "brand": "#1C6A7B",
+        "ink": "#EDE8CC",
+        "mediaRole": "background",
+        "cta": "Open"
+      }
+    },
+    {
       "title": "Circle Slider",
+      "tier": "minor",
       "year": 2026,
       "tags": "UI, Interaction, Prototype",
       "description": "A circle slider that turns circular motion into input. Stays smooth + usable thanks to velocity-based precision, skim-safe dragging (fast passes won’t interrupt input), and a tap affordance that reveals the dial.",
@@ -92,6 +110,7 @@
     },
     {
       "title": "Morandi",
+      "tier": "minor",
       "year": 2025,
       "tags": "AI, Vibe Coding",
       "description": "A concept + prototype for a daily art app, that generates prompts, inspiration, and critiques of your art.",
@@ -101,6 +120,7 @@
     },
     {
       "title": "Dino Dig",
+      "tier": "minor",
       "year": 2024,
       "tags": "XR, Unity, Meta Quest",
       "description": "An XRHACK24 submission. Extract fossils from your wall, build a personal museum, and learn about the prehistoric era in this mixed reality prototype for the quest. Made with Julia Ronneberger & Rory Clark",
@@ -110,15 +130,24 @@
     },
     {
       "title": "Pomodoro",
+      "tier": "major",
       "year": 2023,
       "tags": "Playdate, Lua",
+      "lead": "A satisfying, minimal pomodoro timer for the Playdate.",
       "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow.",
       "image": "images/projects/pomodoro.webp",
-      "imageAlt": "Pomodoro project image",
-      "link": "https://youtu.be/Su6LcItc0CY?si=9LizB3P5GsdHwVEH"
+      "imageAlt": "A yellow Playdate console held in two hands, running the Pomodoro timer.",
+      "link": "https://youtu.be/Su6LcItc0CY?si=9LizB3P5GsdHwVEH",
+      "banner": {
+        "brand": "#372C09",
+        "ink": "#FFC405",
+        "mediaRole": "thumb",
+        "cta": "Watch"
+      }
     },
     {
       "title": "P5 Generative Art",
+      "tier": "minor",
       "year": 2022,
       "tags": "P5, Javascript",
       "description": "Generative art made with p5, using flow fields & perlin noise.",

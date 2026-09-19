@@ -336,35 +336,80 @@ function renderWork(work) {
     return workHtml;
 }
 
-function renderProjects(projects) {
-    var isMobile = window.mobileCheck();
-    var projectsHtml = '<section id="projects" class="homepage-section projects-section"><h2 class="section-title scroll-reveal-chunk">Projects</h2><div class="projects-list scroll-reveal-chunk scroll-reveal-chunk--opacity">';
+function renderProjectBanner(project) {
+    var banner = project.banner || {};
+    var brand = banner.brand || '#372C09';
+    var ink = banner.ink || '#FFFDEF';
+    var mediaRole = banner.mediaRole === 'background' ? 'background' : 'thumb';
+    var ctaText = banner.cta || 'View';
+    var isExternal = project.link ? isExternalLink(project.link) : false;
+    var iconName = isExternal ? 'north_east' : 'chevron_right';
 
-    for (var i = 0; i < projects.length; i++) {
-        var project = projects[i];
-        var isExternal = project.link ? isExternalLink(project.link) : false;
-        var linkIcon = '';
-        if (project.link) {
-            if (isExternal) {
-                linkIcon = '<span class="material-icons link-icon external" aria-hidden="true">north_east</span>';
-            } else {
-                linkIcon = '<span class="material-icons link-icon chevron" aria-hidden="true">chevron_right</span>';
-            }
+    // The banner is the same markup at both breakpoints: a composed brand panel on desktop,
+    // an image banner with the title overlaid on mobile. home.css does the swap at 768px,
+    // so it follows a resize without re-rendering.
+    var bannerHtml =
+        '<span class="project-banner project-banner--' + mediaRole + '">' +
+        '<img class="pb-bg" src="' + project.image + '" alt="" aria-hidden="true" />' +
+        '<span class="pb-scrim"></span>' +
+        '<span class="pb-body">' +
+        '<span class="pb-text">' +
+        '<span class="pb-name">' + project.title + '</span>' +
+        (project.lead ? '<span class="pb-lead">' + project.lead + '</span>' : '') +
+        '<span class="pb-meta">' + project.year +
+        (project.tags ? ' &middot; ' + project.tags : '') + '</span>' +
+        '</span>' +
+        '<span class="pb-cta">' + ctaText +
+        '<span class="material-icons" aria-hidden="true">' + iconName + '</span></span>' +
+        '</span>' +
+        '<span class="pb-art"><img src="' + project.image + '" alt="" aria-hidden="true" /></span>' +
+        '</span>';
+
+    var contentHtml =
+        '<div class="project-content">' +
+        '<p class="project-year">' + project.year + '</p>' +
+        (project.tags ? '<p class="project-tags">' + project.tags + '</p>' : '') +
+        '<p class="project-description">' + project.description + '</p>' +
+        '</div>';
+
+    var styleAttr = ' style="--brand: ' + brand + '; --ink: ' + ink + ';"';
+
+    if (!project.link) {
+        return '<div class="project-banner-link scroll-reveal-chunk"' + styleAttr +
+            ' role="article" aria-label="' + project.title + '">' +
+            bannerHtml + contentHtml + '</div>';
+    }
+
+    var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return '<a href="' + project.link + '" class="project-banner-link scroll-reveal-chunk"' + styleAttr +
+        targetAttr + ' aria-label="View project: ' + project.title + '">' +
+        bannerHtml + contentHtml + '</a>';
+}
+
+function renderProjectRow(project) {
+    var isExternal = project.link ? isExternalLink(project.link) : false;
+    var linkIcon = '';
+    if (project.link) {
+        if (isExternal) {
+            linkIcon = '<span class="material-icons link-icon external" aria-hidden="true">north_east</span>';
+        } else {
+            linkIcon = '<span class="material-icons link-icon chevron" aria-hidden="true">chevron_right</span>';
         }
+    }
 
-        // If there's a link, title is just styled text (card will be the link)
-        // If no link, title is a span
-        var titleHtml = project.link ? 
-            `<span class="project-title-link">${project.title}${linkIcon}</span>` :
-            `<span class="project-title">${project.title}${linkIcon}</span>`;
+    // If there's a link, title is just styled text (card will be the link)
+    // If no link, title is a span
+    var titleHtml = project.link ?
+        `<span class="project-title-link">${project.title}${linkIcon}</span>` :
+        `<span class="project-title">${project.title}${linkIcon}</span>`;
 
-        var tagsHtml = project.tags ? `<p class="project-tags">${project.tags}</p>` : '';
-        
-        // Image is just an image (card will be the link if there's a link)
-        // Add lazy loading and dimensions to prevent layout shift
-        var imageHtml = `<img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" loading="lazy" width="400" height="300" />`;
-        
-        var cardContent = `
+    var tagsHtml = project.tags ? `<p class="project-tags">${project.tags}</p>` : '';
+
+    // Image is just an image (card will be the link if there's a link)
+    // Add lazy loading and dimensions to prevent layout shift
+    var imageHtml = `<img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" loading="lazy" width="120" height="120" />`;
+
+    var cardContent = `
             ${imageHtml}
             <div class="project-content">
                 ${titleHtml}
@@ -373,23 +418,36 @@ function renderProjects(projects) {
                 <p class="project-description">${project.description}</p>
             </div>
         `;
-        
-        if (project.link) {
-            var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
-            var ariaLabel = project.imageAlt || project.title;
-            projectsHtml += `
+
+    if (project.link) {
+        var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+        var ariaLabel = project.imageAlt || project.title;
+        return `
                 <a href="${project.link}" class="project-card-link scroll-reveal-chunk"${targetAttr} aria-label="View project: ${ariaLabel}">
-                    <div class="project-card">
+                    <div class="project-card project-card--minor">
                         ${cardContent}
                     </div>
                 </a>
             `;
-        } else {
-            projectsHtml += `
-                <div class="project-card scroll-reveal-chunk" role="article" aria-label="${project.title}">
+    }
+
+    return `
+                <div class="project-card project-card--minor scroll-reveal-chunk" role="article" aria-label="${project.title}">
                     ${cardContent}
                 </div>
             `;
+}
+
+function renderProjects(projects) {
+    // One chronological list. `tier` decides how an entry renders - a banner or a
+    // compact row - not where it sits, so the section still reads newest-first.
+    var projectsHtml = '<section id="projects" class="homepage-section projects-section"><h2 class="section-title scroll-reveal-chunk">Projects</h2><div class="projects-list projects-list--mixed scroll-reveal-chunk scroll-reveal-chunk--opacity">';
+
+    for (var i = 0; i < projects.length; i++) {
+        if (projects[i].tier === 'major') {
+            projectsHtml += renderProjectBanner(projects[i]);
+        } else {
+            projectsHtml += renderProjectRow(projects[i]);
         }
     }
 

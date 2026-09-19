@@ -855,6 +855,171 @@ html.home-nav-scrolling .nav-link:active {
     max-width: 100%;
 }
 
+/* ---------------------------------------------------------------------------
+   Major project banners.
+   One piece of markup, two looks: a composed brand panel on desktop, an image
+   banner with the title overlaid on mobile. The swap happens in the <=768px
+   block further down, so it follows a resize without re-rendering.
+   --brand / --ink come from the project's banner config in homepageData.json.
+   --------------------------------------------------------------------------- */
+
+.project-banner-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 15px;
+}
+
+.project-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2xl);
+    min-height: 240px;
+    padding: var(--spacing-2xl);
+    box-sizing: border-box;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: var(--brand);
+    color: var(--ink);
+    box-shadow:
+        0 6px 24px rgba(55, 44, 9, 0.1),
+        0 0 0 1px rgba(55, 44, 9, 0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+a.project-banner-link:hover .project-banner {
+    transform: translateY(-3px);
+    box-shadow:
+        0 14px 38px rgba(55, 44, 9, 0.18),
+        0 0 0 1px rgba(55, 44, 9, 0.1);
+}
+
+a.project-banner-link:active .project-banner {
+    transform: translateY(-1px);
+}
+
+.pb-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.pb-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* fallback for browsers without color-mix() */
+    background: linear-gradient(to right, rgba(12, 10, 4, 0.75) 0%, rgba(12, 10, 4, 0.35) 45%, rgba(12, 10, 4, 0) 78%);
+    background: linear-gradient(to right,
+            var(--brand) 0%,
+            color-mix(in srgb, var(--brand) 78%, transparent) 42%,
+            transparent 78%);
+}
+
+/* "thumb" projects sit on a solid panel on desktop: the media is the thumb, not the backdrop */
+.project-banner--thumb .pb-bg,
+.project-banner--thumb .pb-scrim {
+    display: none;
+}
+
+.pb-body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    min-width: 0;
+}
+
+.pb-text {
+    display: block;
+}
+
+.pb-name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-article-h2);
+    line-height: var(--lh-display);
+    margin: 0;
+}
+
+.pb-lead {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--fs-ui);
+    line-height: 1.35;
+    margin: var(--spacing-sm) 0 0;
+    max-width: 26ch;
+    opacity: 0.92;
+}
+
+.pb-meta {
+    display: none;
+}
+
+.pb-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--spacing-md);
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--brand);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+    line-height: 1;
+    transition: transform 0.25s ease;
+}
+
+.pb-cta .material-icons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+a.project-banner-link:hover .pb-cta {
+    transform: translateX(3px);
+}
+
+.pb-art {
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    width: 190px;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+.pb-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* "background" projects use the media as the panel backdrop, so there is no thumb */
+.project-banner--background .pb-art {
+    display: none;
+}
+
+.project-banner-link .project-content {
+    margin-top: var(--space-stack);
+}
+
+.project-card--minor .project-image {
+    width: 120px;
+    height: 120px;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+}
+
 .projects-list {
     display: flex;
     flex-direction: column;
@@ -863,6 +1028,24 @@ html.home-nav-scrolling .nav-link:active {
     max-width: 100%;
     overflow-x: clip;
     box-sizing: border-box;
+}
+
+/* Compact rhythm between rows; banners take extra margin so they breathe.
+   Flex margins add to the gap, so a banner gets 35px + 15px = 50px of separation. */
+.projects-list--mixed {
+    gap: var(--spacing-2xl);
+}
+
+.projects-list--mixed > .project-banner-link {
+    margin-block: var(--spacing-md);
+}
+
+.projects-list--mixed > .project-banner-link:first-child {
+    margin-top: 0;
+}
+
+.projects-list--mixed > .project-banner-link:last-child {
+    margin-bottom: 0;
 }
 
 .talks-list {
@@ -1123,6 +1306,92 @@ html.home-nav-scrolling .nav-link:active {
         gap: var(--mobile-card-gap);
     }
 
+    .projects-list--mixed > .project-banner-link {
+        margin-block: var(--spacing-sm);
+    }
+
+    /* minor rows keep the thumb-left layout on mobile rather than going full width */
+    .project-card--minor {
+        flex-direction: row;
+    }
+
+    .project-card--minor .project-image {
+        width: 120px;
+        height: 120px;
+        min-height: 0;
+        aspect-ratio: 1 / 1;
+    }
+
+    /* majors: composed panel -> image banner with the title overlaid */
+    .project-banner {
+        display: block;
+        min-height: 0;
+        padding: 0;
+        aspect-ratio: 3 / 2;
+    }
+
+    .project-banner--thumb .pb-bg {
+        display: block;
+    }
+
+    .project-banner .pb-scrim,
+    .project-banner--thumb .pb-scrim {
+        display: block;
+        background: linear-gradient(to top,
+                rgba(12, 10, 4, 0.85) 0%,
+                rgba(12, 10, 4, 0.4) 40%,
+                rgba(12, 10, 4, 0) 72%);
+    }
+
+    .pb-art {
+        display: none;
+    }
+
+    .pb-body {
+        position: absolute;
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        bottom: var(--spacing-md);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: var(--spacing-sm);
+        color: var(--bg-color);
+    }
+
+    .pb-name {
+        font-size: var(--fs-prose-h3);
+    }
+
+    .pb-lead {
+        display: none;
+    }
+
+    .pb-meta {
+        display: block;
+        font-family: var(--font-body);
+        font-style: italic;
+        font-size: var(--fs-ui);
+        line-height: var(--lh-display);
+        margin: var(--spacing-xs) 0 0;
+        opacity: 0.92;
+    }
+
+    .pb-cta {
+        margin-top: 0;
+        flex-shrink: 0;
+        padding: 7px 13px;
+        background: var(--bg-color);
+        color: var(--text-color);
+        box-shadow: 0 3px 12px rgba(55, 44, 9, 0.22);
+    }
+
+    /* the overlay already carries year + tags, so drop the repeat underneath */
+    .project-banner-link .project-content .project-year,
+    .project-banner-link .project-content .project-tags {
+        display: none;
+    }
+
     .contact-link,
     .talk-title,
     .talk-title-link {
@@ -1154,8 +1423,15 @@ html.home-nav-scrolling .nav-link:active {
     .project-card,
     .project-image,
     .project-title,
-    .project-title-link {
+    .project-title-link,
+    .project-banner,
+    .pb-cta {
         transition: none !important;
+    }
+
+    a.project-banner-link:hover .project-banner,
+    a.project-banner-link:hover .pb-cta {
+        transform: none !important;
     }
 
     .homepage-nav,

@@ -192,7 +192,10 @@
         );
         var caseStudyTitles = container.querySelectorAll('.case-studies-title');
         var projectsSection = container.querySelector('#projects');
-        var projectCards = container.querySelectorAll('.projects-list > .project-card-link, .projects-list > .project-card');
+        var projectCards = container.querySelectorAll(
+            '.projects-list > .project-card-link, .projects-list > .project-card, ' +
+            '.projects-list > .project-banner-link'
+        );
         var talksSection = container.querySelector('#talks');
         var contactSection = container.querySelector('#contact');
 

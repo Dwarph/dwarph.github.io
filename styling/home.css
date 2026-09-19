@@ -1353,7 +1353,7 @@ a.project-banner-link:hover .pb-cta {
         flex-direction: column;
         justify-content: flex-end;
         aspect-ratio: auto;
-        min-height: 340px;
+        min-height: 400px;
         padding: 0;
     }
 
@@ -1361,20 +1361,11 @@ a.project-banner-link:hover .pb-cta {
         display: block;
     }
 
-    /* Bottom-up, tinted with the project's own brand colour so the overlay can
-       keep the same --ink type and CTA the composed panel uses on desktop. */
+    /* .pb-body carries the brand fade itself, so a second card-wide scrim would
+       only introduce another edge. */
     .project-banner .pb-scrim,
     .project-banner--thumb .pb-scrim {
-        display: block;
-        /* fallback for browsers without color-mix() */
-        background: linear-gradient(to top,
-                rgba(12, 10, 4, 0.88) 0%,
-                rgba(12, 10, 4, 0.45) 40%,
-                rgba(12, 10, 4, 0) 74%);
-        background: linear-gradient(to top,
-                var(--brand) 0%,
-                color-mix(in srgb, var(--brand) 82%, transparent) 38%,
-                transparent 74%);
+        display: none;
     }
 
     .pb-art {
@@ -1383,6 +1374,9 @@ a.project-banner-link:hover .pb-cta {
 
     /* Solid brand fill so the copy stays legible however long it runs; the
        scrim above it fades that colour up into the artwork. */
+    /* The gradient is anchored to this block rather than the card, so the ramp
+       always lands in the padding above the copy: text sits on solid --brand
+       however long it runs, and the colour still fades up into the artwork. */
     .pb-body {
         position: static;
         z-index: 2;
@@ -1390,8 +1384,18 @@ a.project-banner-link:hover .pb-cta {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: var(--spacing-md);
-        background: var(--brand);
+        padding: 96px var(--spacing-md) var(--spacing-md);
+        /* fallback for browsers without color-mix() */
+        background: linear-gradient(to top,
+                var(--brand) 0%,
+                var(--brand) calc(100% - 96px),
+                transparent 100%);
+        background: linear-gradient(to top,
+                var(--brand) 0%,
+                var(--brand) calc(100% - 96px),
+                color-mix(in srgb, var(--brand) 62%, transparent) calc(100% - 58px),
+                color-mix(in srgb, var(--brand) 22%, transparent) calc(100% - 24px),
+                transparent 100%);
     }
 
     .pb-name {
@@ -1420,9 +1424,11 @@ a.project-banner-link:hover .pb-cta {
         margin: var(--spacing-sm) 0 0;
     }
 
-    /* keeps the desktop --ink fill: it now sits on the solid brand band */
+    /* keeps the desktop --ink fill: it now sits on the brand band, pushed to the
+       right edge the way the overlay had it before the description moved in */
     .pb-cta {
         margin-top: var(--spacing-md);
+        align-self: flex-end;
         flex-shrink: 0;
         padding: 7px 13px;
     }

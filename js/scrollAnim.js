@@ -173,15 +173,26 @@
 
     window.initScrollAnim = function (container) {
         if (!container) return;
-        var isMobile = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
         var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) {
             config.barSmooth = 1;
         }
+
         // On mobile we animate the timeline bar, but avoid opacity-driven fade.
         // Mobile CSS doesn’t set the same initial opacity state, so fading can cause content to disappear until scroll.
         // Respect reduced motion: no scroll-linked fade; timeline bar snaps without lerp.
-        var enableFade = !isMobile && !prefersReducedMotion;
+        //
+        // The width test has to be here alongside the UA test: the pre-reveal state
+        // (opacity 0 / blur 4px) is applied by CSS at min-width 769px, so if this
+        // disagrees with that breakpoint, nothing ever clears it. That is what left
+        // the whole page blurred after a resize from a mobile width to a desktop one.
+        function computeEnableFade() {
+            var isMobileUA = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
+            var isNarrow = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            return !isMobileUA && !isNarrow && !prefersReducedMotion;
+        }
+
+        var enableFade = computeEnableFade();
 
         var aboutSection = container.querySelector('#about');
         var workSection = container.querySelector('#work');
@@ -422,6 +433,16 @@
             if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
             resizeDebounceTimer = setTimeout(function () {
                 resizeDebounceTimer = null;
+
+                // A resize can cross the 768px breakpoint, which flips whether CSS is
+                // holding the pre-reveal state. Re-decide before updating.
+                var wasEnabled = enableFade;
+                enableFade = computeEnableFade();
+                if (wasEnabled && !enableFade) {
+                    resetAllScrollRevealChunks(container);
+                    return;
+                }
+
                 requestAnimationFrame(function () { update(1000 / 60); });
             }, 120);
         });

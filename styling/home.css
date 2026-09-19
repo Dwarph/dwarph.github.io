@@ -885,18 +885,6 @@ html.home-nav-scrolling .nav-link:active {
     box-shadow:
         0 6px 24px rgba(55, 44, 9, 0.1),
         0 0 0 1px rgba(55, 44, 9, 0.07);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-a.project-banner-link:hover .project-banner {
-    transform: translateY(-3px);
-    box-shadow:
-        0 14px 38px rgba(55, 44, 9, 0.18),
-        0 0 0 1px rgba(55, 44, 9, 0.1);
-}
-
-a.project-banner-link:active .project-banner {
-    transform: translateY(-1px);
 }
 
 .pb-bg {
@@ -973,7 +961,7 @@ a.project-banner-link:active .project-banner {
     font-weight: 700;
     font-size: var(--fs-ui);
     line-height: 1;
-    transition: transform 0.25s ease;
+    transition: transform 0.25s ease, opacity 0.3s ease;
 }
 
 .pb-cta .material-icons {
@@ -982,8 +970,11 @@ a.project-banner-link:active .project-banner {
     height: 18px;
 }
 
+/* The CTA carries the hover on its own - the panel stays put. 0.7 is the
+   opacity every other link on the site fades to. */
 a.project-banner-link:hover .pb-cta {
     transform: translateX(3px);
+    opacity: 0.7;
 }
 
 .pb-art {
@@ -1458,7 +1449,6 @@ a.project-banner-link:hover .pb-cta {
         transition: none !important;
     }
 
-    a.project-banner-link:hover .project-banner,
     a.project-banner-link:hover .pb-cta {
         transform: none !important;
     }

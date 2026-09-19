@@ -1035,14 +1035,16 @@ a.project-banner-link:hover .pb-cta {
     font-size: var(--fs-prose-h4);
 }
 
-.project-card--minor .project-description {
+.project-card--minor .project-description,
+.project-card--minor .project-meta {
     font-size: var(--fs-ui);
 }
 
+/* Matches the tags line it replaced; minor rows step it down to --fs-ui above. */
 .project-meta {
     font-weight: 400;
     font-style: italic;
-    font-size: var(--fs-ui);
+    font-size: var(--fs-body);
     line-height: var(--lh-display);
     color: var(--text-color);
     margin: 0;

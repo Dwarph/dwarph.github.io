@@ -944,8 +944,7 @@ html.home-nav-scrolling .nav-link:active {
     opacity: 0.92;
 }
 
-.pb-meta,
-.pb-desc {
+.pb-meta {
     display: none;
 }
 
@@ -1382,8 +1381,9 @@ a.project-banner-link:hover .pb-cta {
         z-index: 2;
         flex: 0 0 auto;
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: var(--spacing-sm);
         padding: 96px var(--spacing-md) var(--spacing-md);
         /* fallback for browsers without color-mix() */
         background: linear-gradient(to top,
@@ -1402,10 +1402,6 @@ a.project-banner-link:hover .pb-cta {
         font-size: var(--fs-prose-h3);
     }
 
-    .pb-lead {
-        display: none;
-    }
-
     .pb-meta {
         display: block;
         font-family: var(--font-body);
@@ -1416,19 +1412,22 @@ a.project-banner-link:hover .pb-cta {
         opacity: 0.92;
     }
 
-    .pb-desc {
+    .pb-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .pb-lead {
         display: block;
-        font-family: var(--font-body);
+        max-width: none;
         font-size: var(--fs-ui);
-        line-height: var(--lh-body);
         margin: var(--spacing-sm) 0 0;
     }
 
     /* keeps the desktop --ink fill: it now sits on the brand band, pushed to the
        right edge the way the overlay had it before the description moved in */
     .pb-cta {
-        margin-top: var(--spacing-md);
-        align-self: flex-end;
+        margin-top: 0;
         flex-shrink: 0;
         padding: 7px 13px;
     }

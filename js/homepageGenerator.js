@@ -355,10 +355,9 @@ function renderProjectBanner(project) {
         '<span class="pb-body">' +
         '<span class="pb-text">' +
         '<span class="pb-name">' + project.title + '</span>' +
-        (project.lead ? '<span class="pb-lead">' + project.lead + '</span>' : '') +
         '<span class="pb-meta">' + project.year +
         (project.tags ? ' &middot; ' + project.tags : '') + '</span>' +
-        '<span class="pb-desc">' + project.description + '</span>' +
+        (project.lead ? '<span class="pb-lead">' + project.lead + '</span>' : '') +
         '</span>' +
         '<span class="pb-cta">' + ctaText +
         '<span class="material-icons" aria-hidden="true">' + iconName + '</span></span>' +

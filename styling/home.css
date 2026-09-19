@@ -1013,11 +1013,39 @@ a.project-banner-link:hover .pb-cta {
     margin-top: var(--space-stack);
 }
 
+/* Minor rows are deliberately lighter than the banners: smaller thumb, a step
+   down in type, and year + tags collapsed onto a single metadata line. */
+.project-card--minor {
+    gap: var(--spacing-md);
+}
+
 .project-card--minor .project-image {
-    width: 120px;
-    height: 120px;
+    width: 72px;
+    height: 72px;
     min-height: 0;
     aspect-ratio: 1 / 1;
+}
+
+.project-card--minor .project-content {
+    gap: var(--spacing-xs);
+}
+
+.project-card--minor .project-title,
+.project-card--minor .project-title-link {
+    font-size: var(--fs-prose-h4);
+}
+
+.project-card--minor .project-description {
+    font-size: var(--fs-ui);
+}
+
+.project-meta {
+    font-weight: 400;
+    font-style: italic;
+    font-size: var(--fs-ui);
+    line-height: var(--lh-display);
+    color: var(--text-color);
+    margin: 0;
 }
 
 .projects-list {
@@ -1031,13 +1059,13 @@ a.project-banner-link:hover .pb-cta {
 }
 
 /* Compact rhythm between rows; banners take extra margin so they breathe.
-   Flex margins add to the gap, so a banner gets 35px + 15px = 50px of separation. */
+   Flex margins add to the gap, so a banner gets 25px + 20px = 45px of separation. */
 .projects-list--mixed {
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-xl);
 }
 
 .projects-list--mixed > .project-banner-link {
-    margin-block: var(--spacing-md);
+    margin-block: var(--spacing-lg);
 }
 
 .projects-list--mixed > .project-banner-link:first-child {
@@ -1316,8 +1344,8 @@ a.project-banner-link:hover .pb-cta {
     }
 
     .project-card--minor .project-image {
-        width: 120px;
-        height: 120px;
+        width: 72px;
+        height: 72px;
         min-height: 0;
         aspect-ratio: 1 / 1;
     }

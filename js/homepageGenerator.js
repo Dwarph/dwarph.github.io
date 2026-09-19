@@ -403,18 +403,18 @@ function renderProjectRow(project) {
         `<span class="project-title-link">${project.title}${linkIcon}</span>` :
         `<span class="project-title">${project.title}${linkIcon}</span>`;
 
-    var tagsHtml = project.tags ? `<p class="project-tags">${project.tags}</p>` : '';
+    // Year and tags share one line here: on a minor row they are metadata, not content.
+    var metaHtml = `<p class="project-meta">${project.year}${project.tags ? ' &middot; ' + project.tags : ''}</p>`;
 
     // Image is just an image (card will be the link if there's a link)
     // Add lazy loading and dimensions to prevent layout shift
-    var imageHtml = `<img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" loading="lazy" width="120" height="120" />`;
+    var imageHtml = `<img class="project-image" src="${project.image}" alt="${project.imageAlt || ''}" loading="lazy" width="72" height="72" />`;
 
     var cardContent = `
             ${imageHtml}
             <div class="project-content">
                 ${titleHtml}
-                <p class="project-year">${project.year}</p>
-                ${tagsHtml}
+                ${metaHtml}
                 <p class="project-description">${project.description}</p>
             </div>
         `;

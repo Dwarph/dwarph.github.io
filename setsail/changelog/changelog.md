@@ -2,6 +2,12 @@
 
 Everything new since we first set sail.
 
+## A Voyage While You Wait (v0.13.0)
+21 September 2026
+
+- Added: The screen you see while a recording is being processed now has a loading %, a 'log' of what is happening behind the scenes, and a little boat floating along
+- Fixed: Tooltips no longer come up behind the window buttons.
+
 ## Steadier Transcript Progress (v0.12.1)
 17 September 2026
 

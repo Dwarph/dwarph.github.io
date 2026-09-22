@@ -2,6 +2,11 @@
 
 Everything new since we first set sail.
 
+## Keeping Itself Shipshape (v0.14.0)
+22 September 2026
+
+- Added: Set Sail keeps itself up to date on Windows.
+
 ## A Voyage While You Wait (v0.13.0)
 21 September 2026
 

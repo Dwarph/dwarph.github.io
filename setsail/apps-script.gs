@@ -35,8 +35,6 @@
 //      last digest, and on the first run there is no mark stored, so that
 //      run sweeps the previous DIGEST_FALLBACK_DAYS and catches up on
 //      anything the old same-day digest never mentioned.
-//   6. Once the Windows Store listing clears certification, set MSSTORE_URL
-//      and run notifyWindowsStoreLive() once, by hand, from the editor.
 //
 // FIRST-TIME SETUP (only if the Sheet/script is being rebuilt): create a
 // Sheet, add both files under Extensions > Apps Script, fill in the config
@@ -87,21 +85,11 @@ var DIGEST_FALLBACK_DAYS = 7;
 // external group's public link. MSSTORE_URL: Partner Center > Product
 // identity > URL.
 var TESTFLIGHT_URL = 'https://testflight.apple.com/join/4W2dFvxB';
-// Product ID 9MXCL0SRB1M9 is allocated, but the listing is still in
-// certification and the URL currently returns HTTP 410, so this stays empty
-// on purpose: buildConfirmation() says the build is in review rather than
-// handing someone a dead link.
-//
-// When it goes live, swap the empty string for:
-//   'https://apps.microsoft.com/detail/9MXCL0SRB1M9'
-// then run notifyWindowsStoreLive() once. Verify it loads signed-out first,
-// since a publisher sees their own listing before the public does.
-//
 // The share button's ?cid=DevShareMCLPCS is deliberately dropped. It tags
 // the traffic as a developer share, which is not what an email is, and the
 // listing resolves without it. Add a campaign tag of your own if you ever
 // want to tell email installs apart from the rest.
-var MSSTORE_URL    = '';
+var MSSTORE_URL    = 'https://apps.microsoft.com/detail/9MXCL0SRB1M9';
 
 // support@pipturner.co.uk is a real mailbox, but not a Gmail one, so it is
 // only usable as a From address if it has been added under Gmail's
@@ -124,10 +112,7 @@ var LOGO_URL       = 'https://pipturner.co.uk/setsail/assets/email-logo.png';
 // migrates older 3-column sheets on the next write.
 //
 // Status is one of:
-//   sent          confirmation delivered, with every link the person asked for
-//   sent-partial  delivered, but Windows was requested while MSSTORE_URL was
-//                 still empty, so that half of the email had nothing to click.
-//                 notifyWindowsStoreLive() clears these once the listing is up.
+//   sent          confirmation delivered
 //   pending       not sent yet (mail quota spent, or a send threw).
 //                 drainPending() retries hourly.
 var COL_TIMESTAMP = 0;
@@ -208,11 +193,7 @@ function deliverConfirmation(sheet, rowNumber, email, platforms) {
   try {
     var mail = buildConfirmation(platforms);
     sendMail(email, mail.subject, mail.htmlBody, mail.plainBody);
-    // A Windows signup sent while MSSTORE_URL is still empty got an email
-    // with nothing to click. Mark it so notifyWindowsStoreLive() can find
-    // exactly those people once the listing clears certification, rather
-    // than mailing the whole list again.
-    setRowStatus(sheet, rowNumber, isPartial(platforms) ? 'sent-partial' : 'sent', new Date());
+    setRowStatus(sheet, rowNumber, 'sent', new Date());
     return true;
   } catch (err) {
     // Leave it pending so drainPending() retries rather than dropping it.
@@ -220,38 +201,6 @@ function deliverConfirmation(sheet, rowNumber, email, platforms) {
     console.error('Confirmation send failed for row ' + rowNumber + ': ' + err);
     return false;
   }
-}
-
-// True when the email we can send right now is missing a link the person
-// actually asked for. Only Windows can be in this state, and only while
-// MSSTORE_URL is empty.
-function isPartial(platforms) {
-  return !MSSTORE_URL && normalizePlatforms(platforms).win;
-}
-
-// Run this by hand, once, after filling in MSSTORE_URL. Re-sends the
-// confirmation to everyone who signed up for Windows while the Store
-// listing was still in certification, and only to them.
-function notifyWindowsStoreLive() {
-  if (!MSSTORE_URL) {
-    throw new Error('MSSTORE_URL is still empty. Fill it in first, or this re-sends the same incomplete email.');
-  }
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  ensureHeaders(sheet);
-  var rows = getDataRows(sheet);
-  var sent = 0;
-
-  for (var i = 0; i < rows.length; i++) {
-    if (String(rows[i][COL_STATUS]) !== 'sent-partial') continue;
-    if (MailApp.getRemainingDailyQuota() <= SEND_QUOTA_RESERVE) break;
-    var email = String(rows[i][COL_EMAIL]).trim();
-    if (!email) continue;
-    if (deliverConfirmation(sheet, i + 2, email, String(rows[i][COL_PLATFORMS] || ''))) {
-      sent++;
-    }
-  }
-  Logger.log('Re-sent to ' + sent + ' Windows signup(s).');
-  return sent;
 }
 
 function setRowStatus(sheet, rowNumber, status, sentAt) {
@@ -295,7 +244,6 @@ function dailyDigest() {
   var now = new Date();
 
   var pending = rows.filter(function (r) { return String(r[COL_STATUS]) === 'pending'; }).length;
-  var partial = rows.filter(function (r) { return String(r[COL_STATUS]) === 'sent-partial'; }).length;
 
   var newRows = rows.filter(function (r) { return isBetween(r[COL_TIMESTAMP], since, now); });
   var lines = newRows.map(function (r) {
@@ -308,10 +256,6 @@ function dailyDigest() {
     'New since ' + formatStamp(since) + ': ' + newRows.length + '\n' +
     'Total: ' + rows.length + '\n' +
     'Awaiting send: ' + pending + '\n' +
-    (partial
-      ? 'Waiting on the Windows Store listing: ' + partial +
-        ' (run notifyWindowsStoreLive() once MSSTORE_URL is set)\n'
-      : '') +
     'Mail quota left today: ' + MailApp.getRemainingDailyQuota() + '\n\n' +
     (lines.length ? 'New signups:\n' + lines.join('\n') + '\n' : 'No new signups in this window.\n');
 

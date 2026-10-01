@@ -1,4 +1,4 @@
-[![alt text](./images/casestudies/dogracer.jpg "bleed")](./images/casestudies/dogracer.jpg)
+[![A hand-controlled puppet dog.](./images/casestudies/dogracer.jpg "bleed")](./images/casestudies/dogracer.jpg)
 
 ## My Role
 

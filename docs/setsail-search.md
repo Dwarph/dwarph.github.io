@@ -21,6 +21,12 @@ things only Pip can do (they need a login). No paid tools anywhere.
 - `.github/workflows/indexnow.yml` and `ad1499c224dcbf70d020f3d1d6b14004.txt`:
   after each Pages deploy, tells Bing and the other IndexNow engines which Set
   Sail pages changed. Only runs once it's on `main`. Don't delete the key file.
+- `setsail/check-seo.mjs`: run `node setsail/check-seo.mjs` after editing the
+  landing page. It fails if the JSON-LD doesn't parse, if the FAQ or feature
+  list on the page and in the JSON-LD have different counts, or if a page is
+  missing from the sitemap. It warns when an FAQ answer is worded differently
+  in the two places. In the Porthole repo, the `seo-aeo-update` skill keeps
+  all of this in step with each release.
 
 ## One-off setup (about half an hour)
 

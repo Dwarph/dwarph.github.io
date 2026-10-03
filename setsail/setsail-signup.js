@@ -29,7 +29,6 @@ const selected = new Set();
 // referrers (the changelog's "Get Set Sail" button) say nothing useful, so
 // they're dropped. Capped, since it's going into a spreadsheet cell.
 const sourceField = document.getElementById('sourceField');
-const heardInput = form.querySelector('.ss-heard');
 try {
   const ref = new URLSearchParams(location.search).get('ref');
   let source = ref ? `ref:${ref}` : '';
@@ -171,7 +170,6 @@ function showClosedForToday() {
     '<span>Beta sign-ups are closed for today - return tomorrow ye land lubber!</span>';
   fieldGroup.replaceWith(closed);
   if (note) note.remove();
-  if (heardInput) heardInput.remove();
   form.querySelectorAll('.ss-chip').forEach((chip) => (chip.disabled = true));
 }
 
@@ -199,7 +197,6 @@ function showConfirmed() {
     '</span>';
   btn.disabled = true;
   emailField.disabled = true;
-  if (heardInput) heardInput.disabled = true;
 
   if (note) note.remove();
   form.querySelectorAll('.ss-chip').forEach((chip) => (chip.disabled = true));

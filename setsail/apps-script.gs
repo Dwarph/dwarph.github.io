@@ -120,14 +120,12 @@ var COL_EMAIL     = 1;
 var COL_PLATFORMS = 2;
 var COL_STATUS    = 3;
 var COL_LASTSENT  = 4;
-// Where the signup came from. Heard is the optional free-text answer to
-// "Where did you find Set Sail?"; Source is filled in by the page itself,
-// from a ?ref= tag on the link or else the referring site's hostname. Both
-// are only written on a first signup, never overwritten by a repeat.
-var COL_HEARD     = 5;
-var COL_SOURCE    = 6;
-var NUM_COLS      = 7;
-var HEADERS = ['Timestamp', 'Email', 'Platforms', 'Status', 'LastSent', 'Heard', 'Source'];
+// Where the signup came from, filled in by the page itself: a ?ref= tag on
+// the link, or else the referring site's hostname. Only written on a first
+// signup, never overwritten by a repeat.
+var COL_SOURCE    = 5;
+var NUM_COLS      = 6;
+var HEADERS = ['Timestamp', 'Email', 'Platforms', 'Status', 'LastSent', 'Source'];
 
 function doPost(e) {
   var honeypot = e.parameter.website;
@@ -141,7 +139,6 @@ function doPost(e) {
   }
 
   var platforms = e.parameter.platforms || ''; // e.g. "macOS,Windows" or ""
-  var heard = cleanCell(e.parameter.heard, 200);
   var source = cleanCell(e.parameter.source, 100);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   ensureHeaders(sheet);
@@ -167,7 +164,7 @@ function doPost(e) {
 
   // Write first, send second: the address is the thing worth keeping, so it
   // must not depend on the mail step succeeding.
-  sheet.appendRow([new Date(), email, platforms, 'pending', '', heard, source]);
+  sheet.appendRow([new Date(), email, platforms, 'pending', '', source]);
   deliverConfirmation(sheet, sheet.getLastRow(), email, platforms);
   return jsonResponse({ result: 'success' });
 }
@@ -258,7 +255,6 @@ function dailyDigest() {
     return '  ' + formatStamp(r[COL_TIMESTAMP]) + '  ' + r[COL_EMAIL] +
       (r[COL_PLATFORMS] ? '  (' + r[COL_PLATFORMS] + ')' : '') +
       '  [' + (r[COL_STATUS] || '?') + ']' +
-      (r[COL_HEARD] ? '  heard: ' + r[COL_HEARD] : '') +
       (r[COL_SOURCE] ? '  via: ' + r[COL_SOURCE] : '');
   });
 
@@ -333,7 +329,7 @@ function sendMail(to, subject, htmlBody, plainBody) {
 }
 
 // Writes the header row on a blank sheet, and widens an older sheet to the
-// current layout (Status/LastSent, then Heard/Source), so an existing
+// current layout (Status/LastSent, then Source), so an existing
 // deployment picks up the new columns without anyone editing the Sheet by
 // hand. Rows from before a column existed just read as blank.
 function ensureHeaders(sheet) {

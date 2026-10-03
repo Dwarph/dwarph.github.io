@@ -21,18 +21,17 @@ things only Pip can do (they need a login). No paid tools anywhere.
 - `.github/workflows/indexnow.yml` and `ad1499c224dcbf70d020f3d1d6b14004.txt`:
   after each Pages deploy, tells Bing and the other IndexNow engines which Set
   Sail pages changed. Only runs once it's on `main`. Don't delete the key file.
-- The signup form records where people came from: the optional "Where did you
-  find Set Sail?" answer (Heard column) and, automatically, a `?ref=` tag or
-  the referring site (Source column). Put `?ref=` on links you share, e.g.
-  `pipturner.co.uk/setsail/?ref=bluesky`.
+- The signup form quietly records where people came from: a `?ref=` tag on
+  the link, or else the referring site (Source column). Put `?ref=` on links
+  you share, e.g. `pipturner.co.uk/setsail/?ref=bluesky`.
 
 ## One-off setup (about an hour)
 
-1. **Redeploy the signup Apps Script.** `setsail/apps-script.gs` gained the
-   Heard and Source columns. Follow "UPDATING THE LIVE DEPLOYMENT" at the top
+1. **Redeploy the signup Apps Script.** `setsail/apps-script.gs` gained a
+   Source column. Follow "UPDATING THE LIVE DEPLOYMENT" at the top
    of that file (edit the existing deployment, don't make a new one). The
    header row widens itself on the next signup. Until this is done, the page
-   still works; the two new fields are just ignored.
+   still works; the source is just ignored.
 2. **Google Search Console** (search.google.com/search-console). Add a
    *Domain* property for `pipturner.co.uk` and verify with the DNS TXT record
    it gives you, at your domain registrar. Then Sitemaps → submit
@@ -52,7 +51,7 @@ things only Pip can do (they need a login). No paid tools anywhere.
 which queries show up. Queries you didn't expect are ideas for notes or FAQ
 answers.
 
-**The signup sheet:** count the Heard and Source columns.
+**The signup sheet:** count the Source column.
 
 **AI check:** ask each of ChatGPT (with search on), Perplexity, Google (the AI
 Overview), Copilot and Claude the same questions in a fresh chat, and note

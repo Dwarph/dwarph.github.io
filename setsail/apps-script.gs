@@ -120,12 +120,8 @@ var COL_EMAIL     = 1;
 var COL_PLATFORMS = 2;
 var COL_STATUS    = 3;
 var COL_LASTSENT  = 4;
-// Where the signup came from, filled in by the page itself: a ?ref= tag on
-// the link, or else the referring site's hostname. Only written on a first
-// signup, never overwritten by a repeat.
-var COL_SOURCE    = 5;
-var NUM_COLS      = 6;
-var HEADERS = ['Timestamp', 'Email', 'Platforms', 'Status', 'LastSent', 'Source'];
+var NUM_COLS      = 5;
+var HEADERS = ['Timestamp', 'Email', 'Platforms', 'Status', 'LastSent'];
 
 function doPost(e) {
   var honeypot = e.parameter.website;
@@ -139,7 +135,6 @@ function doPost(e) {
   }
 
   var platforms = e.parameter.platforms || ''; // e.g. "macOS,Windows" or ""
-  var source = cleanCell(e.parameter.source, 100);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   ensureHeaders(sheet);
 
@@ -164,7 +159,7 @@ function doPost(e) {
 
   // Write first, send second: the address is the thing worth keeping, so it
   // must not depend on the mail step succeeding.
-  sheet.appendRow([new Date(), email, platforms, 'pending', '', source]);
+  sheet.appendRow([new Date(), email, platforms, 'pending', '']);
   deliverConfirmation(sheet, sheet.getLastRow(), email, platforms);
   return jsonResponse({ result: 'success' });
 }
@@ -254,8 +249,7 @@ function dailyDigest() {
   var lines = newRows.map(function (r) {
     return '  ' + formatStamp(r[COL_TIMESTAMP]) + '  ' + r[COL_EMAIL] +
       (r[COL_PLATFORMS] ? '  (' + r[COL_PLATFORMS] + ')' : '') +
-      '  [' + (r[COL_STATUS] || '?') + ']' +
-      (r[COL_SOURCE] ? '  via: ' + r[COL_SOURCE] : '');
+      '  [' + (r[COL_STATUS] || '?') + ']';
   });
 
   var body = 'Set Sail beta signups\n\n' +
@@ -328,10 +322,9 @@ function sendMail(to, subject, htmlBody, plainBody) {
   GmailApp.sendEmail(to, subject, plainBody, options);
 }
 
-// Writes the header row on a blank sheet, and widens an older sheet to the
-// current layout (Status/LastSent, then Source), so an existing
-// deployment picks up the new columns without anyone editing the Sheet by
-// hand. Rows from before a column existed just read as blank.
+// Writes the header row on a blank sheet, and widens an older 3-column
+// sheet to include Status/LastSent, so an existing deployment picks up the
+// new layout without anyone editing the Sheet by hand.
 function ensureHeaders(sheet) {
   if (sheet.getLastRow() === 0) {
     sheet.getRange(1, 1, 1, NUM_COLS).setValues([HEADERS]);
@@ -339,18 +332,9 @@ function ensureHeaders(sheet) {
   }
   var width = Math.max(sheet.getLastColumn(), 1);
   var current = sheet.getRange(1, 1, 1, Math.min(width, NUM_COLS)).getValues()[0];
-  if (String(current[COL_STATUS] || '') !== 'Status' || String(current[COL_LASTSENT] || '') !== 'LastSent' ||
-      String(current[COL_SOURCE] || '') !== 'Source') {
+  if (String(current[COL_STATUS] || '') !== 'Status' || String(current[COL_LASTSENT] || '') !== 'LastSent') {
     sheet.getRange(1, 1, 1, NUM_COLS).setValues([HEADERS]);
   }
-}
-
-// Free text from the page, made safe for a cell: trimmed, capped, and with a
-// leading = + - @ escaped so Sheets stores it as text rather than running it
-// as a formula.
-function cleanCell(value, maxLength) {
-  var text = String(value || '').trim().slice(0, maxLength);
-  return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
 
 // All rows below the header, padded to NUM_COLS. getRange throws if asked

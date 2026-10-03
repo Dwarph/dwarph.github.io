@@ -21,27 +21,19 @@ things only Pip can do (they need a login). No paid tools anywhere.
 - `.github/workflows/indexnow.yml` and `ad1499c224dcbf70d020f3d1d6b14004.txt`:
   after each Pages deploy, tells Bing and the other IndexNow engines which Set
   Sail pages changed. Only runs once it's on `main`. Don't delete the key file.
-- The signup form quietly records where people came from: a `?ref=` tag on
-  the link, or else the referring site (Source column). Put `?ref=` on links
-  you share, e.g. `pipturner.co.uk/setsail/?ref=bluesky`.
 
-## One-off setup (about an hour)
+## One-off setup (about half an hour)
 
-1. **Redeploy the signup Apps Script.** `setsail/apps-script.gs` gained a
-   Source column. Follow "UPDATING THE LIVE DEPLOYMENT" at the top
-   of that file (edit the existing deployment, don't make a new one). The
-   header row widens itself on the next signup. Until this is done, the page
-   still works; the source is just ignored.
-2. **Google Search Console** (search.google.com/search-console). Add a
+1. **Google Search Console** (search.google.com/search-console). Add a
    *Domain* property for `pipturner.co.uk` and verify with the DNS TXT record
    it gives you, at your domain registrar. Then Sitemaps → submit
    `https://pipturner.co.uk/setsail/sitemap.xml`, and URL inspection →
    request indexing for `/setsail/`.
-3. **Bing Webmaster Tools** (bing.com/webmasters). Sign in and choose
+2. **Bing Webmaster Tools** (bing.com/webmasters). Sign in and choose
    "Import from Google Search Console". That brings the site and sitemap
    across with no second verification. Bing matters more than its market
    share suggests, because ChatGPT search and Copilot draw on its index.
-4. **Check the structured data** once it's live:
+3. **Check the structured data** once it's live:
    search.google.com/test/rich-results and validator.schema.org, for both
    `/setsail/` and `/setsail/changelog/`.
 
@@ -50,8 +42,6 @@ things only Pip can do (they need a login). No paid tools anywhere.
 **Search Console and Bing:** note impressions and clicks for `/setsail/`, and
 which queries show up. Queries you didn't expect are ideas for notes or FAQ
 answers.
-
-**The signup sheet:** count the Source column.
 
 **AI check:** ask each of ChatGPT (with search on), Perplexity, Google (the AI
 Overview), Copilot and Claude the same questions in a fresh chat, and note

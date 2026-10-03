@@ -24,23 +24,6 @@ const emailInput = form.querySelector('input[type="email"]');
 
 const selected = new Set();
 
-// Where this visit came from, for the signup sheet: a ?ref= tag if the link
-// carried one (e.g. ?ref=hn), else the referring site's hostname. Same-site
-// referrers (the changelog's "Get Set Sail" button) say nothing useful, so
-// they're dropped. Capped, since it's going into a spreadsheet cell.
-const sourceField = document.getElementById('sourceField');
-try {
-  const ref = new URLSearchParams(location.search).get('ref');
-  let source = ref ? `ref:${ref}` : '';
-  if (!source && document.referrer) {
-    const host = new URL(document.referrer).hostname;
-    if (host && host !== location.hostname) source = host;
-  }
-  sourceField.value = source.slice(0, 100);
-} catch (err) {
-  // A malformed referrer just means no source — never block the form on it.
-}
-
 // Recomputed on every chip toggle and email keystroke. The submit button
 // stays disabled — rather than letting an invalid submit show a validation
 // message — for as long as either condition isn't met; hovering the

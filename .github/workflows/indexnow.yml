@@ -1,0 +1,74 @@
+# Tells Bing (and through it ChatGPT search and Copilot), Yandex and the other
+# IndexNow engines that a Set Sail page changed, so they recrawl in minutes
+# rather than whenever they next get round to it. Google doesn't use IndexNow;
+# Search Console and the sitemap cover it.
+#
+# Runs after GitHub Pages has finished deploying, so the engines fetch the new
+# page rather than the old one. Only pages under setsail/ that the deployed
+# commit actually touched are sent: IndexNow asks for changed URLs only.
+#
+# The key is public by design: IndexNow proves you own the site by fetching
+# https://pipturner.co.uk/<key>.txt and checking it holds the same key.
+name: IndexNow
+
+on:
+  workflow_run:
+    workflows: ["pages-build-deployment"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    env:
+      KEY: ad1499c224dcbf70d020f3d1d6b14004
+      HOST: pipturner.co.uk
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Work out which Set Sail pages changed
+        id: urls
+        run: |
+          # setsail/foo/index.html -> https://HOST/setsail/foo/
+          # setsail/foo.html       -> https://HOST/setsail/foo.html
+          # A stylesheet or script change counts as a change to the landing
+          # page, since that's where nearly all of them show up.
+          changed=$(git diff --name-only "$SHA~1" "$SHA" -- setsail/ || true)
+          urls=$(
+            for f in $changed; do
+              case "$f" in
+                */index.html) echo "https://$HOST/${f%index.html}" ;;
+                *.html)       echo "https://$HOST/$f" ;;
+                *.css|*.js)   echo "https://$HOST/setsail/" ;;
+              esac
+            done | sort -u
+          )
+          echo "$urls"
+          {
+            echo 'list<<EOF'
+            echo "$urls"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Ping IndexNow
+        if: steps.urls.outputs.list != ''
+        env:
+          URLS: ${{ steps.urls.outputs.list }}
+        run: |
+          body=$(jq -n --arg host "$HOST" --arg key "$KEY" --arg urls "$URLS" \
+            '{host: $host, key: $key, keyLocation: "https://\($host)/\($key).txt",
+              urlList: ($urls | split("\n") | map(select(length > 0)))}')
+          echo "$body"
+          status=$(curl -sS -o /dev/stderr -w '%{http_code}' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$body" https://api.indexnow.org/indexnow)
+          echo "IndexNow answered $status"
+          # 200 and 202 both mean accepted.
+          [ "$status" = 200 ] || [ "$status" = 202 ]

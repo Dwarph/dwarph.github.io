@@ -1,0 +1,18 @@
+# Set Sail
+
+> Set Sail is a delightful screen recorder for macOS and Windows, made by Pip Turner. Record your whole screen, a window or a region, with a webcam bubble, microphone and system audio. There's no account, and recordings save straight to a folder on your own computer. It's in free beta.
+
+- Records the whole screen, a single window, or a region you drag out
+- Webcam bubble you can move and resize during a recording, with a choice of shape, size, soft edge, shadow and background blur
+- Microphone and system audio, each switchable before and during a recording (system audio needs macOS 13 or later on a Mac)
+- Pause and resume from a small control strip that never appears in the recording
+- Transcripts made on your own computer with Whisper, exportable as text
+- Every take levelled to -16 LUFS, -1 dBTP
+- Set Sail's own windows stay out of the recording
+- Crash reports and usage stats are off unless you turn them on
+
+## Pages
+
+- [Set Sail](https://pipturner.co.uk/setsail/): what it does, common questions, and the beta signup
+- [Changelog](https://pipturner.co.uk/setsail/changelog/): every release, newest first, with dates
+- [Privacy policy](https://pipturner.co.uk/setsail/privacypolicy/): what the app can access and what, if anything, it sends

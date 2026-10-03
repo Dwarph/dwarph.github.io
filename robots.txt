@@ -1,0 +1,13 @@
+# Everything on pipturner.co.uk is open to crawlers, including AI search
+# (OAI-SearchBot, PerplexityBot, ClaudeBot, Bingbot behind Copilot and
+# ChatGPT search). To opt out of AI *training* while staying in AI search,
+# add blocks like:
+#   User-agent: GPTBot
+#   Disallow: /
+#   User-agent: Google-Extended
+#   Disallow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pipturner.co.uk/setsail/sitemap.xml

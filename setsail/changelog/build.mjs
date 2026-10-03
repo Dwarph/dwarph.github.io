@@ -50,9 +50,9 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const MARKDOWN_PATH = path.join(here, 'changelog.md');
 const OUT_PATH = path.join(here, 'index.html');
 
-const SITE_URL = 'https://pipturner.co.uk/setsail/changelog';
+const SITE_URL = 'https://pipturner.co.uk/setsail/changelog/';
 const OG_IMAGE = 'https://pipturner.co.uk/setsail/assets/og.jpg';
-const APP_URL = 'https://pipturner.co.uk/setsail';
+const APP_URL = 'https://pipturner.co.uk/setsail/';
 
 /* Parsing -------------------------------------------------------------------- */
 
@@ -184,6 +184,57 @@ const MARK = `<svg class="ss-mark" viewBox="0 0 128 128" width="48" height="48" 
         <path d="M65.9688 86.6969C47.2937 84.8465 47.9105 78.6782 27.5554 78.6782C27.5554 78.6782 17.4137 78.6782 6.65336 86.6969C10.6432 94.5211 14.8112 100.318 24.4861 108.566C37.9217 118.836 48.9865 122.617 65.9688 122.215C81.9223 121.836 94.9729 115.5 104.482 107.82C109.332 104.476 120.484 91.7349 123.218 82.451C115.644 78.6782 109.593 78.6782 109.593 78.6782C91.8432 76.4595 85.5368 88.6359 65.9688 86.6969Z" fill="#2397DD" />
       </svg>`;
 
+/* "22 September 2026" → "2026-09-22", for <time datetime> and the JSON-LD.
+ * The date line is free text (see the grammar above), so anything that isn't
+ * in this shape just gets no machine-readable date rather than a wrong one. */
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
+  'august', 'september', 'october', 'november', 'december'];
+function isoDate(text) {
+  const m = /^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/.exec(String(text).trim());
+  if (!m) return null;
+  const month = MONTHS.indexOf(m[2].toLowerCase());
+  if (month === -1) return null;
+  return `${m[3]}-${String(month + 1).padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+}
+
+/* Structured data, so search engines and AI answers can read the release
+ * history rather than guess at it: the app, its current version and date, and
+ * each release as a dated item. Built from the same parse as the page, so the
+ * two can't drift. `<` is escaped so no release text can close the script. */
+function renderJsonLd(releases) {
+  const latest = releases[0];
+  const data = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        '@id': `${APP_URL}#app`,
+        name: 'Set Sail',
+        url: APP_URL,
+        applicationCategory: 'MultimediaApplication',
+        operatingSystem: 'macOS, Windows',
+        softwareVersion: latest.version,
+        ...(isoDate(latest.date) && { dateModified: isoDate(latest.date) }),
+        releaseNotes: SITE_URL,
+        author: { '@type': 'Person', '@id': 'https://pipturner.co.uk/#pip', name: 'Pip Turner', url: 'https://pipturner.co.uk/' },
+      },
+      {
+        '@type': 'ItemList',
+        name: 'Set Sail releases',
+        itemListOrder: 'https://schema.org/ItemListOrderDescending',
+        itemListElement: releases.map((release, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SITE_URL}#${anchorFor(release.version)}`,
+          name: `${release.title} (v${release.version})`,
+          ...(isoDate(release.date) && { description: `Released ${release.date}.` }),
+        })),
+      },
+    ],
+  };
+  return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
+}
+
 function renderRelease(release) {
   const ordered = [...release.entries].sort(
     (a, b) => categoryRank(a.category) - categoryRank(b.category),
@@ -207,7 +258,11 @@ function renderRelease(release) {
           ${escapeHtml(release.title)}
           <span class="cl-version">v${release.version}</span>
         </h2>
-        <p class="cl-meta">${escapeHtml(release.date)}</p>
+        <p class="cl-meta">${
+          isoDate(release.date)
+            ? `<time datetime="${isoDate(release.date)}">${escapeHtml(release.date)}</time>`
+            : escapeHtml(release.date)
+        }</p>
         <ul class="cl-entries">
 ${entries}
         </ul>
@@ -224,6 +279,7 @@ function renderPage({ h1, lead, releases }) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Everything that has changed in Set Sail, the lightweight screen recorder for macOS and Windows.">
+  <link rel="canonical" href="${SITE_URL}">
   <meta property="og:title" content="Set Sail - Changelog">
   <meta property="og:description" content="Everything that has changed in Set Sail, newest first.">
   <meta property="og:type" content="website">
@@ -244,6 +300,10 @@ function renderPage({ h1, lead, releases }) {
   <link rel="stylesheet" href="../setsail.css">
   <link rel="stylesheet" href="changelog.css">
   <title>Set Sail - Changelog</title>
+
+  <script type="application/ld+json">
+${renderJsonLd(releases)}
+  </script>
 </head>
 
 <body>

@@ -64,6 +64,10 @@ body {
    the free space; this footer is left sitting on the bottom edge. */
 .ss-foot {
   flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
   padding: 24px;
   text-align: center;
 }
@@ -177,6 +181,26 @@ body {
   color: var(--on-surface);
   font: 400 15px/1 var(--font-body);
 }
+/* Optional, so it's quieter than the email field: no border until focused,
+   and only as tall as a chip. */
+.ss-heard {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background: #EFECE4;
+  color: var(--on-surface);
+  font: 400 13px/1 var(--font-body);
+}
+.ss-heard::placeholder { color: var(--on-surface-muted); }
+.ss-heard:focus-visible {
+  outline: 2px solid #2397DD;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgb(28 28 26 / 0.45);
+}
+body.ss-mouse-user .ss-heard:focus-visible { outline: none; box-shadow: none; border-color: rgb(28 28 26 / 0.16); }
+.ss-heard:disabled { opacity: 0.45; }
 .ss-field-group input[type="email"]::placeholder { color: var(--on-surface-muted); }
 .ss-field-group input[type="email"]:focus-visible {
   outline: 2px solid #2397DD;
@@ -430,11 +454,10 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
 
   /* `vh` is the viewport with the browser's URL bar retracted, so on a phone
      the page is laid out about a bar's height taller than the fold you can
-     actually see, and the footer's changelog link lands under the bar. Worse,
-     that overflow makes the page scrollable, and scrolling is what retracts
-     the bar: .ss-sea then grows with it and the painting re-crops under your
-     thumb. `svh` is the fold with the bar showing, so the link stays on
-     screen, there is nothing to scroll, and the bar never moves.
+     actually see. The page does scroll now (the "What it does" plate sits
+     below the fold), but the first screen is still sized to `svh` via
+     .ss-fold below, so the card is centred in the fold you can actually see,
+     with the bar showing. .ss-sea handles the bar retracting on scroll.
      `height: auto` is here to undo the `height: 100%` on html/body above,
      which would otherwise pin the body back to the taller viewport and leave
      min-height with nothing to do. */
@@ -506,3 +529,70 @@ body.ss-mouse-user .ss-field-group input[type="email"]:focus-visible {
 }
 .ss-landing .ss-link { color: #EDE8CC; }
 .ss-landing .ss-link:focus-visible { outline-color: #EDE8CC; }
+
+/* --- Landing page: below the fold -----------------------------------------
+ *
+ * The first screen is exactly what it was: the card, centred in the visible
+ * fold. Scroll and a second plate on the same water says what the app does
+ * and answers the obvious questions, in plain words a search engine or an AI
+ * answer can quote. Same plate as the hero, so it reads as one page rather
+ * than a marketing section bolted on.
+ */
+.ss-landing .ss-main {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ss-landing .ss-fold {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 24px 0;
+}
+
+.ss-landing .ss-more {
+  margin: 0 auto;
+  align-items: stretch;
+  gap: 0;
+  text-align: left;
+}
+
+.ss-more-title {
+  margin: 0 0 12px;
+  font: 700 22px / 1.2 var(--font-display);
+  letter-spacing: -0.3px;
+}
+.ss-more-title:not(:first-child) { margin-top: 32px; }
+
+.ss-features {
+  margin: 0;
+  padding: 0 0 0 20px;
+  font: 400 16px / 26px var(--font-body);
+}
+.ss-features li + li { margin-top: 6px; }
+
+.ss-faq h3 {
+  margin: 20px 0 4px;
+  font: 700 17px / 1.3 var(--font-display);
+}
+.ss-faq h3:first-child { margin-top: 0; }
+.ss-faq p {
+  margin: 0;
+  font: 400 16px / 26px var(--font-body);
+  color: var(--on-surface-muted);
+}
+
+.ss-more a {
+  border-radius: 4px;
+  color: #1F6F9F;
+  font-weight: 600;
+}
+.ss-more a:focus-visible {
+  outline: 2px solid #2397DD;
+  outline-offset: 2px;
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Set Sail's pages. Add any new page under /setsail/ here (a sitemap can
+     only list URLs under its own folder). robots.txt at the site root points
+     here. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://pipturner.co.uk/setsail/</loc></url>
+  <url><loc>https://pipturner.co.uk/setsail/changelog/</loc></url>
+  <url><loc>https://pipturner.co.uk/setsail/privacypolicy/</loc></url>
+</urlset>

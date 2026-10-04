@@ -191,6 +191,28 @@
     display: none;
 }
 
+/* In place of the link while a case study is still being written - the same lock and
+   wording as Featured's "Coming Soon!" badge, muted like the list's. */
+.wv-card-soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    opacity: 0.6;
+}
+
+.wv-card-soon .material-icons {
+    font-size: 18px;
+}
+
+.wv-card-soon[hidden] {
+    display: none;
+}
+
 .wv-card :focus-visible {
     outline: 3px solid var(--highlight-yellow);
     outline-offset: 2px;

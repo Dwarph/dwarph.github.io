@@ -33,6 +33,7 @@
             '</div>' +
             '<div class="wv-card-actions">' +
             '<a class="wv-card-link"></a>' +
+            '<span class="wv-card-soon"><span class="material-icons" aria-hidden="true">lock</span>Coming soon</span>' +
             '<span class="wv-card-nav">' +
             '<button type="button" class="wv-card-step" data-step="-1" aria-label="Previous"><span class="material-icons" aria-hidden="true">arrow_back</span></button>' +
             '<span class="wv-card-count" aria-live="polite"></span>' +
@@ -167,6 +168,7 @@
         var link = linkFor(it);
         var a = d.querySelector('.wv-card-link');
         a.hidden = !link;
+        d.querySelector('.wv-card-soon').hidden = !it.comingSoon;
         if (link) {
             a.href = link.href;
             a.innerHTML = esc(link.label) + '<span class="material-icons" aria-hidden="true">' + (link.external ? 'north_east' : 'chevron_right') + '</span>';

@@ -118,6 +118,7 @@
             host.alt.innerHTML = window.WorkViewsGrid.render(host.tiles, { reduced: isReduced() });
         }
         window.WorkViewsMedia.observeVideos(host.alt);
+        if (window.refreshScrollAnim) window.refreshScrollAnim();
     }
 
     // List rows open the detail card too. Tiles follow the rows' on-screen order, so ←/→

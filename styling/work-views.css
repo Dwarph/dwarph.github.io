@@ -92,6 +92,19 @@ body {
     display: inline-block;
 }
 
+/* Scroll reveal (desktop): scrollAnim.js writes each [data-scroll-reveal] element's
+   progress to --sr, matching Featured's cards (fade, 12px rise, 4px blur). As individual
+   properties it stacks on tile hover transforms; List rows reveal through a .wv-reveal
+   wrapper so their spotlight opacity and the brand line (drawn on the <li>) are untouched.
+   --sr-rest is the element's resting opacity. Same gate as home.css's reveal chunks. */
+@media (min-width: 769px) {
+    html:not(.scroll-anim-off) [data-scroll-reveal] {
+        opacity: calc(var(--sr, 0) * var(--sr-rest, 1));
+        translate: 0 calc((1 - var(--sr, 0)) * 12px);
+        filter: blur(calc((1 - var(--sr, 0)) * 4px));
+    }
+}
+
 /* Snapshot of the outgoing view while the new one animates in - underneath it. */
 .wv-ghost {
     position: absolute;

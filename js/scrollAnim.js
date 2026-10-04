@@ -169,6 +169,24 @@
             ch.style.transform = '';
             ch.style.filter = '';
         }
+        var extras = container.querySelectorAll('[data-scroll-reveal]');
+        for (var j = 0; j < extras.length; j++) extras[j].style.setProperty('--sr', '1');
+    }
+
+    /**
+     * Elements marked data-scroll-reveal (the Work views' List rows and Grid tiles) get the
+     * same reveal as the cards above, but as a --sr progress (0..1) that CSS maps to
+     * opacity / translate / blur - so it composes with their own hover transforms and
+     * spotlight opacity. Queried each pass: those views re-render on every switch.
+     */
+    function updateRevealTargets(container, scrollY, maxScrollY) {
+        var els = container.querySelectorAll('[data-scroll-reveal]');
+        for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            if (!el.getClientRects().length) continue;
+            var p = easeFade(clamp01(getProgressInViewport(el, scrollY, maxScrollY)));
+            el.style.setProperty('--sr', p.toFixed(3));
+        }
     }
 
     window.initScrollAnim = function (container) {
@@ -383,10 +401,15 @@
                     applyScrollReveal(contactSection.querySelector('.section-title'), contactTitleUse, true);
                     applyScrollRevealOpacity(contactSection.querySelector('.contact-content'), contactBodyUse);
                 }
+                updateRevealTargets(container, scrollY, maxScrollY);
             }
         }
 
         update();
+
+        // Work views calls this right after it renders List/Grid, so new rows start in
+        // their scroll state rather than waiting for the next scroll.
+        window.refreshScrollAnim = function () { update(1000 / 60); };
 
         // Run animation continuously while scrolling to avoid "notch" judder.
         var rafId = null;

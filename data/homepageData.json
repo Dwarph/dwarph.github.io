@@ -23,6 +23,8 @@
           "image": "images/casestudies/eux.png",
           "imageAlt": "Early user experience case study image",
           "tags": "2D UX, Figma, Growth",
+          "short": "+16% new user conversion by designing for real needs",
+          "hero": true,
           "description": "Hitting key metrics through user centred design. +16% new user conversion, +10% paywall conversion, +30% users playing one or more classes - all by caring + addressing user needs.",
           "key": "early-user-experience"
         },
@@ -31,6 +33,8 @@
           "image": "images/casestudies/sjc.png",
           "imageAlt": "Sidestep jump crouch case study image",
           "tags": "Rapid Prototyping + Spatial Design",
+          "short": "Three new VR moves, from prototype to shipped in 3 months",
+          "hero": true,
           "description": "Spatial interaction design for a mass market VR fitness application. Prototyped, tested & shipped 3 new moves for FitXR in 3 months. Elicited user responses like \"FINALLY, my pulse was RACING. LOVE IT.\"",
           "key": "sidestep-jump-crouch"
         }
@@ -50,6 +54,8 @@
           "image": "images/casestudies/prosho.png",
           "imageAlt": "Hyperion showcase case study image",
           "tags": "Flagship demos which led to OEM opportunities",
+          "short": "Flagship XR demos that opened up new business",
+          "hero": true,
           "description": "Novel XR interaction research + design to create flagship demos, opening up new business opportunities for Ultraleap.",
           "key": "prosho"
         },
@@ -57,6 +63,7 @@
           "title": "Interaction Archive",
           "image": "images/casestudies/design-archive.png",
           "imageAlt": "Interaction archive image",
+          "short": "Every interaction & app I made at Ultraleap",
           "description": "At Ultraleap, I designed and contributed to a lot of different interactions and apps! I've archived all of them here.",
           "link": "interaction-archive.html"
         },
@@ -64,6 +71,7 @@
           "title": "XR Design Guidelines",
           "image": "images/projects/xrguidelines.png",
           "imageAlt": "XR design guidelines image",
+          "short": "Ultraleap's best practice for hand tracking in XR",
           "description": "I helped write & rework Ultraleap's XR Guidelines - providing guidance and insight into our best recommendations for XR Hand Tracking interactions.",
           "link": "https://docs.ultraleap.com/xr-guidelines/index.html",
           "key": "xr-guidelines"
@@ -73,6 +81,7 @@
           "image": "images/casestudies/dogracer.jpg",
           "imageAlt": "Dog racer case study image",
           "tags": "Leading a team through a tough project",
+          "short": "A Leap2 launch app in four weeks, with a reluctant team",
           "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
           "key": "dogracer"
         }
@@ -87,6 +96,7 @@
       "year": 2026,
       "tags": "macOS, Windows",
       "lead": "A delightful screen recorder for macOS and Windows.",
+      "short": "A delightful screen recorder, for mac + windows",
       "description": "A delightful screen recorder for macOS and Windows. Currently in free beta.",
       "image": "images/projects/setsail.webp",
       "imageAlt": "A tiny sailing boat alone on a wide teal sea.",
@@ -103,6 +113,7 @@
       "tier": "minor",
       "year": 2026,
       "tags": "UI, Interaction, Prototype",
+      "short": "A dial that turns circular motion into input",
       "description": "A circle slider that turns circular motion into input. Uses velocity-based motion detection.",
       "image": "images/projects/circle-slider.png",
       "imageAlt": "A circular slider dial with a progress arc and a knob indicator.",
@@ -113,6 +124,7 @@
       "tier": "minor",
       "year": 2025,
       "tags": "AI, Vibe Coding",
+      "short": "A daily art app: prompts, inspiration & critiques",
       "description": "A concept + prototype for a daily art app, that generates prompts, inspiration, and critiques of your art.",
       "image": "images/projects/morandi.png",
       "imageAlt": "Morandi project image",
@@ -123,6 +135,7 @@
       "tier": "minor",
       "year": 2024,
       "tags": "XR, Unity, Meta Quest",
+      "short": "Dig fossils out of your own wall, in mixed reality",
       "description": "An XRHACK24 submission. Extract fossils from your wall & learn about the prehistoric era in this MR prototype. Made with Julia Ronneberger & Rory Clark",
       "image": "images/projects/DinoDig.webp",
       "imageAlt": "Dino Dig project image",
@@ -134,6 +147,7 @@
       "year": 2023,
       "tags": "Playdate, Lua",
       "lead": "A satisfying, minimal pomodoro timer for the Playdate.",
+      "short": "A satisfying, minimal focus timer for the Playdate",
       "description": "Pomodoro. is a satisfying, minimal pomodoro timer for the Playdate console, focused on keeping you in your flow.",
       "image": "images/projects/pomodoro.webp",
       "imageAlt": "A yellow Playdate console held in two hands, running the Pomodoro timer.",
@@ -150,6 +164,7 @@
       "tier": "minor",
       "year": 2022,
       "tags": "P5, Javascript",
+      "short": "Flow fields & perlin noise, made with p5",
       "description": "Generative art made with p5, using flow fields & perlin noise.",
       "image": "images/projects/p5.webp",
       "imageAlt": "P5 generative art project image",

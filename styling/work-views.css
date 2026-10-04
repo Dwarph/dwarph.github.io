@@ -1,0 +1,163 @@
+/* Work + Projects views (homepage): shell, sticky switcher and transition plumbing.
+   The List, Grid and detail card live in work-views-list.css, work-views-grid.css and
+   work-views-card.css. Tokens come from core.css. */
+
+:root {
+    --wv-hair: rgba(55, 44, 9, 0.1);
+    --wv-tint: rgba(55, 44, 9, 0.06);
+    --wv-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --wv-switch-size: 44px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --wv-switch-size: 40px;
+    }
+}
+
+/* core.css sets overflow-x: hidden on html/body, which turns body into a scroll
+   container and stops the sticky switcher from ever sticking. clip blocks sideways
+   scrolling without that side effect. (This file only loads on the homepage.) */
+html,
+body {
+    overflow-x: clip;
+}
+
+/* ---- Sections + sticky dock ---- */
+
+.wv-sections {
+    position: relative;
+}
+
+/* One dock for both sections: the wrapper's first child, so it stays pinned from the
+   Work title down through Projects. It takes no layout space (negative margin) and is
+   as tall as the pill, so it lets go exactly where Projects ends. It borrows
+   .homepage-section for the column width; these rules undo that class's spacing. */
+.wv-sections > .wv-dock {
+    --wv-dock-h: calc(var(--wv-switch-size) + 16px);
+    position: sticky;
+    top: 16px;
+    z-index: 40;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    height: var(--wv-dock-h);
+    margin-bottom: calc(-1 * var(--wv-dock-h));
+    pointer-events: none;
+}
+
+.wv-sections > .wv-dock > * {
+    pointer-events: auto;
+    margin-top: calc((var(--fs-page-title) - var(--wv-switch-size)) / 2 - 4px);
+}
+
+/* At rest the switcher sits beside the Work title. */
+#work > .section-title {
+    padding-right: calc(var(--wv-switch-size) * 3 + 24px);
+}
+
+.wv-section {
+    position: relative;
+}
+
+.wv-stage {
+    position: relative;
+}
+
+.wv-featured[hidden],
+.wv-alt[hidden] {
+    display: none;
+}
+
+/* Grids break out of the 730px reading column to the case-study bleed-xl width. */
+.wv-stage--wide {
+    --wv-wide: min(1100px, calc(100vw - 2 * var(--header-frame-side)));
+    width: var(--wv-wide);
+    margin-left: calc((100% - var(--wv-wide)) / 2);
+}
+
+/* Shared parts must be transformable for the swap animation; spans are inline. */
+.wv-stage span[data-wv-key] {
+    display: inline-block;
+}
+
+/* Snapshot of the outgoing view while the new one animates in. */
+.wv-ghost {
+    position: absolute;
+    margin: 0 !important;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ---- Switcher: segmented pill, ink thumb slides behind the active icon ---- */
+
+.wv-switcher {
+    position: relative;
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-color) 84%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgba(55, 44, 9, 0.1), 0 6px 20px rgba(55, 44, 9, 0.08);
+}
+
+.wv-sw-thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: var(--wv-switch-size);
+    height: var(--wv-switch-size);
+    border-radius: 999px;
+    background: var(--text-color);
+    transform: translateX(calc(var(--i) * var(--wv-switch-size)));
+    transition: transform 0.45s cubic-bezier(0.3, 1.25, 0.5, 1);
+}
+
+.wv-sw-opt {
+    appearance: none;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--wv-switch-size);
+    height: var(--wv-switch-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--text-color);
+    font: inherit;
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity 0.2s, color 0.25s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.wv-sw-opt .material-icons {
+    font-size: 22px;
+}
+
+.wv-sw-opt[aria-checked="true"] {
+    opacity: 1;
+    color: var(--bg-color);
+}
+
+@media (hover: hover) {
+    .wv-sw-opt:hover {
+        opacity: 0.9;
+    }
+}
+
+.wv-sw-opt:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wv-sw-thumb,
+    .wv-sw-opt {
+        transition: none;
+    }
+}

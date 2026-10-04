@@ -587,6 +587,9 @@ function loadHomepageData() {
         if (window.loadHeaderDistortion) {
             window.loadHeaderDistortion(container);
         }
+        // Featured / List / Grid switcher for Work + Projects (workViews.js). Runs before the
+        // timeline and scroll setup below, which then measure the wrapped layout.
+        if (window.initWorkViews) window.initWorkViews(container, data);
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {
@@ -619,6 +622,9 @@ function loadHomepageData() {
                 }
             }
         }
+
+        // Work views re-runs this when Featured comes back after List/Grid.
+        window.updateHomepageTimelinePositions = updateTimelinePositions;
 
         // Wait for layout to settle using requestAnimationFrame
         requestAnimationFrame(function() {
@@ -722,6 +728,10 @@ function loadHomepageData() {
                 e.preventDefault();
                 var targetId = href.substring(1);
                 var targetElement = document.getElementById(targetId);
+                // In List/Grid the job block is hidden; the views point at that employer there.
+                if (window.resolveWorkViewsAnchor) {
+                    targetElement = window.resolveWorkViewsAnchor(targetId) || targetElement;
+                }
                 if (targetElement) {
                     setHomepageNavActive(container, 'work');
                     homepageNavSpySuppressUntil =

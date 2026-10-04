@@ -12,7 +12,7 @@
          * Lower = full opacity/unblur after less scrolling (snappier). Higher = longer roll-in.
          * Typical range: 0.35–0.55 (fast) … 0.8 (slow).
          */
-        fadeZone: 0.55,
+        fadeZone: 0.1,
         /** Shapes how progress maps inside that band: linear | ease-in | ease-out | smooth */
         fadeEasing: 'smooth',
         enabled: true,
@@ -513,8 +513,8 @@
             '<label class="scroll-anim-panel__row"><input type="checkbox" id="scroll-anim-playOnce"> Play once</label>' +
             '<div class="scroll-anim-panel__row" title="When Play once is on: progress must reach this (0–1) before the element is marked done and no longer reverses. Higher = scroll further before it sticks."><span>Threshold</span><span id="scroll-anim-threshold-val">0.95</span></div>' +
             '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-threshold" min="0" max="1" step="0.05" value="0.95"></label>' +
-            '<div class="scroll-anim-panel__row" title="Lower = full fade/unblur in less scroll distance. Higher = longer roll-in."><span>Fade zone</span><span id="scroll-anim-fadeZone-val">0.55</span></div>' +
-            '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-fadeZone" min="0.1" max="1" step="0.05" value="0.55"></label>' +
+            '<div class="scroll-anim-panel__row" title="Lower = full fade/unblur in less scroll distance. Higher = longer roll-in."><span>Fade zone</span><span id="scroll-anim-fadeZone-val">0.10</span></div>' +
+            '<label class="scroll-anim-panel__row"><input type="range" id="scroll-anim-fadeZone" min="0.1" max="1" step="0.05" value="0.1"></label>' +
             '<label class="scroll-anim-panel__row"><span>Easing</span><select id="scroll-anim-fadeEasing"><option value="linear">Linear</option><option value="ease-in">Ease in</option><option value="ease-out">Ease out</option><option value="smooth" selected>Smooth</option></select></label>' +
             '</div>' +
             '<div class="scroll-anim-panel__group">' +

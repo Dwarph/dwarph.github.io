@@ -1,0 +1,399 @@
+/* Work views prototype: the detail card a grid tile opens into.
+   The <dialog> is a full-screen, transparent scroller with the card centred in it, so
+   anything too tall scrolls instead of being clipped or drawn over the media.
+   --ar and --nat-w (set by JS from the media) size every layout: the media fills its
+   box at its own shape and never grows past its native resolution.
+   data-layout picks the layout; adaptive maps to fit (landscape) or split
+   (square/portrait) via data-orient. Each layout sets --card-w. */
+
+.wv-card {
+    --gut: 16px;
+    --pad: 12px;
+    --text-h: 176px;   /* room fit/caption keep below the media before scrolling kicks in */
+    --panel-w: 340px;  /* split's text column */
+    --card-w: min(1100px, calc(100vw - 2 * var(--gut)));
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--gut);
+    box-sizing: border-box;
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.wv-card[open] {
+    display: flex;
+}
+
+.wv-card::backdrop {
+    background: rgba(35, 28, 6, 0.6);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+/* margin: auto centres while it fits and falls back to the top when it doesn't. */
+.wv-card-inner {
+    position: relative;
+    width: var(--card-w);
+    margin: auto;
+    box-sizing: border-box;
+    padding: var(--pad);
+    border-radius: 22px;
+    background: var(--bg-color);
+    box-shadow: 0 30px 80px rgba(30, 24, 5, 0.35);
+}
+
+.wv-card-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--ar, 16 / 9);
+    border-radius: 14px;
+    background: var(--wv-tint);
+}
+
+.wv-card-media > img,
+.wv-card-media > video {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---- Text + actions (shared) ---- */
+
+.wv-card-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.wv-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.wv-card-sub {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.65;
+}
+
+.wv-card-sub a,
+.wv-card-desc a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.wv-card-desc a {
+    text-decoration-color: var(--highlight-pip);
+    text-decoration-thickness: 2px;
+}
+
+.wv-card-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-prose-h4);
+    line-height: 1.15;
+}
+
+.wv-card-desc {
+    margin: 2px 0 0;
+    font-size: 1rem;
+    line-height: var(--lh-body);
+    opacity: 0.85;
+}
+
+.wv-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.wv-card-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.wv-card-step,
+.wv-card-close {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(55, 44, 9, 0.07);
+    color: inherit;
+    cursor: pointer;
+}
+
+.wv-card-close {
+    position: absolute;
+    top: calc(var(--pad) + 10px);
+    right: calc(var(--pad) + 10px);
+    z-index: 3;
+    color: var(--text-color);
+    background: color-mix(in srgb, var(--bg-color) 90%, transparent);
+    box-shadow: 0 2px 10px rgba(30, 24, 5, 0.18);
+}
+
+.wv-card-count {
+    min-width: 56px;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    opacity: 0.6;
+}
+
+.wv-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 38px;
+    padding: 0 12px 0 16px;
+    border-radius: 999px;
+    background: var(--text-color);
+    color: var(--bg-color);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.wv-card-link .material-icons {
+    font-size: 20px;
+}
+
+.wv-card-link[hidden] {
+    display: none;
+}
+
+.wv-card :focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+/* The dev picker rides inside the open card; park it top-left, clear of the CTA. */
+.wv-card .wv-picker {
+    top: 12px;
+    left: 12px;
+    right: auto;
+    bottom: auto;
+    width: min(300px, calc(100vw - 80px));
+}
+
+@media (hover: hover) {
+    .wv-card-step:hover,
+    .wv-card-close:hover {
+        background: rgba(55, 44, 9, 0.14);
+    }
+
+    .wv-card-link:hover {
+        opacity: 0.88;
+    }
+}
+
+/* ---- 1. Fit (and adaptive, landscape): media on top, card as wide as the image allows ---- */
+
+.wv-card:is([data-layout="fit"], [data-layout="adaptive"][data-orient="landscape"]) {
+    --card-w: min(1100px, calc(100vw - 2 * var(--gut)),
+        calc((100dvh - 2 * var(--gut) - 2 * var(--pad) - var(--text-h)) * var(--ar) + 2 * var(--pad)),
+        calc(var(--nat-w, 9999px) + 2 * var(--pad)));
+}
+
+.wv-card:is([data-layout="fit"], [data-layout="adaptive"][data-orient="landscape"]) .wv-card-inner {
+    min-width: min(340px, calc(100vw - 2 * var(--gut)));
+}
+
+.wv-card:is([data-layout="fit"], [data-layout="adaptive"][data-orient="landscape"]) .wv-card-panel {
+    padding: 14px 6px 2px;
+}
+
+/* ---- 2. Split (and adaptive, portrait/square): media left at its own shape, text right ---- */
+
+.wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) {
+    --card-w: min(1240px, calc(100vw - 2 * var(--gut)),
+        calc((100dvh - 2 * var(--gut) - 2 * var(--pad)) * var(--ar) + var(--panel-w) + 2 * var(--pad) + 8px),
+        calc(var(--nat-w, 9999px) + var(--panel-w) + 2 * var(--pad) + 8px));
+}
+
+.wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--panel-w);
+    gap: 8px;
+}
+
+.wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-media {
+    align-self: center;
+}
+
+/* The text column scrolls on its own when it outgrows the media beside it. */
+.wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-panel {
+    justify-content: space-between;
+    max-height: calc(100dvh - 2 * var(--gut) - 2 * var(--pad));
+    padding: 56px 10px 4px 12px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-title {
+    font-size: var(--fs-card);
+}
+
+/* On phones there is no room beside the image: split stacks like fit. */
+@media (max-width: 720px) {
+    .wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) {
+        --card-w: min(calc(100vw - 2 * var(--gut)), calc(var(--nat-w, 9999px) + 2 * var(--pad)));
+    }
+
+    .wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-inner {
+        display: block;
+        min-width: min(340px, calc(100vw - 2 * var(--gut)));
+    }
+
+    .wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-panel {
+        max-height: none;
+        padding: 14px 6px 2px;
+        overflow: visible;
+    }
+
+    .wv-card:is([data-layout="split"], [data-layout="adaptive"][data-orient="portrait"]) .wv-card-title {
+        font-size: var(--fs-prose-h4);
+    }
+}
+
+/* ---- 3. Bleed: media as large as the screen allows; text beside it (wide) or below (narrow) ---- */
+
+.wv-card[data-layout="bleed"] {
+    --card-w: 100%;
+    padding: 24px;
+}
+
+.wv-card[data-layout="bleed"]::backdrop {
+    background: rgba(20, 16, 4, 0.92);
+}
+
+.wv-card[data-layout="bleed"] .wv-card-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) min(380px, 34vw);
+    align-items: end;
+    gap: 24px;
+    min-height: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.wv-card[data-layout="bleed"] .wv-card-media {
+    align-self: center;
+    justify-self: center;
+    width: min(100%, calc((100dvh - 48px) * var(--ar)), var(--nat-w, 9999px));
+    border-radius: 10px;
+}
+
+.wv-card[data-layout="bleed"] .wv-card-panel {
+    max-height: calc(100dvh - 48px);
+    padding: 16px;
+    border-radius: 18px;
+    background: var(--bg-color);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.wv-card[data-layout="bleed"] .wv-card-close {
+    top: 0;
+    right: 0;
+}
+
+@media (max-width: 720px) {
+    .wv-card[data-layout="bleed"] {
+        padding: 12px;
+    }
+
+    .wv-card[data-layout="bleed"] .wv-card-inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .wv-card[data-layout="bleed"] .wv-card-media {
+        width: min(100%, var(--nat-w, 9999px));
+    }
+
+    .wv-card[data-layout="bleed"] .wv-card-panel {
+        width: 100%;
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+/* ---- 4. Caption: no card - rounded media, text set on the backdrop beneath ---- */
+
+.wv-card[data-layout="caption"] {
+    --card-w: min(1100px, calc(100vw - 2 * var(--gut)),
+        calc((100dvh - 2 * var(--gut) - var(--text-h)) * var(--ar)),
+        var(--nat-w, 9999px));
+    color: var(--bg-color);
+}
+
+.wv-card[data-layout="caption"]::backdrop {
+    background: rgba(30, 24, 5, 0.86);
+}
+
+.wv-card[data-layout="caption"] .wv-card-inner {
+    min-width: min(340px, calc(100vw - 2 * var(--gut)));
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.wv-card[data-layout="caption"] .wv-card-media {
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+.wv-card[data-layout="caption"] .wv-card-panel {
+    padding: 16px 2px 0;
+}
+
+.wv-card[data-layout="caption"] .wv-card-close {
+    top: 10px;
+    right: 10px;
+}
+
+.wv-card[data-layout="caption"] .wv-card-step {
+    background: rgba(255, 253, 239, 0.12);
+}
+
+.wv-card[data-layout="caption"] .wv-card-link {
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+@media (hover: hover) {
+    .wv-card[data-layout="caption"] .wv-card-step:hover {
+        background: rgba(255, 253, 239, 0.22);
+    }
+}

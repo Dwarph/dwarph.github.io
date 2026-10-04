@@ -1,0 +1,138 @@
+/* Work views prototype: dev-only control panel. Deliberately plain white so it
+   never reads as part of the design under test. */
+
+.wv-picker {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 200;
+    margin: 0;
+    text-align: left;
+    width: min(300px, calc(100vw - 32px));
+    border-radius: 14px;
+    background: #fff;
+    color: #222;
+    font: 14px/1.3 var(--font-body);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 12px 36px rgba(0, 0, 0, 0.16);
+}
+
+.wv-picker summary {
+    padding: 10px 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.wv-pk-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 60vh;
+    padding: 0 14px 14px;
+    overflow: auto;
+}
+
+.wv-pk-body fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.wv-pk-body legend {
+    margin-bottom: 4px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.wv-pk-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 3px 0;
+}
+
+.wv-pk-row select {
+    max-width: 180px;
+    padding: 3px 4px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.wv-pk-seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 2px;
+    border-radius: 8px;
+    background: #f1f1f1;
+}
+
+.wv-pk-seg label {
+    position: relative;
+}
+
+.wv-pk-seg input {
+    position: absolute;
+    opacity: 0;
+}
+
+.wv-pk-seg span {
+    display: block;
+    padding: 4px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.wv-pk-seg input:checked + span {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.wv-pk-seg input:focus-visible + span,
+.wv-pk-row select:focus-visible,
+.wv-pk-check input:focus-visible {
+    outline: 2px solid #ffc405;
+    outline-offset: 1px;
+}
+
+.wv-pk-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.wv-pk-note {
+    margin: 0;
+    font-size: 12px;
+    color: #a22;
+}
+
+.wv-pk-copy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wv-pk-copy-btn {
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: #222;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.wv-pk-copy-btn:focus-visible {
+    outline: 2px solid #ffc405;
+    outline-offset: 2px;
+}
+
+.wv-pk-copy-status {
+    font-size: 12px;
+    color: #555;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-anim-off">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Work Views Prototype</title>
+  <!-- Paths resolve from the site root so the live renderers' image paths work unchanged. -->
+  <base href="/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Nunito+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styling/core.css">
+  <link rel="stylesheet" href="styling/home.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views-switcher.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views-list.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views-grid.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views-card.css">
+  <link rel="stylesheet" href="experiments/work-views/work-views-picker.css">
+</head>
+<body>
+  <main id="wv-root" aria-busy="true">
+    <header class="homepage-section wv-intro">
+      <p class="wv-kicker">Prototype · not linked from the site</p>
+      <h1>Work views</h1>
+      <p>Featured, List and Grid for Work and Projects. Use each section's switcher, and the controls panel to compare layouts, density, hero items and transitions.</p>
+    </header>
+    <!-- One switcher (in the sticky dock) drives both sections. -->
+    <div class="wv-sections">
+      <div class="homepage-section wv-dock"></div>
+      <section id="work" class="homepage-section work-section wv-section" aria-label="Work"></section>
+      <section id="projects" class="homepage-section projects-section wv-section" aria-label="Projects"></section>
+    </div>
+    <section class="homepage-section wv-after">
+      <h2 class="section-title">Talks</h2>
+      <p>Placeholder content, so you can check that the rest of the page doesn't jump when a section above changes height.</p>
+    </section>
+  </main>
+
+  <script src="js/utils.js"></script>
+  <!-- Featured view reuses the live renderers (renderWork / renderProjects); its bootstrap no-ops without #homepage-container. -->
+  <script src="js/homepageGenerator.js"></script>
+  <script src="experiments/work-views/work-views-data.js"></script>
+  <script src="experiments/work-views/work-views-media.js"></script>
+  <script src="experiments/work-views/work-views-list.js"></script>
+  <script src="experiments/work-views/work-views-grid.js"></script>
+  <script src="experiments/work-views/work-views-motion.js"></script>
+  <script src="experiments/work-views/work-views-card.js"></script>
+  <script src="experiments/work-views/work-views-switcher.js"></script>
+  <script src="experiments/work-views/work-views-picker.js"></script>
+  <script src="experiments/work-views/work-views-app.js"></script>
+</body>
+</html>

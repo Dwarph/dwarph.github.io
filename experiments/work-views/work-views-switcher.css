@@ -1,0 +1,243 @@
+/* Work views prototype: the three switcher styles (s1 pill, s2 icons, s3 cycle). */
+
+.wv-switcher {
+    --wv-glass: color-mix(in srgb, var(--bg-color) 84%, transparent);
+    font-size: 22px;
+}
+
+.wv-sw-opt,
+.wv-switcher--s3 {
+    appearance: none;
+    border: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--text-color);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.wv-sw-opt {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--wv-switch-size);
+    height: var(--wv-switch-size);
+    padding: 0;
+    border-radius: 999px;
+    background: none;
+    opacity: 0.55;
+    transition: opacity 0.2s, color 0.25s;
+}
+
+.wv-sw-opt .material-icons {
+    font-size: 22px;
+}
+
+.wv-sw-opt[aria-checked="true"] {
+    opacity: 1;
+}
+
+@media (hover: hover) {
+    .wv-sw-opt:hover {
+        opacity: 0.9;
+    }
+}
+
+.wv-sw-opt:focus-visible,
+.wv-switcher--s3:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+/* s1 - segmented pill, ink thumb slides behind the active icon */
+.wv-switcher--s1,
+.wv-switcher--s2 {
+    position: relative;
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--wv-glass);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.wv-switcher--s1 {
+    box-shadow: 0 0 0 1px rgba(55, 44, 9, 0.1), 0 6px 20px rgba(55, 44, 9, 0.08);
+}
+
+.wv-sw-thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: var(--wv-switch-size);
+    height: var(--wv-switch-size);
+    border-radius: 999px;
+    background: var(--text-color);
+    transform: translateX(calc(var(--i) * var(--wv-switch-size)));
+    transition: transform 0.45s cubic-bezier(0.3, 1.25, 0.5, 1);
+}
+
+.wv-switcher--s1 .wv-sw-opt[aria-checked="true"] {
+    color: var(--bg-color);
+}
+
+/* s2 - bare icons; active goes pink with a dot, like the nav dock */
+.wv-switcher--s2 .wv-sw-opt[aria-checked="true"] {
+    color: var(--highlight-pip);
+}
+
+.wv-switcher--s2 .wv-sw-opt::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: currentColor;
+    transform: scale(0);
+    transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.wv-switcher--s2 .wv-sw-opt[aria-checked="true"]::after {
+    transform: scale(1);
+}
+
+/* s3 - one cycling button */
+.wv-switcher--s3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--wv-switch-size);
+    padding: 0 16px 0 12px;
+    border-radius: 999px;
+    background: var(--wv-glass);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgba(55, 44, 9, 0.1), 0 6px 20px rgba(55, 44, 9, 0.08);
+}
+
+.wv-sw-icon {
+    font-size: 22px;
+}
+
+.wv-sw-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+}
+
+/* s4 - the cycle button as a menu trigger */
+.wv-switcher--s4 {
+    position: relative;
+}
+
+.wv-sw-trigger,
+.wv-sw-item {
+    appearance: none;
+    margin: 0;
+    border: 0;
+    font: inherit;
+    color: var(--text-color);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.wv-sw-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--wv-switch-size);
+    padding: 0 10px 0 12px;
+    border-radius: 999px;
+    background: var(--wv-glass);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgba(55, 44, 9, 0.1), 0 6px 20px rgba(55, 44, 9, 0.08);
+}
+
+.wv-sw-caret {
+    font-size: 20px;
+    opacity: 0.6;
+    transition: transform 0.25s var(--wv-ease, ease);
+}
+
+.wv-sw-trigger[aria-expanded="true"] .wv-sw-caret {
+    transform: rotate(180deg);
+}
+
+.wv-sw-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    min-width: 168px;
+    padding: 5px;
+    border-radius: 16px;
+    background: var(--bg-color);
+    box-shadow: 0 0 0 1px rgba(55, 44, 9, 0.1), 0 14px 36px rgba(55, 44, 9, 0.16);
+    transform-origin: top right;
+}
+
+.wv-sw-menu[hidden] {
+    display: none;
+}
+
+.wv-sw-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 11px;
+    background: none;
+    text-align: left;
+}
+
+.wv-sw-item .material-icons {
+    font-size: 20px;
+}
+
+.wv-sw-item-label {
+    flex: 1 1 auto;
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+.wv-sw-check {
+    opacity: 0;
+}
+
+.wv-sw-item[aria-checked="true"] {
+    color: var(--highlight-pip);
+}
+
+.wv-sw-item[aria-checked="true"] .wv-sw-item-label {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.wv-sw-item[aria-checked="true"] .wv-sw-check {
+    opacity: 1;
+}
+
+.wv-sw-item:hover,
+.wv-sw-item:focus-visible {
+    background: rgba(55, 44, 9, 0.07);
+}
+
+.wv-sw-trigger:focus-visible,
+.wv-sw-item:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+.wv-reduced .wv-sw-thumb,
+.wv-reduced .wv-sw-opt,
+.wv-reduced .wv-sw-opt::after {
+    transition: none;
+}

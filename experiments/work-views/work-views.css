@@ -1,0 +1,147 @@
+/* Work views prototype: page shell, section chrome and transition plumbing.
+   Tokens come from styling/core.css (cream ground, brown ink, --fs-*, gradients). */
+
+:root {
+    --wv-hair: rgba(55, 44, 9, 0.1);
+    --wv-tint: rgba(55, 44, 9, 0.06);
+    --wv-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --wv-switch-size: 44px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --wv-switch-size: 40px;
+    }
+}
+
+/* core.css uses overflow-x: hidden here, which turns body into a scroll container and
+   stops the sticky switcher dock from ever sticking. clip stops sideways scroll without that. */
+html,
+body {
+    overflow-x: clip;
+    overflow-y: visible;
+}
+
+body {
+    margin: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+}
+
+#wv-root {
+    padding: clamp(32px, 6vw, 72px) 0 160px;
+}
+
+.wv-intro {
+    margin-bottom: var(--space-section);
+}
+
+.wv-kicker {
+    margin: 0 0 6px;
+    font-style: italic;
+    font-size: var(--fs-ui);
+    opacity: 0.6;
+}
+
+.wv-intro h1 {
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-group);
+    line-height: var(--lh-display);
+}
+
+.wv-intro p:last-child {
+    margin: 0;
+    font-size: var(--fs-ui);
+    line-height: var(--lh-body);
+    opacity: 0.8;
+}
+
+/* ---- Section chrome ---- */
+
+.wv-section {
+    position: relative;
+}
+
+/* The switcher rides in a sticky dock that takes no layout space (negative margin):
+   at rest it sits beside the title, and on a long grid it follows you down. The dock is
+   as tall as the pill so it lets go exactly when the section ends, instead of overhanging
+   into the next section's switcher. */
+/* One dock for both sections: it's the first child of .wv-sections, so it stays pinned
+   from the Work title all the way through Projects. It borrows .homepage-section for the
+   column width/gutters; these overrides undo that class's spacing. */
+.wv-sections {
+    position: relative;
+}
+
+.wv-sections > .wv-dock {
+    --wv-dock-h: calc(var(--wv-switch-size) + 16px);
+    position: sticky;
+    top: 16px;
+    height: var(--wv-dock-h);
+    margin-bottom: calc(-1 * var(--wv-dock-h));
+    pointer-events: none;
+    z-index: 40;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.wv-sections > .wv-dock > * {
+    pointer-events: auto;
+    margin-top: calc((var(--fs-page-title) - var(--wv-switch-size)) / 2 - 4px);
+}
+
+.wv-section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-after-heading);
+}
+
+/* The shared switcher sits beside the Work title at rest. */
+#work .wv-section-head {
+    padding-right: calc(var(--wv-switch-size) * 3 + 24px);
+}
+
+.wv-section-head .section-title {
+    margin: 0;
+}
+
+.wv-stage {
+    position: relative;
+}
+
+/* Grids break out of the 730px reading column to the case-study bleed-xl width. */
+.wv-stage--wide {
+    --wv-wide: min(1100px, calc(100vw - 2 * var(--header-frame-side)));
+    width: var(--wv-wide);
+    margin-left: calc((100% - var(--wv-wide)) / 2);
+}
+
+/* Shared parts must be transformable for FLIP; spans are inline by default. */
+.wv-stage span[data-wv-key] {
+    display: inline-block;
+}
+
+/* Snapshot of the outgoing view while the new one animates in (FLIP / reduced). */
+.wv-ghost {
+    position: absolute;
+    margin: 0 !important;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.wv-after p {
+    font-size: var(--fs-ui);
+    line-height: var(--lh-body);
+    opacity: 0.7;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 300ms;
+}

@@ -53,6 +53,7 @@
     },    
     {
         "title": "Barista: Marker Edition",
+        "type": "Demo",
         "short": "Hand-on-object tracking meets fiducial markers",
         "description": "Barista is an app made to demonstrate the combination of ultraleap's hand on object model, and fiducial marker tracking. I designed the application, researched into fiducial marker interaction & tested it, all under a short deadline.",
         "year": 2024,
@@ -75,6 +76,7 @@
     },
     {
         "title": "Microgestures",
+        "type": "Demo",
         "short": "Showing off Hyperion's microgestures",
         "description": "Microgestures is a small app made to show off the microgesture capabilities of Ultraleap's Hyperion release. I helped design and build the app, from design mockups to interaction research & user studies.",
         "year": 2024,
@@ -185,6 +187,7 @@
     },
     {
         "title": "MR Owltraleap",
+        "type": "Game jam",
         "short": "A mixed reality owl - I built the flying",
         "description": "An internal hackathon proj, MR Owltraleap is a Mixed Reality, virtual owl. I worked primarily on the flying mechanic.",
         "year": 2023,
@@ -264,6 +267,7 @@
     },
     {
         "title": "Ultraleap Control Panel",
+        "type": "Utility",
         "short": "See your hands & tune your hand tracking",
         "description": "I helped build the Ultraleap Control Panel - an application which lets you view your hands, diagnose issues with your hand tracking and easily edit hand tracking settings.",
         "year": 2022,
@@ -308,6 +312,7 @@
     },
     {
         "title": "Amazeing Escape",
+        "type": "Game jam",
         "short": "A stealth puzzler built around far-field interaction",
         "description": "Made during an internal game jam at ultraleap. A top down stealth puzzler, focused on showing off far field interactions.",
         "year": 2021,
@@ -332,6 +337,7 @@
     },
     {
         "title": "XR Launcher",
+        "type": "Utility",
         "short": "Proving hands are as good as controllers, day to day",
         "description": "I helped build an xr launcher (windows & xr2 headsets). This was built to prove that hand tracking is as viable as controllers for day to day tasks.",
         "year": 2021,
@@ -359,6 +365,7 @@
     },
     {
         "title": "Blocks",
+        "type": "Demo",
         "short": "A hand tracking physics playground",
         "description": "I helped rebuild blocks - a hand tracking physics playground which shows off the power of simple interactions, combined with Ultraleap's interaction engine.",
         "year": 2021,
@@ -415,6 +422,7 @@
     },
     {
         "title": "Touchfree",
+        "type": "Product",
         "short": "A year of research into touchless kiosks",
         "description": "I spent a year researching how to build great touch-less experiences for out of home kiosks. This research helped form the basis of ultraleap's touchfree application & tooling.",
         "year": 2020,

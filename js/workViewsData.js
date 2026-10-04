@@ -109,7 +109,8 @@
                     external: external,
                     comingSoon: cs.comingSoon === true,
                     kind: hasPage ? 'case-study' : (isArchivePage ? 'archive-page' : (external ? 'external' : 'page')),
-                    typeLabel: hasPage ? 'Case study' : (isArchivePage ? 'Interaction' : (external ? 'External' : 'Page')),
+                    // `type` in the data names the kind of work; otherwise it's derived.
+                    typeLabel: cs.type || (hasPage ? 'Case study' : (isArchivePage ? 'Interaction' : (external ? 'External' : 'Page'))),
                     ctaLabel: cs.comingSoon ? 'Coming soon' : (hasPage ? 'Case study' : 'View'),
                     hero: cs.hero === true,
                     media: [{ src: cs.image, type: 'image', alt: cs.imageAlt || '', role: 'cover' }]
@@ -165,7 +166,7 @@
             external: isExternal(link),
             comingSoon: false,
             kind: 'archive',
-            typeLabel: 'Interaction',
+            typeLabel: p.type || 'Interaction',
             ctaLabel: 'View',
             sourceHref: 'interaction-archive.html',
             hero: p.hero === true,
@@ -198,7 +199,7 @@
                 comingSoon: false,
                 kind: 'project',
                 tier: p.tier,
-                typeLabel: p.tier === 'major' ? 'Product' : 'Experiment',
+                typeLabel: p.type || (p.tier === 'major' ? 'Product' : 'Experiment'),
                 ctaLabel: p.banner && p.banner.cta ? p.banner.cta : 'View',
                 brand: p.banner ? p.banner.brand : null,
                 ink: p.banner ? p.banner.ink : null,

@@ -473,11 +473,42 @@ ul.wv-list {
     }
 }
 
-/* Phones: thumb, title and CTA (shrunk to its icon) share the top row; the short line
-   runs full width underneath - beside the thumb it only had ~135px and ran to 5 lines. */
+/* Phones and narrow windows: smaller thumb and title, CTA shrunk to its icon, body-size
+   short line. The card stays side by side while there's room for it. */
 @media (max-width: 768px) {
     .wv-icard {
         grid-template-columns: 76px minmax(0, 1fr) auto;
+        gap: 12px;
+        padding: 6px 10px 6px 6px;
+    }
+
+    .wv-icard-title {
+        font-size: 1.05rem;
+    }
+
+    .wv-icard-meta {
+        display: none;
+    }
+
+    .wv-icard-lead {
+        font-size: var(--fs-ui);
+        font-variation-settings: 'YTLC' 500, 'wdth' 100;
+    }
+
+    .wv-icard-cta {
+        width: 32px;
+        padding: 0;
+        justify-content: center;
+        font-size: 0;
+    }
+}
+
+/* Narrow phones: beside the thumb the short line would get ~135px and run to 5 lines, so
+   thumb, title and CTA share the top row and the line runs full width underneath -
+   filling each line (pretty), not splitting it evenly. Wider than this, the stacked card
+   just leaves both rows half empty. */
+@media (max-width: 560px) {
+    .wv-icard {
         grid-template-areas:
             "media title cta"
             "lead  lead  lead";
@@ -488,24 +519,8 @@ ul.wv-list {
     .wv-icard-media { grid-area: media; }
     .wv-icard-body { display: contents; }
     .wv-icard-title { grid-area: title; align-self: center; }
-    /* Full width here, so fill the lines (pretty) rather than splitting them evenly. */
-    .wv-icard-lead { grid-area: lead; padding-left: 4px; font-size: var(--fs-ui); font-variation-settings: 'YTLC' 500, 'wdth' 100; text-wrap: pretty; }
+    .wv-icard-lead { grid-area: lead; padding-left: 4px; text-wrap: pretty; }
     .wv-icard-cta { grid-area: cta; }
-
-    .wv-icard-title {
-        font-size: 1.05rem;
-    }
-
-    .wv-icard-meta {
-        display: none;
-    }
-
-    .wv-icard-cta {
-        width: 32px;
-        padding: 0;
-        justify-content: center;
-        font-size: 0;
-    }
 }
 
 /* On the brand line the card's spacing is padding, not margin, so its brand segment meets the rows'. */

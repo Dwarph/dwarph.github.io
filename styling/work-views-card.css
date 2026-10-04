@@ -106,8 +106,9 @@
 
 .wv-card-desc {
     margin: 2px 0 0;
-    font-size: 1rem;
+    font-size: var(--fs-ui);
     line-height: var(--lh-body);
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
     opacity: 0.85;
     text-wrap: pretty;
 }

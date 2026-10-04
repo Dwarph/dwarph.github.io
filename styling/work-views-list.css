@@ -73,8 +73,11 @@ ul.wv-list {
 }
 
 .wv-index-name {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
+    /* Same voice as the Talks list: Nunito bold at the body size. */
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--fs-body);
+    line-height: 1.25;
 }
 
 .wv-index-title .wv-icon {
@@ -311,14 +314,16 @@ ul.wv-list {
 
 .wv-eintro-meta {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: var(--fs-ui);
     opacity: 0.7;
 }
 
+/* Prose takes the site's body tuning (taller lowercase), like the bio and job intros. */
 .wv-eintro-desc {
     margin: 6px 0 0;
-    font-size: 1rem;
+    font-size: var(--fs-ui);
     line-height: var(--lh-body);
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
     opacity: 0.85;
 }
 
@@ -404,8 +409,11 @@ ul.wv-list {
    two lines still fit beside the thumb, so the card barely grows. Balanced, not just
    pretty: on a two-line block pretty may still leave one word on the last line. */
 .wv-icard-lead {
+    /* A touch under body size on desktop so it fits two lines beside the thumb; phones
+       (where it runs full width) get the body size - see the phone block below. */
     font-size: 0.95rem;
     line-height: 1.3;
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
     opacity: 0.8;
     text-wrap: balance;
 }
@@ -460,7 +468,7 @@ ul.wv-list {
     .wv-icard-media { grid-area: media; }
     .wv-icard-body { display: contents; }
     .wv-icard-title { grid-area: title; align-self: center; }
-    .wv-icard-lead { grid-area: lead; padding-left: 4px; }
+    .wv-icard-lead { grid-area: lead; padding-left: 4px; font-size: var(--fs-ui); }
     .wv-icard-cta { grid-area: cta; }
 
     .wv-icard-title {

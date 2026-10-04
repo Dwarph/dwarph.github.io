@@ -231,8 +231,10 @@
             var tile = e.target.closest && e.target.closest('[data-wv-tile]');
             if (!tile || !hosts[sectionId].tiles) return;
             if (tile.tagName === 'A') {
-                // Cmd/Ctrl/Shift-click and middle-click still follow the link as usual.
+                // Cmd/Ctrl/Shift-click and middle-click still follow the link as usual, and so
+                // does a hero card's CTA pill - it's the "take me there" part of the card.
                 if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                if (e.target.closest('.wv-icard-cta')) return;
                 e.preventDefault();
             }
             openCard(sectionId, Number(tile.dataset.wvTile));

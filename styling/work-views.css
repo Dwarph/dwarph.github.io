@@ -64,8 +64,10 @@ body {
     position: relative;
 }
 
+/* z-index: the incoming view paints above the outgoing view's snapshot (.wv-ghost). */
 .wv-stage {
     position: relative;
+    z-index: 1;
 }
 
 .wv-featured[hidden],
@@ -80,17 +82,39 @@ body {
     margin-left: calc((100% - var(--wv-wide)) / 2);
 }
 
-/* Shared parts must be transformable for the swap animation; spans are inline. */
-.wv-stage span[data-wv-key] {
+/* Shared titles must be transformable for the swap animation; spans are inline. (Media
+   keys sit on block frames and travel as stand-ins, so they're left alone.) */
+.wv-stage span[data-wv-key$="|title"] {
     display: inline-block;
 }
 
-/* Snapshot of the outgoing view while the new one animates in. */
+/* Snapshot of the outgoing view while the new one animates in - underneath it. */
 .wv-ghost {
     position: absolute;
     margin: 0 !important;
     pointer-events: none;
-    z-index: 2;
+    z-index: 0;
+}
+
+/* Stand-ins for media travelling between views (workViewsMotion.js): an unclipped layer
+   over the page, below the pinned switcher. */
+.wv-flyers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 30;
+    pointer-events: none;
+}
+
+.wv-flyer {
+    position: absolute;
+    background-color: var(--wv-tint);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    will-change: left, top, width, height;
 }
 
 /* ---- Switcher: segmented pill, ink thumb slides behind the active icon ---- */

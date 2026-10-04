@@ -62,6 +62,75 @@
         if (r.bottom < 160) window.scrollTo({ top: r.top + window.scrollY - 16, behavior: 'instant' });
     }
 
+    // ---- Shared media flights ----
+    // Media can't simply be transformed in place: it sits inside frames that clip it (a grid
+    // tile's frame, a Featured card), so it would only ever be seen sliding about inside its
+    // own frame. Instead a stand-in copy flies on an unclipped layer above the page, from the
+    // old spot to the new one, animating its box (the image crops to fit rather than
+    // stretching), and the real frame stays hidden until the copy lands on it.
+
+    var flyerLayer = null;
+
+    function getFlyerLayer() {
+        if (flyerLayer && flyerLayer.isConnected) return flyerLayer;
+        flyerLayer = document.createElement('div');
+        flyerLayer.className = 'wv-flyers';
+        flyerLayer.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(flyerLayer);
+        return flyerLayer;
+    }
+
+    // What the stand-in shows: the image itself, or a video's poster.
+    function stillOf(el) {
+        var m = (el.tagName === 'IMG' || el.tagName === 'VIDEO') ? el : el.querySelector('img, video');
+        if (!m) return null;
+        if (m.tagName === 'IMG') return m.currentSrc || m.getAttribute('src');
+        return m.getAttribute('poster');
+    }
+
+    // Corner radius of the element, or of the frame that clips it.
+    function radiusOf(el) {
+        var node = el;
+        for (var i = 0; i < 3 && node; i++) {
+            var r = getComputedStyle(node).borderTopLeftRadius;
+            if (r && r !== '0px') return r;
+            node = node.parentElement;
+        }
+        return '0px';
+    }
+
+    function flyMedia(el, from, to, delay, cleanups) {
+        var src = stillOf(el);
+        if (!src) return null;
+        var toRadius = radiusOf(el);
+        var f = document.createElement('div');
+        f.className = 'wv-flyer';
+        f.style.left = to.x + 'px';
+        f.style.top = to.y + 'px';
+        f.style.width = to.w + 'px';
+        f.style.height = to.h + 'px';
+        f.style.borderRadius = toRadius;
+        f.style.backgroundImage = 'url("' + src.replace(/"/g, '\\"') + '")';
+        getFlyerLayer().appendChild(f);
+        el.style.visibility = 'hidden';
+
+        var done = false;
+        function land() {
+            if (done) return;
+            done = true;
+            f.remove();
+            el.style.visibility = '';
+        }
+        cleanups.push(land);
+
+        var a = f.animate([
+            { left: from.x + 'px', top: from.y + 'px', width: from.w + 'px', height: from.h + 'px', borderRadius: from.radius },
+            { left: to.x + 'px', top: to.y + 'px', width: to.w + 'px', height: to.h + 'px', borderRadius: toRadius }
+        ], { duration: DUR, easing: EASE, delay: delay, fill: 'backwards' });
+        a.finished.then(land, land);
+        return a;
+    }
+
     function makeGhost(stage) {
         var ghost = stage.cloneNode(true);
         ghost.removeAttribute('id');
@@ -87,7 +156,11 @@
 
     function swapWithFlip(o) {
         var before = new Map();
-        allParts(o.targets).forEach(function (el, key) { before.set(key, docRect(el)); });
+        allParts(o.targets).forEach(function (el, key) {
+            var r = docRect(el);
+            r.radius = isMedia(key) ? radiusOf(el) : '0px';
+            before.set(key, r);
+        });
         var scrollBefore = window.scrollY;
         var olds = o.targets.map(function (t) {
             return { h: t.stage.offsetHeight, ghost: makeGhost(t.stage) };
@@ -117,6 +190,7 @@
         matched.sort(function (a, b) { return a[1].getBoundingClientRect().top - b[1].getBoundingClientRect().top; });
 
         var movedItems = new Set();
+        var cleanups = [];
         matched.forEach(function (entry, rank) {
             var key = entry[0];
             var el = entry[1];
@@ -128,15 +202,20 @@
                 for (var h = 0; h < hidden.length; h++) hidden[h].style.visibility = 'hidden';
             });
 
-            var dx = from.x - to.x;
-            var dy = from.y - to.y;
-            // Text scales uniformly so letterforms don't stretch.
-            var sx = isMedia(key) ? from.w / to.w : from.h / to.h;
-            var sy = isMedia(key) ? from.h / to.h : from.h / to.h;
-            anims.push(el.animate([
-                { transformOrigin: '0 0', transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')' },
-                { transformOrigin: '0 0', transform: 'none' }
-            ], { duration: DUR, easing: EASE, delay: staggerDelay(rank), fill: 'backwards' }));
+            var flight = isMedia(key) ? flyMedia(el, from, to, staggerDelay(rank), cleanups) : null;
+            if (flight) {
+                anims.push(flight);
+            } else {
+                var dx = from.x - to.x;
+                var dy = from.y - to.y;
+                // Text scales uniformly so letterforms don't stretch.
+                var sx = isMedia(key) ? from.w / to.w : from.h / to.h;
+                var sy = isMedia(key) ? from.h / to.h : from.h / to.h;
+                anims.push(el.animate([
+                    { transformOrigin: '0 0', transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')' },
+                    { transformOrigin: '0 0', transform: 'none' }
+                ], { duration: DUR, easing: EASE, delay: staggerDelay(rank), fill: 'backwards' }));
+            }
 
             var item = el.closest('[data-wv-item]');
             if (item) movedItems.add(item);
@@ -170,7 +249,7 @@
         });
 
         olds.forEach(function (old) { anims.push(fadeOutAndRemove(old.ghost, 220)); });
-        return anims;
+        return { anims: anims, cleanups: cleanups };
     }
 
     // Reduced motion: a short crossfade, nothing moves.
@@ -181,18 +260,22 @@
         o.targets.forEach(function (t) {
             anims.push(t.stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, easing: 'linear' }));
         });
-        return anims;
+        return { anims: anims, cleanups: [] };
     }
 
     // The in-flight transition. A new swap doesn't queue behind it: it snaps the running
     // one to its end state first, so rapid clicks stay responsive.
-    var running = [];
+    var running = { anims: [], cleanups: [] };
 
     function settle() {
-        for (var i = 0; i < running.length; i++) {
-            try { running[i].finish(); } catch (e) { running[i].cancel(); }
+        var r = running;
+        running = { anims: [], cleanups: [] };
+        for (var i = 0; i < r.anims.length; i++) {
+            try { r.anims[i].finish(); } catch (e) { r.anims[i].cancel(); }
         }
-        running = [];
+        // finish() resolves its promises later; land the flights now so the next swap
+        // measures real, visible frames.
+        for (var c = 0; c < r.cleanups.length; c++) r.cleanups[c]();
         var ghosts = document.querySelectorAll('.wv-ghost');
         for (var g = 0; g < ghosts.length; g++) ghosts[g].remove();
     }

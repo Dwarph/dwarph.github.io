@@ -129,7 +129,9 @@
 
     function openerMediaEl(index) {
         var t = tileEl(index);
-        return t && t.querySelector('[data-wv-key$="|media"]');
+        var key = t && t.querySelector('[data-wv-key$="|media"]');
+        if (!key) return null;
+        return (key.tagName === 'IMG' || key.tagName === 'VIDEO') ? key : key.querySelector('img, video');
     }
 
     function fill() {

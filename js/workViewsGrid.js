@@ -17,8 +17,9 @@
         var label = it.title + (tile.media.alt ? '. ' + tile.media.alt : '');
         return '<button type="button" class="wv-tile' + (tile.hero ? ' is-hero' : '') + '" data-wv-item="' + esc(tile.key) + '" data-wv-tile="' + n + '"' +
             ' aria-haspopup="dialog" aria-label="' + esc(label) + '">' +
-            '<span class="wv-tile-media">' +
-            M.mediaHtml(tile.media, { key: tile.key + '|media', reduced: opts.reduced, loading: n < 8 ? 'eager' : 'lazy' }) +
+            // The key is on the frame, so the whole frame is what travels between views.
+            '<span class="wv-tile-media" data-wv-key="' + esc(tile.key + '|media') + '">' +
+            M.mediaHtml(tile.media, { reduced: opts.reduced, loading: n < 8 ? 'eager' : 'lazy' }) +
             '</span>' +
             '<span class="wv-tile-cap" data-wv-fade>' +
             '<span class="wv-tile-title" data-wv-key="' + esc(it.id + '|title') + '">' + esc(it.title) + '</span>' +

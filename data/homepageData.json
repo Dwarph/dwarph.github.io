@@ -19,18 +19,6 @@
       "description": "FitXR is a leading VR fitness app that transforms home workouts through immersive, gamified training.",
       "caseStudies": [
         {
-          "title": "FitXR App Redesign",
-          "image": "images/casestudies/fitxr-app.jpg",
-          "imageAlt": "FitXR app screens tilted against a sky backdrop: a milestones checkpoint, a Balanced Full Body Workout with its coaches and plan, and an Activity view charting calories across the week.",
-          "tags": "Mobile, App Redesign",
-          "short": "The whole app, redesigned - with workouts made just for you",
-          "type": "Case study",
-          "hero": true,
-          "year": 2026,
-          "description": "I led a team and redesigned the entire FitXR mobile app, not only introducing a new visual language, but also adding mobile-only, generative workouts, which are hyper personalised to your fitness needs.",
-          "comingSoon": true
-        },
-        {
           "title": "Early User Experience",
           "image": "images/casestudies/eux.png",
           "imageAlt": "Early user experience case study image",
@@ -49,6 +37,21 @@
           "hero": true,
           "description": "Spatial interaction design for a mass market VR fitness application. Prototyped, tested & shipped 3 new moves for FitXR in 3 months. Elicited user responses like \"FINALLY, my pulse was RACING. LOVE IT.\"",
           "key": "sidestep-jump-crouch"
+        }
+      ],
+      "otherWork": [
+        {
+          "title": "FitXR App Redesign",
+          "image": "images/casestudies/fitxr-app.jpg",
+          "imageAlt": "FitXR app screens tilted against a sky backdrop: a milestones checkpoint, a Balanced Full Body Workout with its coaches and plan, and an Activity view charting calories across the week.",
+          "tags": "Mobile, Prototyping, Figma",
+          "short": "The whole app, redesigned - with workouts made just for you",
+          "type": "Product",
+          "hero": true,
+          "year": 2026,
+          "cta": "Get the app",
+          "description": "I led a team and redesigned the entire FitXR mobile app, not only introducing a new visual language, but also adding mobile-only, generative workouts, which are hyper personalised to your fitness needs.",
+          "link": "https://apps.apple.com/us/app/fitxr-home-workout-fitness/id1634421621"
         }
       ]
     },

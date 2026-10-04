@@ -106,11 +106,18 @@
 
 .wv-card-desc {
     margin: 2px 0 0;
-    font-size: var(--fs-ui);
+    font-size: 1rem;
     line-height: var(--lh-body);
-    font-variation-settings: 'YTLC' 500, 'wdth' 100;
     opacity: 0.85;
     text-wrap: pretty;
+}
+
+/* Phones: the site's prose tuning (taller lowercase), like the bio. */
+@media (max-width: 768px) {
+    .wv-card-desc {
+        font-size: var(--fs-ui);
+        font-variation-settings: 'YTLC' 500, 'wdth' 100;
+    }
 }
 
 .wv-card-actions {

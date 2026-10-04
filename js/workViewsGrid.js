@@ -6,8 +6,11 @@
     var esc = window.WorkViewsUtil.escapeHtml;
     var M = window.WorkViewsMedia;
 
+    // Newest first, like the List (same year: data order; no year: last), so the latest
+    // work leads the sheet rather than whichever group the data lists first.
     function buildTiles(items) {
-        return items.map(function (it) {
+        var sorted = items.slice().sort(function (a, b) { return (b.year || 0) - (a.year || 0); });
+        return sorted.map(function (it) {
             return { item: it, media: it.media[0], key: it.id, hero: !!it.hero };
         });
     }

@@ -25,7 +25,7 @@
     cursor: zoom-in;
     /* Landing spot for the bio's employer links: clear the pinned switcher. */
     scroll-margin-top: 80px;
-    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s;
+    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.25s, filter 0.25s;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -62,6 +62,20 @@
         z-index: 2;
         transform: scale(1.06);
         box-shadow: 0 14px 30px rgba(55, 44, 9, 0.25);
+    }
+}
+
+/* Spotlight: the tile under the pointer (or keyboard focus) stays lit, the rest dim.
+   Hover only on real pointers - a tapped tile can keep :hover on touch screens. */
+.wv-grid:has(.wv-tile:focus-visible) .wv-tile:not(:focus-visible) {
+    opacity: 0.32;
+    filter: saturate(0.4);
+}
+
+@media (hover: hover) {
+    .wv-grid:has(.wv-tile:hover) .wv-tile:not(:hover) {
+        opacity: 0.32;
+        filter: saturate(0.4);
     }
 }
 

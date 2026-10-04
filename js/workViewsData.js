@@ -92,7 +92,9 @@
                 var external = isExternal(href);
                 var hasPage = !!(meta && !cs.link);
                 var isArchivePage = cs.link === 'interaction-archive.html';
-                var year = meta ? yearFromCompanyLine(meta.company) : null;
+                // Case studies take their year from the case study index; anything else can
+                // name one (`year`), or falls back to the job's dates.
+                var year = meta ? yearFromCompanyLine(meta.company) : (cs.year || null);
                 items.push({
                     id: 'w-' + (cs.key || slug(cs.title)),
                     section: 'work',
@@ -111,7 +113,7 @@
                     kind: hasPage ? 'case-study' : (isArchivePage ? 'archive-page' : (external ? 'external' : 'page')),
                     // `type` in the data names the kind of work; otherwise it's derived.
                     typeLabel: cs.type || (hasPage ? 'Case study' : (isArchivePage ? 'Interaction' : (external ? 'External' : 'Page'))),
-                    ctaLabel: cs.comingSoon ? 'Coming soon' : (hasPage ? 'Case study' : 'View'),
+                    ctaLabel: cs.comingSoon ? 'Coming soon' : (cs.cta || (hasPage ? 'Case study' : 'View')),
                     hero: cs.hero === true,
                     media: [{ src: cs.image, type: 'image', alt: cs.imageAlt || '', role: 'cover' }]
                 });

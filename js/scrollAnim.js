@@ -12,7 +12,7 @@
          * Lower = full opacity/unblur after less scrolling (snappier). Higher = longer roll-in.
          * Typical range: 0.35–0.55 (fast) … 0.8 (slow).
          */
-        fadeZone: 0.1,
+        fadeZone: 0,
         /** Shapes how progress maps inside that band: linear | ease-in | ease-out | smooth */
         fadeEasing: 'smooth',
         enabled: true,

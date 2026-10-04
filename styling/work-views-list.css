@@ -111,8 +111,14 @@ ul.wv-list {
     opacity: 0.5;
 }
 
+/* Spotlight: only while a clickable row or hero card is under the pointer (or has keyboard
+   focus) - not when hovering the employer intros, year column or the gaps between rows. */
+.wv-list:has(:is(.wv-index-row, .wv-icard):focus-visible) :is(.wv-index-row, .wv-icard):not(:focus-visible) {
+    opacity: 0.4;
+}
+
 @media (hover: hover) and (pointer: fine) {
-    .wv-list:hover .wv-index-row:not(:hover) {
+    .wv-list:has(:is(.wv-index-row, .wv-icard):hover) :is(.wv-index-row, .wv-icard):not(:hover) {
         opacity: 0.4;
     }
 }
@@ -329,6 +335,7 @@ ul.wv-list {
 }
 
 .wv-icard {
+    transition: opacity 0.2s;
     display: grid;
     grid-template-columns: 112px minmax(0, 1fr) auto;
     align-items: center;

@@ -86,7 +86,8 @@
         {
           "title": "XR Design Guidelines",
           "hero": true,
-          "year": 2021,
+          "year": 2024,
+          "sortYear": 2021,
           "image": "images/projects/xrguidelines.png",
           "imageAlt": "XR design guidelines image",
           "type": "Writing",

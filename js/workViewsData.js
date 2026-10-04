@@ -104,6 +104,8 @@
                     lead: cs.description || '',
                     year: year,
                     yearLabel: year ? String(year) : job.dates,
+                    // `sortYear` places an item in the Grid without changing the year it shows.
+                    sortYear: cs.sortYear || null,
                     company: job.company,
                     gradient: job.gradientColor || null,
                     employer: employerOf(job),

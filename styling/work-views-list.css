@@ -488,7 +488,8 @@ ul.wv-list {
     .wv-icard-media { grid-area: media; }
     .wv-icard-body { display: contents; }
     .wv-icard-title { grid-area: title; align-self: center; }
-    .wv-icard-lead { grid-area: lead; padding-left: 4px; font-size: var(--fs-ui); font-variation-settings: 'YTLC' 500, 'wdth' 100; }
+    /* Full width here, so fill the lines (pretty) rather than splitting them evenly. */
+    .wv-icard-lead { grid-area: lead; padding-left: 4px; font-size: var(--fs-ui); font-variation-settings: 'YTLC' 500, 'wdth' 100; text-wrap: pretty; }
     .wv-icard-cta { grid-area: cta; }
 
     .wv-icard-title {

@@ -119,9 +119,9 @@
             if (label !== current) {
                 if (current !== null) html += '</ul></div>';
                 current = label;
-                // A year with one item doesn't pin its label: it would only slide down that
-                // one row as you scroll, which reads as the label drifting.
-                html += '<div class="wv-index-group' + (perYear[label] === 1 ? ' wv-index-group--single' : '') + '">' +
+                // Short years (one or two items) don't pin their label: it would only slide a
+                // row or so as you scroll, which reads as the label drifting.
+                html += '<div class="wv-index-group' + (perYear[label] <= 2 ? ' wv-index-group--short' : '') + '">' +
                     '<h3 class="wv-index-year">' + esc(label) + '</h3><ul class="wv-index-rows" role="list">';
             }
             // Within a year rows keep data order, so each employer's run is unbroken and

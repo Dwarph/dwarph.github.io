@@ -109,6 +109,7 @@
     font-size: 1rem;
     line-height: var(--lh-body);
     opacity: 0.85;
+    text-wrap: pretty;
 }
 
 .wv-card-actions {

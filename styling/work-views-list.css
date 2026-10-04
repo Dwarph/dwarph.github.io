@@ -401,12 +401,13 @@ ul.wv-list {
 }
 
 /* The short line wraps rather than truncating: the text column is only ~240-310px, and
-   two lines still fit beside the thumb, so the card barely grows. */
+   two lines still fit beside the thumb, so the card barely grows. Balanced, not just
+   pretty: on a two-line block pretty may still leave one word on the last line. */
 .wv-icard-lead {
     font-size: 0.95rem;
     line-height: 1.3;
     opacity: 0.8;
-    text-wrap: pretty;
+    text-wrap: balance;
 }
 
 .wv-icard-cta {

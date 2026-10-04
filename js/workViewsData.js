@@ -115,7 +115,7 @@
                     typeLabel: cs.type || (hasPage ? 'Case study' : (isArchivePage ? 'Interaction' : (external ? 'External' : 'Page'))),
                     ctaLabel: cs.comingSoon ? 'Coming soon' : (cs.cta || (hasPage ? 'Case study' : 'View')),
                     hero: cs.hero === true,
-                    media: [{ src: cs.image, type: 'image', alt: cs.imageAlt || '', role: 'cover' }]
+                    media: [{ src: cs.image, thumb: cs.thumb || null, type: 'image', alt: cs.imageAlt || '', role: 'cover' }]
                 });
             }
 

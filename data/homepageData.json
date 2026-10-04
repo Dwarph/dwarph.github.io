@@ -76,6 +76,7 @@
         {
           "title": "Interaction Archive",
           "image": "images/casestudies/design-archive.png",
+          "thumb": "images/casestudies/design-archive-thumb.jpg",
           "imageAlt": "Interaction archive image",
           "type": "History",
           "short": "Every interaction & app I made at Ultraleap",
@@ -84,6 +85,7 @@
         },
         {
           "title": "XR Design Guidelines",
+          "hero": true,
           "image": "images/projects/xrguidelines.png",
           "imageAlt": "XR design guidelines image",
           "type": "Writing",

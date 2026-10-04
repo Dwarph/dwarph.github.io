@@ -1,7 +1,7 @@
 // Work + Projects views: the item model behind the List and Grid views.
 // Built from the same data the homepage already renders (homepageData.json), plus the
-// case study index (years) and the Interaction Archive entries. Loaded lazily: a visitor
-// who stays on Featured never fetches anything extra.
+// case study index (years) and the Interaction Archive entries. Fetched once, on load for
+// the default Grid (or a List link), or when someone on Featured reaches for the switcher.
 
 (function () {
     function slug(text) {

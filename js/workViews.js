@@ -5,8 +5,9 @@
 // List or Grid shows, so scrollAnim.js (which captured those elements at load) keeps
 // working when you come back to it. List and Grid render into a sibling container.
 //
-// The view and any open detail card live in the URL (?view=grid&card=work:a-aurora), so a
-// link reopens exactly what was on screen. Called by homepageGenerator.js after render.
+// Grid is the default view. The view (when not the default) and any open detail card live
+// in the URL (?view=list&card=work:a-aurora), so a link reopens exactly what was on screen.
+// Called by homepageGenerator.js after render.
 
 (function () {
     var SECTIONS = [
@@ -14,26 +15,28 @@
         { id: 'projects', label: 'Projects', brandLine: false }
     ];
     var VIEWS = ['featured', 'list', 'grid'];
+    // What the bare homepage shows; the URL only names a view when it differs.
+    var DEFAULT_VIEW = 'grid';
     var GROUP_LABEL = 'Work and projects view';
 
     var home = null;
     var items = null;
     var hosts = {};
     var shared = { dock: null, switcher: null };
-    var state = { view: 'featured', card: null };
+    var state = { view: DEFAULT_VIEW, card: null };
 
     // ---- URL state ----
 
     function readUrl() {
         var q = new URLSearchParams(location.search);
         var view = q.get('view');
-        state.view = VIEWS.indexOf(view) !== -1 ? view : 'featured';
+        state.view = VIEWS.indexOf(view) !== -1 ? view : DEFAULT_VIEW;
         state.card = q.get('card');
     }
 
     function writeUrl() {
         var q = new URLSearchParams(location.search);
-        if (state.view === 'featured') q.delete('view');
+        if (state.view === DEFAULT_VIEW) q.delete('view');
         else q.set('view', state.view);
         if (state.card) q.set('card', state.card);
         else q.delete('card');
@@ -320,8 +323,7 @@
         shared.switcher = dock.firstElementChild;
         window.WorkViewsSwitcher.bind(shared.switcher, function () { return state.view; }, setView);
 
-        // Most visitors stay on Featured: fetch the extra data only once someone reaches
-        // for the switcher (or arrives on a List/Grid link).
+        // Someone on Featured may still reach for the switcher: fetch the data early.
         var prefetch = function () { ensureItems().catch(function () {}); };
         dock.addEventListener('pointerenter', prefetch, { once: true });
         dock.addEventListener('focusin', prefetch, { once: true });
@@ -329,13 +331,19 @@
         SECTIONS.forEach(function (sec) { bindOpeners(sec.id); });
 
         if (state.view !== 'featured') {
+            // Hide Featured straight away so it doesn't flash before List/Grid arrive (the
+            // markup stays for scroll reveals and crawlers). If the data can't load, fall
+            // back to Featured rather than leave the sections empty.
+            SECTIONS.forEach(function (sec) { hosts[sec.id].featured.hidden = true; });
             ensureItems().then(function () {
                 transition({ instant: true });
                 restoreCard();
             }, function () {
                 state.view = 'featured';
+                SECTIONS.forEach(function (sec) { hosts[sec.id].featured.hidden = false; });
                 window.WorkViewsSwitcher.setActive(shared.switcher, 'featured');
                 writeUrl();
+                refreshFeatured();
             });
         } else if (state.card) {
             state.card = null;

@@ -83,7 +83,6 @@
           "image": "images/casestudies/dogracer.jpg",
           "imageAlt": "Dog racer case study image",
           "tags": "Leading a team through a tough project",
-          "type": "Demo",
           "short": "A Leap2 launch app in four weeks, with a reluctant team",
           "description": "Building a launch application for Leap2 in just four weeks, leading a team that wasn't happy about it.",
           "key": "dogracer"

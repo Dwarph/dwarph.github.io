@@ -61,7 +61,7 @@ ul.wv-list {
     align-items: baseline;
     padding: 7px 0;
     font-size: var(--fs-ui);
-    transition: opacity 0.2s;
+    transition: opacity 0.5s var(--wv-ease) 0.12s;
 }
 
 .wv-index-title {
@@ -112,14 +112,18 @@ ul.wv-list {
 }
 
 /* Spotlight: only while a clickable row or hero card is under the pointer (or has keyboard
-   focus) - not when hovering the employer intros, year column or the gaps between rows. */
+   focus) - not when hovering the employer intros, year column or the gaps between rows.
+   Dimming is quick; coming back is slower and waits a beat (the rest-state transition on
+   the rows/cards), so sliding between rows across a gap doesn't flash everything bright. */
 .wv-list:has(:is(.wv-index-row, .wv-icard):focus-visible) :is(.wv-index-row, .wv-icard):not(:focus-visible) {
     opacity: 0.4;
+    transition: opacity 0.2s ease-out;
 }
 
 @media (hover: hover) and (pointer: fine) {
     .wv-list:has(:is(.wv-index-row, .wv-icard):hover) :is(.wv-index-row, .wv-icard):not(:hover) {
         opacity: 0.4;
+        transition: opacity 0.2s ease-out;
     }
 }
 
@@ -335,7 +339,7 @@ ul.wv-list {
 }
 
 .wv-icard {
-    transition: opacity 0.2s;
+    transition: opacity 0.5s var(--wv-ease) 0.12s;
     display: grid;
     grid-template-columns: 112px minmax(0, 1fr) auto;
     align-items: center;
@@ -475,4 +479,12 @@ ul.wv-list {
     margin: 0;
     padding-top: 8px;
     padding-bottom: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* !important: the spotlight's dim rules set their own transitions. */
+    .wv-index-row,
+    .wv-icard {
+        transition: none !important;
+    }
 }

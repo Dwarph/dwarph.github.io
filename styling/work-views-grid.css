@@ -25,7 +25,8 @@
     cursor: pointer;
     /* Landing spot for the bio's employer links: clear the pinned switcher. */
     scroll-margin-top: 80px;
-    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.25s, filter 0.25s;
+    /* opacity/filter: the spotlight's return - slower, after a beat (see Spotlight). */
+    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.5s var(--wv-ease) 0.12s, filter 0.5s var(--wv-ease) 0.12s;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -66,16 +67,20 @@
 }
 
 /* Spotlight: the tile under the pointer (or keyboard focus) stays lit, the rest dim.
-   Hover only on real pointers - a tapped tile can keep :hover on touch screens. */
+   Hover only on real pointers - a tapped tile can keep :hover on touch screens.
+   Dimming is quick; the way back is slower and waits a beat (the tile's rest transition),
+   so crossing the gap between tiles doesn't flash the sheet bright. */
 .wv-grid:has(.wv-tile:focus-visible) .wv-tile:not(:focus-visible) {
     opacity: 0.32;
     filter: saturate(0.4);
+    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.2s ease-out, filter 0.2s ease-out;
 }
 
 @media (hover: hover) {
     .wv-grid:has(.wv-tile:hover) .wv-tile:not(:hover) {
         opacity: 0.32;
         filter: saturate(0.4);
+        transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.2s ease-out, filter 0.2s ease-out;
     }
 }
 
@@ -132,8 +137,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    /* !important: the spotlight's dim rules set their own transitions. */
     .wv-tile,
     .wv-tile-cap {
-        transition: none;
+        transition: none !important;
     }
 }

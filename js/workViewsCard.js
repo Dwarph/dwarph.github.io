@@ -127,11 +127,16 @@
         return t ? t.querySelector('.wv-tile-media, .wv-icard-media') : null;
     }
 
+    // The opener's media, if it shows the same file the card will - a tile showing a
+    // thumbnail crop (Set Sail) has a different shape, so it can't size the card.
     function openerMediaEl(index) {
         var t = tileEl(index);
         var key = t && t.querySelector('[data-wv-key$="|media"]');
         if (!key) return null;
-        return (key.tagName === 'IMG' || key.tagName === 'VIDEO') ? key : key.querySelector('img, video');
+        var el = (key.tagName === 'IMG' || key.tagName === 'VIDEO') ? key : key.querySelector('img, video');
+        var media = state.tiles[index] && state.tiles[index].media;
+        if (el && el.tagName === 'IMG' && media && media.thumb && el.getAttribute('src') === media.thumb) return null;
+        return el;
     }
 
     function fill() {

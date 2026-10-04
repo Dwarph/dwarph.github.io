@@ -66,7 +66,7 @@
             // Archive heroes launch from the Interaction Archive card when coming from Featured.
             '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '"' +
             (item.kind === 'archive' ? ' data-wv-from="w-interaction-archive|media"' : '') + '>' +
-            M.mediaHtml(item.media[0], { reduced: opts.reduced }) + '</span>' +
+            M.mediaHtml(item.media[0], { reduced: opts.reduced, thumb: true }) + '</span>' +
             '<span class="wv-icard-body">' +
             '<span class="wv-icard-meta" data-wv-fade>' + esc([item.yearLabel, item.category].filter(Boolean).join(' · ')) + '</span>' +
             titleHtml(item, 'wv-icard-title') +

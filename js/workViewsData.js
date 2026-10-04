@@ -205,7 +205,9 @@
                 ink: p.banner ? p.banner.ink : null,
                 // Major projects are heroes unless the data says otherwise.
                 hero: typeof p.hero === 'boolean' ? p.hero : p.tier === 'major',
-                media: [{ src: p.image, type: isVideo(p.image) ? 'video' : 'image', alt: p.imageAlt || '', role: 'cover' }]
+                // `thumb`: an optional tighter crop for small surfaces (list thumb, grid tile)
+                // when the subject is tiny in the full image (Set Sail's boat).
+                media: [{ src: p.image, thumb: p.thumb || null, type: isVideo(p.image) ? 'video' : 'image', alt: p.imageAlt || '', role: 'cover' }]
             };
         });
     }

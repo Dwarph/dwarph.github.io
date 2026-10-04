@@ -25,7 +25,7 @@
             ' aria-haspopup="dialog" aria-label="' + esc(label) + '">' +
             // The key is on the frame, so the whole frame is what travels between views.
             '<span class="wv-tile-media" data-wv-key="' + esc(tile.key + '|media') + '"' + fromAttr(it) + '>' +
-            M.mediaHtml(tile.media, { reduced: opts.reduced, loading: n < 8 ? 'eager' : 'lazy' }) +
+            M.mediaHtml(tile.media, { reduced: opts.reduced, loading: n < 8 ? 'eager' : 'lazy', thumb: true }) +
             '</span>' +
             '<span class="wv-tile-cap" data-wv-fade>' +
             '<span class="wv-tile-title" data-wv-key="' + esc(it.id + '|title') + '">' + esc(it.title) + '</span>' +

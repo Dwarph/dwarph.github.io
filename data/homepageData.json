@@ -101,6 +101,7 @@
       "short": "A delightful screen recorder, for mac\u00a0+\u00a0windows",
       "description": "A delightful screen recorder for macOS and Windows. Currently in free beta.",
       "image": "images/projects/setsail.webp",
+      "thumb": "images/projects/setsail-thumb.jpg",
       "imageAlt": "A tiny sailing boat alone on a wide teal sea.",
       "link": "setsail/",
       "banner": {

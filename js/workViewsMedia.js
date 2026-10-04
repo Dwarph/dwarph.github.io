@@ -8,10 +8,11 @@
     function stillSrc(media) {
         if (!media) return null;
         if (media.type === 'video') return media.poster || null;
-        return media.src;
+        return media.thumb || media.src;
     }
 
-    // opts: { className, key, reduced, loading, playing }
+    // opts: { className, key, reduced, loading, playing, thumb }
+    // thumb: use the media's tighter thumbnail crop, if it has one (small surfaces only).
     function mediaHtml(media, opts) {
         opts = opts || {};
         var cls = opts.className ? ' class="' + opts.className + '"' : '';
@@ -30,7 +31,8 @@
                 (media.poster ? ' poster="' + esc(media.poster) + '"' : '') +
                 ' aria-label="' + esc(media.alt) + '"></video>';
         }
-        return '<img' + cls + key + ' src="' + esc(media.src) + '" alt="' + esc(media.alt) + '" loading="' + loading + '" decoding="async" />';
+        var src = opts.thumb && media.thumb ? media.thumb : media.src;
+        return '<img' + cls + key + ' src="' + esc(src) + '" alt="' + esc(media.alt) + '" loading="' + loading + '" decoding="async" />';
     }
 
     // Videos only load and play while on screen.

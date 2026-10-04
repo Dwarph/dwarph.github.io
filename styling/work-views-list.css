@@ -54,6 +54,10 @@ ul.wv-list {
     opacity: 0.45;
 }
 
+.wv-index-group--single .wv-index-year {
+    position: static;
+}
+
 .wv-index-row {
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) 92px;

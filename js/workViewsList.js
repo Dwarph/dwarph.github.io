@@ -108,13 +108,21 @@
         var html = '<div class="wv-list' + (opts.brandLine ? ' wv-list--brand' : '') + '">';
         var current = null;
         var introduced = {};
+        var perYear = {};
+        sorted.forEach(function (x) {
+            var y = x.year ? String(x.year) : x.yearLabel;
+            perYear[y] = (perYear[y] || 0) + 1;
+        });
         for (var i = 0; i < sorted.length; i++) {
             var it = sorted[i];
             var label = it.year ? String(it.year) : it.yearLabel;
             if (label !== current) {
                 if (current !== null) html += '</ul></div>';
                 current = label;
-                html += '<div class="wv-index-group"><h3 class="wv-index-year">' + esc(label) + '</h3><ul class="wv-index-rows" role="list">';
+                // A year with one item doesn't pin its label: it would only slide down that
+                // one row as you scroll, which reads as the label drifting.
+                html += '<div class="wv-index-group' + (perYear[label] === 1 ? ' wv-index-group--single' : '') + '">' +
+                    '<h3 class="wv-index-year">' + esc(label) + '</h3><ul class="wv-index-rows" role="list">';
             }
             // Within a year rows keep data order, so each employer's run is unbroken and
             // gets exactly one intro, at the top of its run.

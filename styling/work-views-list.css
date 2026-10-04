@@ -452,6 +452,11 @@ ul.wv-list {
     font-size: 18px;
 }
 
+/* On a brand colour, a dimmed short line goes muddy: show it at full ink, like the title. */
+.wv-icard--brand .wv-icard-lead {
+    opacity: 1;
+}
+
 .wv-icard--brand .wv-icard-cta {
     background: var(--card-ink);
     color: var(--card-bg);

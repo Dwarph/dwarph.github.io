@@ -161,6 +161,19 @@
             r.radius = isMedia(key) ? radiusOf(el) : '0px';
             before.set(key, r);
         });
+        // Where each item sat as a whole - a fallback launch point for media that had no
+        // image in the old view (a text-only list row).
+        var beforeItems = new Map();
+        o.targets.forEach(function (t) {
+            var items = t.stage.querySelectorAll('[data-wv-item]');
+            for (var i = 0; i < items.length; i++) {
+                var id = items[i].getAttribute('data-wv-item');
+                if (beforeItems.has(id) || !isVisible(items[i])) continue;
+                var r = docRect(items[i]);
+                r.radius = radiusOf(items[i]);
+                beforeItems.set(id, r);
+            }
+        });
         var scrollBefore = window.scrollY;
         var olds = o.targets.map(function (t) {
             return { h: t.stage.offsetHeight, ghost: makeGhost(t.stage) };
@@ -217,6 +230,28 @@
                 ], { duration: DUR, easing: EASE, delay: staggerDelay(rank), fill: 'backwards' }));
             }
 
+            var item = el.closest('[data-wv-item]');
+            if (item) movedItems.add(item);
+        });
+
+        // Media new to this view still flies in from somewhere it can be traced to: the item's
+        // row in the old view, or a stand-in source named on the frame (data-wv-from - archive
+        // pieces launch from the Interaction Archive card when coming from Featured).
+        var rank = matched.length;
+        var arrivals = [];
+        after.forEach(function (el, key) {
+            if (!isMedia(key) || before.has(key) || !nearViewport(el)) return;
+            var from = beforeItems.get(key.slice(0, -6)) || (el.dataset.wvFrom && before.get(el.dataset.wvFrom));
+            if (from) arrivals.push([el, from]);
+        });
+        arrivals.sort(function (a, b) { return a[0].getBoundingClientRect().top - b[0].getBoundingClientRect().top; });
+        arrivals.forEach(function (pair) {
+            var el = pair[0];
+            var to = docRect(el);
+            if (!to.w || !to.h) return;
+            var flight = flyMedia(el, pair[1], to, staggerDelay(rank++), cleanups);
+            if (!flight) return;
+            anims.push(flight);
             var item = el.closest('[data-wv-item]');
             if (item) movedItems.add(item);
         });

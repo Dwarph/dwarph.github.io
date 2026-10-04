@@ -63,7 +63,10 @@
             (item.comingSoon ? '<span class="wv-icard-cta is-soon" data-wv-fade>Coming soon</span>' : '');
         var liCls = 'wv-icard-li' + (opts.brandLine ? ' wv-index-li wv-brand--' + brandOf(item) : '');
         return '<li class="' + liCls + '">' + rowOpen(item, 'wv-icard' + (item.brand ? ' wv-icard--brand' : ''), style) +
-            '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '">' + M.mediaHtml(item.media[0], { reduced: opts.reduced }) + '</span>' +
+            // Archive heroes launch from the Interaction Archive card when coming from Featured.
+            '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '"' +
+            (item.kind === 'archive' ? ' data-wv-from="w-interaction-archive|media"' : '') + '>' +
+            M.mediaHtml(item.media[0], { reduced: opts.reduced }) + '</span>' +
             '<span class="wv-icard-body">' +
             '<span class="wv-icard-meta" data-wv-fade>' + esc([item.yearLabel, item.category].filter(Boolean).join(' · ')) + '</span>' +
             titleHtml(item, 'wv-icard-title') +

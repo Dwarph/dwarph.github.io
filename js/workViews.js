@@ -269,6 +269,16 @@
 
     // ---- Setup ----
 
+    // Line the switcher's centre up with the Work title at rest. offsetTop/offsetHeight
+    // ignore transforms, so the title's scroll-reveal nudge doesn't throw it off.
+    function alignDock() {
+        var title = hosts.work && hosts.work.section.querySelector('.section-title');
+        if (!title || !shared.switcher) return;
+        var offset = hosts.work.section.offsetTop + title.offsetTop +
+            (title.offsetHeight - shared.switcher.offsetHeight) / 2;
+        shared.dock.style.setProperty('--wv-dock-offset', Math.round(offset) + 'px');
+    }
+
     // Wrap a rendered section's content (everything after its title) as the Featured view,
     // next to an empty container for List/Grid.
     function adoptSection(container, sec) {
@@ -321,6 +331,8 @@
         dock.innerHTML = window.WorkViewsSwitcher.render(GROUP_LABEL, state.view);
         shared.dock = dock;
         shared.switcher = dock.firstElementChild;
+        alignDock();
+        window.addEventListener('resize', function () { requestAnimationFrame(alignDock); });
         window.WorkViewsSwitcher.bind(shared.switcher, function () { return state.view; }, setView);
 
         // Someone on Featured may still reach for the switcher: fetch the data early.

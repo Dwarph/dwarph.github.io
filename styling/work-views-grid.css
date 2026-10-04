@@ -22,7 +22,7 @@
     color: inherit;
     font: inherit;
     text-align: left;
-    cursor: zoom-in;
+    cursor: pointer;
     /* Landing spot for the bio's employer links: clear the pinned switcher. */
     scroll-margin-top: 80px;
     transition: transform 0.35s var(--wv-ease), box-shadow 0.35s, opacity 0.25s, filter 0.25s;

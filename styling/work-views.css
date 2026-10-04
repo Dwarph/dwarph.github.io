@@ -42,13 +42,17 @@ body {
     align-items: flex-start;
     justify-content: flex-end;
     height: var(--wv-dock-h);
-    margin-bottom: calc(-1 * var(--wv-dock-h));
+    /* --wv-dock-offset (set by workViews.js from the Work title's real position) lines the
+       switcher's centre up with the title at rest. It sits on the dock, not the switcher, so
+       once stuck the switcher still pins 16px from the top. The fallback assumes the h2's
+       default 0.83em top margin. */
+    margin-top: var(--wv-dock-offset, calc(0.83 * var(--fs-page-title) + (var(--fs-page-title) - var(--wv-switch-size) - 8px) / 2));
+    margin-bottom: calc(-1 * (var(--wv-dock-h) + var(--wv-dock-offset, calc(0.83 * var(--fs-page-title) + (var(--fs-page-title) - var(--wv-switch-size) - 8px) / 2))));
     pointer-events: none;
 }
 
 .wv-sections > .wv-dock > * {
     pointer-events: auto;
-    margin-top: calc((var(--fs-page-title) - var(--wv-switch-size)) / 2 - 4px);
 }
 
 /* At rest the switcher sits beside the Work title. */

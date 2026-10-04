@@ -17,10 +17,14 @@
 
 /* core.css sets overflow-x: hidden on html/body, which turns body into a scroll
    container and stops the sticky switcher from ever sticking. clip blocks sideways
-   scrolling without that side effect. (This file only loads on the homepage.) */
+   scrolling without that side effect. (This file only loads on the homepage.) Phones also
+   get overflow-y: auto from core.css, and any scrolling value on one axis turns clip on the
+   other back into hidden - so the y axis is reset too (the page still scrolls, through the
+   viewport). */
 html,
 body {
     overflow-x: clip;
+    overflow-y: visible;
 }
 
 /* ---- Sections + sticky dock ---- */

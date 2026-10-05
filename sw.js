@@ -1,16 +1,17 @@
 // Service Worker for pipturner.co.uk
-const CACHE_NAME = 'pipturner-v7';
+const CACHE_NAME = 'pipturner-v8';
 const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
   '/styling/core.css',
   '/styling/home.css',
+  '/styling/home-experiments.css',
+  '/styling/experiments-page.css',
   '/styling/work-views.css',
   '/styling/work-views-list.css',
   '/styling/work-views-grid.css',
   '/styling/work-views-card.css',
   '/styling/case-study.css',
-  '/styling/archive.css',
   '/styling/homepage.css',
   '/styling/styles.css',
   '/styling/soundboard.css',
@@ -26,6 +27,7 @@ const STATIC_CACHE_URLS = [
   '/js/workViewsMotion.js',
   '/js/workViewsCard.js',
   '/js/workViewsSwitcher.js',
+  '/js/experimentsPage.js',
   '/js/soundboard.js',
   '/js/themeManager.js',
   '/assets/branding/favicon.ico',

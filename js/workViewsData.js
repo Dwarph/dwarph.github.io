@@ -1,6 +1,6 @@
-// Work + Projects views: the item model behind the List and Grid views.
+// Work + Experiments + Projects views: the item model behind the List and Grid views.
 // Built from the same data the homepage already renders (homepageData.json), plus the
-// case study index (years) and the Interaction Archive entries. Fetched once, on load for
+// case study index (years) and the archive entries (projectsData.json). Fetched once, on load for
 // the default Grid (or a List link), or when someone on Featured reaches for the switcher.
 
 (function () {
@@ -91,7 +91,6 @@
                 var href = cs.comingSoon ? null : (cs.link || (cs.key ? cs.key + '.html' : null));
                 var external = isExternal(href);
                 var hasPage = !!(meta && !cs.link);
-                var isArchivePage = cs.link === 'interaction-archive.html';
                 // Case studies take their year from the case study index; anything else can
                 // name one (`year`), or falls back to the job's dates.
                 var year = meta ? yearFromCompanyLine(meta.company) : (cs.year || null);
@@ -112,18 +111,20 @@
                     href: href,
                     external: external,
                     comingSoon: cs.comingSoon === true,
-                    kind: hasPage ? 'case-study' : (isArchivePage ? 'archive-page' : (external ? 'external' : 'page')),
+                    kind: hasPage ? 'case-study' : (external ? 'external' : 'page'),
                     // `type` in the data names the kind of work; otherwise it's derived.
-                    typeLabel: cs.type || (hasPage ? 'Case study' : (isArchivePage ? 'Interaction' : (external ? 'External' : 'Page'))),
+                    typeLabel: cs.type || (hasPage ? 'Case study' : (external ? 'External' : 'Page')),
                     ctaLabel: cs.comingSoon ? 'Coming soon' : (cs.cta || (hasPage ? 'Case study' : 'View')),
                     hero: cs.hero === true,
                     media: [{ src: cs.image, thumb: cs.thumb || null, type: 'image', alt: cs.imageAlt || '', role: 'cover' }]
                 });
             }
 
-            // The Interaction Archive is Ultraleap work, so its entries sit with that job.
+            // Shipped Ultraleap pieces from the archive sit with that job; the rest are
+            // experiments (buildExperimentItems).
             if (job.company === 'Ultraleap') {
                 for (var a = 0; a < archive.length; a++) {
+                    if (archive[a].section !== 'work') continue;
                     var entry = buildArchiveItem(archive[a], job);
                     var twin = findTwin(items, entry);
                     if (twin) mergeArchiveInto(twin, entry);
@@ -150,13 +151,13 @@
         caseStudy.media[0] = loop;
     }
 
-    function buildArchiveItem(p, job) {
+    function buildArchiveItem(p, job, section) {
         var src = 'images/projects/' + p.image;
         var poster = p.imageMob ? 'images/projects/' + p.imageMob : null;
-        var link = p.links && p.links[0] ? p.links[0].link : 'interaction-archive.html';
+        var link = p.links && p.links[0] ? p.links[0].link : 'experiments.html';
         return {
             id: 'a-' + slug(p.title),
-            section: 'work',
+            section: section || 'work',
             title: p.title,
             category: (p.tags || []).join(', '),
             short: p.short || '',
@@ -172,7 +173,6 @@
             kind: 'archive',
             typeLabel: p.type || 'Interaction',
             ctaLabel: 'View',
-            sourceHref: 'interaction-archive.html',
             hero: p.hero === true,
             media: [{
                 src: src,
@@ -216,6 +216,58 @@
         });
     }
 
+    // Experiments: the Ultraleap interaction R&D from the archive, plus personal prototypes
+    // (homepageData.experiments). Newest first.
+    function buildExperimentItems(home, archive) {
+        var ultraleap = null;
+        for (var i = 0; i < home.work.length; i++) if (home.work[i].company === 'Ultraleap') ultraleap = home.work[i];
+        var items = [];
+        archive.forEach(function (p) {
+            if (p.section === 'work' || !ultraleap) return;
+            var it = buildArchiveItem(p, ultraleap, 'experiments');
+            it.origin = 'Ultraleap';
+            items.push(it);
+        });
+        // `origin` names where the experiment was made (FitXR); personal by default.
+        (home.experiments || []).forEach(function (p) {
+            var video = isVideo(p.image);
+            var origin = p.origin || 'Personal';
+            items.push({
+                id: 'x-' + slug(p.title),
+                section: 'experiments',
+                title: p.title,
+                category: p.tags || '',
+                short: p.short || '',
+                lead: p.lead || p.description || '',
+                year: p.year,
+                yearLabel: String(p.year),
+                company: origin,
+                origin: origin,
+                gradient: null,
+                employer: null,
+                href: p.link || null,
+                external: isExternal(p.link),
+                comingSoon: false,
+                kind: 'project',
+                typeLabel: p.type || 'Experiment',
+                ctaLabel: p.cta || (isExternal(p.link) ? 'View' : 'Try it'),
+                hero: p.hero === true,
+                media: [{
+                    src: p.image,
+                    thumb: p.thumb || null,
+                    poster: video ? (p.poster || null) : null,
+                    type: video ? 'video' : 'image',
+                    alt: p.imageAlt || '',
+                    // `fit: "contain"` shows wide or tall media whole in square frames.
+                    fit: p.fit || null,
+                    role: 'cover'
+                }]
+            });
+        });
+        // Newest first; within a year, the data's order (Array.sort is stable).
+        return items.sort(function (a, b) { return (b.year || 0) - (a.year || 0); });
+    }
+
     function fetchJson(url) {
         return new Promise(function (resolve, reject) {
             window.fetchJsonWithRetry(url, resolve, reject);
@@ -235,11 +287,22 @@
             for (var i = 0; i < res[0].length; i++) caseStudyMeta[res[0][i].key] = res[0][i];
             return {
                 work: buildWorkItems(home, caseStudyMeta, res[1]),
+                experiments: buildExperimentItems(home, res[1]),
                 projects: buildProjectItems(home)
             };
         });
         pending.catch(function () { pending = null; });
         return pending;
+    };
+
+    // The full experiments page (experimentsPage.js) builds the same items, all of them.
+    window.loadExperimentItems = function () {
+        return Promise.all([
+            fetchJson('data/homepageData.json'),
+            fetchJson('data/projectsData.json')
+        ]).then(function (res) {
+            return buildExperimentItems(res[0], res[1]);
+        });
     };
 
     window.WorkViewsUtil = {

@@ -154,7 +154,8 @@ ul.wv-list {
     transition: opacity 0.18s;
 }
 
-.wv-peek img {
+.wv-peek img,
+.wv-peek video {
     display: block;
     width: 100%;
     height: 100%;
@@ -165,11 +166,37 @@ ul.wv-list {
     transition: transform 0.3s var(--wv-ease);
 }
 
+/* The loop sits over the still and shows once it's playing. */
+.wv-peek video {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+}
+
+.wv-peek.has-video video {
+    opacity: 1;
+}
+
+/* Media marked to show whole: the preview takes the still's own shape. */
+.wv-peek.is-contain {
+    aspect-ratio: auto;
+}
+
+.wv-peek.is-contain img {
+    height: auto;
+}
+
+.wv-peek.is-contain video {
+    object-fit: contain;
+    background: #fff;
+}
+
 .wv-peek.is-on {
     opacity: 1;
 }
 
-.wv-peek.is-on img {
+.wv-peek.is-on img,
+.wv-peek.is-on video {
     transform: none;
 }
 

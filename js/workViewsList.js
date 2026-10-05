@@ -1,4 +1,4 @@
-// Work + Projects views: the List view - a typographic index grouped by year.
+// Work / Experiments / Projects views: the List view - a typographic index grouped by year.
 // Work runs a brand line down the rows (FitXR blue, Ultraleap green), with an employer
 // intro where each employer's line begins, following the Featured timeline. Projects is
 // the same index without the line. Heroes become compact cards inside the index.
@@ -63,9 +63,7 @@
             (item.comingSoon ? '<span class="wv-icard-cta is-soon" data-wv-fade>Coming soon</span>' : '');
         var liCls = 'wv-icard-li' + (opts.brandLine ? ' wv-index-li wv-brand--' + brandOf(item) : '');
         return '<li class="' + liCls + '">' + rowOpen(item, 'wv-icard' + (item.brand ? ' wv-icard--brand' : ''), style) +
-            // Archive heroes launch from the Interaction Archive card when coming from Featured.
-            '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '"' +
-            (item.kind === 'archive' ? ' data-wv-from="w-interaction-archive|media"' : '') + '>' +
+            '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '">' +
             M.mediaHtml(item.media[0], { reduced: opts.reduced, thumb: true }) + '</span>' +
             '<span class="wv-icard-body">' +
             '<span class="wv-icard-meta" data-wv-fade>' + esc([item.yearLabel, item.category].filter(Boolean).join(' · ')) + '</span>' +
@@ -76,13 +74,19 @@
 
     function rowHtml(item, opts) {
         if (item.hero) return heroCardHtml(item, opts);
-        var still = M.stillSrc(item.media[0]);
+        var media = item.media[0];
+        var still = M.stillSrc(media);
+        // The hover preview plays the loop for videos (the still shows until it's ready), and
+        // takes the media's own shape when it's marked to show whole.
+        var peek = still ? ' data-wv-peek="' + esc(still) + '"' +
+            (media.type === 'video' ? ' data-wv-peek-video="' + esc(media.src) + '"' : '') +
+            (media.fit ? ' data-wv-peek-fit="' + esc(media.fit) + '"' : '') : '';
         var brandCls = opts.brandLine ? ' wv-brand--' + brandOf(item) : '';
         // Projects show their tags. Work has no middle column: the brand line and employer
         // intro already say whose work each row is.
         var meta = opts.brandLine ? '' : '<span class="wv-index-meta" data-wv-fade>' + esc(item.category) + '</span>';
         return '<li class="wv-index-li' + brandCls + '">' +
-            rowOpen(item, 'wv-index-row', still ? ' data-wv-peek="' + esc(still) + '"' : '') +
+            rowOpen(item, 'wv-index-row', peek) +
             '<span class="wv-index-title">' + titleHtml(item, 'wv-index-name', iconHtml(item)) + '</span>' +
             meta +
             '<span class="wv-index-type" data-wv-fade>' + esc(item.typeLabel) + '</span>' +
@@ -149,23 +153,48 @@
         stage.addEventListener('pointermove', function (e) {
             var row = e.target.closest && e.target.closest('[data-wv-peek]');
             if (!row || !stage.contains(row)) {
-                if (peek) peek.classList.remove('is-on');
+                hidePeek();
                 return;
             }
             if (!peek) {
                 peek = document.createElement('div');
                 peek.className = 'wv-peek';
                 peek.setAttribute('aria-hidden', 'true');
-                peek.innerHTML = '<img alt="" />';
+                peek.innerHTML = '<img alt="" /><video muted loop playsinline preload="none"></video>';
                 document.body.appendChild(peek);
             }
             var img = peek.firstChild;
+            var vid = peek.lastChild;
             if (img.getAttribute('src') !== row.dataset.wvPeek) img.src = row.dataset.wvPeek;
+            peek.classList.toggle('is-contain', row.dataset.wvPeekFit === 'contain');
+            var loop = row.dataset.wvPeekVideo || '';
+            if (vid.getAttribute('data-for') !== loop) {
+                vid.setAttribute('data-for', loop);
+                peek.classList.remove('has-video');
+                if (loop && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    vid.src = loop;
+                    var p = vid.play();
+                    if (p && p.catch) p.catch(function () {});
+                    vid.onplaying = function () { if (vid.getAttribute('data-for') === loop) peek.classList.add('has-video'); };
+                } else {
+                    vid.removeAttribute('src');
+                    vid.load();
+                }
+            }
             peek.style.transform = 'translate(' + (e.clientX + 24) + 'px,' + (e.clientY - 60) + 'px)';
             peek.classList.add('is-on');
         });
-        stage.addEventListener('pointerleave', function () { if (peek) peek.classList.remove('is-on'); });
-        stage.addEventListener('click', function () { if (peek) peek.classList.remove('is-on'); });
+        stage.addEventListener('pointerleave', hidePeek);
+        stage.addEventListener('click', hidePeek);
+    }
+
+    // Hide the preview and stop its loop, so nothing plays off screen.
+    function hidePeek() {
+        if (!peek) return;
+        peek.classList.remove('is-on', 'has-video');
+        var vid = peek.lastChild;
+        vid.pause();
+        vid.removeAttribute('data-for');
     }
 
     window.WorkViewsList = { render: render, attach: attach };

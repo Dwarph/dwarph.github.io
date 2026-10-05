@@ -5,10 +5,11 @@
   - core (shared tokens + header + layout utilities):  styling/core.css
   - homepage-only:                                 styling/home.css
   - case-study-only:                               styling/case-study.css
-  - archive-only:                                  styling/archive.css
+  - homepage experiments section:                  styling/home-experiments.css
+  - experiments page:                              styling/experiments-page.css
 */
 
 @import url('./core.css');
 @import url('./home.css');
 @import url('./case-study.css');
-@import url('./archive.css');
+@import url('./home-experiments.css');

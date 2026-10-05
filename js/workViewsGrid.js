@@ -1,4 +1,4 @@
-// Work + Projects views: the Grid view - a contact sheet of square tiles, one per item.
+// Work / Experiments / Projects views: the Grid view - a contact sheet of square tiles, one per item.
 // Heroes take a 2x2 cell and always show their title; other tiles show theirs on hover
 // or keyboard focus (work-views-grid.css). Tiles are buttons that open the detail card.
 
@@ -20,19 +20,13 @@
         });
     }
 
-    // Archive pieces have no image of their own in Featured: arriving from there, they
-    // launch from the Interaction Archive card instead.
-    function fromAttr(item) {
-        return item.kind === 'archive' ? ' data-wv-from="w-interaction-archive|media"' : '';
-    }
-
     function tileHtml(tile, n, opts) {
         var it = tile.item;
         var label = it.title + (tile.media.alt ? '. ' + tile.media.alt : '');
         return '<button type="button" class="wv-tile' + (tile.hero ? ' is-hero' : '') + '" data-wv-item="' + esc(tile.key) + '" data-wv-tile="' + n + '"' +
             ' aria-haspopup="dialog" aria-label="' + esc(label) + '">' +
             // The key is on the frame, so the whole frame is what travels between views.
-            '<span class="wv-tile-media" data-wv-key="' + esc(tile.key + '|media') + '"' + fromAttr(it) + '>' +
+            '<span class="wv-tile-media" data-wv-key="' + esc(tile.key + '|media') + '">' +
             M.mediaHtml(tile.media, { reduced: opts.reduced, loading: n < 8 ? 'eager' : 'lazy', thumb: true }) +
             '</span>' +
             '<span class="wv-tile-cap" data-wv-fade>' +

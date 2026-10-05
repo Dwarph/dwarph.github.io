@@ -1,0 +1,299 @@
+/*
+  Experiments page (experiments.html, js/experimentsPage.js): a wall of loops grouped by
+  year, breaking out of the 730px column to the bleed-xl width. The detail card comes from
+  work-views-card.css; the tokens it needs from work-views.css are repeated here because
+  that file carries homepage-only layout.
+*/
+
+:root {
+    --wv-tint: rgba(55, 44, 9, 0.06);
+    --wv-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --exp-wide: min(1100px, calc(100vw - 2 * var(--header-frame-side)));
+}
+
+#experiments-container > .breadcrumb-nav:first-child {
+    padding-top: var(--spacing-lg);
+}
+
+/* Breadcrumb, header and return link sit on the wall's frame, lined up with the loops
+   (past the year gutter) rather than centred in the 730px column. Prose keeps its measure. */
+@media (min-width: 769px) {
+    #experiments-container > .breadcrumb-nav,
+    .exp-head,
+    #experiments-container > .subpage-return-home {
+        width: var(--exp-wide);
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: calc(88px + var(--spacing-xl));
+        padding-right: 0;
+    }
+
+    .exp-head > * {
+        max-width: 680px;
+    }
+}
+
+.exp-head {
+    padding-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.exp-intro {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
+    margin: 0 0 var(--spacing-xl);
+}
+
+/* ---- Filters ---- */
+
+.exp-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.exp-filter {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid rgba(55, 44, 9, 0.2);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-color);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-ui);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.exp-filter-count {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.exp-filter[aria-pressed="true"] {
+    background: var(--text-color);
+    border-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .exp-filter[aria-pressed="false"]:hover {
+        background: var(--wv-tint);
+    }
+}
+
+.exp-filter:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 3px;
+}
+
+/* ---- Wall ---- */
+
+.exp-wall {
+    width: var(--exp-wide);
+    margin: 0 auto var(--space-section);
+    outline: none;
+}
+
+.exp-year {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+/* The year rides down beside its loops on wide screens. */
+.exp-year-label {
+    position: sticky;
+    top: var(--spacing-xl);
+    align-self: start;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-prose-h4);
+    line-height: var(--lh-display);
+}
+
+.exp-wall-grid {
+    display: grid;
+    /* Loops are ~288px; tiles stay near that so they never blow up past ~1.5x. */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--spacing-2xl) var(--spacing-xl);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.exp-wall-item {
+    position: relative;
+    min-width: 0;
+    max-width: 432px;
+}
+
+.exp-wall-open {
+    appearance: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: zoom-in;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.exp-wall-open:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 4px;
+    border-radius: 15px;
+}
+
+.exp-wall-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    overflow: hidden;
+    background: var(--wv-tint);
+    transition: transform 0.35s var(--wv-ease), box-shadow 0.35s;
+}
+
+.exp-wall-media > img,
+.exp-wall-media > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .exp-wall-open:hover .exp-wall-media {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 30px rgba(55, 44, 9, 0.18);
+    }
+
+    .exp-wall-open:hover .exp-wall-title {
+        opacity: 0.7;
+    }
+}
+
+.exp-wall-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.exp-wall-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-prose-h4);
+    line-height: var(--lh-display);
+}
+
+.exp-wall-short {
+    font-size: var(--fs-ui);
+    line-height: var(--lh-body);
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
+}
+
+.exp-wall-meta {
+    font-style: italic;
+    font-size: var(--fs-ui);
+    line-height: var(--lh-display);
+    opacity: 0.75;
+}
+
+/* Reduced motion: loops wait for a press. */
+.exp-wall-play {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 253, 239, 0.92);
+    color: var(--text-color);
+    box-shadow: 0 2px 10px rgba(55, 44, 9, 0.2);
+    cursor: pointer;
+}
+
+.exp-wall-play:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 2px;
+}
+
+.exp-empty {
+    padding: var(--spacing-3xl) 0;
+    text-align: center;
+    font-size: var(--fs-body);
+}
+
+/* Tiles rise in as they first reach the screen (added only without reduced motion). */
+.exp-wall--reveal .exp-wall-item {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.6s var(--wv-ease);
+}
+
+.exp-wall--reveal .exp-wall-item.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .exp-wall {
+        width: auto;
+        margin-left: var(--mobile-padding-horizontal);
+        margin-right: var(--mobile-padding-horizontal);
+    }
+
+    .exp-head {
+        padding: var(--spacing-md) var(--mobile-padding-horizontal) 0;
+        margin-bottom: var(--spacing-2xl);
+    }
+
+    .exp-year {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .exp-year-label {
+        position: static;
+    }
+
+    .exp-wall-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .exp-wall-short {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exp-wall-media,
+    .exp-filter {
+        transition: none;
+    }
+}

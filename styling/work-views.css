@@ -118,7 +118,29 @@ body {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    overflow: hidden;
     will-change: left, top, width, height;
+}
+
+/* A loop in flight: its last frame, then the loop itself continuing on top. */
+.wv-flyer > canvas,
+.wv-flyer > video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Media marked to show whole keeps its letterbox in flight. */
+.wv-flyer.is-contain {
+    background-color: #fff;
+    background-size: contain;
+}
+
+.wv-flyer.is-contain > canvas,
+.wv-flyer.is-contain > video {
+    object-fit: contain;
 }
 
 /* ---- Switcher: segmented pill, ink thumb slides behind the active icon ---- */

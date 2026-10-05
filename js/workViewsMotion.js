@@ -80,12 +80,61 @@
         return flyerLayer;
     }
 
+    function mediaOf(el) {
+        return (el.tagName === 'IMG' || el.tagName === 'VIDEO') ? el : el.querySelector('img, video');
+    }
+
     // What the stand-in shows: the image itself, or a video's poster.
     function stillOf(el) {
-        var m = (el.tagName === 'IMG' || el.tagName === 'VIDEO') ? el : el.querySelector('img, video');
+        var m = mediaOf(el);
         if (!m) return null;
         if (m.tagName === 'IMG') return m.currentSrc || m.getAttribute('src');
         return m.getAttribute('poster');
+    }
+
+    // A loop that's playing in the old view keeps playing through the swap: note where it
+    // is and grab its current frame (the stand-in shows that straight away, then a copy of
+    // the loop picks up from the same moment), so nothing flips back to its poster.
+    function liveLoop(el) {
+        var v = mediaOf(el);
+        if (!v || v.tagName !== 'VIDEO' || !v.getAttribute('src') || v.readyState < 2 || !v.videoWidth) return null;
+        var frame = null;
+        try {
+            frame = document.createElement('canvas');
+            frame.width = v.videoWidth;
+            frame.height = v.videoHeight;
+            frame.getContext('2d').drawImage(v, 0, 0);
+        } catch (e) {
+            frame = null;
+        }
+        return { src: v.getAttribute('src'), time: v.currentTime, at: performance.now(), paused: v.paused, frame: frame };
+    }
+
+    function loopTime(loop, video) {
+        var t = loop.time + (loop.paused ? 0 : (performance.now() - loop.at) / 1000);
+        return video.duration ? t % video.duration : t;
+    }
+
+    // Seek a video to where the loop is now and play it; onShowing runs once it's actually
+    // presenting a frame from there (not its first frame, nor a stale one mid-seek).
+    function startAt(video, loop, onShowing) {
+        function seek() {
+            if (onShowing) {
+                video.addEventListener('seeked', function () { afterNextFrame(video, onShowing); }, { once: true });
+            }
+            try { video.currentTime = loopTime(loop, video); } catch (e) {}
+            if (!loop.paused) {
+                var p = video.play();
+                if (p && p.catch) p.catch(function () {});
+            }
+        }
+        if (video.readyState >= 1) seek();
+        else video.addEventListener('loadedmetadata', seek, { once: true });
+    }
+
+    function afterNextFrame(video, cb) {
+        if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(function () { cb(); });
+        else requestAnimationFrame(function () { requestAnimationFrame(cb); });
     }
 
     // Corner radius of the element, or of the frame that clips it.
@@ -101,16 +150,46 @@
 
     function flyMedia(el, from, to, delay, cleanups) {
         var src = stillOf(el);
-        if (!src) return null;
+        var loop = from.loop || null;
+        if (!src && !loop) return null;
         var toRadius = radiusOf(el);
+        var target = mediaOf(el);
         var f = document.createElement('div');
-        f.className = 'wv-flyer';
+        f.className = 'wv-flyer' + (target && target.getAttribute('data-fit') === 'contain' ? ' is-contain' : '');
         f.style.left = to.x + 'px';
         f.style.top = to.y + 'px';
         f.style.width = to.w + 'px';
         f.style.height = to.h + 'px';
         f.style.borderRadius = toRadius;
-        f.style.backgroundImage = 'url("' + src.replace(/"/g, '\\"') + '")';
+        if (src) f.style.backgroundImage = 'url("' + src.replace(/"/g, '\\"') + '")';
+
+        // The same loop, continuing: its last frame at once, then the loop itself on top.
+        // The real video it lands on starts loading now, at the same moment in the loop.
+        var copy = null;
+        var sameLoop = loop && target && target.tagName === 'VIDEO' &&
+            (target.getAttribute('src') || target.getAttribute('data-wv-src')) === loop.src;
+        if (loop) {
+            if (loop.frame) f.appendChild(loop.frame);
+            copy = document.createElement('video');
+            copy.muted = true;
+            copy.loop = true;
+            copy.playsInline = true;
+            // Unseen until it's showing the right moment - the captured frame covers until then.
+            copy.style.opacity = '0';
+            copy.src = loop.src;
+            f.appendChild(copy);
+            startAt(copy, loop, function () { copy.style.opacity = ''; });
+        }
+        var targetShowing = !sameLoop;
+        var landed = false;
+        function dropWhenReady() {
+            if (landed && targetShowing) f.remove();
+        }
+        if (sameLoop) {
+            if (!target.getAttribute('src')) target.src = loop.src;
+            startAt(target, loop, function () { targetShowing = true; dropWhenReady(); });
+        }
+
         getFlyerLayer().appendChild(f);
         el.style.visibility = 'hidden';
 
@@ -118,8 +197,12 @@
         function land() {
             if (done) return;
             done = true;
-            f.remove();
             el.style.visibility = '';
+            // The copy stays over the real loop until that's showing a frame from the right
+            // moment, so there's no flash of its poster (or first frame) on landing.
+            landed = true;
+            dropWhenReady();
+            setTimeout(function () { f.remove(); }, 800);
         }
         cleanups.push(land);
 
@@ -159,6 +242,7 @@
         allParts(o.targets).forEach(function (el, key) {
             var r = docRect(el);
             r.radius = isMedia(key) ? radiusOf(el) : '0px';
+            if (isMedia(key) && nearViewport(el)) r.loop = liveLoop(el);
             before.set(key, r);
         });
         // Where each item sat as a whole - a fallback launch point for media that had no
@@ -235,13 +319,12 @@
         });
 
         // Media new to this view still flies in from somewhere it can be traced to: the item's
-        // row in the old view, or a stand-in source named on the frame (data-wv-from - archive
-        // pieces launch from the Interaction Archive card when coming from Featured).
+        // row in the old view.
         var rank = matched.length;
         var arrivals = [];
         after.forEach(function (el, key) {
             if (!isMedia(key) || before.has(key) || !nearViewport(el)) return;
-            var from = beforeItems.get(key.slice(0, -6)) || (el.dataset.wvFrom && before.get(el.dataset.wvFrom));
+            var from = beforeItems.get(key.slice(0, -6));
             if (from) arrivals.push([el, from]);
         });
         arrivals.sort(function (a, b) { return a[0].getBoundingClientRect().top - b[0].getBoundingClientRect().top; });

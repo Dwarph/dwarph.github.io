@@ -1,5 +1,6 @@
-// Work + Projects views: Featured / List / Grid for the homepage's Work and Projects
-// sections, driven by one switcher (prototyped in experiments/work-views/).
+// Work + Projects + Experiments views: Featured / List / Grid for the homepage's Work,
+// Projects and Experiments sections, driven by one switcher (prototyped in
+// experiments/work-views/).
 //
 // Featured is the existing homepage markup. It stays in the page and is only hidden while
 // List or Grid shows, so scrollAnim.js (which captured those elements at load) keeps
@@ -12,12 +13,13 @@
 (function () {
     var SECTIONS = [
         { id: 'work', label: 'Work', brandLine: true },
-        { id: 'projects', label: 'Projects', brandLine: false }
+        { id: 'projects', label: 'Projects', brandLine: false },
+        { id: 'experiments', label: 'Experiments', brandLine: false }
     ];
     var VIEWS = ['featured', 'list', 'grid'];
     // What the bare homepage shows; the URL only names a view when it differs.
     var DEFAULT_VIEW = 'grid';
-    var GROUP_LABEL = 'Work and projects view';
+    var GROUP_LABEL = 'Work, projects and experiments view';
 
     var home = null;
     var items = null;
@@ -68,9 +70,13 @@
         var host = hosts[sectionId];
         var byTitle = {};
         items[sectionId].forEach(function (it) { byTitle[it.title] = it; });
-        var titleSel = sectionId === 'work' ?
-            '.case-study-title-link, .case-study-title' :
-            '.pb-name, .project-title-link, .project-title';
+        var titleSel = {
+            work: '.case-study-title-link, .case-study-title',
+            // Experiments' Featured view is just a link: nothing to fly.
+            experiments: null,
+            projects: '.pb-name, .project-title-link, .project-title'
+        }[sectionId];
+        if (!titleSel) return;
         var titles = host.featured.querySelectorAll(titleSel);
         for (var i = 0; i < titles.length; i++) {
             var t = titles[i];
@@ -110,14 +116,23 @@
         host.featured.hidden = true;
         host.alt.hidden = false;
         if (view === 'list') {
-            host.alt.innerHTML = window.WorkViewsList.render(items[sectionId], { brandLine: host.brandLine, reduced: isReduced() });
+            host.alt.innerHTML = window.WorkViewsList.render(items[sectionId], { brandLine: host.brandLine, reduced: isReduced() }) +
+                seeAllLink(sectionId);
             window.WorkViewsList.attach(host.alt);
             host.tiles = listTiles(host.alt, items[sectionId]);
         } else {
             host.tiles = window.WorkViewsGrid.buildTiles(items[sectionId]);
-            host.alt.innerHTML = window.WorkViewsGrid.render(host.tiles, { reduced: isReduced() });
+            host.alt.innerHTML = window.WorkViewsGrid.render(host.tiles, { reduced: isReduced() }) +
+                seeAllLink(sectionId);
         }
         window.WorkViewsMedia.observeVideos(host.alt);
+    }
+
+    // Experiments' List and Grid end with the way through to the full experiments page.
+    function seeAllLink(sectionId) {
+        if (sectionId !== 'experiments') return '';
+        return '<a class="experiments-more" href="experiments.html">See all experiments' +
+            '<span class="material-icons" aria-hidden="true">chevron_right</span></a>';
     }
 
     // List rows open the detail card too. Tiles follow the rows' on-screen order, so ←/→
@@ -215,6 +230,11 @@
             if (state.card) { state.card = null; writeUrl(); }
             return;
         }
+        // Interaction experiments used to sit in Work: old links (card=work:a-squish-summon)
+        // now find them in Experiments.
+        if (/^work:a-/.test(state.card) && !findTile('work', state.card.slice(5))) {
+            state.card = 'experiments:' + state.card.slice(5);
+        }
         var sep = state.card.indexOf(':');
         var host = hosts[state.card.slice(0, sep)];
         var key = state.card.slice(sep + 1);
@@ -226,6 +246,13 @@
         var el = host.alt.querySelector('[data-wv-tile="' + index + '"]');
         if (el) el.scrollIntoView({ block: 'center' });
         openCard(state.card.slice(0, sep), index);
+    }
+
+    function findTile(sectionId, key) {
+        var host = hosts[sectionId];
+        if (!host || !host.tiles) return null;
+        for (var i = 0; i < host.tiles.length; i++) if (host.tiles[i].key === key) return host.tiles[i];
+        return null;
     }
 
     function bindOpeners(sectionId) {
@@ -316,8 +343,8 @@
             hosts[SECTIONS[i].id] = host;
         }
 
-        // One sticky dock for both sections: the first child of a wrapper around them, so
-        // the switcher stays pinned from the Work title down through Projects.
+        // One sticky dock for all three sections: the first child of a wrapper around them,
+        // so the switcher stays pinned from the Work title down through Experiments.
         var wrapper = document.createElement('div');
         wrapper.className = 'wv-sections';
         var dock = document.createElement('div');
@@ -327,6 +354,7 @@
         wrapper.appendChild(dock);
         wrapper.appendChild(workSection);
         wrapper.appendChild(hosts.projects.section);
+        wrapper.appendChild(hosts.experiments.section);
 
         dock.innerHTML = window.WorkViewsSwitcher.render(GROUP_LABEL, state.view);
         shared.dock = dock;

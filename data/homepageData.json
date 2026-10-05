@@ -74,16 +74,6 @@
           "key": "prosho"
         },
         {
-          "title": "Interaction Archive",
-          "image": "images/casestudies/design-archive.png",
-          "thumb": "images/casestudies/design-archive-thumb.jpg",
-          "imageAlt": "Interaction archive image",
-          "type": "History",
-          "short": "Every interaction & app I made at Ultraleap",
-          "description": "At Ultraleap, I designed and contributed to a lot of different interactions and apps! I've archived all of them here.",
-          "link": "interaction-archive.html"
-        },
-        {
           "title": "XR Design Guidelines",
           "hero": true,
           "year": 2024,
@@ -109,6 +99,135 @@
       "otherWork": []
     }
   ],
+  "experimentsIntro": "Interaction experiments and prototypes - most made while leading interaction R&D at Ultraleap, some at FitXR, some just for fun.",
+  "experiments": [
+    {
+      "title": "Fidget Spinner",
+      "year": 2026,
+      "tags": "Motion, SVG, Interaction",
+      "type": "Interaction",
+      "short": "Count up and the shape morphs, bounces and spins faster",
+      "description": "A juice breakdown (a smoothie?) 🧃<br><br><strong>🍎 Fluid shape morphing.</strong> The obvious one! Each shape had to feel as if it seamlessly flowed into the next - through its literal form, but also through the transition. Colour change, a scale bounce and extra rotation velocity help mask the SVG morph a little, so it feels like magic.<br><br><strong>🍌 Bounces!</strong> Speaking of - bouncy transitions were a must. I focused on springy easing curves: watch the shape's scale bounce in and out, and the number overshoot.<br><br><strong>🍊 Rotation velocity stacking.</strong> The shapes rotate smoothly, and each transition adds rotation speed (to make it feel extra exciting) before it falls off, so it never overstimulates.<br><br><strong>🍇 Layout.</strong> A small one - I purposefully let bigger shapes overlap the number a little. It exaggerates the intensity of higher numbers and keeps things visually interesting. Full overlap would cause painful contrast issues.",
+      "image": "images/projects/fidget-spinner.mp4",
+      "poster": "images/projects/fidget-spinner.webp",
+      "fit": "contain",
+      "imageAlt": "A number counts from 1 to 7 and back; above it a coloured shape morphs from a droplet into ever spikier stars, bouncing and spinning faster with each step."
+    },
+    {
+      "title": "No Straight Line",
+      "year": 2026,
+      "tags": "UI, Interaction, Physics",
+      "type": "Interaction",
+      "short": "Drag the words; ropes pull the rest along",
+      "description": "An interactive poster: drag any word and the others follow, tugged along by springy ropes. A light Verlet rope sim, built with plain DOM and canvas.",
+      "image": "images/projects/no-journey.mp4",
+      "poster": "images/projects/no-journey.webp",
+      "fit": "contain",
+      "imageAlt": "Words on a blue poster being dragged around, pulling the others along on lime green ropes.",
+      "link": "experiments/no-straight-line/"
+    },
+    {
+      "title": "Workout Complete",
+      "origin": "FitXR",
+      "year": 2026,
+      "tags": "Motion, Mobile",
+      "type": "Motion",
+      "short": "A juicy workout-complete moment that didn't ship",
+      "description": "We decided not to ship this workout complete animation 😢 (we wanted to make sure we weren't slowing people down too much).<br><br>Pretty happy with the amount of juice in it - it will remain shipped in my heart 🧃🧃🧃",
+      "image": "images/projects/fitxr-workout-complete.mp4",
+      "poster": "images/projects/fitxr-workout-complete.webp",
+      "fit": "contain",
+      "imageAlt": "A workout's progress ring fills, the circle pops, and a burst of lime green ticks floods the screen before settling into one big tick."
+    },
+    {
+      "title": "Workout Nodes",
+      "origin": "FitXR",
+      "year": 2026,
+      "tags": "Motion, Mobile",
+      "type": "Motion",
+      "short": "A daily goal that unlocks, fills and lands with a tick",
+      "description": "Playing with motion design at FitXR: the daily goal unlocks to show today's workout types, nudges you to come back tomorrow, fills its ring as you train, and lands on a satisfying tick.",
+      "image": "images/projects/fitxr-daily-goal.mp4",
+      "poster": "images/projects/fitxr-daily-goal.webp",
+      "imageAlt": "A grey circle unlocks to show Dance, Flow and Box tags, a blue progress ring fills around it, and it turns into a lime green tick."
+    },
+    {
+      "title": "Fry Shower",
+      "year": 2026,
+      "tags": "UI, Interaction, Prototype",
+      "type": "Interaction",
+      "short": "Spin the dial, make it rain fries",
+      "description": "A playful use of the <a href=\"experiments/circle-slider/\">circle slider</a>: dial in how many fries you want, let go, and they shower down the screen.",
+      "image": "images/projects/fry-shower.mp4",
+      "poster": "images/projects/fry-shower.webp",
+      "imageAlt": "Spinning the dial to choose how many fries, then letting go as fries rain down the screen.",
+      "link": "experiments/fry-shower/"
+    },
+    {
+      "title": "Circle Slider",
+      "year": 2026,
+      "tags": "UI, Interaction, Prototype",
+      "type": "Interaction",
+      "short": "A dial that turns circular motion into input",
+      "description": "A circle slider that turns circular motion into input. Uses velocity-based motion detection.",
+      "image": "images/projects/circle-slider.mp4",
+      "poster": "images/projects/circle-slider.webp",
+      "imageAlt": "A circular dial being spun: a thumb travels round the track as the number in the middle counts up.",
+      "link": "experiments/circle-slider/",
+      "hero": true
+    },
+    {
+      "title": "Murmurations",
+      "year": 2026,
+      "tags": "Playdate, p5, Flocking",
+      "type": "Interaction",
+      "short": "Paint a sunset, then flock starlings with the crank",
+      "description": "A Saturday experiment with a Playdate, p5 and flocking, trying to recreate starling murmurations at sunset 🌅<br><br>Create your sunset using the crank and d-pad, then play with your starlings: crank to change their direction, spawn more and pull them towards you 🐥",
+      "image": "images/projects/murmurations.mp4",
+      "poster": "images/projects/murmurations.webp",
+      "fit": "contain",
+      "imageAlt": "A flock of starlings swirling over a soft yellow and blue sunset in a browser, steered by a Playdate's crank shown in an inset.",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7418970507259187201/"
+    },
+    {
+      "title": "Morandi",
+      "year": 2025,
+      "tags": "AI, Vibe Coding",
+      "type": "Concept",
+      "short": "A daily art app: prompts, inspiration & critiques",
+      "description": "A concept + prototype for a daily art app, that generates prompts, inspiration, and critiques of your art.",
+      "image": "images/projects/morandi.mp4",
+      "poster": "images/projects/morandi.webp",
+      "fit": "contain",
+      "imageAlt": "The Morandi app: pick today's stick, get a drawing prompt with references, then log your art - it joins the row of sticks from previous days.",
+      "link": "https://youtu.be/nL7ncOmOpdg?si=wARiMHqXS1jNXIR0"
+    },
+    {
+      "title": "Dino Dig",
+      "year": 2024,
+      "tags": "XR, Unity, Meta Quest",
+      "type": "Game jam",
+      "short": "Dig fossils out of your own wall, in mixed reality",
+      "description": "An XRHACK24 submission. Extract fossils from your wall & learn about the prehistoric era in this MR prototype. Made with Julia Ronneberger & Rory Clark",
+      "image": "images/projects/DinoDig.mp4",
+      "imageAlt": "Dino Dig project image",
+      "link": "https://youtu.be/u-T4H_T__Ww?si=_7fS0uYFP2NDQgtx",
+      "poster": "images/projects/DinoDig.webp"
+    },
+    {
+      "title": "P5 Generative Art",
+      "year": 2022,
+      "tags": "P5, Javascript",
+      "type": "Art",
+      "short": "Flow fields & perlin noise, made with p5",
+      "description": "Generative art made with p5, using flow fields & perlin noise.",
+      "image": "images/projects/p5.mp4",
+      "imageAlt": "P5 generative art project image",
+      "link": "https://github.com/Dwarph/Noise-P5",
+      "poster": "images/projects/p5.webp",
+      "hero": true
+    }
+  ],
   "projects": [
     {
       "title": "Set Sail",
@@ -130,42 +249,6 @@
       }
     },
     {
-      "title": "Circle Slider",
-      "tier": "minor",
-      "year": 2026,
-      "tags": "UI, Interaction, Prototype",
-      "type": "Interaction",
-      "short": "A dial that turns circular motion into input",
-      "description": "A circle slider that turns circular motion into input. Uses velocity-based motion detection.",
-      "image": "images/projects/circle-slider.png",
-      "imageAlt": "A circular slider dial with a progress arc and a knob indicator.",
-      "link": "experiments/circle-slider/"
-    },
-    {
-      "title": "Morandi",
-      "tier": "minor",
-      "year": 2025,
-      "tags": "AI, Vibe Coding",
-      "type": "Concept",
-      "short": "A daily art app: prompts, inspiration & critiques",
-      "description": "A concept + prototype for a daily art app, that generates prompts, inspiration, and critiques of your art.",
-      "image": "images/projects/morandi.png",
-      "imageAlt": "Morandi project image",
-      "link": "https://youtu.be/nL7ncOmOpdg?si=wARiMHqXS1jNXIR0"
-    },
-    {
-      "title": "Dino Dig",
-      "tier": "minor",
-      "year": 2024,
-      "tags": "XR, Unity, Meta Quest",
-      "type": "Game jam",
-      "short": "Dig fossils out of your own wall, in mixed reality",
-      "description": "An XRHACK24 submission. Extract fossils from your wall & learn about the prehistoric era in this MR prototype. Made with Julia Ronneberger & Rory Clark",
-      "image": "images/projects/DinoDig.webp",
-      "imageAlt": "Dino Dig project image",
-      "link": "https://youtu.be/u-T4H_T__Ww?si=_7fS0uYFP2NDQgtx"
-    },
-    {
       "title": "Pomodoro",
       "tier": "major",
       "year": 2023,
@@ -182,18 +265,6 @@
         "mediaRole": "thumb",
         "cta": "Download"
       }
-    },
-    {
-      "title": "P5 Generative Art",
-      "tier": "minor",
-      "year": 2022,
-      "tags": "P5, Javascript",
-      "type": "Art",
-      "short": "Flow fields & perlin noise, made with p5",
-      "description": "Generative art made with p5, using flow fields & perlin noise.",
-      "image": "images/projects/p5.webp",
-      "imageAlt": "P5 generative art project image",
-      "link": "https://github.com/Dwarph/Noise-P5"
     }
   ],
   "talks": [

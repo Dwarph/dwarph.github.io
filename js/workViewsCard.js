@@ -1,4 +1,4 @@
-// Work + Projects views: the detail card a grid tile or list row opens into.
+// Work views and the experiments page: the detail card a tile or list row opens into.
 // Native <dialog>: Esc and focus return come for free. ←/→ step through the section's
 // items; the opener's media morphs into the card where View Transitions exist.
 //
@@ -125,7 +125,7 @@
     // into the media looked like a zoom from landscape - so the card fades in instead.
     function openerMedia(index) {
         var t = tileEl(index);
-        return t ? t.querySelector('.wv-tile-media, .wv-icard-media') : null;
+        return t ? t.querySelector('.wv-tile-media, .wv-icard-media, .exp-wall-media') : null;
     }
 
     // The opener's media, if it shows the same file the card will - a tile showing a
@@ -163,7 +163,7 @@
         d.querySelector('.wv-card-desc').innerHTML = U.richText(it.lead);
         d.querySelector('.wv-card-desc').hidden = !it.lead;
         d.querySelector('.wv-card-sub').innerHTML = esc([it.company === 'Personal' ? null : it.company, it.typeLabel].filter(Boolean).join(' · ')) +
-            (it.kind === 'archive' ? ' · <a href="' + esc(it.sourceHref) + '">Interaction Archive</a>' : '');
+            (it.section === 'experiments' && state.sourceLink ? ' · <a href="experiments.html">All experiments</a>' : '');
 
         var link = linkFor(it);
         var a = d.querySelector('.wv-card-link');
@@ -210,6 +210,8 @@
         state.stage = opts.stage;
         state.reduced = opts.reduced;
         state.onChange = opts.onChange || null;
+        // The experiments page leaves out the "All experiments" link - it's already there.
+        state.sourceLink = opts.sourceLink !== false;
         var tile = state.tiles[state.index];
         var ready = mediaSize(openerMediaEl(state.index)) ? Promise.resolve() : measure(tile.media, 300);
         ready.then(function () {

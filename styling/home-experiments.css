@@ -1,0 +1,99 @@
+/*
+  Homepage: the Experiments section's Featured view (homepageGenerator.js renderExperiments) -
+  an intro, a row of the newest experiments' stills, and a link through to the full page. List and Grid come from work-views*.css like
+  Work and Projects.
+*/
+
+.experiments-intro {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    font-variation-settings: 'YTLC' 500, 'wdth' 100;
+    margin: 0 0 var(--spacing-lg);
+}
+
+.exp-thumbs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+    margin: 0 0 var(--spacing-lg);
+    padding: 0;
+    list-style: none;
+}
+
+.exp-thumb {
+    display: block;
+    border-radius: 10px;
+}
+
+.exp-thumb-frame {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(55, 44, 9, 0.05);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+}
+
+.exp-thumb-frame > img,
+.exp-thumb-frame > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .exp-thumb:hover .exp-thumb-frame {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(55, 44, 9, 0.16);
+    }
+}
+
+.exp-thumb:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 3px;
+}
+
+/* Phones: four across. */
+@media (max-width: 768px) {
+    .exp-thumbs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .exp-thumbs-item:nth-child(n + 5) {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exp-thumb-frame {
+        transition: none;
+    }
+}
+
+.experiments-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-body);
+    color: var(--highlight-pip);
+    text-decoration: none;
+}
+
+/* In the List and Grid views it closes the section. */
+.wv-alt > .experiments-more {
+    margin-top: var(--spacing-xl);
+}
+
+.experiments-more:hover {
+    opacity: 0.8;
+}
+
+.experiments-more:focus-visible {
+    outline: 3px solid var(--highlight-yellow);
+    outline-offset: 3px;
+    border-radius: 4px;
+}

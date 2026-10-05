@@ -20,7 +20,7 @@ function isExternalLink(url) {
 // Header is now rendered using window.renderHeader from header.js
 
 /** Material Icons for homepage bottom nav. Sync names with Figma if they differ. */
-var HOMEPAGE_NAV_ICONS = ['person', 'work', 'palette', 'mic', 'mail'];
+var HOMEPAGE_NAV_ICONS = ['person', 'work', 'palette', 'science', 'mic', 'mail'];
 
 /**
  * Click Talks nav: top of #talks vs viewport (not the pink active state — that’s scroll-spy).
@@ -434,6 +434,53 @@ function renderProjectRow(project) {
             `;
 }
 
+var HOMEPAGE_EXPERIMENT_THUMBS = 6;
+
+// Experiments, Featured view: an intro, a row of experiments' loops, and a way through to
+// the full page. The row starts as placeholders (so nothing shifts) and fillExperimentThumbs
+// picks a random few once the experiment items load. List and Grid (workViews.js) show
+// every experiment here.
+function renderExperiments(data) {
+    var slots = '';
+    for (var i = 0; i < HOMEPAGE_EXPERIMENT_THUMBS; i++) {
+        slots += '<li class="exp-thumbs-item"><span class="exp-thumb exp-thumb--empty"><span class="exp-thumb-frame"></span></span></li>';
+    }
+    return '<section id="experiments" class="homepage-section experiments-section">' +
+        '<h2 class="section-title scroll-reveal-chunk">Experiments</h2>' +
+        (data.experimentsIntro ? `<p class="experiments-intro scroll-reveal-chunk">${data.experimentsIntro}</p>` : '') +
+        `<ul class="exp-thumbs scroll-reveal-chunk" role="list">${slots}</ul>` +
+        '<a class="experiments-more scroll-reveal-chunk" href="experiments.html">See all experiments' +
+        '<span class="material-icons" aria-hidden="true">chevron_right</span></a>' +
+        '</section>';
+}
+
+// A different random few on every page load, from all the experiments (the same items List
+// and Grid use). Each thumb opens its card on the full page and plays while on screen.
+function fillExperimentThumbs(container, data) {
+    var row = container.querySelector('#experiments .exp-thumbs');
+    if (!row || !window.loadWorkViewsData || !window.WorkViewsMedia) return;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.loadWorkViewsData(data).then(function (items) {
+        var pool = (items.experiments || []).slice();
+        for (var i = pool.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+        }
+        var esc = window.WorkViewsUtil.escapeHtml;
+        row.innerHTML = pool.slice(0, HOMEPAGE_EXPERIMENT_THUMBS).map(function (it) {
+            // data-wv-item / data-wv-key let the thumb fly into its Grid tile or List row.
+            return '<li class="exp-thumbs-item"><a class="exp-thumb" href="experiments.html?card=' + encodeURIComponent(it.id) + '"' +
+                ' data-wv-item="' + esc(it.id) + '" aria-label="' + esc(it.title) + '">' +
+                '<span class="exp-thumb-frame" data-wv-key="' + esc(it.id + '|media') + '">' +
+                window.WorkViewsMedia.mediaHtml(it.media[0], { reduced: reduced, thumb: true }) +
+                '</span></a></li>';
+        }).join('');
+        if (!reduced) window.WorkViewsMedia.observeVideos(row);
+    }, function () {
+        row.hidden = true;
+    });
+}
+
 function renderProjects(projects) {
     // One chronological list. `tier` decides how an entry renders - a banner or a
     // compact row - not where it sits, so the section still reads newest-first.
@@ -533,7 +580,7 @@ function loadHomepageData() {
         return;
     }
 
-    window.fetchJsonWithRetry('data/homepageData.json', function (data) {
+    function renderHomepage(data) {
         container.removeAttribute('aria-busy');
 
         var html = '';
@@ -544,8 +591,9 @@ function loadHomepageData() {
             { href: '#about', label: 'About', icon: HOMEPAGE_NAV_ICONS[0] },
             { href: '#work', label: 'Work', icon: HOMEPAGE_NAV_ICONS[1] },
             { href: '#projects', label: 'Projects', icon: HOMEPAGE_NAV_ICONS[2] },
-            { href: '#talks', label: 'Talks', icon: HOMEPAGE_NAV_ICONS[3] },
-            { href: '#contact', label: 'Contact', icon: HOMEPAGE_NAV_ICONS[4] }
+            { href: '#experiments', label: 'Experiments', icon: HOMEPAGE_NAV_ICONS[3] },
+            { href: '#talks', label: 'Talks', icon: HOMEPAGE_NAV_ICONS[4] },
+            { href: '#contact', label: 'Contact', icon: HOMEPAGE_NAV_ICONS[5] }
         ];
         html += '<div class="homepage-nav-shell">';
         html += '<nav class="homepage-nav" role="navigation" aria-label="Main navigation" id="homepage-section-nav">';
@@ -573,6 +621,7 @@ function loadHomepageData() {
         html += renderAbout(data.about);
         html += renderWork(data.work);
         html += renderProjects(data.projects);
+        html += renderExperiments(data);
         html += renderTalks(data.talks);
         html += renderContact(data.contact);
 
@@ -590,6 +639,7 @@ function loadHomepageData() {
         // Featured / List / Grid switcher for Work + Projects (workViews.js). Runs before the
         // timeline and scroll setup below, which then measure the wrapped layout.
         if (window.initWorkViews) window.initWorkViews(container, data);
+        fillExperimentThumbs(container, data);
 
         // Position timeline dividers to start at case studies section
         function updateTimelinePositions() {
@@ -752,7 +802,9 @@ function loadHomepageData() {
                 setupComingSoonTooltips();
             }
         }, 0);
-    }, function () {
+    }
+
+    window.fetchJsonWithRetry('data/homepageData.json', renderHomepage, function () {
         container.removeAttribute('aria-busy');
         container.innerHTML =
             '<div class="page-status page-status--error" role="alert" id="about">' +
@@ -768,7 +820,7 @@ function loadHomepageData() {
     });
 }
 
-var HOMEPAGE_SECTION_IDS = ['about', 'work', 'projects', 'talks', 'contact'];
+var HOMEPAGE_SECTION_IDS = ['about', 'work', 'projects', 'experiments', 'talks', 'contact'];
 
 var lastHomepageNavActiveId = null;
 

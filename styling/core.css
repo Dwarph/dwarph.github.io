@@ -1,4 +1,4 @@
-/* Shared core styles (homepage, case studies, archive) */
+/* Shared core styles (homepage, case studies, experiments page) */
 
 /* CSS Variables for Colors + spacing + typography */
 :root {
@@ -155,7 +155,7 @@ select:focus-visible {
 }
 
 #case-study-container,
-#archive-container {
+#experiments-container {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -647,7 +647,20 @@ select:focus-visible {
     margin-bottom: var(--space-after-heading);
 }
 
-/* Shared link icons (homepage + archive cards) */
+/* Media marked `fit: "contain"` in the data (e.g. a wide loop) shows whole in square
+   frames, letterboxed on white, instead of being cropped to fill. */
+img[data-fit="contain"],
+video[data-fit="contain"] {
+    object-fit: contain !important;
+    background: #fff;
+}
+
+/* Its frame too, so no tint shows at the rounded edges. */
+:has(> img[data-fit="contain"], > video[data-fit="contain"]) {
+    background: #fff;
+}
+
+/* Shared link icons (homepage cards) */
 .link-icon {
     flex-shrink: 0;
     display: inline-block;

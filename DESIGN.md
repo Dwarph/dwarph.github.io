@@ -1,4 +1,4 @@
-# Design System — Pip Turner Portfolio (Homepage, Case Studies, Interaction Archive)
+# Design System — Pip Turner Portfolio (Homepage, Case Studies, Experiments)
 
 ## 1. Visual Theme & Atmosphere
 
@@ -6,7 +6,7 @@ The portfolio reads as a **warm editorial surface**: a soft cream page (`#FFFDEF
 
 The **hero** is a framed photograph (fluid max width ~1200px, generous corner radius) with optional **WebGL distortion** and a small circular settings control; it feels like a **matte print in a tray**, lifted by a soft brown-tinted shadow ring. **Navigation** is a **frosted bottom dock** at all breakpoints: a centered pill fixed above the safe area, icon-only with Material Icons, active section marked by a **pink icon** (`#ff8ca8`) — not a background halo.
 
-**Case study pages** and the **Interaction Archive** reuse the same type scale and cream ground so subpages feel like chapters of one book. The archive is a **chronological catalog** of projects: row cards with square media (often video), title, year, italic tags, description, and stacked text links.
+**Case study pages** and the **Experiments page** reuse the same type scale and cream ground so subpages feel like chapters of one book. Experiments is a **wall of loops** grouped by year: square media (mostly video), title, one-line hook and an origin/type line, each opening the shared detail card. It replaced the Interaction Archive (`interaction-archive.html` now redirects).
 
 **Key Characteristics:**
 - Cream ground (`#FFFDEF`) + brown text (`#372C09`) — warm, paper-like
@@ -19,8 +19,9 @@ The **hero** is a framed photograph (fluid max width ~1200px, generous corner ra
   - Shared core: `styling/core.css`
   - Homepage: `styling/home.css`
   - Case studies: `styling/case-study.css`
-  - Interaction archive: `styling/archive.css`
-  - Work + Projects views: `styling/work-views.css` (+ `-list`, `-grid`, `-card`)
+  - Homepage Experiments section (Featured view): `styling/home-experiments.css`
+  - Experiments page: `styling/experiments-page.css`
+  - Work + Projects + Experiments views: `styling/work-views.css` (+ `-list`, `-grid`, `-card`)
   - Legacy bundle entrypoint: `styling/homepage.css` (imports the above)
 
 ## 2. Color Palette & Roles
@@ -42,7 +43,7 @@ The **hero** is a framed photograph (fluid max width ~1200px, generous corner ra
 ### Utility Alphas (on `rgba(55, 44, 9, …)`)
 - Hairline borders: ~`0.07–0.15` opacity on brown
 - Dividers / HR: `rgba(55, 44, 9, 0.2)`
-- Archive empty / loading surfaces: `rgba(55, 44, 9, 0.05)` base, pulse to `0.15`
+- Media placeholders (tiles, loading): `rgba(55, 44, 9, 0.05)` base, pulse to `0.15`
 
 ### Shadows (representative)
 - **Hero frame**: `0 10px 44px rgba(55, 44, 9, 0.08)` + `0 0 0 1px rgba(55, 44, 9, 0.07)`
@@ -54,7 +55,7 @@ The **hero** is a framed photograph (fluid max width ~1200px, generous corner ra
 ### Font families
 - **Display**: `Outfit` — via `var(--font-display)` on headings, hero, nav, breadcrumbs, card titles.
 - **Body**: `Nunito Sans` — `body` uses `var(--font-body)`; prose and UI inherit unless Outfit is set explicitly.
-- **Italic**: tags, venues, case study company line, archive tags.
+- **Italic**: tags, venues, case study company line, experiment meta.
 - **Icons**: Material Icons (nav, chevron, external, lock, compare handle). Icon pixel sizes are local, not part of the type scale.
 - **Nunito axis**: body prose often sets `font-variation-settings: 'YTLC' 500, 'wdth' 100` for consistent lowercase height.
 
@@ -69,10 +70,10 @@ Desktop defaults live in `:root`; at **≤768px** a single `@media` block redefi
 | `--fs-employer` | 3.125 (50px) | 2 (32px) | Job company |
 | `--fs-group` | 2.5 (40px) | 1.5 (24px) | “Case Studies” / group labels |
 | `--fs-article-h2` | 2.5 (40px) | 2 (32px) | Case study markdown `h2` |
-| `--fs-card` | 2 (32px) | 1.25 (20px) | Case/project/archive card titles |
+| `--fs-card` | 2 (32px) | 1.25 (20px) | Case/project card titles |
 | `--fs-prose-h3` | 2 (32px) | 1.5 (24px) | Markdown `h3` |
 | `--fs-prose-h4` | 1.5 (24px) | 1.25 (20px) | Markdown `h4` |
-| `--fs-body` | 1.5 (24px) | 1 (16px) | Body, dates, tags text, talks, contact, archive copy, breadcrumbs (Outfit at this size for crumbs) |
+| `--fs-body` | 1.5 (24px) | 1 (16px) | Body, dates, tags text, talks, contact, breadcrumbs (Outfit at this size for crumbs) |
 | `--fs-ui` | 1.125 (18px) | 1 (16px) | Page status, retry button |
 | `--fs-nav` | 1.5 (24px) | 1.25 (20px) | Dock nav (drives Material icon size) |
 | `--fs-hero-stat` | `clamp(2.5rem, 8vw, 4rem)` | `clamp(1.75rem, 7vw, 2.5rem)` | Case study metric values (`.cs-hero-stat__value`); groups may override locally |
@@ -136,28 +137,33 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 
 *Authoring detail for case studies: see `.cursor/skills/case-study-writing/SKILL.md`.*
 
-### Work + Projects Views (Featured / List / Grid)
-- **One switcher for both sections**: segmented pill (`.wv-switcher`) with an ink thumb that slides behind the active Material icon (`view_agenda` / `view_list` / `grid_view`); 44px options (40px ≤768px), yellow focus ring, radiogroup with arrow-key selection. Sits beside the Work title at rest and stays pinned (sticky, `top: 16px`) through Projects
+### Work + Projects + Experiments Views (Featured / List / Grid)
+- **One switcher for all three sections**: segmented pill (`.wv-switcher`) with an ink thumb that slides behind the active Material icon (`view_agenda` / `view_list` / `grid_view`); 44px options (40px ≤768px), yellow focus ring, radiogroup with arrow-key selection. Sits beside the Work title at rest and stays pinned (sticky, `top: 16px`) through Projects and Experiments
 - **Grid is the default view.** **Featured** is the existing timeline + project layout, kept in the page (hidden, not re-rendered) while another view shows
 - **List**: typographic index grouped by year (year column 88px). Work runs a **brand line** down the rows — a solid employer-colour segment per row (FitXR blue, Ultraleap green), rounded where a run starts/ends — in a 48px logo column, flush with the logo's right edge (as the timeline bar sits under the job logo). An **employer intro** (logo, gradient name, role · dates, description) opens each employer's run; the line starts *after* it; a mid-list intro gets 44px of empty space above. Rows show title + arrow, tags (Projects only), and type; row titles are Outfit on desktop and take the Talks voice on phones (Nunito Sans 700 at `--fs-body`, prose with the body `YTLC` tuning)
 - **Hero items** (`"hero": true` in data; major projects by default) become compact **hero cards** in the list: 112px 4:3 thumb, meta, title, one-line **`short`** description, ink CTA pill; tinted card, or the project's brand colour (Set Sail)
 - **Grid**: contact sheet of square tiles (`minmax(132px, 1fr)`, 6px gaps, 6px radius), heroes span 2×2; breaks out to the `bleed-xl` width. Titles sit on an ink scrim — always on heroes, on hover/focus for the rest — and wrap rather than truncate
 - **Detail card** (tiles and list rows open it): media as large as the screen allows on a dark stage, sized to its own aspect ratio and never past 1.5× its native width; text panel beside it (wide) or below (narrow); full description with links; ←/→ step, Esc closes. View (when not the default) and open card persist in the URL (`?view=list&card=work:a-aurora`)
-- **Motion**: FLIP between views — shared thumbs/titles fly, the old view fades, new items rise in; the section being read is held still. Reduced motion: 150ms crossfade
+- **Motion**: FLIP between views — shared thumbs/titles fly, the old view fades, new items rise in; the section being read is held still. A **loop that's playing keeps playing** through the swap: its stand-in shows the current frame, then a copy picks up from the same moment, and the landing video is pre-synced (needs a server that answers Range requests, as GitHub Pages does). Reduced motion: 150ms crossfade
 - **Short descriptions** (`short` in the data, ~60 chars): a front-loaded hook for list cards; the full `description` stays for the detail card and Featured
 
-### Interaction Archive
-- Breadcrumb only at top (no shared hero header); section title + intro paragraph with optional employer gradient spans
-- **Horizontal rule** under intro block
-- **Project row**: like homepage project card — **194×194** media (video or image), title Outfit + `var(--fs-card)`, year/tags/description/links on `var(--fs-body)` with `var(--lh-body)` for prose
-- **Empty state**: centered message, generous vertical padding
-- **Loading video**: pulsing placeholder + spinner (brown-tinted)
-- **Filters not shipped**: `.archive-filters` styles remain in `styling/archive.css` but are not rendered by `interactionArchiveGenerator.js` — do not document or build filter UI unless re-enabled in JS
+### Experiments (homepage section)
+- Sits between Projects and Talks, with its own dock icon (`science`). Shows **every** experiment, newest first
+- **Featured**: the intro line, a row of **six random** experiments' loops (a fresh pick from all of them on every load; placeholder squares until the items arrive) (play while on screen; posters under reduced motion; 10px radius, 6 across; 4 on phones; lift on hover), each linking to its card on the full page (`experiments.html?card=…`), then a pink Outfit **"See all experiments"** link (return-home style). Thumbs carry `data-wv-key`, so they fly into their Grid tiles / List rows. In **List**, a row's hover preview plays its loop (still until it's ready) and takes the media's own shape for `fit: "contain"` items. Re-encoded media needs a **new file name**: `sw.js` serves images and video cache-first, so a same-name file stays stale for returning visitors
+- **List / Grid**: the shared views; heroes become hero cards / 2×2 tiles as in Work and Projects. List and Grid end with the same pink **"See all experiments"** link
+- **Data**: Ultraleap interaction R&D lives in `projectsData.json` with `"section": "experiments"` (shipped pieces are `"section": "work"` and stay in Work); personal prototypes are `homepageData.experiments` (an `origin` field, e.g. `"FitXR"`, marks ones made at work; default Personal). `"fit": "contain"` on an entry shows non-square media whole (letterboxed on white) in square frames instead of cropping (No Straight Line). Old `?card=work:a-…` links fall through to Experiments
+
+### Experiments page (`experiments.html`)
+- Breadcrumb, header and return link sit on the **wall's frame** (`bleed-xl`), lined up with the loops past an 88px year gutter; prose keeps a 680px measure
+- **Filter chips** (All, then each origin in the data — FitXR / Ultraleap / Personal — with counts): 40px pills, outline at rest, ink fill when pressed; state in the URL (`?filter=personal`)
+- **Wall**: per-year groups, sticky year label in the gutter (static on phones). Square tiles `minmax(240px, 1fr)`, capped at 432px (loops are ~288px; never past ~1.5×). Two columns on phones
+- **Motion**: loops play only while on screen and pause off it; tiles rise in once (16px, fade). Reduced motion: posters, plus a 44px play/pause button per loop
+- Tiles open the shared **detail card** (`?card=a-microgestures`), without the "All experiments" link the homepage card shows
 
 ### Shared Utilities
 - **Skip link**: first focusable, high contrast flip from off-screen
 - **Breadcrumbs** (subpages): one `:is()` rule — Outfit at `var(--fs-body)`, separator and current share styles; current **opacity 0.7**
-- **Return home** (`.subpage-return-home`): pink Outfit link with chevron, below case study and archive content (`renderReturnHomeLink()` in `utils.js`)
+- **Return home** (`.subpage-return-home`): pink Outfit link with chevron, below case study and experiments content (`renderReturnHomeLink()` in `utils.js`)
 - **Page status** (loading / error): `var(--fs-ui)`; retry button Outfit at `var(--fs-ui)` on **yellow** fill
 
 ## 5. Layout Principles
@@ -173,12 +179,12 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 - Mobile-specific: `--mobile-job-gap` 40px between jobs, `--mobile-card-gap` 25px between cards
 
 ### Whitespace Philosophy
-- **One-column narrative**: scrolling tells a single story (About → Work → Projects → Talks → Contact)
+- **One-column narrative**: scrolling tells a single story (About → Work → Projects → Experiments → Talks → Contact)
 - **Work blocks** group employer context, then **case studies** as vertical gallery — timeline reinforces tenure without a separate infographic page
-- **Archive** prioritizes **skimmable rows** (thumb + headline) over dense grids — appropriate for many short pieces
+- **Experiments page** lets the loops lead: a roomy wall of square media with short copy, grouped by year
 
 ### Border Radius Scale
-- **15px**: images, project thumbs, archive tiles, markdown figures
+- **15px**: images, project thumbs, experiment tiles, markdown figures
 - **12px**: distortion panel
 - **8px**: small controls (reset, scroll panel)
 - **16–24px**: coming soon badge / tooltip
@@ -203,13 +209,13 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 - Use **CSS variables** (`--bg-color`, `--text-color`, `--font-display`, `--font-body`, `--fs-*`, gradients) for new UI on these templates
 - Keep **long-form content** inside the **730px** column for readability
 - Prefer **`var(--fs-*)`** for type size; add a new token only if nothing in the table is close enough
-- Preserve **15px** media radius for visual consistency across homepage, case studies, archive
+- Preserve **15px** media radius for visual consistency across homepage, case studies, experiments
 - Respect **focus-visible** yellow outline and skip links for keyboard users
 - Honor **`prefers-reduced-motion`**: no scroll-blur reveals; shorter transitions
 - Scroll reveal tuning: `window.scrollAnimConfig` in devtools, or `createScrollAnimPanel()` from console on desktop (no default UI panel)
 
 ### Don't
-- Don’t introduce a third display font on homepage / case study / archive without updating the system
+- Don’t introduce a third display font on homepage / case study / experiments without updating the system
 - Don’t use **pure black** or **pure white** as the default pair — the palette is intentionally warm
 - Don’t place low-contrast text on the FitXR/Ultraleap gradients except as **gradient text** with fallback readability in mind
 - Don’t shrink touch targets below **40px** on the nav dock (current: 44px / 42px mobile)
@@ -229,7 +235,6 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 ### Touch & Motion
 - Hero: `touch-action: none` while interacting with distortion (avoid scroll fighting gesture)
 - Nav: on coarse pointers, **suppress stuck `:active` scale** during scroll (`html.home-nav-scrolling`)
-- Archive mobile: media container uses **aspect-ratio padding** trick for square video area
 
 ### Content Collapsing
 - Work jobs: desktop two-column (logo rail + content); mobile **logo+text row** then description then case list with slim **10px** gradient column
@@ -268,8 +273,8 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 **Case study compare slider**
 “`figure.cs-media--compare` wrapping `.cs-compare` with before/after images (`data-no-lightbox`). Draggable vertical handle with Material chevrons; labels ‘Before’ / ‘After’. Cream page, 15px radius on container.”
 
-**Interaction archive row**
-“Row: 194px square media, Outfit title `var(--fs-card)`, meta `var(--fs-body)` (bold year, italic tags), description + links on body scale. Mobile: stack.”
+**Experiments wall tile**
+“Square loop, 15px radius, tint placeholder; below it Outfit title `var(--fs-prose-h4)`, one-line hook at `var(--fs-ui)`, italic `Ultraleap · Demo` meta. Whole tile is a button opening the detail card; hover lifts the media 3px with a warm shadow.”
 
 **Nav pill**
 “Bottom-centered frosted pill, radius 999px, backdrop blur on `::before`, layered brown shadow. Links 44px circles (42px mobile); icons follow `var(--fs-nav)`; active state pink icon only (`--highlight-pip`), no background halo.”
@@ -280,7 +285,7 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 ### Iteration Checklist
 1. Start from **cream + brown** — check contrast for any new accent
 2. Add color through **employer gradients** or small highlights, not full-screen washes
-3. Keep **730px** reading column for case study / archive prose
+3. Keep **730px** reading column for case study prose (the experiments page uses a 680px measure on the wide frame)
 4. Match **15px** rounding on all major imagery
 5. Test **≤768px** and **`prefers-reduced-motion`**
 6. Verify focus rings (**yellow**) on any new interactive control

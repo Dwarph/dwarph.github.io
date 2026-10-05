@@ -1,6 +1,6 @@
 # Design decisions: homepage & case studies
 
-This document captures the conventions embodied in the current implementation so new work stays consistent. It is derived from the site’s code and data (`index.html`, case study HTML shells, `js/homepageGenerator.js`, `js/caseStudyPageGenerator.js`, `js/header.js`, `styling/core.css`, `styling/home.css`, `styling/case-study.css`, `styling/archive.css`, and `data/`).
+This document captures the conventions embodied in the current implementation so new work stays consistent. It is derived from the site’s code and data (`index.html`, case study HTML shells, `js/homepageGenerator.js`, `js/caseStudyPageGenerator.js`, `js/header.js`, `styling/core.css`, `styling/home.css`, `styling/case-study.css`, `styling/home-experiments.css`, `styling/experiments-page.css`, and `data/`).
 
 ---
 
@@ -36,7 +36,7 @@ This document captures the conventions embodied in the current implementation so
   - **Timeline**: When a job has case studies or other work, a **vertical gradient bar** and scroll-linked UI (`scrollAnim.js`) tie the job block together; desktop vs mobile use different DOM anchors so the bar aligns to the visible layout.
   - **Mobile** reorders blocks (logo + meta, then description, then case study stack in a dedicated container) so reading order stays sensible.
 - **Projects & Talks**: Card/list patterns parallel case study cards (whole-card links where applicable, lazy images with dimensions to limit layout shift).
-- **Work + Projects views**: one switcher swaps both sections between **Featured** (the layout above), **List** and **Grid** (`js/workViews*.js`, `styling/work-views*.css`, prototyped in `experiments/work-views/`). Grid is the default view. Items come from the same data plus `caseStudiesData.json` and `projectsData.json` (the Interaction Archive). Data fields: `hero: true` promotes an item (bigger in every view); `short` is the one-line hook list cards show. An archive entry with a case study's title merges into it. The view and open detail card live in the URL.
+- **Work + Projects + Experiments views**: one switcher swaps all three sections between **Featured** (the layout above), **List** and **Grid** (`js/workViews*.js`, `styling/work-views*.css`, prototyped in `experiments/work-views/`). Grid is the default view. Items come from the same data plus `caseStudiesData.json` and `projectsData.json` (Ultraleap archive entries; `section` says whether each is Work or an experiment). Data fields: `hero: true` promotes an item (bigger in every view); `short` is the one-line hook list cards show. An archive entry with a case study's title merges into it. The view and open detail card live in the URL.
 - **Contact**: Social and email; external links use the same icon language.
 
 ---

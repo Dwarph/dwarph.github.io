@@ -17,6 +17,8 @@
         opts = opts || {};
         var cls = opts.className ? ' class="' + opts.className + '"' : '';
         var key = opts.key ? ' data-wv-key="' + esc(opts.key) + '"' : '';
+        // Media marked fit: contain shows whole (letterboxed) in square frames - core.css.
+        if (media.fit) key += ' data-fit="' + esc(media.fit) + '"';
         var loading = opts.loading || 'lazy';
         if (media.type === 'video') {
             if (opts.reduced) {

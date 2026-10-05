@@ -120,6 +120,7 @@
         "short": "Responsive UI that adapts to its spatial context",
         "description": "A prototype inspired by ubiquitous computing, reimagining how responsive UI works for XR - letting apps adapt to their spatial context.",
         "year": 2024,
+        "hero": true,
         "image": "TPB.mp4",
         "imageMob": "TPB.webp",
         "imageAlt": "",

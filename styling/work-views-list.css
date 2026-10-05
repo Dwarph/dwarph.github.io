@@ -51,7 +51,6 @@ ul.wv-list {
     font-weight: 700;
     font-size: var(--fs-ui);
     font-variant-numeric: tabular-nums;
-    --sr-rest: 0.45;
     opacity: 0.45;
 }
 

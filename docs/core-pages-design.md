@@ -64,7 +64,7 @@ This document captures the conventions embodied in the current implementation so
 
 ## Motion & scroll
 
-- **Scroll-driven effects** (`scrollAnim.js`): Section fade-in and timeline bar growth are configurable. The Work views' List rows, employer intros, year labels and Grid tiles opt in with `data-scroll-reveal` (progress written to `--sr`, mapped in `work-views.css`); respect for reduced motion should stay aligned with header behavior when changing animation defaults.
+- **Scroll-driven effects** (`scrollAnim.js`): Section fade-in and timeline bar growth are configurable; respect for reduced motion should stay aligned with header behavior when changing animation defaults.
 - **Homepage** may register a service worker (`sw.js`) for caching; case study shells may omit it — follow the pattern of the page you edit.
 
 ---

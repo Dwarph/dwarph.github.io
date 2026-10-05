@@ -156,7 +156,7 @@ Supporting tokens: `--lh-display: 1`, `--lh-body: 1.4`. Micro copy (coming soon 
 ### Experiments page (`experiments.html`)
 - Breadcrumb, header and return link sit on the **wall's frame** (`bleed-xl`), lined up with the loops past an 88px year gutter; prose keeps a 680px measure
 - **Filter chips** (All, then each origin in the data — FitXR / Ultraleap / Personal — with counts): 40px pills, outline at rest, ink fill when pressed; state in the URL (`?filter=personal`)
-- **Wall**: per-year groups, sticky year label in the gutter (static on phones). Square tiles `minmax(240px, 1fr)`, capped at 432px (loops are ~288px; never past ~1.5×). Two columns on phones
+- **Wall**: per-year groups in the homepage List's index style — a hairline over each year, a small faded Outfit year (`--fs-ui`, 0.45, tabular figures) pinned in the 88px gutter as you scroll, every year (tiles are tall, so even a one-row year gives it room to ride; static on phones). Square tiles `minmax(240px, 1fr)`, capped at 432px (loops are ~288px; never past ~1.5×). Two columns on phones
 - **Motion**: loops play only while on screen and pause off it; tiles rise in once (16px, fade). Reduced motion: posters, plus a 44px play/pause button per loop
 - Tiles open the shared **detail card** (`?card=a-microgestures`), without the "All experiments" link the homepage card shows
 

@@ -115,6 +115,7 @@
     },
     {
       "title": "No Straight Line",
+      "origin": "FitXR",
       "year": 2026,
       "tags": "UI, Interaction, Physics",
       "type": "Interaction",

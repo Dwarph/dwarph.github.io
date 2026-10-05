@@ -11,6 +11,14 @@
     --exp-wide: min(1100px, calc(100vw - 2 * var(--header-frame-side)));
 }
 
+/* Let the year labels stick: core.css's overflow-x: hidden on html/body makes body a scroll
+   container, which stops position: sticky. Same fix as the homepage (work-views.css). */
+html,
+body {
+    overflow-x: clip;
+    overflow-y: visible;
+}
+
 #experiments-container > .breadcrumb-nav:first-child {
     padding-top: var(--spacing-lg);
 }
@@ -104,24 +112,31 @@
     outline: none;
 }
 
+/* Years follow the homepage List view's index: a hairline over each year, and a small,
+   quiet year label that rides down beside its loops (work-views-list.css .wv-index-year). */
 .exp-year {
     display: grid;
     grid-template-columns: 88px minmax(0, 1fr);
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-3xl);
+    gap: 0 var(--spacing-xl);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(55, 44, 9, 0.1);
+    margin-bottom: var(--spacing-2xl);
 }
 
-/* The year rides down beside its loops on wide screens. */
 .exp-year-label {
     position: sticky;
     top: var(--spacing-xl);
     align-self: start;
     margin: 0;
+    padding-top: 2px;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: var(--fs-prose-h4);
+    font-size: var(--fs-ui);
     line-height: var(--lh-display);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.45;
 }
+
 
 .exp-wall-grid {
     display: grid;
@@ -271,7 +286,7 @@
 
     .exp-year {
         grid-template-columns: minmax(0, 1fr);
-        gap: var(--spacing-md);
+        gap: var(--spacing-sm);
     }
 
     .exp-year-label {

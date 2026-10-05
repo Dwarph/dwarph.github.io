@@ -159,7 +159,7 @@
       "short": "Spin the dial, make it rain fries",
       "description": "A playful use of the <a href=\"experiments/circle-slider/\">circle slider</a>: dial in how many fries you want, let go, and they shower down the screen.",
       "image": "images/projects/fry-shower.mp4",
-      "poster": "images/projects/fry-shower.webp",
+      "poster": "images/projects/fry-shower-poster.webp",
       "imageAlt": "Spinning the dial to choose how many fries, then letting go as fries rain down the screen.",
       "link": "experiments/fry-shower/"
     },
@@ -171,7 +171,7 @@
       "short": "A dial that turns circular motion into input",
       "description": "A circle slider that turns circular motion into input. Uses velocity-based motion detection.",
       "image": "images/projects/circle-slider.mp4",
-      "poster": "images/projects/circle-slider.webp",
+      "poster": "images/projects/circle-slider-poster.webp",
       "imageAlt": "A circular dial being spun: a thumb travels round the track as the number in the middle counts up.",
       "link": "experiments/circle-slider/",
       "hero": true

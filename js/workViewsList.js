@@ -62,7 +62,7 @@
         var cta = item.href ? '<span class="wv-icard-cta" data-wv-fade>' + esc(item.ctaLabel) + iconHtml(item) + '</span>' :
             (item.comingSoon ? '<span class="wv-icard-cta is-soon" data-wv-fade>Coming soon</span>' : '');
         var liCls = 'wv-icard-li' + (opts.brandLine ? ' wv-index-li wv-brand--' + brandOf(item) : '');
-        return '<li class="' + liCls + '" data-scroll-reveal>' + rowOpen(item, 'wv-icard' + (item.brand ? ' wv-icard--brand' : ''), style) +
+        return '<li class="' + liCls + '"><div class="wv-reveal" data-scroll-reveal>' + rowOpen(item, 'wv-icard' + (item.brand ? ' wv-icard--brand' : ''), style) +
             // Archive heroes launch from the Interaction Archive card when coming from Featured.
             '<span class="wv-icard-media" data-wv-key="' + esc(item.id + '|media') + '"' +
             (item.kind === 'archive' ? ' data-wv-from="w-interaction-archive|media"' : '') + '>' +
@@ -71,7 +71,7 @@
             '<span class="wv-icard-meta" data-wv-fade>' + esc([item.yearLabel, item.category].filter(Boolean).join(' · ')) + '</span>' +
             titleHtml(item, 'wv-icard-title') +
             '<span class="wv-icard-lead" data-wv-fade>' + shortLine(item) + '</span>' +
-            '</span>' + cta + rowClose(item) + '</li>';
+            '</span>' + cta + rowClose(item) + '</div></li>';
     }
 
     function rowHtml(item, opts) {
@@ -81,12 +81,12 @@
         // Projects show their tags. Work has no middle column: the brand line and employer
         // intro already say whose work each row is.
         var meta = opts.brandLine ? '' : '<span class="wv-index-meta" data-wv-fade>' + esc(item.category) + '</span>';
-        return '<li class="wv-index-li' + brandCls + '" data-scroll-reveal>' +
+        return '<li class="wv-index-li' + brandCls + '"><div class="wv-reveal" data-scroll-reveal>' +
             rowOpen(item, 'wv-index-row', still ? ' data-wv-peek="' + esc(still) + '"' : '') +
             '<span class="wv-index-title">' + titleHtml(item, 'wv-index-name', iconHtml(item)) + '</span>' +
             meta +
             '<span class="wv-index-type" data-wv-fade>' + esc(item.typeLabel) + '</span>' +
-            rowClose(item) + '</li>';
+            rowClose(item) + '</div></li>';
     }
 
     // A compact take on Featured's job intro, set where that employer's line begins.

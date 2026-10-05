@@ -449,17 +449,18 @@ html.home-nav-scrolling .nav-link:active {
 }
 
 /* Scroll-linked reveal chunks (homepage only).
-   The pre-reveal state is gated on scrollAnim.js NOT having switched itself off.
-   Without that gate, dragging a window across 768px hands every chunk a 4px blur
-   that only JS can clear - and JS is inert in exactly that state. */
+   The pre-reveal state applies only once scrollAnim.js has switched the reveal on
+   (.scroll-anim-fade; it's off by default - config.fade). Opt-in rather than opt-out,
+   so content is never hidden waiting for JS that won't reveal it: before, dragging a
+   window across 768px left every chunk with a 4px blur only JS could clear. */
 @media (min-width: 769px) {
-    html:not(.scroll-anim-off) .scroll-reveal-chunk {
+    html.scroll-anim-fade .scroll-reveal-chunk {
         opacity: 0;
         transform: translateY(12px);
         filter: blur(4px);
     }
 
-    html:not(.scroll-anim-off) .scroll-reveal-chunk--opacity {
+    html.scroll-anim-fade .scroll-reveal-chunk--opacity {
         transform: none;
         filter: none;
     }

@@ -16,6 +16,11 @@
         /** Shapes how progress maps inside that band: linear | ease-in | ease-out | smooth */
         fadeEasing: 'smooth',
         enabled: true,
+        /**
+         * Scroll-linked reveal (fade, rise, blur) on homepage sections and cards. Off: content
+         * is simply there. The timeline bar still grows. Read once at init.
+         */
+        fade: false,
         barEnabled: true,
         barSensitivity: 1.25,
         barEasing: 'ease-in',
@@ -189,7 +194,7 @@
         function computeEnableFade() {
             var isMobileUA = (typeof window.mobileCheck === 'function') ? window.mobileCheck() : false;
             var isNarrow = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-            return !isMobileUA && !isNarrow && !prefersReducedMotion;
+            return config.fade && !isMobileUA && !isNarrow && !prefersReducedMotion;
         }
 
         var enableFade = computeEnableFade();
@@ -198,6 +203,7 @@
         // can never disagree: whenever the fade is off, nothing is left blurred.
         function syncAnimClass() {
             document.documentElement.classList.toggle('scroll-anim-off', !enableFade);
+            document.documentElement.classList.toggle('scroll-anim-fade', enableFade);
         }
         syncAnimClass();
 

@@ -1,6 +1,9 @@
 # Everything on pipturner.co.uk is open to crawlers, including AI search
 # (OAI-SearchBot, PerplexityBot, ClaudeBot, Bingbot behind Copilot and
-# ChatGPT search). To opt out of AI *training* while staying in AI search,
+# ChatGPT search). Exception: /twitter/ pages carry
+# <meta name="robots" content="noindex"> — don't Disallow it here, or
+# crawlers can't see the noindex and may still list the URLs.
+# To opt out of AI *training* while staying in AI search,
 # add blocks like:
 #   User-agent: GPTBot
 #   Disallow: /

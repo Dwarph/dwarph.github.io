@@ -1,6 +1,8 @@
 // Work views and the experiments page: the detail card a tile or list row opens into.
 // Native <dialog>: Esc and focus return come for free. ←/→ step through the section's
-// items; the opener's media morphs into the card where View Transitions exist.
+// items; the opener's media morphs into the card where View Transitions exist. On phones
+// a horizontal swipe steps too, and the count + arrows sit fixed at the bottom right so
+// they stay put while the card slides under them.
 //
 // Layout: the media as large as the screen allows on a dark stage, with the text beside
 // it (wide screens) or below it (narrow). It never shows media past 1.5x its native
@@ -12,9 +14,18 @@
     var esc = U.escapeHtml;
     var CARD_NAME = 'wv-card-media';
     var MAX_UPSCALE = 1.5;
+    var MOBILE = window.matchMedia('(max-width: 720px)');
 
     var dialog = null;
     var state = { tiles: [], index: 0, stage: null, reduced: false, onChange: null };
+
+    function navHtml(extra) {
+        return '<span class="wv-card-nav' + (extra ? ' ' + extra : '') + '">' +
+            '<button type="button" class="wv-card-step" data-step="-1" aria-label="Previous"><span class="material-icons" aria-hidden="true">arrow_back</span></button>' +
+            '<span class="wv-card-count" aria-live="polite"></span>' +
+            '<button type="button" class="wv-card-step" data-step="1" aria-label="Next"><span class="material-icons" aria-hidden="true">arrow_forward</span></button>' +
+            '</span>';
+    }
 
     function ensureDialog() {
         if (dialog) return dialog;
@@ -34,13 +45,13 @@
             '<div class="wv-card-actions">' +
             '<a class="wv-card-link"></a>' +
             '<span class="wv-card-soon"><span class="material-icons" aria-hidden="true">lock</span>Coming soon</span>' +
-            '<span class="wv-card-nav">' +
-            '<button type="button" class="wv-card-step" data-step="-1" aria-label="Previous"><span class="material-icons" aria-hidden="true">arrow_back</span></button>' +
-            '<span class="wv-card-count" aria-live="polite"></span>' +
-            '<button type="button" class="wv-card-step" data-step="1" aria-label="Next"><span class="material-icons" aria-hidden="true">arrow_forward</span></button>' +
-            '</span>' +
-            '</div></div></div>';
+            navHtml() +
+            '</div></div></div>' +
+            // Phones: the same controls, fixed to the screen outside the sliding card. CSS
+            // shows one copy or the other.
+            navHtml('wv-card-nav--float');
         document.body.appendChild(dialog);
+        bindSwipe();
 
         dialog.addEventListener('click', function (e) {
             // The dialog is a full-screen stage: clicks on its empty space close it.
@@ -175,7 +186,9 @@
             if (link.external) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
             else { a.removeAttribute('target'); a.removeAttribute('rel'); }
         }
-        d.querySelector('.wv-card-count').textContent = (state.index + 1) + ' / ' + state.tiles.length;
+        d.querySelectorAll('.wv-card-count').forEach(function (c) {
+            c.textContent = (state.index + 1) + ' / ' + state.tiles.length;
+        });
         if (state.onChange) state.onChange(tile);
     }
 
@@ -231,6 +244,9 @@
 
     function close() {
         var index = state.index;
+        swipe = null;
+        sliding = false;
+        shift(0);
         morph(dialog.querySelector('.wv-card-media'), function () { return openerMedia(index); }, function () {
             dialog.close();
             dialog.querySelector('.wv-card-media').innerHTML = '';
@@ -246,20 +262,115 @@
         });
     }
 
-    function go(index) {
+    // quiet: skip the fade-in (a swipe slides the new card in instead).
+    function go(index, quiet) {
         var n = state.tiles.length;
         var target = (index + n) % n;
         state.index = target;
         // Measure the next item's shape first (briefly), so the card resizes once instead of
         // showing it at the old shape and snapping. Then swap and fade in - never waiting on
         // an animation to change content.
-        measure(state.tiles[target].media, 250).then(function () {
-            if (state.index !== target || !dialog.open) return;
+        return measure(state.tiles[target].media, 250).then(function () {
+            if (state.index !== target || !dialog.open) return false;
             fill();
-            if (!state.reduced) {
+            if (!state.reduced && !quiet) {
                 dialog.querySelector('.wv-card-inner').animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
             }
+            return true;
         });
+    }
+
+    // ---- Phone swipe: the media and text panel follow the finger; past a threshold they
+    // slide off, the next item fills in and slides in from the other side. The close button
+    // and the fixed nav stay where they are. ----
+
+    var swipe = null;      // { id, x, y, t, dx, locked }
+    var sliding = false;   // a commit animation is running
+    var swallowClick = false;
+
+    function slides() {
+        return [dialog.querySelector('.wv-card-media'), dialog.querySelector('.wv-card-panel')];
+    }
+
+    function shift(x, ms) {
+        if (!dialog) return;
+        var w = dialog.clientWidth || 1;
+        slides().forEach(function (el) {
+            el.style.transition = ms ? 'transform ' + ms + 'ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity ' + ms + 'ms ease-out' : '';
+            el.style.transform = x ? 'translateX(' + x + 'px)' : '';
+            el.style.opacity = x ? String(Math.max(0, 1 - Math.abs(x) / w)) : '';
+        });
+    }
+
+    function slideTo(x, ms) {
+        shift(x, ms);
+        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
+    function commit(dir) {
+        if (state.reduced) {
+            shift(0);
+            go(state.index + dir);
+            return;
+        }
+        var w = dialog.clientWidth;
+        sliding = true;
+        slideTo(-dir * w, 160).then(function () {
+            return go(state.index + dir, true);
+        }).then(function (filled) {
+            if (!sliding) return;
+            if (!filled) { shift(0); return; }
+            shift(dir * w * 0.6);
+            slides()[0].getBoundingClientRect(); // start the slide-in from the far side
+            return slideTo(0, 240);
+        }).then(function () {
+            sliding = false;
+            shift(0);
+        });
+    }
+
+    function bindSwipe() {
+        dialog.addEventListener('pointerdown', function (e) {
+            swallowClick = false;
+            if (e.pointerType !== 'touch' || !MOBILE.matches || sliding || swipe) return;
+            if (e.target.closest('.wv-card-nav--float, .wv-card-close')) return;
+            swipe = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp, dx: 0, locked: false };
+        });
+        dialog.addEventListener('pointermove', function (e) {
+            if (!swipe || e.pointerId !== swipe.id) return;
+            var dx = e.clientX - swipe.x;
+            var dy = e.clientY - swipe.y;
+            if (!swipe.locked) {
+                if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { swipe = null; return; }
+                if (Math.abs(dx) <= 10) return;
+                swipe.locked = true;
+            }
+            swipe.dx = dx;
+            shift(dx);
+        });
+        function end(e) {
+            if (!swipe || e.pointerId !== swipe.id) return;
+            var s = swipe;
+            swipe = null;
+            if (!s.locked) return;
+            swallowClick = true;
+            var w = dialog.clientWidth;
+            var speed = Math.abs(s.dx) / Math.max(1, e.timeStamp - s.t);
+            if (e.type === 'pointerup' && (Math.abs(s.dx) > w * 0.22 || (speed > 0.5 && Math.abs(s.dx) > 30))) {
+                commit(s.dx < 0 ? 1 : -1);
+            } else {
+                slideTo(0, 200).then(function () { if (!swipe && !sliding) shift(0); });
+            }
+        }
+        dialog.addEventListener('pointerup', end);
+        dialog.addEventListener('pointercancel', end);
+        // A swipe that ends on a link or the empty stage mustn't also follow it or close.
+        dialog.addEventListener('click', function (e) {
+            if (!swallowClick) return;
+            swallowClick = false;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }, true);
     }
 
     window.WorkViewsCard = { open: open };

@@ -55,6 +55,29 @@
         ]
     },
     {
+        "title": "Microgesture Interactions",
+        "section": "experiments",
+        "short": "Taps, scrubs and swipes with tiny finger movements",
+        "description": "Interaction experiments for thumb-on-finger microgestures: tap reactivity, gain, acceleration, snapping vs smooth, inertia and mapping horizontal motion to vertical actions. They fed into Ultraleap's <a href=\"https://docs.ultraleap.com/xr-guidelines/Interactions/microgestures.html\">microgesture design guidelines</a>.",
+        "year": 2024,
+        "image": "microgesture-interactions.mp4",
+        "imageMob": "microgesture-interactions.webp",
+        "imageAlt": "A series of grey test scenes where a virtual hand slides its thumb along its index finger to tap a button, move sliders at different gains, pick colours, spin a chair with inertia, swipe through photos and scroll a web page.",
+        "importance": "neutral",
+        "featured": true,
+        "tags": [
+            "Unity",
+            "C#",
+            "XR"
+        ],
+        "links": [
+            {
+                "text": "Read the guidelines,",
+                "link": "https://docs.ultraleap.com/xr-guidelines/Interactions/microgestures.html"
+            }
+        ]
+    },
+    {
         "title": "Barista: Marker Edition",
         "section": "work",
         "type": "Demo",

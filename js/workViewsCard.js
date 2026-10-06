@@ -64,7 +64,7 @@
         if (item.comingSoon || !item.href) return null;
         var label;
         if (item.kind === 'case-study') label = 'Case study';
-        else if (item.kind === 'archive') label = 'Watch it';
+        else if (item.kind === 'archive') label = item.cta || 'Watch it';
         else label = item.ctaLabel || 'View';
         return { href: item.href, label: label, external: item.external };
     }

@@ -172,7 +172,9 @@
             comingSoon: false,
             kind: 'archive',
             typeLabel: p.type || 'Interaction',
-            ctaLabel: 'View',
+            // `cta`: optional button text, for links that aren't a video (e.g. a guidelines page).
+            cta: p.cta || null,
+            ctaLabel: p.cta || 'View',
             hero: p.hero === true,
             media: [{
                 src: src,

@@ -56,7 +56,7 @@
     },
     {
         "title": "Barista: Marker Edition",
-        "section": "experiments",
+        "section": "work",
         "type": "Demo",
         "short": "Hand-on-object tracking meets fiducial markers",
         "description": "Barista is an app made to demonstrate the combination of ultraleap's hand on object model, and fiducial marker tracking. I designed the application, researched into fiducial marker interaction & tested it, all under a short deadline.",
@@ -80,7 +80,7 @@
     },
     {
         "title": "Microgestures",
-        "section": "experiments",
+        "section": "work",
         "type": "Demo",
         "short": "Showing off Hyperion's microgestures",
         "description": "Microgestures is a small app made to show off the microgesture capabilities of Ultraleap's Hyperion release. I helped design and build the app, from design mockups to interaction research & user studies.",

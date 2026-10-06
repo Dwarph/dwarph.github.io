@@ -24,7 +24,7 @@
         return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
 
-    // ---- URL state: ?filter=personal&card=a-microgestures ----
+    // ---- URL state: ?filter=personal&card=a-squish-summon ----
 
     function buildFilters() {
         var seen = {};
@@ -134,10 +134,9 @@
             '</nav>' +
             '<header class="homepage-section exp-head">' +
             '<h1 class="section-title">Experiments</h1>' +
-            '<p class="exp-intro">Interaction experiments and prototypes. Most come from my five years at ' +
-            '<span class="bio-gradient-ultraleap">Ultraleap</span>, where we explored novel spatial interactions to prove ' +
-            'high fidelity hand tracking as a primary input for XR. The rest are motion and UI play at ' +
-            '<span class="bio-gradient-fitxr">FitXR</span>, or things I made for fun.</p>' +
+            '<p class="exp-intro">Interaction experiments and prototypes: novel spatial interactions exploring ' +
+            'high fidelity hand tracking as a primary input for XR at <span class="bio-gradient-ultraleap">Ultraleap</span>, ' +
+            'motion and UI play at <span class="bio-gradient-fitxr">FitXR</span>, and things I made for fun.</p>' +
             filtersHtml() +
             '</header>' +
             '<main id="experiments-wall" class="exp-wall" tabindex="-1"></main>';

@@ -17,6 +17,7 @@ Everything new since we first set sail.
 - Changed: Webcam Appearance leads Settings.
 - Changed: The "New Release" message closes itself.
 - Changed: The transcript panel drops its "Transcribed locally" note.
+- Removed: Intel Macs are no longer supported on the Mac App Store.
 - Fixed: Invisible overlay windows no longer show up in the window picker on Windows.
 - Fixed: Set Sail no longer freezes for a couple of seconds on Windows when the screen preview refreshes
 - Fixed: Mission Control no longer shows the recording border as a window of its own.

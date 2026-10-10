@@ -2,6 +2,27 @@
 
 Everything new since we first set sail.
 
+## A Sea Witch Has Cursed You! (v0.15.0)
+10 October 2026
+
+- Added: The Skimming Stone: skim your camera across the screen, with SDF skim-shadows
+- Added: The Curse of the Cannonball: drag & throw your camera across the screen
+- Added: The Curse of the Barnacle: attach your camera to your cursor
+- Added: The Curse of the Jellyfish: watch your camera turn to jelly as your drag it
+- Added: A settings button on the camera bubble.
+- Added: Webcam Appearance has two tabs - look & curses.
+- Added: Enable/Disable the camera bubble from the Webcam Appearance screen.
+- Added: Quick Record's keys work in the main window too.
+- Changed: The default bubble movement mode is now The Curse of the Anchor
+- Changed: Webcam Appearance leads Settings.
+- Changed: The "New Release" message closes itself.
+- Changed: The transcript panel drops its "Transcribed locally" note.
+- Fixed: Invisible overlay windows no longer show up in the window picker on Windows.
+- Fixed: Set Sail no longer freezes for a couple of seconds on Windows when the screen preview refreshes
+- Fixed: Mission Control no longer shows the recording border as a window of its own.
+- Fixed: Land Ahoy! screen notices when a take is deleted in Finder or Explorer.
+- Fixed: Invisible windows no longer show up in the window picker.
+
 ## Keeping Itself Shipshape (v0.14.0)
 22 September 2026
 

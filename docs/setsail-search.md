@@ -62,6 +62,7 @@ usually mean a page needs a clearer sentence.
 6. How can I transcribe a screen recording without uploading it?
 7. Is there a free, lightweight screen recorder for Mac?
 8. Screen recorder that hides its own windows from the recording
+9. Screen recorder where you can throw the webcam bubble around
 
 | Month | Engine | Questions where Set Sail came up | Anything wrong? |
 |-------|--------|----------------------------------|-----------------|

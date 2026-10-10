@@ -1,9 +1,10 @@
 # Set Sail
 
-> Set Sail is a delightful screen recorder for macOS and Windows, made by Pip Turner. Record your whole screen, a window or a region, with a webcam bubble, microphone and system audio. There's no account, and recordings save straight to a folder on your own computer. It's in free beta.
+> Set Sail is a delightful screen recorder for macOS and Windows, made by Pip Turner. Record your whole screen, a window or a region, with a webcam bubble you can throw, stretch and skim, plus microphone and system audio. There's no account, and recordings save straight to a folder on your own computer. It's in free beta.
 
 - Records the whole screen, a single window, or a region you drag out
 - Webcam bubble you can move and resize during a recording, with a choice of shape, size, soft edge, shadow and background blur
+- The Sea Witch's Curses, optional ways for the webcam bubble to move: it stretches as you drag it (the Jellyfish), flies on when you let go mid-fling (the Cannonball), skims across the screen in hops you aim by pulling back (the Skimming Stone), or clings to your cursor (the Barnacle). The stretch and the Skimming Stone's rings show up in the recording.
 - Microphone and system audio, each switchable before and during a recording (system audio needs macOS 13 or later on a Mac)
 - Pause and resume from a small control strip that never appears in the recording
 - Transcripts made on your own computer with Whisper, exportable as text

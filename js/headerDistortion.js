@@ -205,8 +205,6 @@ class DistortionSketch {
 
         /** False while the tab is hidden. */
         this.isPlaying = true;
-        /** False while the header is scrolled out of view. */
-        this._onScreen = true;
         this._contextLost = false;
         this._rafId = 0;
         this._boundResize = this.resize.bind(this);
@@ -248,7 +246,6 @@ class DistortionSketch {
         this.setupResize();
         this.setupPointerInput();
         this.setupVisibilityPause();
-        this.setupOffscreenPause();
         this.setupContextLoss();
         if (this.img) {
             this.img.addEventListener('load', this._boundResize);
@@ -271,22 +268,6 @@ class DistortionSketch {
             }
         };
         document.addEventListener('visibilitychange', this._onVisibilityChange);
-    }
-
-    /** Stop the sim while the header is scrolled out of view. */
-    setupOffscreenPause() {
-        if (typeof IntersectionObserver === 'undefined') return;
-        var self = this;
-        this._intersectionObserver = new IntersectionObserver(function (entries) {
-            var entry = entries[entries.length - 1];
-            self._onScreen = entry.isIntersecting;
-            if (self._onScreen) {
-                self.wake();
-            } else {
-                self.cancelFrame();
-            }
-        });
-        this._intersectionObserver.observe(this.container);
     }
 
     /**
@@ -320,10 +301,14 @@ class DistortionSketch {
     }
 
     canRun() {
-        return this.isPlaying && this._onScreen && !this._contextLost && !!this.renderer;
+        return this.isPlaying && !this._contextLost && !!this.renderer;
     }
 
-    /** Restart the render loop if it is asleep (idle, hidden or offscreen) and allowed to run. */
+    /**
+     * Restart the render loop if it is asleep (idle or hidden) and allowed to run. No offscreen
+     * pause: pulses (e.g. from the bio "Pip" link) must play in real time even with the header
+     * scrolled away, and idle sleep already stops the loop within seconds of the last motion.
+     */
     wake() {
         if (this._rafId || !this.canRun()) return;
         this._rafId = requestAnimationFrame(this._boundRender);
@@ -815,10 +800,6 @@ class DistortionSketch {
     destroy() {
         this.isPlaying = false;
         this.cancelFrame();
-        if (this._intersectionObserver) {
-            this._intersectionObserver.disconnect();
-            this._intersectionObserver = null;
-        }
         window.removeEventListener('resize', this._boundResize);
         var o = this._passiveOpts;
         var target = this._inputEventTarget || document;

@@ -71,6 +71,19 @@ export const HEADER_DISTORTION_INTRO_SPEED = 3;
 /** Per-channel displacement below this ends the intro phase. */
 const INTRO_SETTLED_THRESHOLD = 1.5;
 
+/**
+ * Below this displacement (and with no pointer momentum or pulses) the field is visually flat,
+ * so the render loop sleeps until the next input. 0.02 * 0.02 UV is well under a pixel.
+ */
+const IDLE_SLEEP_THRESHOLD = 0.02;
+const IDLE_VELOCITY_THRESHOLD = 1e-4;
+
+/** Frees a throwaway WebGL probe context now rather than waiting for GC (browsers cap live contexts). */
+function releaseProbeContext(gl) {
+    var ext = gl && gl.getExtension && gl.getExtension('WEBGL_lose_context');
+    if (ext) ext.loseContext();
+}
+
 function resolveSpeedMultiplier(value, windowKey, fallback) {
     if (typeof value === 'number' && !isNaN(value)) {
         return clamp(value, 0.25, 4);
@@ -190,7 +203,11 @@ class DistortionSketch {
         /** Latest pointer sample this frame (coalesces pointermove + mousemove). */
         this._pointerQueue = null;
 
+        /** False while the tab is hidden. */
         this.isPlaying = true;
+        /** False while the header is scrolled out of view. */
+        this._onScreen = true;
+        this._contextLost = false;
         this._rafId = 0;
         this._boundResize = this.resize.bind(this);
         this._boundRender = this.render.bind(this);
@@ -231,6 +248,8 @@ class DistortionSketch {
         this.setupResize();
         this.setupPointerInput();
         this.setupVisibilityPause();
+        this.setupOffscreenPause();
+        this.setupContextLoss();
         if (this.img) {
             this.img.addEventListener('load', this._boundResize);
         }
@@ -248,10 +267,72 @@ class DistortionSketch {
                 }
             } else {
                 self.isPlaying = true;
-                self.render();
+                self.wake();
             }
         };
         document.addEventListener('visibilitychange', this._onVisibilityChange);
+    }
+
+    /** Stop the sim while the header is scrolled out of view. */
+    setupOffscreenPause() {
+        if (typeof IntersectionObserver === 'undefined') return;
+        var self = this;
+        this._intersectionObserver = new IntersectionObserver(function (entries) {
+            var entry = entries[entries.length - 1];
+            self._onScreen = entry.isIntersecting;
+            if (self._onScreen) {
+                self.wake();
+            } else {
+                self.cancelFrame();
+            }
+        });
+        this._intersectionObserver.observe(this.container);
+    }
+
+    /**
+     * The GPU process can drop the context (memory pressure, long-idle devices). Stop rendering
+     * into a dead context and let the browser restore it instead of the page wedging.
+     */
+    setupContextLoss() {
+        var self = this;
+        var canvas = this.renderer.domElement;
+        this._onContextLost = function (e) {
+            e.preventDefault();
+            self._contextLost = true;
+            self.cancelFrame();
+        };
+        this._onContextRestored = function () {
+            self._contextLost = false;
+            if (self.texture) self.texture.needsUpdate = true;
+            if (self._uTexture) self._uTexture.needsUpdate = true;
+            self.renderStill();
+            self.wake();
+        };
+        canvas.addEventListener('webglcontextlost', this._onContextLost, false);
+        canvas.addEventListener('webglcontextrestored', this._onContextRestored, false);
+    }
+
+    cancelFrame() {
+        if (this._rafId) {
+            cancelAnimationFrame(this._rafId);
+            this._rafId = 0;
+        }
+    }
+
+    canRun() {
+        return this.isPlaying && this._onScreen && !this._contextLost && !!this.renderer;
+    }
+
+    /** Restart the render loop if it is asleep (idle, hidden or offscreen) and allowed to run. */
+    wake() {
+        if (this._rafId || !this.canRun()) return;
+        this._rafId = requestAnimationFrame(this._boundRender);
+    }
+
+    /** Redraw the current field once without advancing the sim (e.g. after a resize clears the canvas). */
+    renderStill() {
+        if (this._rafId || this._contextLost || !this.renderer) return;
+        this.renderer.render(this.scene, this.camera);
     }
 
     /**
@@ -302,6 +383,7 @@ class DistortionSketch {
             clientY: clientY,
             establishContact: establishContact === true,
         };
+        this.wake();
     }
 
     setPointerFromClient(e) {
@@ -426,6 +508,9 @@ class DistortionSketch {
         }
         this.material.uniforms.uRadius.value = isFinite(radius) ? radius : 0;
 
+        /* setSize clears the canvas; repaint if the loop is asleep. */
+        this.renderStill();
+
         /* Do not call regenerateGrid() here. Mobile browsers fire resize/ResizeObserver when the
          * URL bar shows or hides while scrolling; resetting the data texture looked like the
          * effect restarting. Grid is simulation resolution, not canvas size — only regenerate
@@ -493,6 +578,7 @@ class DistortionSketch {
         this.scene.add(this.plane);
     }
 
+    /** Advance the sim one frame. Returns false once the field has settled flat (loop can sleep). */
     updateDataTexture() {
         this.flushPointerQueue();
 
@@ -505,12 +591,10 @@ class DistortionSketch {
         for (i = 0; i < data.length; i += 4) {
             data[i] *= relPow;
             data[i + 1] *= relPow;
-            if (this.introActive) {
-                var ax = Math.abs(data[i]);
-                var ay = Math.abs(data[i + 1]);
-                if (ax > maxDisp) maxDisp = ax;
-                if (ay > maxDisp) maxDisp = ay;
-            }
+            var ax = Math.abs(data[i]);
+            var ay = Math.abs(data[i + 1]);
+            if (ax > maxDisp) maxDisp = ax;
+            if (ay > maxDisp) maxDisp = ay;
         }
         if (this.introActive && maxDisp < INTRO_SETTLED_THRESHOLD) {
             this.introActive = false;
@@ -540,10 +624,22 @@ class DistortionSketch {
             }
         }
 
+        var hadMomentum =
+            this.pointerInHeader &&
+            (Math.abs(this.mouse.vX) > IDLE_VELOCITY_THRESHOLD || Math.abs(this.mouse.vY) > IDLE_VELOCITY_THRESHOLD);
         this.mouse.vX *= velPow;
         this.mouse.vY *= velPow;
+        var hadPulses = this.pulses.length > 0;
         this.applyPulses();
         this.texture.needsUpdate = true;
+
+        if (this.introActive || hadPulses || hadMomentum || maxDisp >= IDLE_SLEEP_THRESHOLD) {
+            return true;
+        }
+        /* Settled: snap to exactly flat so the last frame matches the resting image. */
+        if (maxDisp > 0) data.fill(0);
+        for (i = 3; i < data.length; i += 4) data[i] = 1;
+        return false;
     }
 
     /**
@@ -591,6 +687,7 @@ class DistortionSketch {
             reach: opts.radius != null ? clamp(opts.radius, 0.15, 1) : 1,
             startRadius: opts.startRadius != null ? clamp(opts.startRadius, 0, 1) : 0,
         });
+        this.wake();
     }
 
     applyPulses() {
@@ -689,6 +786,7 @@ class DistortionSketch {
         if (this.settings.grid !== prevGrid) {
             this.regenerateGrid();
         }
+        this.wake();
     }
 
     getControlSettings() {
@@ -700,18 +798,26 @@ class DistortionSketch {
         };
     }
 
+    /**
+     * One sim + draw frame. Keeps looping only while the field is moving; input (wake) restarts it.
+     * Leaving a settled header running every frame kept the GPU busy indefinitely on idle devices.
+     */
     render() {
-        if (!this.isPlaying) return;
-        this.updateDataTexture();
-        this._rafId = requestAnimationFrame(this._boundRender);
+        this.cancelFrame();
+        if (!this.canRun()) return;
+        var active = this.updateDataTexture();
         this.renderer.render(this.scene, this.camera);
+        if (active) {
+            this._rafId = requestAnimationFrame(this._boundRender);
+        }
     }
 
     destroy() {
         this.isPlaying = false;
-        if (this._rafId) {
-            cancelAnimationFrame(this._rafId);
-            this._rafId = 0;
+        this.cancelFrame();
+        if (this._intersectionObserver) {
+            this._intersectionObserver.disconnect();
+            this._intersectionObserver = null;
         }
         window.removeEventListener('resize', this._boundResize);
         var o = this._passiveOpts;
@@ -741,6 +847,8 @@ class DistortionSketch {
         }
 
         if (this.renderer) {
+            this.renderer.domElement.removeEventListener('webglcontextlost', this._onContextLost, false);
+            this.renderer.domElement.removeEventListener('webglcontextrestored', this._onContextRestored, false);
             if (this.renderer.domElement.parentNode) {
                 this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
             }
@@ -1045,6 +1153,7 @@ export function initHeaderDistortion(root) {
     var testCanvas = document.createElement('canvas');
     var gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
     if (!gl) return;
+    releaseProbeContext(gl);
 
     function revealBackground() {
         img.classList.add('header-image-ready');

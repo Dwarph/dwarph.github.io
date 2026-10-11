@@ -108,6 +108,9 @@ window.loadHeaderDistortion = function (root) {
         }
         return Promise.resolve();
     }
+    /* Free the probe context now; browsers cap live WebGL contexts and GC may not run for ages. */
+    var loseExt = gl.getExtension('WEBGL_lose_context');
+    if (loseExt) loseExt.loseContext();
     /* Subpages: assign `src` and reveal the PNG now so it appears while the module loads and WebGL inits.
        Homepage keeps the deferred path in initHeaderDistortion only (avoids img flash before canvas). */
     if (root.id !== 'homepage-container' && typeof window.loadDeferredHeaderBackground === 'function') {

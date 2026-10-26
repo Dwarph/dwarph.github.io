@@ -2,6 +2,16 @@
 
 Everything new since we first set sail.
 
+## All Eyes on Deck (v0.16.0)
+26 October 2026
+
+- Added: Spotlight.
+- Fixed: Quick Record's keys work in the area overlay too.
+- Added: A warning on Set sail when Set Sail's UI will be recorded.
+- Changed: The camera bubble's × and gear have swapped places.
+- Fixed: The camera bubble should feel smoother on windows.
+- Fixed: Turning on the webcam from the Quick Record bar no longer opens the main window.
+
 ## A Sea Witch Has Cursed You! (v0.15.0)
 10 October 2026
 

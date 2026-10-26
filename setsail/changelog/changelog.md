@@ -2,6 +2,12 @@
 
 Everything new since we first set sail.
 
+## Spotlight Stays in Line (v0.16.1)
+26 October 2026
+
+- Fixed: Restarting a take keeps Spotlight on.
+- Fixed: Spotlight no longer covers the recording controls.
+
 ## All Eyes on Deck (v0.16.0)
 26 October 2026
 

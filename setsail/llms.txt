@@ -5,6 +5,7 @@
 - Records the whole screen, a single window, or a region you drag out
 - Webcam bubble you can move and resize during a recording, with a choice of shape, size, soft edge, shadow and background blur
 - The Sea Witch's Curses, optional ways for the webcam bubble to move: it stretches as you drag it (the Jellyfish), flies on when you let go mid-fling (the Cannonball), skims across the screen in hops you aim by pulling back (the Skimming Stone), or clings to your cursor (the Barnacle). The stretch and the Skimming Stone's rings show up in the recording.
+- Spotlight: one press makes the webcam fill what's being recorded, in its own shape and size, in front of nothing, a colour or gradient, the sea, or your own image. A take can start already in Spotlight.
 - Microphone and system audio, each switchable before and during a recording (system audio needs macOS 13 or later on a Mac)
 - Pause and resume from a small control strip that never appears in the recording
 - Transcripts made on your own computer with Whisper, exportable as text

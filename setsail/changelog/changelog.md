@@ -5,13 +5,13 @@ Everything new since we first set sail.
 ## Spotlight Stays in Line (v0.16.1)
 26 October 2026
 
-- Fixed: Restarting a take keeps Spotlight on.
+- Fixed: Restarting a take doesn't affect Spotlight's state.
 - Fixed: Spotlight no longer covers the recording controls.
 
 ## All Eyes on Deck (v0.16.0)
 26 October 2026
 
-- Added: Spotlight.
+- Added: Spotlight: full-screen your camera
 - Fixed: Quick Record's keys work in the area overlay too.
 - Added: A warning on Set sail when Set Sail's UI will be recorded.
 - Changed: The camera bubble's × and gear have swapped places.
@@ -21,7 +21,7 @@ Everything new since we first set sail.
 ## A Sea Witch Has Cursed You! (v0.15.0)
 10 October 2026
 
-- Added: The Skimming Stone: skim your camera across the screen, with SDF skim-shadows
+- Added: The Curse of the Skimming Stone: skim your camera across the screen, with SDF skim-shadows
 - Added: The Curse of the Cannonball: drag & throw your camera across the screen
 - Added: The Curse of the Barnacle: attach your camera to your cursor
 - Added: The Curse of the Jellyfish: watch your camera turn to jelly as your drag it

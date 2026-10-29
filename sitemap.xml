@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The portfolio's pages. Set Sail has its own sitemap at
+     setsail/sitemap.xml; robots.txt points to both. Leave out anything with
+     a noindex (the Twitter archive, the soundboard, experiments/*). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://pipturner.co.uk/</loc></url>
+  <url><loc>https://pipturner.co.uk/experiments.html</loc></url>
+  <url><loc>https://pipturner.co.uk/early-user-experience.html</loc></url>
+  <url><loc>https://pipturner.co.uk/sidestep-jump-crouch.html</loc></url>
+  <url><loc>https://pipturner.co.uk/prosho.html</loc></url>
+  <url><loc>https://pipturner.co.uk/dogracer.html</loc></url>
+</urlset>

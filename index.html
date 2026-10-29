@@ -40,12 +40,14 @@
   {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": "https://pipturner.co.uk/#pip",
     "name": "Pip Turner",
-    "url": "https://pipturner.co.uk",
+    "url": "https://pipturner.co.uk/",
     "sameAs": [
       "https://github.com/dwarph",
       "https://www.linkedin.com/in/pip-turner97/",
-      "https://bsky.app/profile/pipturner.co.uk"
+      "https://bsky.app/profile/pipturner.co.uk",
+      "https://twitter.com/dwarph"
     ],
     "jobTitle": "Senior Product Designer",
     "worksFor": {
@@ -59,6 +61,30 @@
 <body>
   <a href="#about" class="skip-link">Skip to main content</a>
   <div id="homepage-container">
+  <!-- The page is drawn by homepageGenerator.js. This is the same page in
+       plain HTML, for anything that reads it without running scripts, which
+       includes most AI crawlers: who Pip is, and links to the work. Keep it
+       in step with data/homepageData.json when a headline project changes. -->
+  <noscript>
+    <main id="about">
+      <h1>Pip Turner</h1>
+      <p>Hi! I'm Pip - a product designer. I've been in tech since 2018.</p>
+      <p>At Ultraleap I led an interaction R&amp;D team - proving the value of high fidelity hand tracking. I'm now at FitXR, designing fitness apps for people who hate fitness, across xr and mobile.</p>
+      <p>I combine simplicity and fun to create experiences that feel joyful and inevitable.</p>
+      <h2>Work</h2>
+      <ul>
+        <li><a href="early-user-experience.html">Early User Experience</a> - +16% new user conversion at FitXR, by designing for real needs.</li>
+        <li><a href="sidestep-jump-crouch.html">Sidestep, Jump &amp; Crouch</a> - three new VR moves for FitXR, from prototype to shipped in 3 months.</li>
+        <li><a href="prosho.html">Hyperion Showcase</a> - novel XR interaction research and app design at Ultraleap.</li>
+        <li><a href="dogracer.html">Dog Racer</a> - rapid spatial interaction prototyping and app development.</li>
+      </ul>
+      <h2>Projects</h2>
+      <ul>
+        <li><a href="setsail/">Set Sail</a> - a delightful screen recorder for macOS and Windows, in free beta.</li>
+        <li><a href="experiments.html">Experiments</a> - interaction experiments and prototypes, from hand tracking R&amp;D to playful UI.</li>
+      </ul>
+    </main>
+  </noscript>
 
   <script src="./js/utils.js" type="text/javascript"></script>
   <script src="./js/header.js" type="text/javascript"></script>

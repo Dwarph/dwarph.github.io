@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Builds index.html from changelog.md — the two files in this directory,
+ * Builds index.html and feed.xml from changelog.md — the two files in this directory,
  * nothing else. No dependency on the Porthole repo, no dependency on
  * CHANGELOG.md, no dependency on npm.
  *
@@ -49,8 +49,10 @@ import path from 'node:path';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const MARKDOWN_PATH = path.join(here, 'changelog.md');
 const OUT_PATH = path.join(here, 'index.html');
+const FEED_PATH = path.join(here, 'feed.xml');
 
 const SITE_URL = 'https://pipturner.co.uk/setsail/changelog/';
+const FEED_URL = `${SITE_URL}feed.xml`;
 const OG_IMAGE = 'https://pipturner.co.uk/setsail/assets/og.jpg';
 const APP_URL = 'https://pipturner.co.uk/setsail/';
 
@@ -235,6 +237,48 @@ function renderJsonLd(releases) {
   return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
 }
 
+/* An Atom feed of the same releases, for feed readers and for the search and
+ * AI crawlers that watch feeds to learn when a site changes. One entry per
+ * release, its bullets as a list, dated from the release's date line; a
+ * release whose date isn't machine-readable falls back to the newest date in
+ * the file, since Atom requires one. */
+function renderFeed(releases) {
+  const newest = releases.map((r) => isoDate(r.date)).find(Boolean) ?? new Date().toISOString().slice(0, 10);
+  const stamp = (release) => `${isoDate(release.date) ?? newest}T00:00:00Z`;
+  const entries = releases
+    .map((release) => {
+      const ordered = [...release.entries].sort(
+        (a, b) => categoryRank(a.category) - categoryRank(b.category),
+      );
+      const list = ordered
+        .map((entry) => `<li>${escapeHtml(entry.category)}: ${inline(entry.text)}</li>`)
+        .join('');
+      const url = `${SITE_URL}#${anchorFor(release.version)}`;
+      return `  <entry>
+    <title>${escapeHtml(release.title)} (v${release.version})</title>
+    <link href="${url}"/>
+    <id>${url}</id>
+    <updated>${stamp(release)}</updated>
+    <content type="html">${escapeHtml(`<ul>${list}</ul>`)}</content>
+  </entry>`;
+    })
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Set Sail - Changelog</title>
+  <subtitle>Every release of Set Sail, the screen recorder for macOS and Windows, newest first.</subtitle>
+  <link href="${SITE_URL}"/>
+  <link rel="self" href="${FEED_URL}"/>
+  <id>${FEED_URL}</id>
+  <updated>${stamp(releases[0])}</updated>
+  <author><name>Pip Turner</name><uri>https://pipturner.co.uk/</uri></author>
+  <icon>${APP_URL}assets/icon.png</icon>
+${entries}
+</feed>
+`;
+}
+
 function renderRelease(release) {
   const ordered = [...release.entries].sort(
     (a, b) => categoryRank(a.category) - categoryRank(b.category),
@@ -288,7 +332,9 @@ function renderPage({ h1, lead, releases }) {
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="A tiny sailing boat alone on a wide teal sea, beside the Set Sail name.">
+  <meta property="og:site_name" content="Set Sail">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/atom+xml" title="Set Sail releases" href="feed.xml">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -371,9 +417,10 @@ if (bad.length) {
 }
 
 writeFileSync(OUT_PATH, renderPage(parsed));
+writeFileSync(FEED_PATH, renderFeed(parsed.releases));
 
 const entryCount = parsed.releases.reduce((n, r) => n + r.entries.length, 0);
-console.log(`Wrote ${OUT_PATH}`);
+console.log(`Wrote ${OUT_PATH} and ${path.basename(FEED_PATH)}`);
 console.log(`  ${parsed.releases.length} releases, ${entryCount} entries, from ${path.basename(MARKDOWN_PATH)}.`);
 for (const [name, versions] of unknown) {
   console.warn(`  Unknown category "${name}" in ${[...new Set(versions)].join(', ')} — sorted last. Expected one of: ${CATEGORY_ORDER.join(', ')}.`);

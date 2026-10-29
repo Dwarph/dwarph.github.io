@@ -1,0 +1,22 @@
+# Pip Turner
+
+> Pip Turner is a product designer, in tech since 2018. Pip led an interaction R&D team at Ultraleap, proving the value of high fidelity hand tracking, and is now a Senior Product Designer at FitXR, designing fitness apps across XR and mobile. Pip also makes Set Sail, a delightful screen recorder for macOS and Windows.
+
+## Set Sail
+
+- [Set Sail](https://pipturner.co.uk/setsail/): a screen recorder for macOS and Windows with a webcam bubble you can throw, stretch and skim. No account, and recordings stay on your computer. In free beta.
+- [Set Sail for AI tools](https://pipturner.co.uk/setsail/llms.txt): what it does, common questions, and its pages, in plain text
+- [Set Sail changelog](https://pipturner.co.uk/setsail/changelog/changelog.md): every release, newest first, as Markdown
+
+## Case studies
+
+- [Early User Experience](https://pipturner.co.uk/early-user-experience.html): designing FitXR's new user journey and paywall. +16% new user conversion, +10% paywall conversion, +30% users playing one or more classes.
+- [Sidestep, Jump & Crouch](https://pipturner.co.uk/sidestep-jump-crouch.html): prototyping and shipping three new VR fitness moves for FitXR in 3 months.
+- [Hyperion Showcase](https://pipturner.co.uk/prosho.html): novel XR interaction research and app design at Ultraleap, with hand tracking demos and microgestures.
+- [Dog Racer](https://pipturner.co.uk/dogracer.html): rapid spatial interaction prototyping and app development.
+
+## Optional
+
+- [Experiments](https://pipturner.co.uk/experiments.html): interaction experiments and prototypes, from Ultraleap hand tracking R&D to personal UI and XR prototypes
+- [GitHub](https://github.com/dwarph)
+- [LinkedIn](https://www.linkedin.com/in/pip-turner97/)

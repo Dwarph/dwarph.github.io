@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Set Sail - Changelog</title>
+  <subtitle>Every release of Set Sail, the screen recorder for macOS and Windows, newest first.</subtitle>
+  <link href="https://pipturner.co.uk/setsail/changelog/"/>
+  <link rel="self" href="https://pipturner.co.uk/setsail/changelog/feed.xml"/>
+  <id>https://pipturner.co.uk/setsail/changelog/feed.xml</id>
+  <updated>2026-10-26T00:00:00Z</updated>
+  <author><name>Pip Turner</name><uri>https://pipturner.co.uk/</uri></author>
+  <icon>https://pipturner.co.uk/setsail/assets/icon.png</icon>
+  <entry>
+    <title>Spotlight Stays in Line (v0.16.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-16-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-16-1</id>
+    <updated>2026-10-26T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: Restarting a take doesn't affect Spotlight's state.&lt;/li&gt;&lt;li&gt;Fixed: Spotlight no longer covers the recording controls.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>All Eyes on Deck (v0.16.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-16-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-16-0</id>
+    <updated>2026-10-26T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Spotlight: full-screen your camera&lt;/li&gt;&lt;li&gt;Added: A warning on Set sail when Set Sail's UI will be recorded.&lt;/li&gt;&lt;li&gt;Changed: The camera bubble's × and gear have swapped places.&lt;/li&gt;&lt;li&gt;Fixed: Quick Record's keys work in the area overlay too.&lt;/li&gt;&lt;li&gt;Fixed: The camera bubble should feel smoother on windows.&lt;/li&gt;&lt;li&gt;Fixed: Turning on the webcam from the Quick Record bar no longer opens the main window.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>A Sea Witch Has Cursed You! (v0.15.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-15-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-15-0</id>
+    <updated>2026-10-10T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: The Curse of the Skimming Stone: skim your camera across the screen, with SDF skim-shadows&lt;/li&gt;&lt;li&gt;Added: The Curse of the Cannonball: drag &amp;amp; throw your camera across the screen&lt;/li&gt;&lt;li&gt;Added: The Curse of the Barnacle: attach your camera to your cursor&lt;/li&gt;&lt;li&gt;Added: The Curse of the Jellyfish: watch your camera turn to jelly as your drag it&lt;/li&gt;&lt;li&gt;Added: A settings button on the camera bubble.&lt;/li&gt;&lt;li&gt;Added: Webcam Appearance has two tabs - look &amp;amp; curses.&lt;/li&gt;&lt;li&gt;Added: Enable/Disable the camera bubble from the Webcam Appearance screen.&lt;/li&gt;&lt;li&gt;Added: Quick Record's keys work in the main window too.&lt;/li&gt;&lt;li&gt;Changed: The default bubble movement mode is now The Curse of the Anchor&lt;/li&gt;&lt;li&gt;Changed: Webcam Appearance leads Settings.&lt;/li&gt;&lt;li&gt;Changed: The &amp;quot;New Release&amp;quot; message closes itself.&lt;/li&gt;&lt;li&gt;Changed: The transcript panel drops its &amp;quot;Transcribed locally&amp;quot; note.&lt;/li&gt;&lt;li&gt;Removed: Intel Macs are no longer supported on the Mac App Store.&lt;/li&gt;&lt;li&gt;Fixed: Invisible overlay windows no longer show up in the window picker on Windows.&lt;/li&gt;&lt;li&gt;Fixed: Set Sail no longer freezes for a couple of seconds on Windows when the screen preview refreshes&lt;/li&gt;&lt;li&gt;Fixed: Mission Control no longer shows the recording border as a window of its own.&lt;/li&gt;&lt;li&gt;Fixed: Land Ahoy! screen notices when a take is deleted in Finder or Explorer.&lt;/li&gt;&lt;li&gt;Fixed: Invisible windows no longer show up in the window picker.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Keeping Itself Shipshape (v0.14.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-14-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-14-0</id>
+    <updated>2026-09-22T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Set Sail keeps itself up to date on Windows.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>A Voyage While You Wait (v0.13.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-13-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-13-0</id>
+    <updated>2026-09-21T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: The screen you see while a recording is being processed now has a loading %, a 'log' of what is happening behind the scenes, and a little boat floating along&lt;/li&gt;&lt;li&gt;Fixed: Tooltips no longer come up behind the window buttons.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Steadier Transcript Progress (v0.12.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-12-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-12-1</id>
+    <updated>2026-09-17T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: The transcript progress bar no longer stalls at 95% on a long take.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Transcripts + New Player (v0.12.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-12-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-12-0</id>
+    <updated>2026-09-17T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Transcripts - transcribe your video after recording and export the transcription as a txt file. This all happens locally, using whisper.&lt;/li&gt;&lt;li&gt;Changed: The recording preview has its own player controls.&lt;/li&gt;&lt;li&gt;Changed: The window on macOS now wears Set Sail's own title bar, the way it already did on Windows: a plain band in the app's colour, no title, and the traffic lights where they have always been.&lt;/li&gt;&lt;li&gt;Changed: The window can no longer be resized by dragging it.&lt;/li&gt;&lt;li&gt;Fixed: Flipping the camera, microphone, or system audio chip mid-recording did not persist after the take ended.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Quick Record Fix (v0.11.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-11-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-11-1</id>
+    <updated>2026-09-16T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: Turning the camera, microphone, or system audio on from the Quick Record bar could get left out of the recording it started.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Feedback + Audio Levels (v0.11.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-11-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-11-0</id>
+    <updated>2026-09-15T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Send a bug report or a feature request without leaving the app.&lt;/li&gt;&lt;li&gt;Added: Optional crash reports and usage stats, to help fix and improve Set Sail.&lt;/li&gt;&lt;li&gt;Added: Set your microphone and system audio levels before you record.&lt;/li&gt;&lt;li&gt;Removed: The Enhance microphone switch, and the processing behind it.&lt;/li&gt;&lt;li&gt;Fixed: Slider values in Settings are readable in dark mode when the bar fills in behind them.&lt;/li&gt;&lt;li&gt;Fixed: Dragging the volume slider on a finished recording's preview no longer starts dragging the file out of the app.&lt;/li&gt;&lt;li&gt;Fixed: With background blur on, your webcam no longer appears before the blur does.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Quick Toggles, Copy + Drag Videos, Overhauled Settings (v0.10.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-10-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-10-0</id>
+    <updated>2026-09-10T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Copy or drag a finished recording straight off the Land ahoy screen.&lt;/li&gt;&lt;li&gt;Added: Turn the webcam, microphone and system audio on or off from the Quick Record bar.&lt;/li&gt;&lt;li&gt;Changed: Settings is no longer one long list.&lt;/li&gt;&lt;li&gt;Changed: Light, dark and system now sit in the Settings header, as three small icons in the top right, instead of as a row in the list.&lt;/li&gt;&lt;li&gt;Changed: The webcam's shadow controls only appear when the shadow is on.&lt;/li&gt;&lt;li&gt;Changed: Clearer wording on the &amp;quot;Show Set Sail UI while recording&amp;quot; setting.&lt;/li&gt;&lt;li&gt;Changed: The recording bar's mic and system-audio meters are easier to read.&lt;/li&gt;&lt;li&gt;Changed: The Quick Record bar shows that your recording is getting ready.&lt;/li&gt;&lt;li&gt;Removed: The hint under Launch at startup on Windows, which only repeated the label.&lt;/li&gt;&lt;li&gt;Fixed: The preview of what you're about to record stays up to date.&lt;/li&gt;&lt;li&gt;Fixed: Clicking Set Sail's icon in the Windows notification area now opens the app.&lt;/li&gt;&lt;li&gt;Fixed: Double-clicking the recording bar no longer flings it to the bottom of the screen.&lt;/li&gt;&lt;li&gt;Fixed: The start controls no longer jump the last stretch when you leave Area mode.&lt;/li&gt;&lt;li&gt;Fixed: Choosing Area from Quick Record no longer brings up the Set Sail window.&lt;/li&gt;&lt;li&gt;Fixed: Quick Record starts sooner on Windows.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>A New Look (v0.9.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-9-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-9-0</id>
+    <updated>2026-09-05T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Changed: Set Sail has a new look: the warm cream and beige are replaced by a cleaner, quieter palette in both light and dark.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Quiet Windows Startup (v0.8.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-8-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-8-1</id>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Changed: On Windows startup, Set Sail opens to the taskbar, and doesn't show its window.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Quick Record, Taskbar Icons, And Smaller Recordings (v0.8.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-8-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-8-0</id>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Quick Record: start a take from anywhere, without going to Set Sail.&lt;/li&gt;&lt;li&gt;Added: A menu bar icon on macOS, and a taskbar icon on Windows.&lt;/li&gt;&lt;li&gt;Added: On Windows, Set Sail can now launch automatically at login and run like a proper background service.&lt;/li&gt;&lt;li&gt;Added: A confirmed region can now be moved and edge-resized, not just corner-resized.&lt;/li&gt;&lt;li&gt;Added: Messages worth interrupting a recording for now appear on the status bar.&lt;/li&gt;&lt;li&gt;Changed: MP4 recordings are much smaller.&lt;/li&gt;&lt;li&gt;Changed: Improved the webcam bubble's grow/shrink animation performance on Windows.&lt;/li&gt;&lt;li&gt;Changed: The Quality setting is now High / Medium / Low, was High / Balanced / Small, with a line under it saying what each one caps the picture at.&lt;/li&gt;&lt;li&gt;Changed: The Region capture mode is now called Area, matching the &amp;quot;Select area…&amp;quot; / &amp;quot;Record area&amp;quot; language already used throughout that flow.&lt;/li&gt;&lt;li&gt;Changed: Deleting a take on Land ahoy now says so in words, not just in colour.&lt;/li&gt;&lt;li&gt;Removed: Colour correction, the Settings screen that let you dial in a levels correction for recordings coming out washed out on an HDR display, added in 0.6.0.&lt;/li&gt;&lt;li&gt;Fixed: On Windows, switching modes or leaving a recording's preview no longer stalls the cursor for a moment.&lt;/li&gt;&lt;li&gt;Fixed: Turning the webcam off during a recording now shows it shrinking away in the recorded file, not just on your own screen.&lt;/li&gt;&lt;li&gt;Fixed: The window picker's thumbnails no longer flash when you open Pick Window&lt;/li&gt;&lt;li&gt;Fixed: With Show Set Sail while recording on, a screen or area take's first frames no longer catch the countdown's fading &amp;quot;1&amp;quot;.&lt;/li&gt;&lt;li&gt;Fixed: The camera and microphone now follow along when the hardware changes, not just at the moment a stream first opens.&lt;/li&gt;&lt;li&gt;Fixed: The screen picker and the idle screen's preview no longer show Set Sail's own window sitting on top of the desktop they're previewing. Both now leave Set Sail's window out of the capture, the same way its actual recordings already did.&lt;/li&gt;&lt;li&gt;Fixed: Improved support for scaled displays on Windows.&lt;/li&gt;&lt;li&gt;Fixed: Windows no longer draws its yellow capture border over your recordings.&lt;/li&gt;&lt;li&gt;Fixed: The webcam bubble's resize handles and close button no longer end up in your recordings.&lt;/li&gt;&lt;li&gt;Fixed: The webcam, microphone and system-audio chips no longer go blank while an area recording is getting ready.&lt;/li&gt;&lt;li&gt;Fixed: Esc now cancels a region selection immediately, without a click first.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>This Changelog! (v0.7.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-7-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-7-0</id>
+    <updated>2026-08-31T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Set Sail can now tell you what's new.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>HDR Colour Correction (v0.6.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-6-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-6-0</id>
+    <updated>2026-08-31T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Colour correction setting, for recordings that come out washed out on an HDR display.&lt;/li&gt;&lt;li&gt;Added: Recording a window now names the file after it.&lt;/li&gt;&lt;li&gt;Fixed: The screen and window pictures in the app are no longer washed out when recording with HDR enabled&lt;/li&gt;&lt;li&gt;Fixed: Windows no longer draws its own yellow capture border over Set Sail's&lt;/li&gt;&lt;li&gt;Fixed: The main window no longer jumps across the screen when you drag it past the webcam bubble.&lt;/li&gt;&lt;li&gt;Fixed: The webcam bubble stays where you put it when you toggle the camera off and on.&lt;/li&gt;&lt;li&gt;Fixed: The webcam button no longer starts spinning forever when the camera is already on.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Audio and Display Fixes (v0.5.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-5-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-5-1</id>
+    <updated>2026-08-30T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: A recording on a machine whose sound device runs at 96kHz no longer fails outright, losing the take.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Bubble Animations and Windows Polish (v0.5.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-5-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-5-0</id>
+    <updated>2026-08-30T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: The webcam button now spins when the camera is still opening.&lt;/li&gt;&lt;li&gt;Changed: The camera bubble now grows into place when it appears, and shrinks away when it goes.&lt;/li&gt;&lt;li&gt;Changed: The bubble's handles slide out from its edge rather than fading in where they sit, and tuck back behind it on the way out.&lt;/li&gt;&lt;li&gt;Changed: The taskbar icon no longer sits on a blue square on Windows.&lt;/li&gt;&lt;li&gt;Fixed: Dragging a bubble's corner grip no longer reverses direction part-way through.&lt;/li&gt;&lt;li&gt;Fixed: The microphone no longer boosts the room when nobody is talking.&lt;/li&gt;&lt;li&gt;Fixed: A change in microphone level part-way through a take no longer arrives as a jump.&lt;/li&gt;&lt;li&gt;Fixed: Clicking or dragging Set Sail's window when it wasn't focused no longer hangs for half a second.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Smarter Recording Resolution (v0.4.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-4-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-4-0</id>
+    <updated>2026-08-28T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Changed: Recording resolution now follows the quality presets: 2160p at High, 1440p at Balanced, 1080p at Small.&lt;/li&gt;&lt;li&gt;Fixed: MP4 no longer falls back to WebM on some Macs driving a large display.&lt;/li&gt;&lt;li&gt;Fixed: Restart now keeps the camera, microphone and system audio exactly as you left them.&lt;/li&gt;&lt;li&gt;Fixed: Full screen on the recording preview now fills the screen, instead of only filling the Set Sail window.&lt;/li&gt;&lt;li&gt;Fixed: The Set sail button now says what it's doing while the app starts up.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>A Native Windows Title Bar (v0.3.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-3-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-3-1</id>
+    <updated>2026-08-27T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Changed: The title bar on Windows is now custom + beautiful :)&lt;/li&gt;&lt;li&gt;Changed: Toasts now sit at the bottom of the window, level with the button below them, instead of floating somewhere above it.&lt;/li&gt;&lt;li&gt;Fixed: MP4 recording now has a final software H.264 fallback.&lt;/li&gt;&lt;li&gt;Fixed: The recording frame around a window now hugs its edges on Windows.&lt;/li&gt;&lt;li&gt;Fixed: Opening About no longer flashes a scrollbar on Windows.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Multi-Monitor Reliability (v0.3.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-3-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-3-0</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Changed: The recording status bar now appears on the screen being recorded, rather than always on the main one&lt;/li&gt;&lt;li&gt;Changed: Set Sail's window now opens on the screen you're working on, instead of always on the main display.&lt;/li&gt;&lt;li&gt;Changed: Set Sail now notices monitors being plugged in, unplugged, or rearranged.&lt;/li&gt;&lt;li&gt;Fixed: Dragging the camera bubble between screens no longer jitters or throws it to the wrong side.&lt;/li&gt;&lt;li&gt;Fixed: The camera bubble stays sharp after moving to a screen with different scaling.&lt;/li&gt;&lt;li&gt;Fixed: A region drag that leaves the screen no longer records the wrong area.&lt;/li&gt;&lt;li&gt;Fixed: Unplugging the screen you were recording no longer deletes the recording.&lt;/li&gt;&lt;li&gt;Fixed: The camera bubble no longer swallows clicks after an interrupted drag.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+</feed>

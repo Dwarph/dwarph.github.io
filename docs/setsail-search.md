@@ -11,11 +11,19 @@ things only Pip can do (they need a login). No paid tools anywhere.
   `FAQPage` JSON-LD in step.** Each answer leads with its one-line answer, so
   it can be quoted on its own.
 - `setsail/changelog/build.mjs`: canonical URL, `<time datetime>` on each
-  release, and JSON-LD with the current version and every release. All
-  generated, so nothing to maintain beyond running the build.
-- `robots.txt` (site root): allows everything and points to the sitemap. Its
+  release, JSON-LD with the current version and every release, and an Atom
+  feed (`setsail/changelog/feed.xml`) that the landing page and changelog both
+  advertise. All generated, so nothing to maintain beyond running the build.
+- `robots.txt` (site root): allows everything and points to both sitemaps. Its
   comment shows how to opt out of AI *training* while staying in AI search.
 - `setsail/sitemap.xml`: add any new page under `/setsail/` to it.
+  `sitemap.xml` at the site root lists the portfolio pages (no noindex ones).
+- `index.html` (site root): the homepage is drawn by JavaScript, which most AI
+  crawlers don't run, so a `<noscript>` copy carries the bio and links to the
+  work and to Set Sail. Its `Person` JSON-LD shares `@id` and `sameAs` with
+  the landing page's, so engines know it's the same Pip.
+- `llms.txt` (site root, where AI tools look first): who Pip is, pointing to
+  Set Sail's own `setsail/llms.txt` and the case studies.
 - `setsail/llms.txt`: a plain-text summary for AI tools. Cheap to keep, and
   its effect is unproven. Update it when a headline feature lands.
 - `.github/workflows/indexnow.yml` and `ad1499c224dcbf70d020f3d1d6b14004.txt`:
@@ -24,8 +32,10 @@ things only Pip can do (they need a login). No paid tools anywhere.
 - `setsail/check-seo.mjs`: run `node setsail/check-seo.mjs` after editing the
   landing page. It fails if the JSON-LD doesn't parse, if the FAQ or feature
   list on the page and in the JSON-LD have different counts, or if a page is
-  missing from the sitemap. It warns when an FAQ answer is worded differently
-  in the two places. In the Porthole repo, the `seo-aeo-update` skill keeps
+  missing from the sitemap, if the changelog page or feed wasn't rebuilt after
+  editing `changelog.md`, or if the root sitemap lists a missing or noindex
+  page. It warns when an FAQ answer is worded differently in the two places,
+  or when the two `Person` entries disagree. In the Porthole repo, the `seo-aeo-update` skill keeps
   all of this in step with each release.
 
 ## One-off setup (about half an hour)

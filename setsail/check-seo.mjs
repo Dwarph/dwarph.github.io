@@ -12,10 +12,15 @@
  *     to spot)
  *   - a different number of "What it does" lines and featureList entries
  *   - a setsail/ page missing from setsail/sitemap.xml
+ *   - a changelog page or feed.xml older than changelog.md (build.mjs not
+ *     run after an edit)
+ *   - a page in the site-root sitemap.xml that doesn't exist or is noindex
  *
  * Warns, without failing, when an FAQ answer's wording differs between the
  * page and the JSON-LD. That's allowed (the page can carry a link the
- * JSON-LD can't), but worth a look when one side was edited alone.
+ * JSON-LD can't), but worth a look when one side was edited alone. Also
+ * warns when the landing page's Person and the homepage's disagree on who Pip
+ * is (their @id or sameAs links), since that's what ties the two together.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -96,7 +101,44 @@ if (visibleFeatures.length !== ldFeatures.length) {
 
 /* Changelog --------------------------------------------------------------- */
 
-jsonLd('changelog/index.html');
+const changelog = jsonLd('changelog/index.html');
+const newestInMd = /^## .+?\(v(\d+\.\d+\.\d+)\)\s*$/m.exec(read('changelog/changelog.md'))?.[1];
+const builtVersion = changelog.nodes.find((n) => n['@type'] === 'SoftwareApplication')?.softwareVersion;
+if (newestInMd !== builtVersion) {
+  errors.push(`changelog/index.html is built from v${builtVersion} but changelog.md is at v${newestInMd}. Run node setsail/changelog/build.mjs.`);
+}
+let feed = '';
+try {
+  feed = read('changelog/feed.xml');
+} catch {
+  errors.push('changelog/feed.xml is missing. Run node setsail/changelog/build.mjs.');
+}
+if (feed && !feed.includes(`(v${newestInMd})</title>`)) {
+  errors.push(`changelog/feed.xml doesn't have v${newestInMd} yet. Run node setsail/changelog/build.mjs.`);
+}
+
+/* Who Pip is, on the landing page and the homepage -------------------------- */
+
+const homepage = readFileSync(path.join(here, '..', 'index.html'), 'utf8');
+const homePerson = (() => {
+  const body = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(homepage)?.[1];
+  try {
+    return body ? JSON.parse(body) : null;
+  } catch (err) {
+    errors.push(`../index.html: JSON-LD doesn't parse (${err.message}).`);
+    return null;
+  }
+})();
+const landingPerson = byType('Person');
+if (homePerson && landingPerson) {
+  if (homePerson['@id'] !== landingPerson['@id']) {
+    warnings.push(`Person @id differs: homepage ${homePerson['@id']}, landing page ${landingPerson['@id']}.`);
+  }
+  const same = (p) => [...(p.sameAs ?? [])].sort().join(' ');
+  if (same(homePerson) !== same(landingPerson)) {
+    warnings.push(`Person sameAs differs:\n    homepage:     ${same(homePerson)}\n    landing page: ${same(landingPerson)}`);
+  }
+}
 
 /* Sitemap ----------------------------------------------------------------- */
 
@@ -115,6 +157,23 @@ function pages(dir) {
 for (const rel of pages('.')) {
   const url = `${SITE}/setsail/${rel.replace(/^\.\//, '').replace(/index\.html$/, '')}`;
   if (!listed.has(url)) errors.push(`sitemap.xml: ${url} isn't listed.`);
+}
+
+/* Site-root sitemap ------------------------------------------------------- */
+
+const rootSitemap = readFileSync(path.join(here, '..', 'sitemap.xml'), 'utf8');
+for (const [, loc] of rootSitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+  const rel = loc.trim().replace(`${SITE}/`, '') || 'index.html';
+  let html;
+  try {
+    html = readFileSync(path.join(here, '..', rel), 'utf8');
+  } catch {
+    errors.push(`../sitemap.xml: ${loc} has no file at ${rel}.`);
+    continue;
+  }
+  if (/<meta name="robots" content="[^"]*noindex/.test(html)) {
+    errors.push(`../sitemap.xml: ${loc} is noindex, so it shouldn't be listed.`);
+  }
 }
 
 /* Report ------------------------------------------------------------------ */

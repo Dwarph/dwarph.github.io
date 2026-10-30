@@ -13,4 +13,5 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://pipturner.co.uk/sitemap.xml
 Sitemap: https://pipturner.co.uk/setsail/sitemap.xml

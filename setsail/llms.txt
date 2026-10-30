@@ -9,12 +9,24 @@
 - Microphone and system audio, each switchable before and during a recording (system audio needs macOS 13 or later on a Mac)
 - Pause and resume from a small control strip that never appears in the recording
 - Transcripts made on your own computer with Whisper, exportable as text
+- Recordings saved as MP4 files, in a Set Sail folder inside Movies or Videos (or a folder you pick), and draggable straight out of the app
+- Works offline: recording, processing and transcripts all happen on your computer
+- Runs on Macs with Apple silicon, and PCs running Windows 10 or 11
 - Every take levelled to -16 LUFS, -1 dBTP
 - Set Sail's own windows stay out of the recording
 - Crash reports and usage stats are off unless you turn them on
+
+## Questions
+
+- Is it free? Free whilst in beta. Leave your email on the landing page and you'll get a link to install it, through TestFlight on a Mac or the Microsoft Store on Windows.
+- Do recordings get uploaded anywhere? No. They save to a folder on your computer and stay there, and there's no account.
+- Can it record system audio on a Mac? Yes, on macOS 13 Ventura or later. On Windows it works out of the box.
+- Who makes it? Pip Turner (https://pipturner.co.uk/).
 
 ## Pages
 
 - [Set Sail](https://pipturner.co.uk/setsail/): what it does, common questions, and the beta signup
 - [Changelog](https://pipturner.co.uk/setsail/changelog/): every release, newest first, with dates
+- [Changelog as Markdown](https://pipturner.co.uk/setsail/changelog/changelog.md): the same releases in plain Markdown
+- [Release feed](https://pipturner.co.uk/setsail/changelog/feed.xml): an Atom feed of every release
 - [Privacy policy](https://pipturner.co.uk/setsail/privacypolicy/): what the app can access and what, if anything, it sends

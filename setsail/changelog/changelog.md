@@ -2,6 +2,17 @@
 
 Everything new since we first set sail.
 
+## Set Sail from the Bubble (v0.17.0)
+30 October 2026
+
+- Added: Quick Record from the camera bubble.
+- Fixed: The camera bubble's ⛶ button now hides while you resize the bubble, like its other buttons.
+- Fixed: Set Sail works over fullscreen apps on Mac.
+- Fixed: The camera bubble no longer blinks going into or out of Spotlight.
+- Fixed: Resizing the camera bubble no longer makes it jump in certain edge cases.
+- Fixed: The smallest camera bubble's resize handles no longer run into its buttons.
+- Fixed: Growing the camera bubble from a corner keeps that corner still.
+
 ## Spotlight Stays in Line (v0.16.1)
 26 October 2026
 

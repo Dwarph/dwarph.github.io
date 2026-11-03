@@ -2,6 +2,20 @@
 
 Everything new since we first set sail.
 
+## A Change of Scenery (v0.18.0)
+3 November 2026
+
+- Added: Camera backgrounds - swap out your camera background, or remove it entirely.
+- Added: Reframe your camera, to keep you in the centre.
+- Changed: Hovering on Active Window in Quick Record shows a border around the window.
+- Added: Cancelling an area selection plays a lovely animation
+- Changed: Settings that open under a switch are marked by a wavy line.
+- Changed: Background blur keeps your hands, as well as your body.
+- Fixed: Using Quick Record from the bubble still lets you select Active Window.
+- Fixed: Improved video playback.
+- Fixed: Changing the background blur mid-take now changes it in the recording too.
+- Fixed: A thrown bubble touches the edge before it bounces.
+
 ## Set Sail from the Bubble (v0.17.0)
 30 October 2026
 

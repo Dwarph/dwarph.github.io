@@ -74,6 +74,7 @@ usually mean a page needs a clearer sentence.
 8. Screen recorder that hides its own windows from the recording
 9. Screen recorder where you can throw the webcam bubble around
 10. Screen recorder that can make the webcam fill the screen
+11. Screen recorder that can remove my webcam background
 
 | Month | Engine | Questions where Set Sail came up | Anything wrong? |
 |-------|--------|----------------------------------|-----------------|

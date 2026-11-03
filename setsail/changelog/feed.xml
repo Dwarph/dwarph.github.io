@@ -13,7 +13,7 @@
     <link href="https://pipturner.co.uk/setsail/changelog/#v0-18-1"/>
     <id>https://pipturner.co.uk/setsail/changelog/#v0-18-1</id>
     <updated>2026-11-03T00:00:00Z</updated>
-    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: Full-screen recordings no longer come out tiny and choppy.&lt;/li&gt;&lt;/ul&gt;</content>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: Race condition that could result in full screen recordings coming out low res and choppy&lt;/li&gt;&lt;/ul&gt;</content>
   </entry>
   <entry>
     <title>A Change of Scenery (v0.18.0)</title>

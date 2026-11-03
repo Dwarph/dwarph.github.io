@@ -9,6 +9,13 @@
   <author><name>Pip Turner</name><uri>https://pipturner.co.uk/</uri></author>
   <icon>https://pipturner.co.uk/setsail/assets/icon.png</icon>
   <entry>
+    <title>Full-Size Recordings, Every Time (v0.18.1)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-18-1"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-18-1</id>
+    <updated>2026-11-03T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Fixed: Full-screen recordings no longer come out tiny and choppy.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
     <title>A Change of Scenery (v0.18.0)</title>
     <link href="https://pipturner.co.uk/setsail/changelog/#v0-18-0"/>
     <id>https://pipturner.co.uk/setsail/changelog/#v0-18-0</id>

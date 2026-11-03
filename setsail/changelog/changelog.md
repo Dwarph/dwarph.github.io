@@ -2,6 +2,11 @@
 
 Everything new since we first set sail.
 
+## Full-Size Recordings, Every Time (v0.18.1)
+3 November 2026
+
+- Fixed: Race condition that could result in full screen recordings coming out low res and choppy
+
 ## A Change of Scenery (v0.18.0)
 3 November 2026
 

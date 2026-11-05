@@ -2,6 +2,16 @@
 
 Everything new since we first set sail.
 
+## Instruments on Deck (v0.19.0)
+5 November 2026
+
+- Added: Your camera and microphone, on the main screen.
+- Changed: Devices & Audio comes first in Settings.
+- Changed: Simplified the curses button.
+- Changed: A slimmer scrollbar in Settings, centred in the margin.
+- Changed: The Webcam Appearance previews show your camera when your camera is on.
+- Fixed: The title bar changes theme with the rest of the window.
+
 ## Full-Size Recordings, Every Time (v0.18.1)
 3 November 2026
 

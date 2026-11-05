@@ -5,9 +5,16 @@
   <link href="https://pipturner.co.uk/setsail/changelog/"/>
   <link rel="self" href="https://pipturner.co.uk/setsail/changelog/feed.xml"/>
   <id>https://pipturner.co.uk/setsail/changelog/feed.xml</id>
-  <updated>2026-11-03T00:00:00Z</updated>
+  <updated>2026-11-05T00:00:00Z</updated>
   <author><name>Pip Turner</name><uri>https://pipturner.co.uk/</uri></author>
   <icon>https://pipturner.co.uk/setsail/assets/icon.png</icon>
+  <entry>
+    <title>Instruments on Deck (v0.19.0)</title>
+    <link href="https://pipturner.co.uk/setsail/changelog/#v0-19-0"/>
+    <id>https://pipturner.co.uk/setsail/changelog/#v0-19-0</id>
+    <updated>2026-11-05T00:00:00Z</updated>
+    <content type="html">&lt;ul&gt;&lt;li&gt;Added: Your camera and microphone, on the main screen.&lt;/li&gt;&lt;li&gt;Changed: Devices &amp;amp; Audio comes first in Settings.&lt;/li&gt;&lt;li&gt;Changed: Simplified the curses button.&lt;/li&gt;&lt;li&gt;Changed: A slimmer scrollbar in Settings, centred in the margin.&lt;/li&gt;&lt;li&gt;Changed: The Webcam Appearance previews show your camera when your camera is on.&lt;/li&gt;&lt;li&gt;Fixed: The title bar changes theme with the rest of the window.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
   <entry>
     <title>Full-Size Recordings, Every Time (v0.18.1)</title>
     <link href="https://pipturner.co.uk/setsail/changelog/#v0-18-1"/>

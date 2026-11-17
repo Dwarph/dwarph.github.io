@@ -2,6 +2,11 @@
 
 Everything new since we first set sail.
 
+## Smooth Sailing for Shared Takes (v0.19.1)
+17 November 2026
+
+- Fixed: Long recordings with a microphone play smoothly when shared.
+
 ## Instruments on Deck (v0.19.0)
 5 November 2026
 
